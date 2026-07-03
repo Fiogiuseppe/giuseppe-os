@@ -9,10 +9,10 @@ import {
 } from '../engine/decisionEngine';
 import type { DecisionAIResult } from '../lib/brain/decisions/types';
 import { decideViaBrain } from './lib/decideViaBrain';
+import { buildMemoryPalaceCards } from './lib/memoryPalaceCards';
 import { runPotentialEngine } from '../engine/potentialEngine';
 import { runAwarenessEngine } from '../engine/awarenessEngine';
 import {
-  AccordionDomain,
   DisclosurePanel,
   DisclosureTrigger,
   RitualStep
@@ -282,6 +282,8 @@ export default function Home() {
   const [financeGoals, setFinanceGoals] = useState(false);
   const [discoverFinance, setDiscoverFinance] = useState(false);
 
+  const memoryCards = useMemo(() => buildMemoryPalaceCards(brain), []);
+
   const activeNav = NAV.find(item => item.id === view);
 
   return (
@@ -321,7 +323,7 @@ export default function Home() {
             {view !== 'today' && (
               <>
                 <div className="space-meta">
-                  <div className="kicker">{view}</div>
+                  <div className="kicker">{view === 'memory' ? 'MEMORY' : view}</div>
                   {activeNav && <span className="space-role">{activeNav.role}</span>}
                 </div>
                 <div className="view-title">{VIEW_HEADINGS[view]}</div>
@@ -629,43 +631,24 @@ export default function Home() {
 
             {view === 'memory' && (
               <div className="memory-palace">
-                <p className="memory-palace-intro">Open a layer of memory.</p>
-                <AccordionDomain title="Identity" kicker="IDENTITY">
-                  <p>{brain.manifesto}</p>
-                </AccordionDomain>
-                <AccordionDomain title="Mission" kicker="MISSION">
-                  <p>{brain.mission_2036}</p>
-                </AccordionDomain>
-                <AccordionDomain title="North Star" kicker="NORTH STAR">
-                  <p>{brain.north_star}</p>
-                </AccordionDomain>
-                <AccordionDomain title="Values" kicker="VALUES">
-                  <ul>{brain.values.map(value => <li key={value}>{value}</li>)}</ul>
-                </AccordionDomain>
-                <AccordionDomain title="Rules" kicker="RULES">
-                  <ul>{brain.rules.map(rule => <li key={rule}>{rule}</li>)}</ul>
-                </AccordionDomain>
-                <AccordionDomain title="Projects" kicker="PROJECTS">
-                  <ul>
-                    {Object.entries(brain.projects).map(([name, project]) => (
-                      <li key={name}>{name}: {project.role}</li>
-                    ))}
-                  </ul>
-                </AccordionDomain>
-                <AccordionDomain title="Relationships" kicker="RELATIONSHIPS">
-                  <ul>{brain.contacts.map(contact => <li key={contact}>{contact}</li>)}</ul>
-                </AccordionDomain>
-                <AccordionDomain title="Learning" kicker="LEARNING">
-                  <ul>{brain.reading_queue.map(item => <li key={item}>{item}</li>)}</ul>
-                </AccordionDomain>
-                <AccordionDomain title="Patterns" kicker="PATTERNS">
-                  <ul>{brain.patterns.map(pattern => <li key={pattern}>{pattern}</li>)}</ul>
-                </AccordionDomain>
-                <AccordionDomain title="Knowledge" kicker="KNOWLEDGE">
-                  <ul>{brain.skills.map(skill => <li key={skill}>{skill}</li>)}</ul>
-                  <p>Creative goals: {brain.creative_goals.join(' · ')}</p>
-                  <p>Career goals: {brain.career_goals.join(' · ')}</p>
-                </AccordionDomain>
+                <div className="memory-palace-grid" role="list">
+                  {memoryCards.map(card => (
+                    <article
+                      key={card.label}
+                      className="memory-card"
+                      role="listitem"
+                      aria-labelledby={`memory-${card.label}`}
+                    >
+                      <h3
+                        id={`memory-${card.label}`}
+                        className={`memory-card-label${card.accent ? ' memory-card-label--accent' : ''}`}
+                      >
+                        {card.label}
+                      </h3>
+                      <p className="memory-card-text">{card.text}</p>
+                    </article>
+                  ))}
+                </div>
               </div>
             )}
           </div>

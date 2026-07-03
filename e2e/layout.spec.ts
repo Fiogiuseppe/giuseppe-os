@@ -6,28 +6,23 @@ async function expectInViewport(page: import('@playwright/test').Page, locator: 
 }
 
 test.describe('Giuseppe OS layout — no clipping', () => {
-  test('desktop memory accordion bottom content stays reachable', async ({ page }) => {
+  test('desktop memory grid bottom content stays reachable', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto('/');
     await page.getByRole('navigation').getByRole('button', { name: 'Memory' }).click();
 
-    await page.getByRole('button', { name: 'Knowledge' }).click();
-    const careerGoals = page.getByText(/Career goals:/);
-    await expectInViewport(page, careerGoals);
+    const priorities = page.getByRole('heading', { name: 'PRIORITIES' });
+    await priorities.scrollIntoViewIfNeeded();
+    await expectInViewport(page, page.getByText(/Pubblicare un pensiero vero questa settimana/));
 
-    const patterns = page.getByRole('button', { name: 'Patterns' });
-    await patterns.click();
-    await expectInViewport(page, page.getByRole('button', { name: 'Knowledge' }));
+    const patterns = page.getByRole('heading', { name: 'PATTERNS' });
+    await expectInViewport(page, patterns);
   });
 
-  test('desktop expanded memory domains do not clip accordion bodies', async ({ page }) => {
+  test('desktop memory grid shows rules without interaction', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto('/');
     await page.getByRole('navigation').getByRole('button', { name: 'Memory' }).click();
-
-    for (const domain of ['Identity', 'Mission', 'North Star', 'Values', 'Rules']) {
-      await page.getByRole('button', { name: domain }).click();
-    }
 
     const rulesItem = page.getByRole('main').getByText('Compra tempo, non status.');
     await expectInViewport(page, rulesItem);
@@ -84,8 +79,8 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await page.goto('/');
     await page.getByRole('navigation').getByRole('button', { name: 'Memory' }).click();
 
-    for (const domain of ['Identity', 'Mission', 'North Star', 'Values', 'Rules', 'Projects', 'Relationships']) {
-      await page.getByRole('button', { name: domain }).click();
+    for (const domain of ['IDENTITY', 'MISSION', 'NORTH STAR', 'VALUES', 'RULES', 'PROJECTS', 'RELATIONSHIPS']) {
+      await expect(page.getByRole('heading', { name: domain })).toBeVisible();
     }
 
     const viewBody = page.locator('.view-body');
