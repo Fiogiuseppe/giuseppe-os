@@ -40,7 +40,7 @@ export function buildFallbackLetter(context: TodaysLetterContext): TodaysLetterS
       ? `Ignora oggi: ${dispersionPattern}`
       : secondRelevance
         ? `Non inseguire: ${secondRelevance.headline}`
-        : 'Ignora oggi nuove idee non allineate alla Mission 2036.',
+        : 'Ignora oggi ciò che è interessante ma non aumenta materialmente le tue probabilità.',
     thingToFocusOn: topPriority ?? topRelevance?.headline ?? missingNote('focus di oggi'),
     creativeSuggestion: leadProject
       ? `Dedica 30 minuti a ${leadProject.name}: ${leadProject.role}`
@@ -51,7 +51,7 @@ export function buildFallbackLetter(context: TodaysLetterContext): TodaysLetterS
         ? `Rafforza ${leadProject.name} con un solo passo concreto.`
         : missingNote('opportunità'),
     reflectionQuestion: context.mission
-      ? `Questa scelta mi avvicina alla Mission 2036: ${context.mission}?`
+      ? `Questa scelta aumenta la probabilità di diventare chi ho scelto di diventare: ${context.mission}?`
       : missingNote('domanda di riflessione')
   };
 }

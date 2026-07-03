@@ -1,3 +1,4 @@
+import { MISSION_QUESTION } from '../philosophy/core';
 import type { BrainRequest } from './types';
 
 const MISSION_ANCHORS = [
@@ -8,7 +9,8 @@ const MISSION_ANCHORS = [
   'concentraz',
   'verità',
   'creare',
-  'mission'
+  'mission',
+  'probabilit'
 ];
 
 export function evaluateMissionAlignment(request: BrainRequest, answer: string): boolean {
@@ -30,5 +32,5 @@ export function evaluateMissionAlignment(request: BrainRequest, answer: string):
 }
 
 export function missionGatePrompt(): string {
-  return 'Will this response help Giuseppe become the person he chose to become?';
+  return MISSION_QUESTION;
 }

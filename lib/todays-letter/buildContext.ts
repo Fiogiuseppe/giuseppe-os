@@ -1,3 +1,4 @@
+import { CORE_PHILOSOPHY_PROMPT, MISSION_QUESTION } from '../philosophy/core';
 import { loadBrain } from '../brain/memory/store';
 import { runPersonalRelevanceEngine } from '../relevance/engine';
 import { runRealityEngine } from '../reality/engine';
@@ -77,7 +78,7 @@ export function formatContextForPrompt(context: TodaysLetterContext): string {
       ? context.relevance.items
           .map(
             item =>
-              `- [${item.confidence}] ${item.headline} — ${item.whyForGiuseppe} (score ${item.relevanceScore})`
+              `- [${item.confidence}] ${item.headline} — ${item.whyForGiuseppe} (targets: ${item.optimizationTargets.join(', ')})`
           )
           .join('\n')
       : '- MISSING: no personal relevance signals';
@@ -86,6 +87,8 @@ export function formatContextForPrompt(context: TodaysLetterContext): string {
   const confidenceNote = context.relevance.confidenceNote;
 
   return [
+    CORE_PHILOSOPHY_PROMPT,
+    `MISSION FILTER: ${MISSION_QUESTION}`,
     `DATE: ${context.localDate}`,
     `TIME: ${context.localTime}`,
     'CONSTITUTION:',

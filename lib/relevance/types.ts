@@ -1,3 +1,5 @@
+import type { OptimizationTargetId } from '../philosophy/core';
+
 export type RelevanceDimension =
   | 'mission'
   | 'north_star'
@@ -22,10 +24,12 @@ export interface PersonalRelevanceItem {
   relevanceScore: number;
   confidence: 'high' | 'medium' | 'low';
   dimensions: RelevanceDimension[];
+  optimizationTargets: OptimizationTargetId[];
 }
 
 export interface PersonalRelevanceReport {
   generatedAt: string;
   items: PersonalRelevanceItem[];
   confidenceNote: string;
+  missionQuestion: string;
 }
