@@ -5,13 +5,11 @@ const FOOTER_LINE_1 = "It's not software that tells you what to do.";
 const FOOTER_LINE_2 = "It's software that remembers who you chose to become.";
 
 const MAIN_SECTIONS = [
-  { label: 'Home', heading: /GIUSEPPE OS/ },
-  { label: 'Board', heading: /PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA/ },
-  { label: 'Today', heading: /UN PASSO ALLA VOLTA VERSO LA LIBERTÀ/ },
-  { label: 'Projects', heading: /IL SISTEMA GIUSEPPE/ },
-  { label: 'Finance', heading: /COMPRA LIBERTÀ, NON STATUS/ },
-  { label: 'Awareness', heading: /I NOTICED SOMETHING/ },
-  { label: 'Brain', heading: /CHI HO SCELTO DI DIVENTARE/ }
+  { label: 'Today', heading: /IL MIGLIOR PASSO DI OGGI/ },
+  { label: 'Decisions', heading: /PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA/ },
+  { label: 'Discover', heading: /I NOTICED SOMETHING/ },
+  { label: 'Create', heading: /IL SISTEMA GIUSEPPE/ },
+  { label: 'Memory', heading: /CHI HO SCELTO DI DIVENTARE/ }
 ] as const;
 
 const BANNED_GENERIC_COPY = [
@@ -72,7 +70,7 @@ test.describe('Giuseppe OS quality loop', () => {
   });
 
   test('decision form works end to end', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Today' }).click();
+    await page.getByRole('navigation').getByRole('button', { name: 'Decisions' }).click();
 
     await page.getByPlaceholder('Es. comprare casa, pubblicare un post, investire...').fill('investire in ETF');
     await page.getByPlaceholder('Motivo vero.').fill('Voglio comprare libertà futura.');
@@ -84,10 +82,10 @@ test.describe('Giuseppe OS quality loop', () => {
   });
 
   test('awareness section works when present', async ({ page }) => {
-    const awarenessButton = page.getByRole('navigation').getByRole('button', { name: 'Awareness' });
-    await expect(awarenessButton).toBeVisible();
+    const discoverButton = page.getByRole('navigation').getByRole('button', { name: 'Discover' });
+    await expect(discoverButton).toBeVisible();
 
-    await awarenessButton.click();
+    await discoverButton.click();
     await expect(page.getByRole('main').locator('.view-title')).toHaveText('I NOTICED SOMETHING.');
     await expect(page.getByRole('heading', { name: /Stai portando|Hai liquidità|Il lavoro sacro|Vuoi visibilità|LEGO è il motore/ })).toBeVisible();
     await page.getByRole('button', { name: 'Suggested action' }).click();
@@ -112,7 +110,7 @@ test.describe('Giuseppe OS quality loop', () => {
     await expect(page.getByRole('navigation')).toBeVisible();
     await expect(page.getByRole('main')).toBeVisible();
     await expect(page.locator('footer.footer')).toBeVisible();
-    await expect(page.getByRole('navigation').getByRole('button', { name: 'Board', exact: true })).toBeVisible();
+    await expect(page.getByRole('navigation').getByRole('button', { name: 'Decisions', exact: true })).toBeVisible();
   });
 
   test('visual hierarchy uses kickers before headlines', async ({ page }) => {
@@ -133,15 +131,15 @@ test.describe('Giuseppe OS quality loop', () => {
     }
   });
 
-  test('north star appears only on Board view', async ({ page }) => {
+  test('north star appears only on Decisions view', async ({ page }) => {
     await expect(page.getByRole('main').getByText(NORTH_STAR)).toHaveCount(0);
 
     const nav = page.getByRole('navigation');
-    await nav.getByRole('button', { name: 'Board', exact: true }).click();
+    await nav.getByRole('button', { name: 'Decisions', exact: true }).click();
     await expect(page.getByRole('main').getByText(NORTH_STAR).first()).toBeVisible();
 
     for (const { label } of MAIN_SECTIONS) {
-      if (label === 'Board') continue;
+      if (label === 'Decisions') continue;
       await nav.getByRole('button', { name: label, exact: true }).click();
       await expect(page.getByRole('main').getByText(NORTH_STAR)).toHaveCount(0);
     }
@@ -159,18 +157,19 @@ test.describe('Giuseppe OS quality loop', () => {
     const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     expect(bodyBg).toBe('rgb(247, 245, 232)');
 
-    await expect(page.getByText('GIUSEPPE OS').first()).toBeVisible();
+    await expect(page.getByText('Giuseppe').first()).toBeVisible();
     await expect(page.locator('.card').first()).toBeVisible();
-    await expect(page.locator('.sidebar')).toBeVisible();
+    await expect(page.locator('.topbar')).toBeVisible();
   });
 
-  test('architecture-aligned north star appears on Board', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Board', exact: true }).click();
+  test('architecture-aligned north star appears on Decisions', async ({ page }) => {
+    await page.getByRole('navigation').getByRole('button', { name: 'Decisions', exact: true }).click();
     await expect(page.getByRole('main').getByText(NORTH_STAR).first()).toBeVisible();
   });
 
   test('finance view hides sensitive personal numbers', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Finance', exact: true }).click();
+    await page.getByRole('navigation').getByRole('button', { name: 'Discover', exact: true }).click();
+    await page.getByRole('button', { name: 'Freedom & finance' }).click();
     await page.getByRole('button', { name: 'Financial details' }).click();
 
     const main = page.getByRole('main');
@@ -189,7 +188,7 @@ test.describe('Giuseppe OS quality loop — responsiveness', () => {
     await page.goto('/');
 
     const nav = page.getByRole('navigation');
-    await expect(nav.getByRole('button', { name: 'Home' })).toBeVisible();
+    await expect(nav.getByRole('button', { name: 'Today' })).toBeVisible();
 
     for (const { label, heading } of MAIN_SECTIONS) {
       await nav.getByRole('button', { name: label, exact: true }).click();

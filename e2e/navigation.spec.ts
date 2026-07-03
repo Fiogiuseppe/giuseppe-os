@@ -1,13 +1,11 @@
 import { test, expect } from '@playwright/test';
 
 const NAV_VIEWS = [
-  { label: 'Home', heading: /GIUSEPPE OS/ },
-  { label: 'Board', heading: /PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA/ },
-  { label: 'Today', heading: /UN PASSO ALLA VOLTA VERSO LA LIBERTÀ/ },
-  { label: 'Projects', heading: /IL SISTEMA GIUSEPPE/ },
-  { label: 'Finance', heading: /COMPRA LIBERTÀ, NON STATUS/ },
-  { label: 'Awareness', heading: /I NOTICED SOMETHING/ },
-  { label: 'Brain', heading: /CHI HO SCELTO DI DIVENTARE/ }
+  { label: 'Today', heading: /IL MIGLIOR PASSO DI OGGI/ },
+  { label: 'Decisions', heading: /PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA/ },
+  { label: 'Discover', heading: /I NOTICED SOMETHING/ },
+  { label: 'Create', heading: /IL SISTEMA GIUSEPPE/ },
+  { label: 'Memory', heading: /CHI HO SCELTO DI DIVENTARE/ }
 ] as const;
 
 async function expectNoPageScroll(page: import('@playwright/test').Page) {
@@ -32,7 +30,8 @@ test.describe('Giuseppe OS navigation', () => {
   });
 
   test('loads the home page', async ({ page }) => {
-    await expect(page.getByText('GIUSEPPE OS').first()).toBeVisible();
+    await expect(page.getByText('Good morning, Giuseppe.')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Giuseppe OS home' })).toBeVisible();
     await expect(page.locator('footer.footer').getByText("It's not software that tells you what to do.")).toBeVisible();
     await expect(page.locator('footer.footer').getByText("It's software that remembers who you chose to become.")).toBeVisible();
   });
@@ -55,8 +54,8 @@ test.describe('Giuseppe OS navigation', () => {
     }
   });
 
-  test('accepts text in the decision form on Today view', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Today' }).click();
+  test('accepts text in the decision form on Decisions view', async ({ page }) => {
+    await page.getByRole('navigation').getByRole('button', { name: 'Decisions' }).click();
 
     const decisionInput = page.getByPlaceholder('Es. comprare casa, pubblicare un post, investire...');
     const reasonInput = page.getByPlaceholder('Motivo vero.');
@@ -86,7 +85,7 @@ test.describe('Giuseppe OS navigation', () => {
 test.describe('Giuseppe OS decision board', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('navigation').getByRole('button', { name: 'Today' }).click();
+    await page.getByRole('navigation').getByRole('button', { name: 'Decisions' }).click();
   });
 
   async function askBoard(page: import('@playwright/test').Page, decision: string, reason: string) {
@@ -94,9 +93,9 @@ test.describe('Giuseppe OS decision board', () => {
     await page.getByPlaceholder('Motivo vero.').fill(reason);
     await page.getByRole('button', { name: 'Chiedi al Board' }).click();
     await expect(page.locator('.result')).toBeVisible();
-    await page.getByRole('button', { name: 'Perché?' }).click();
-    await page.getByRole('button', { name: 'Mostra il Board' }).click();
-    await page.getByRole('button', { name: 'Versione migliore' }).click();
+    await page.locator('.result').getByRole('button', { name: 'Perché?' }).click();
+    await page.locator('.result').getByRole('button', { name: 'Mostra il Board' }).click();
+    await page.locator('.result').getByRole('button', { name: 'Versione migliore' }).click();
   }
 
   test('submits the decision form and shows board output', async ({ page }) => {

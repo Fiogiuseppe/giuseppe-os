@@ -7,14 +7,14 @@ async function expandPotential(page: import('@playwright/test').Page) {
 test.describe('Giuseppe OS potential engine', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('navigation').getByRole('button', { name: 'Board' }).click();
+    await page.getByRole('navigation').getByRole('button', { name: 'Create' }).click();
     await expandPotential(page);
   });
 
   test('opens the Potential page', async ({ page }) => {
     await expect(page.getByText("TODAY'S OPPORTUNITY")).toBeVisible();
     await expect(page.getByText('OPPORTUNITY HISTORY')).toBeVisible();
-    await expect(page.getByRole('navigation').getByRole('button', { name: 'Board' })).toHaveClass(/active/);
+    await expect(page.getByRole('navigation').getByRole('button', { name: 'Create' })).toHaveClass(/active/);
   });
 
   test('shows today opportunity with confidence score', async ({ page }) => {
@@ -45,10 +45,10 @@ test.describe('Giuseppe OS potential engine', () => {
   });
 
   test('navigation still works from Potential page', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Home' }).click();
+    await page.getByRole('navigation').getByRole('button', { name: 'Today' }).click();
     await expect(page.getByText('Good morning, Giuseppe.')).toBeVisible();
 
-    await page.getByRole('navigation').getByRole('button', { name: 'Board' }).click();
+    await page.getByRole('navigation').getByRole('button', { name: 'Create' }).click();
     await expandPotential(page);
     await expect(page.getByText("TODAY'S OPPORTUNITY")).toBeVisible();
   });

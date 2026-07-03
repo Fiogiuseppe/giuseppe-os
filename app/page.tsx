@@ -15,30 +15,25 @@ import {
   AccordionDomain,
   DisclosurePanel,
   DisclosureTrigger,
-  RitualStep,
-  StatusPill
+  RitualStep
 } from './components/Disclosure';
 
-type View = 'home' | 'board' | 'today' | 'projects' | 'finance' | 'awareness' | 'brain';
+type View = 'today' | 'decisions' | 'discover' | 'create' | 'memory';
 
 const NAV: { id: View; label: string; role: string }[] = [
-  { id: 'home', label: 'Home', role: 'Present awareness' },
-  { id: 'board', label: 'Board', role: 'Decision room' },
-  { id: 'today', label: 'Today', role: 'Ritual / action' },
-  { id: 'projects', label: 'Projects', role: 'Energy allocation' },
-  { id: 'finance', label: 'Finance', role: 'Freedom cockpit' },
-  { id: 'awareness', label: 'Awareness', role: 'Quiet discovery' },
-  { id: 'brain', label: 'Brain', role: 'Memory palace' }
+  { id: 'today', label: 'Today', role: 'Daily companion' },
+  { id: 'decisions', label: 'Decisions', role: 'Decision room' },
+  { id: 'discover', label: 'Discover', role: 'Quiet discovery' },
+  { id: 'create', label: 'Create', role: 'Energy allocation' },
+  { id: 'memory', label: 'Memory', role: 'Memory palace' }
 ];
 
 const VIEW_HEADINGS: Record<View, string> = {
-  home: 'GIUSEPPE OS',
-  board: 'PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.',
-  today: 'UN PASSO ALLA VOLTA VERSO LA LIBERTÀ.',
-  projects: 'IL SISTEMA GIUSEPPE.',
-  finance: 'COMPRA LIBERTÀ, NON STATUS.',
-  awareness: 'I NOTICED SOMETHING.',
-  brain: 'CHI HO SCELTO DI DIVENTARE.'
+  today: 'IL MIGLIOR PASSO DI OGGI.',
+  decisions: 'PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.',
+  discover: 'I NOTICED SOMETHING.',
+  create: 'IL SISTEMA GIUSEPPE.',
+  memory: 'CHI HO SCELTO DI DIVENTARE.'
 };
 
 const PROJECT_PROGRESS: Record<string, number> = {
@@ -49,10 +44,6 @@ const PROJECT_PROGRESS: Record<string, number> = {
   UREES: 82,
   Freelance: 45
 };
-
-function activeProjectCount() {
-  return Object.values(brain.projects).filter(p => p.status === 'active' || p.status === 'slow-active').length;
-}
 
 function recommendedProject() {
   const active = Object.entries(brain.projects).filter(([, p]) => p.status === 'active');
@@ -232,15 +223,19 @@ function ProjectsListDisclosure() {
 }
 
 export default function Home() {
-  const [view, setView] = useState<View>('home');
+  const [view, setView] = useState<View>('today');
   const potential = useMemo(() => runPotentialEngine(), []);
   const awareness = useMemo(() => runAwarenessEngine(), []);
-  const today = potential.todaysOpportunity;
+  const todayOpp = potential.todaysOpportunity;
   const [projectName] = recommendedProject();
 
   const [decision, setDecision] = useState('');
   const [reason, setReason] = useState('');
   const [decisionResult, setDecisionResult] = useState<DecisionResult | null>(null);
+
+  const [todayCreative, setTodayCreative] = useState(false);
+  const [todayReflect, setTodayReflect] = useState(false);
+  const [todayOpportunity, setTodayOpportunity] = useState(false);
 
   const [awarenessWhy, setAwarenessWhy] = useState(false);
   const [awarenessEvidence, setAwarenessEvidence] = useState(false);
@@ -256,99 +251,181 @@ export default function Home() {
 
   const [projectsWhy, setProjectsWhy] = useState(false);
   const [financeGoals, setFinanceGoals] = useState(false);
+  const [discoverFinance, setDiscoverFinance] = useState(false);
 
   const activeNav = NAV.find(item => item.id === view);
 
   return (
-    <div className="app">
-      <aside className="sidebar">
-        <div className="sidebar-brand">
-          <span className="brand-index">Personal OS</span>
-          <div className="sidebar-logo">Giuseppe OS</div>
-        </div>
-        <nav className="sidebar-nav" aria-label="Main navigation">
+    <div className="app app-topnav">
+      <header className="topbar">
+        <button type="button" className="topbar-brand" onClick={() => setView('today')} aria-label="Giuseppe OS home">
+          <span className="brand-mark" aria-hidden="true">G</span>
+          <span className="brand-wordmark">Giuseppe</span>
+          <span className="brand-sub">OS</span>
+        </button>
+        <nav className="topnav" aria-label="Main navigation">
           {NAV.map(({ id, label }) => (
             <button
               key={id}
+              type="button"
               className={view === id ? 'active' : undefined}
               onClick={() => setView(id)}
             >
-              <span>{label}</span>
-              {id === 'awareness' && <span className="nav-badge" aria-hidden="true">1</span>}
+              {label}
             </button>
           ))}
         </nav>
-        <div className="sidebar-manifesto">
-          <p>It&apos;s not software that tells you what to do.</p>
-          <p>It&apos;s software that remembers who you chose to become.</p>
+        <div className="topbar-status">
+          <span className="status-dot" />
+          <span className="topbar-status-label">Online</span>
         </div>
-      </aside>
+      </header>
 
-      <div className="content">
-        <main className={`main space-${view} ${view === 'home' ? 'main-home' : 'main-progressive'}`} role="main">
-          {view === 'home' && (
-            <div className="home-shell mental-space mental-space-present">
-              <header className="present-header">
-                <div>
-                  <p className="home-greeting">Good morning, Giuseppe.</p>
-                  <p className="present-moment">The present moment</p>
-                  <div className="view-title">GIUSEPPE OS</div>
-                </div>
-                <div className="status-pill"><span className="status-dot" /> System Online</div>
-              </header>
+      <div className="app-body">
+        <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}`} role="main">
+          <header className={`page-header progressive-header space-header-${view}`}>
+            <div className="space-meta">
+              <div className="kicker">{view}</div>
+              {activeNav && <span className="space-role">{activeNav.role}</span>}
+            </div>
+            <div className="view-title">{VIEW_HEADINGS[view]}</div>
+            {view === 'today' && (
+              <p className="companion-greeting">Good morning, Giuseppe.</p>
+            )}
+          </header>
 
-              <div className="present-core">
-                <section className="present-block card card-glow">
+          <div className={`view-body progressive-body mental-space mental-space-${view}`}>
+            {view === 'today' && (
+              <div className="daily-companion">
+                <section className="companion-block card card-glow">
                   <div className="kicker">TODAY&apos;S FOCUS</div>
-                  <h2 className="focus-line">{today.title}</h2>
+                  <h2 className="focus-line">{todayOpp.title}</h2>
                 </section>
 
-                <section className="present-block card present-insight">
-                  <div className="kicker">AWARENESS</div>
-                  <p className="insight-line">{awareness.insight}</p>
+                <section className="companion-block card">
+                  <div className="kicker">WHY IT MATTERS</div>
+                  <p className="insight-line">{todayOpp.whyThisMatters}</p>
                 </section>
 
-                <section className="present-block card present-action">
+                <section className="companion-block card present-action">
                   <div className="kicker">RECOMMENDED ACTION</div>
-                  <p className="action-line">{today.firstAction}</p>
-                  <button type="button" className="primary-action" onClick={() => setView('today')}>
+                  <p className="action-line">{todayOpp.firstAction}</p>
+                  <button type="button" className="primary-action" onClick={() => setView('decisions')}>
                     Take this step
                   </button>
                 </section>
+
+                {!todayCreative && (
+                  <DisclosureTrigger label="Creative suggestion" onClick={() => setTodayCreative(true)} />
+                )}
+                <DisclosurePanel open={todayCreative}>
+                  <section className="card companion-block">
+                    <div className="kicker">CREATIVE SUGGESTION</div>
+                    <p>{potential.creativeChallenge}</p>
+                  </section>
+                </DisclosurePanel>
+
+                {!todayReflect && (
+                  <DisclosureTrigger label="Reflection" onClick={() => setTodayReflect(true)} />
+                )}
+                <DisclosurePanel open={todayReflect}>
+                  <section className="card companion-block">
+                    <div className="kicker">REFLECTION</div>
+                    <p>{awareness.reflectionQuestion}</p>
+                  </section>
+                </DisclosurePanel>
+
+                {!todayOpportunity && (
+                  <DisclosureTrigger label="Opportunity" onClick={() => setTodayOpportunity(true)} />
+                )}
+                <DisclosurePanel open={todayOpportunity}>
+                  <section className="card companion-block">
+                    <div className="kicker">OPPORTUNITY</div>
+                    <h2>{todayOpp.title}</h2>
+                    <p>{todayOpp.description}</p>
+                  </section>
+                </DisclosurePanel>
               </div>
+            )}
 
-              <div className="status-indicators-row present-indicators">
-                <StatusPill label="Projects" value={`${activeProjectCount()} active`} onClick={() => setView('projects')} />
-                <StatusPill label="Finance" value="Freedom path" onClick={() => setView('finance')} />
-                <StatusPill label="Brain" value="Memory" onClick={() => setView('brain')} />
-                <StatusPill label="Mission" value="2036" onClick={() => setView('board')} />
-              </div>
-            </div>
-          )}
+            {view === 'decisions' && (
+              <div className="decision-room">
+                <section className="decision-room-core card card-glow">
+                  <div className="kicker">RECOMMENDATION</div>
+                  <h2 className="decision-room-question">Pubblica un pensiero vero.</h2>
+                  <p>Reputazione prima di perfezione.</p>
+                </section>
 
-          {view !== 'home' && (
-            <header className={`page-header progressive-header space-header-${view}`}>
-              <div className="space-meta">
-                <div className="kicker">{view}</div>
-                {activeNav && <span className="space-role">{activeNav.role}</span>}
-              </div>
-              <div className="view-title">{VIEW_HEADINGS[view]}</div>
-            </header>
-          )}
+                {!boardWhy && <DisclosureTrigger label="Perché?" onClick={() => setBoardWhy(true)} />}
+                <DisclosurePanel open={boardWhy}>
+                  <section className="card decision-room-why">
+                    <p>La reputazione stimata richiede prove pubbliche. Il perfezionismo è paura travestita da standard.</p>
+                  </section>
+                </DisclosurePanel>
 
-          {view !== 'home' && (
-            <div className={`view-body progressive-body mental-space mental-space-${view}`}>
-              {view === 'today' && (
-                <div className="ritual-flow">
-                  <RitualStep step={1} label="TODAY">
-                    <h2>{potential.weeklyFocus}</h2>
-                  </RitualStep>
+                {!boardDiscussion && boardWhy && (
+                  <DisclosureTrigger label="Board discussion" onClick={() => setBoardDiscussion(true)} />
+                )}
+                {!boardDiscussion && !boardWhy && (
+                  <DisclosureTrigger label="Board discussion" onClick={() => { setBoardWhy(true); setBoardDiscussion(true); }} />
+                )}
+                <DisclosurePanel open={boardDiscussion}>
+                  <section className="card">
+                    <div className="kicker">BOARD DISCUSSION</div>
+                    <p>Il Board concorda: concentrati su un pensiero vero, non su dieci bozze perfette.</p>
+                  </section>
+                </DisclosurePanel>
 
-                  <RitualStep step={2} label="NEXT MOVE">
-                    <h2>{today.firstAction}</h2>
-                  </RitualStep>
+                {!boardAdvisors && boardDiscussion && (
+                  <DisclosureTrigger label="Advisors" onClick={() => setBoardAdvisors(true)} />
+                )}
+                <DisclosurePanel open={boardAdvisors}>
+                  <section className="grid board-why-grid">
+                    <div className="card"><div className="kicker">NEXT MOVE</div><h2>Pubblica un pensiero vero.</h2><p>Reputazione prima di perfezione.</p></div>
+                    <div className="card"><div className="kicker">CFO</div><h2>Automatizza investimenti.</h2><p>Compra libertà, non status.</p></div>
+                    <div className="card"><div className="kicker">STRATEGIST</div><h2>Congela una nuova idea.</h2><p>Il rischio è dispersione.</p></div>
+                  </section>
+                </DisclosurePanel>
 
-                  <RitualStep step={3} label="DECISION ENGINE" isLast>
+                {!boardEvidence && boardAdvisors && (
+                  <DisclosureTrigger label="Evidence" onClick={() => setBoardEvidence(true)} />
+                )}
+                <DisclosurePanel open={boardEvidence}>
+                  <section className="card">
+                    <div className="kicker">EVIDENCE FROM MEMORY</div>
+                    <ul>{brain.patterns.slice(0, 3).map(item => <li key={item}>{item}</li>)}</ul>
+                  </section>
+                </DisclosurePanel>
+
+                {!boardConfidence && (
+                  <DisclosureTrigger label="Confidence" onClick={() => setBoardConfidence(true)} />
+                )}
+                <DisclosurePanel open={boardConfidence}>
+                  <section className="card">
+                    <div className="kicker">CONFIDENCE</div>
+                    <div className="potential-score">{todayOpp.confidenceScore}</div>
+                  </section>
+                </DisclosurePanel>
+
+                {!boardPurpose && (
+                  <DisclosureTrigger label="Explore purpose" onClick={() => setBoardPurpose(true)} />
+                )}
+                <DisclosurePanel open={boardPurpose}>
+                  <section className="hero">
+                    <div className="card card-glow">
+                      <div className="kicker">NORTH STAR</div>
+                      <h2>{brain.north_star}</h2>
+                    </div>
+                    <div className="card">
+                      <div className="kicker">PURPOSE ENGINE</div>
+                      <h2>{brain.manifesto}</h2>
+                      <p>Missione 2036: {brain.mission_2036.toLowerCase()}</p>
+                    </div>
+                  </section>
+                </DisclosurePanel>
+
+                <div className="ritual-flow decisions-form-flow">
+                  <RitualStep step={1} label="DECISION ENGINE" isLast>
                     <h2>Chiedi al Board.</h2>
                     <label>Decisione</label>
                     <input
@@ -379,138 +456,11 @@ export default function Home() {
                     />
                   )}
                 </div>
-              )}
+              </div>
+            )}
 
-              {view === 'board' && (
-                <div className="decision-room">
-                  <section className="decision-room-core card card-glow">
-                    <div className="kicker">RECOMMENDATION</div>
-                    <h2 className="decision-room-question">Pubblica un pensiero vero.</h2>
-                    <p>Reputazione prima di perfezione.</p>
-                  </section>
-
-                  {!boardWhy && <DisclosureTrigger label="Perché?" onClick={() => setBoardWhy(true)} />}
-                  <DisclosurePanel open={boardWhy}>
-                    <section className="card decision-room-why">
-                      <p>La reputazione stimata richiede prove pubbliche. Il perfezionismo è paura travestita da standard.</p>
-                    </section>
-                  </DisclosurePanel>
-
-                  {!boardDiscussion && boardWhy && (
-                    <DisclosureTrigger label="Board discussion" onClick={() => setBoardDiscussion(true)} />
-                  )}
-                  {!boardDiscussion && !boardWhy && (
-                    <DisclosureTrigger label="Board discussion" onClick={() => { setBoardWhy(true); setBoardDiscussion(true); }} />
-                  )}
-                  <DisclosurePanel open={boardDiscussion}>
-                    <section className="card">
-                      <div className="kicker">BOARD DISCUSSION</div>
-                      <p>Il Board concorda: concentrati su un pensiero vero, non su dieci bozze perfette.</p>
-                    </section>
-                  </DisclosurePanel>
-
-                  {!boardAdvisors && boardDiscussion && (
-                    <DisclosureTrigger label="Advisors" onClick={() => setBoardAdvisors(true)} />
-                  )}
-                  <DisclosurePanel open={boardAdvisors}>
-                    <section className="grid board-why-grid">
-                      <div className="card"><div className="kicker">NEXT MOVE</div><h2>Pubblica un pensiero vero.</h2><p>Reputazione prima di perfezione.</p></div>
-                      <div className="card"><div className="kicker">CFO</div><h2>Automatizza investimenti.</h2><p>Compra libertà, non status.</p></div>
-                      <div className="card"><div className="kicker">STRATEGIST</div><h2>Congela una nuova idea.</h2><p>Il rischio è dispersione.</p></div>
-                    </section>
-                  </DisclosurePanel>
-
-                  {!boardEvidence && boardAdvisors && (
-                    <DisclosureTrigger label="Evidence" onClick={() => setBoardEvidence(true)} />
-                  )}
-                  <DisclosurePanel open={boardEvidence}>
-                    <section className="card">
-                      <div className="kicker">EVIDENCE FROM MEMORY</div>
-                      <ul>{brain.patterns.slice(0, 3).map(item => <li key={item}>{item}</li>)}</ul>
-                    </section>
-                  </DisclosurePanel>
-
-                  {!boardConfidence && (
-                    <DisclosureTrigger label="Confidence" onClick={() => setBoardConfidence(true)} />
-                  )}
-                  <DisclosurePanel open={boardConfidence}>
-                    <section className="card">
-                      <div className="kicker">CONFIDENCE</div>
-                      <div className="potential-score">{today.confidenceScore}</div>
-                    </section>
-                  </DisclosurePanel>
-
-                  {!boardPurpose && (
-                    <DisclosureTrigger label="Explore purpose" onClick={() => setBoardPurpose(true)} />
-                  )}
-                  <DisclosurePanel open={boardPurpose}>
-                    <section className="hero">
-                      <div className="card card-glow">
-                        <div className="kicker">NORTH STAR</div>
-                        <h2>{brain.north_star}</h2>
-                      </div>
-                      <div className="card">
-                        <div className="kicker">PURPOSE ENGINE</div>
-                        <h2>{brain.manifesto}</h2>
-                        <p>Missione 2036: {brain.mission_2036.toLowerCase()}</p>
-                      </div>
-                    </section>
-                  </DisclosurePanel>
-
-                  <PotentialPanelDisclosure />
-                </div>
-              )}
-
-              {view === 'projects' && (
-                <div className="energy-ecosystem">
-                  <section className="ecosystem-focus card card-glow">
-                    <div className="kicker">TODAY&apos;S PROJECT RECOMMENDATION</div>
-                    <h2>{projectName}</h2>
-                    <p>{brain.projects[projectName as keyof typeof brain.projects].role}</p>
-                  </section>
-
-                  {!projectsWhy && <DisclosureTrigger label="Perché?" onClick={() => setProjectsWhy(true)} />}
-                  <DisclosurePanel open={projectsWhy}>
-                    <section className="card">
-                      <div className="kicker">STRATEGIST</div>
-                      <h2>Non più idee: più concentrazione.</h2>
-                      <p>Ogni progetto deve rafforzare l&apos;ecosistema.</p>
-                    </section>
-                  </DisclosurePanel>
-
-                  <ProjectsListDisclosure />
-                </div>
-              )}
-
-              {view === 'finance' && (
-                <div className="freedom-cockpit">
-                  <section className="cockpit-gauge card card-glow">
-                    <div className="kicker">FREEDOM SCORE</div>
-                    <div className="freedom-gauge-ring">
-                      <div className="potential-score">72</div>
-                    </div>
-                    <p>Stai comprando libertà, non status.</p>
-                  </section>
-
-                  <section className="card cockpit-recommendation">
-                    <div className="kicker">RECOMMENDATION</div>
-                    <h2>Automatizza investimenti.</h2>
-                    <p>Misura mesi di libertà, non solo rendimento.</p>
-                  </section>
-
-                  {!financeGoals && <DisclosureTrigger label="Goals" onClick={() => setFinanceGoals(true)} />}
-                  <DisclosurePanel open={financeGoals}>
-                    <div className="card">
-                      <div className="kicker">GOALS</div>
-                      <ul>{financeDisplay.goals.map(goal => <li key={goal}>{goal}</li>)}</ul>
-                    </div>
-                  </DisclosurePanel>
-
-                  <FinanceDetailsDisclosure />
-                </div>
-              )}
-
-              {view === 'awareness' && (
+            {view === 'discover' && (
+              <div className="discover-space">
                 <div className="quiet-discovery">
                   <section className="discovery-insight card">
                     <div className="kicker">INSIGHT</div>
@@ -563,51 +513,104 @@ export default function Home() {
                     </DisclosurePanel>
                   </div>
                 </div>
-              )}
 
-              {view === 'brain' && (
-                <div className="memory-palace">
-                  <p className="memory-palace-intro">Open a layer of memory.</p>
-                  <AccordionDomain title="Identity" kicker="IDENTITY">
-                    <p>{brain.manifesto}</p>
-                  </AccordionDomain>
-                  <AccordionDomain title="Mission" kicker="MISSION">
-                    <p>{brain.mission_2036}</p>
-                  </AccordionDomain>
-                  <AccordionDomain title="North Star" kicker="NORTH STAR">
-                    <p>{brain.north_star}</p>
-                  </AccordionDomain>
-                  <AccordionDomain title="Values" kicker="VALUES">
-                    <ul>{brain.values.map(value => <li key={value}>{value}</li>)}</ul>
-                  </AccordionDomain>
-                  <AccordionDomain title="Rules" kicker="RULES">
-                    <ul>{brain.rules.map(rule => <li key={rule}>{rule}</li>)}</ul>
-                  </AccordionDomain>
-                  <AccordionDomain title="Projects" kicker="PROJECTS">
-                    <ul>
-                      {Object.entries(brain.projects).map(([name, project]) => (
-                        <li key={name}>{name}: {project.role}</li>
-                      ))}
-                    </ul>
-                  </AccordionDomain>
-                  <AccordionDomain title="Relationships" kicker="RELATIONSHIPS">
-                    <ul>{brain.contacts.map(contact => <li key={contact}>{contact}</li>)}</ul>
-                  </AccordionDomain>
-                  <AccordionDomain title="Learning" kicker="LEARNING">
-                    <ul>{brain.reading_queue.map(item => <li key={item}>{item}</li>)}</ul>
-                  </AccordionDomain>
-                  <AccordionDomain title="Patterns" kicker="PATTERNS">
-                    <ul>{brain.patterns.map(pattern => <li key={pattern}>{pattern}</li>)}</ul>
-                  </AccordionDomain>
-                  <AccordionDomain title="Knowledge" kicker="KNOWLEDGE">
-                    <ul>{brain.skills.map(skill => <li key={skill}>{skill}</li>)}</ul>
-                    <p>Creative goals: {brain.creative_goals.join(' · ')}</p>
-                    <p>Career goals: {brain.career_goals.join(' · ')}</p>
-                  </AccordionDomain>
+                {!discoverFinance && (
+                  <DisclosureTrigger label="Freedom & finance" onClick={() => setDiscoverFinance(true)} />
+                )}
+                <DisclosurePanel open={discoverFinance}>
+                <div className="freedom-cockpit discover-finance">
+                  <section className="cockpit-gauge card card-glow">
+                    <div className="kicker">FREEDOM SCORE</div>
+                    <div className="freedom-gauge-ring">
+                      <div className="potential-score">72</div>
+                    </div>
+                    <p>Stai comprando libertà, non status.</p>
+                  </section>
+
+                  <section className="card cockpit-recommendation">
+                    <div className="kicker">RECOMMENDATION</div>
+                    <h2>Automatizza investimenti.</h2>
+                    <p>Misura mesi di libertà, non solo rendimento.</p>
+                  </section>
+
+                  {!financeGoals && <DisclosureTrigger label="Goals" onClick={() => setFinanceGoals(true)} />}
+                  <DisclosurePanel open={financeGoals}>
+                    <div className="card">
+                      <div className="kicker">GOALS</div>
+                      <ul>{financeDisplay.goals.map(goal => <li key={goal}>{goal}</li>)}</ul>
+                    </div>
+                  </DisclosurePanel>
+
+                  <FinanceDetailsDisclosure />
                 </div>
-              )}
-            </div>
-          )}
+                </DisclosurePanel>
+              </div>
+            )}
+
+            {view === 'create' && (
+              <div className="energy-ecosystem">
+                <section className="ecosystem-focus card card-glow">
+                  <div className="kicker">TODAY&apos;S PROJECT RECOMMENDATION</div>
+                  <h2>{projectName}</h2>
+                  <p>{brain.projects[projectName as keyof typeof brain.projects].role}</p>
+                </section>
+
+                {!projectsWhy && <DisclosureTrigger label="Perché?" onClick={() => setProjectsWhy(true)} />}
+                <DisclosurePanel open={projectsWhy}>
+                  <section className="card">
+                    <div className="kicker">STRATEGIST</div>
+                    <h2>Non più idee: più concentrazione.</h2>
+                    <p>Ogni progetto deve rafforzare l&apos;ecosistema.</p>
+                  </section>
+                </DisclosurePanel>
+
+                <ProjectsListDisclosure />
+                <PotentialPanelDisclosure />
+              </div>
+            )}
+
+            {view === 'memory' && (
+              <div className="memory-palace">
+                <p className="memory-palace-intro">Open a layer of memory.</p>
+                <AccordionDomain title="Identity" kicker="IDENTITY">
+                  <p>{brain.manifesto}</p>
+                </AccordionDomain>
+                <AccordionDomain title="Mission" kicker="MISSION">
+                  <p>{brain.mission_2036}</p>
+                </AccordionDomain>
+                <AccordionDomain title="North Star" kicker="NORTH STAR">
+                  <p>{brain.north_star}</p>
+                </AccordionDomain>
+                <AccordionDomain title="Values" kicker="VALUES">
+                  <ul>{brain.values.map(value => <li key={value}>{value}</li>)}</ul>
+                </AccordionDomain>
+                <AccordionDomain title="Rules" kicker="RULES">
+                  <ul>{brain.rules.map(rule => <li key={rule}>{rule}</li>)}</ul>
+                </AccordionDomain>
+                <AccordionDomain title="Projects" kicker="PROJECTS">
+                  <ul>
+                    {Object.entries(brain.projects).map(([name, project]) => (
+                      <li key={name}>{name}: {project.role}</li>
+                    ))}
+                  </ul>
+                </AccordionDomain>
+                <AccordionDomain title="Relationships" kicker="RELATIONSHIPS">
+                  <ul>{brain.contacts.map(contact => <li key={contact}>{contact}</li>)}</ul>
+                </AccordionDomain>
+                <AccordionDomain title="Learning" kicker="LEARNING">
+                  <ul>{brain.reading_queue.map(item => <li key={item}>{item}</li>)}</ul>
+                </AccordionDomain>
+                <AccordionDomain title="Patterns" kicker="PATTERNS">
+                  <ul>{brain.patterns.map(pattern => <li key={pattern}>{pattern}</li>)}</ul>
+                </AccordionDomain>
+                <AccordionDomain title="Knowledge" kicker="KNOWLEDGE">
+                  <ul>{brain.skills.map(skill => <li key={skill}>{skill}</li>)}</ul>
+                  <p>Creative goals: {brain.creative_goals.join(' · ')}</p>
+                  <p>Career goals: {brain.career_goals.join(' · ')}</p>
+                </AccordionDomain>
+              </div>
+            )}
+          </div>
         </main>
 
         <footer className="footer">

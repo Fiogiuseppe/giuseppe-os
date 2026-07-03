@@ -12,13 +12,13 @@ async function expandAwarenessAction(page: import('@playwright/test').Page) {
 test.describe('Giuseppe OS awareness engine', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('navigation').getByRole('button', { name: 'Awareness' }).click();
+    await page.getByRole('navigation').getByRole('button', { name: 'Discover' }).click();
   });
 
   test('opens the Awareness page', async ({ page }) => {
     await expect(page.getByRole('main').locator('.view-title')).toHaveText('I NOTICED SOMETHING.');
     await expect(page.getByText('INSIGHT')).toBeVisible();
-    await expect(page.getByRole('navigation').getByRole('button', { name: 'Awareness' })).toHaveClass(/active/);
+    await expect(page.getByRole('navigation').getByRole('button', { name: 'Discover' })).toHaveClass(/active/);
   });
 
   test('shows awareness insight', async ({ page }) => {
@@ -46,11 +46,11 @@ test.describe('Giuseppe OS awareness engine', () => {
   });
 
   test('navigation still works from Awareness page', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Board' }).click();
+    await page.getByRole('navigation').getByRole('button', { name: 'Decisions' }).click();
     await page.getByRole('button', { name: 'Explore purpose' }).click();
     await expect(page.getByText('PURPOSE ENGINE')).toBeVisible();
 
-    await page.getByRole('navigation').getByRole('button', { name: 'Awareness' }).click();
+    await page.getByRole('navigation').getByRole('button', { name: 'Discover' }).click();
     await expect(page.getByRole('main').locator('.view-title')).toHaveText('I NOTICED SOMETHING.');
   });
 });

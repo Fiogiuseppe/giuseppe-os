@@ -1,7 +1,7 @@
 # Giuseppe OS — Current Status
 
 **Last updated:** July 2026  
-**Version:** 1.2.0  
+**Version:** 1.3.0  
 **Branch:** `main`  
 **Production:** https://giuseppe-os.vercel.app  
 
@@ -12,15 +12,13 @@
 | Area | Status | Notes |
 |------|--------|-------|
 | **Dashboard shell** | Live | Single-page Next.js app at `app/page.tsx` |
-| **Navigation** | Live | Board, Today, Awareness, Potential, Projects, Finance, Brain |
-| **Board view** | Live | North Star, manifesto, six counsellors |
-| **Today / Decision** | Live | Decision form + board output (client-side engine) |
-| **Awareness** | Live | Proactive insights panel |
-| **Potential** | Live | Today's opportunity + intelligence sections |
-| **Projects** | Live | Static project cards from brain JSON |
-| **Finance** | Live | Liquidity tier visible; sensitive numbers blurred |
-| **Brain** | Live | Memory overview panel |
-| **Design system** | Live | v1.2 distinct mental spaces per section; progressive disclosure preserved |
+| **Navigation** | Live | Top bar: Today, Decisions, Discover, Create, Memory |
+| **Today (Home)** | Live | Daily companion — focus, why, action; creative/reflect/opportunity behind disclosure |
+| **Decisions** | Live | Board ritual, decision form, north star, counsellor output |
+| **Discover** | Live | Awareness insights + freedom/finance cockpit (progressive disclosure) |
+| **Create** | Live | Projects ecosystem + potential opportunities |
+| **Memory** | Live | Brain memory palace accordions |
+| **Design system** | Live | v1.3 Apple-like top nav; v1.2 mental spaces preserved |
 | **Desktop viewport lock** | Live | No body scroll on desktop main sections |
 | **Brain API integration in UI** | **Not done** | UI still calls engines client-side; `/api/brain` exists but dashboard does not use it yet |
 
@@ -30,9 +28,9 @@
 
 | Engine | Implemented | Wired to UI | Wired to Executive Brain |
 |--------|-------------|-------------|--------------------------|
-| Decision Engine | Yes | Yes (Today) | Yes (via `/api/brain`) |
-| Awareness Engine | Yes | Yes (Awareness) | Yes |
-| Potential Engine | Yes | Yes (Potential) | Yes |
+| Decision Engine | Yes | Yes (Decisions) | Yes (via `/api/brain`) |
+| Awareness Engine | Yes | Yes (Discover) | Yes |
+| Potential Engine | Yes | Yes (Create / Today) | Yes |
 | Learning Engine | Yes | No | Yes (`learn` intent) |
 | Executive Brain | Yes | No (API only) | — |
 | Context Builder | Yes | No | Yes |

@@ -6,6 +6,7 @@ Visual design review packages for Giuseppe OS major releases.
 
 | Version | File | Date |
 |---------|------|------|
+| 1.3.0 | [`DESIGN_REVIEW_1.3.0.pdf`](DESIGN_REVIEW_1.3.0.pdf) | July 2026 — Top navigation & daily companion IA |
 | 1.2.0 | [`DESIGN_REVIEW_1.2.0.pdf`](DESIGN_REVIEW_1.2.0.pdf) | July 2026 — Distinct Mental Spaces |
 | 1.1.0 | [`DESIGN_REVIEW_1.1.0.pdf`](DESIGN_REVIEW_1.1.0.pdf) | July 2026 — Progressive Disclosure redesign |
 | 1.0.0 | [`DESIGN_REVIEW_1.0.0.pdf`](DESIGN_REVIEW_1.0.0.pdf) | July 2026 |

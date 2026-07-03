@@ -30,15 +30,13 @@ const DESKTOP = { width: 1280, height: 720, label: '1280 × 720 (Desktop)' };
 const MOBILE = { width: 390, height: 844, label: '390 × 844 (Mobile)' };
 
 const SCREENS = [
-  { name: 'Home', nav: 'Home', viewport: DESKTOP },
   { name: 'Today', nav: 'Today', viewport: DESKTOP },
-  { name: 'Board', nav: 'Board', viewport: DESKTOP },
-  { name: 'Awareness', nav: 'Awareness', viewport: DESKTOP },
-  { name: 'Projects', nav: 'Projects', viewport: DESKTOP },
-  { name: 'Finance', nav: 'Finance', viewport: DESKTOP },
-  { name: 'Brain', nav: 'Brain', viewport: DESKTOP },
-  { name: 'Mobile Home', nav: 'Home', viewport: MOBILE },
-  { name: 'Mobile Today', nav: 'Today', viewport: MOBILE }
+  { name: 'Decisions', nav: 'Decisions', viewport: DESKTOP },
+  { name: 'Discover', nav: 'Discover', viewport: DESKTOP },
+  { name: 'Create', nav: 'Create', viewport: DESKTOP },
+  { name: 'Memory', nav: 'Memory', viewport: DESKTOP },
+  { name: 'Mobile Today', nav: 'Today', viewport: MOBILE },
+  { name: 'Mobile Decisions', nav: 'Decisions', viewport: MOBILE }
 ];
 
 const PAGE_WIDTH = 792;
