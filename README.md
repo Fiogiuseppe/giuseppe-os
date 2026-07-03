@@ -57,6 +57,16 @@ Future Cursor sessions should **begin by reading the project memory docs** — t
 
 Also see [`docs/03_DECISIONS_LOG.md`](docs/03_DECISIONS_LOG.md) for architecture decisions and [`docs/INTELLIGENCE_FOUNDATION.md`](docs/INTELLIGENCE_FOUNDATION.md) for the v1.0 pipeline spec.
 
+## Design reviews
+
+After major releases, generate a visual review PDF:
+
+```bash
+npm run design:review
+```
+
+Output: `docs/reviews/DESIGN_REVIEW_<version>.pdf`
+
 ## Production
 
 https://giuseppe-os.vercel.app

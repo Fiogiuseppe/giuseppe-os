@@ -109,6 +109,18 @@ Update docs in the **same commit** as code changes when:
 
 ---
 
+## After Every Major Release
+
+Generate a design review PDF:
+
+```bash
+npm run design:review
+```
+
+Commit the output to `docs/reviews/DESIGN_REVIEW_<version>.pdf` and update `docs/reviews/README.md`.
+
+---
+
 ## Task Completion Checklist
 
 - [ ] Read project memory docs at session start
