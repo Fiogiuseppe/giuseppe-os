@@ -311,7 +311,7 @@ export default function Home() {
         </nav>
         <div className="topbar-status">
           <span className="status-dot" />
-          <span className="topbar-status-label">Online</span>
+          <span className="topbar-status-label">ONLINE</span>
         </div>
       </header>
 
@@ -334,7 +334,7 @@ export default function Home() {
               <div className="daily-companion editorial-today">
                 <div className="companion-editorial-left">
                   <div className="space-meta">
-                    <div className="kicker">today</div>
+                    <div className="kicker">TODAY</div>
                     <span className="space-role">Daily companion</span>
                   </div>
                   <h1 className="view-title companion-headline">{VIEW_HEADINGS.today}</h1>
@@ -349,6 +349,7 @@ export default function Home() {
                     <p className="companion-panel-text">{todayOpp.firstAction}</p>
                   </section>
 
+                  <div className="companion-editorial-extra">
                   {!todayWhy && (
                     <DisclosureTrigger label="Why it matters" onClick={() => setTodayWhy(true)} />
                   )}
@@ -389,6 +390,7 @@ export default function Home() {
                       <p className="companion-panel-text companion-panel-text--sentence">{todayOpp.description}</p>
                     </section>
                   </DisclosurePanel>
+                  </div>
                 </div>
 
                 <div className="companion-presence">
