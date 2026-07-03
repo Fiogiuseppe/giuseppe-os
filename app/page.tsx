@@ -260,9 +260,14 @@ export default function Home() {
     <div className="app app-topnav">
       <header className="topbar">
         <button type="button" className="topbar-brand" onClick={() => setView('today')} aria-label="Giuseppe OS home">
-          <span className="brand-mark" aria-hidden="true">G</span>
-          <span className="brand-wordmark">Giuseppe</span>
-          <span className="brand-sub">OS</span>
+          <img
+            src="/images/giuseppe-logo.png"
+            alt=""
+            className="brand-logo"
+            width={300}
+            height={87}
+            draggable={false}
+          />
         </button>
         <nav className="topnav" aria-label="Main navigation">
           {NAV.map(({ id, label }) => (
