@@ -172,7 +172,7 @@ a {
 
 .main-home {
   gap: 0;
-  padding: 4px clamp(24px, 3vw, 40px) 4px clamp(8px, 1.5vw, 20px);
+  padding: 4px clamp(24px, 3vw, 40px);
 }
 
 .main-home .view-body {
@@ -186,6 +186,7 @@ a {
 
 /* Today — editorial three-column composition (reference layout) */
 .daily-companion.editorial-today {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(260px, 30vw) minmax(0, 1fr) minmax(140px, 22vw);
   grid-template-areas: 'editorial-left portrait editorial-right';
@@ -272,16 +273,19 @@ a {
 }
 
 .companion-presence {
-  grid-area: portrait;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
   align-items: center;
-  justify-self: center;
   flex-shrink: 0;
   min-width: 0;
   width: min(72vh, 100%, 880px);
   max-width: 100%;
   z-index: 1;
+  pointer-events: none;
 }
 
 .companion-editorial-right {
@@ -2120,6 +2124,15 @@ label {
     height: auto;
   }
 
+  .companion-presence {
+    position: static;
+    transform: none;
+    grid-area: portrait;
+    width: min(92vw, 58vh, 640px);
+    justify-self: center;
+    margin: 0 auto;
+  }
+
   .main-home .view-body {
     overflow-y: auto;
   }
@@ -2137,11 +2150,6 @@ label {
 
   .companion-editorial-right {
     padding-left: 0;
-  }
-
-  .companion-presence {
-    width: min(92vw, 58vh, 640px);
-    justify-self: center;
   }
 
   .companion-headline {
