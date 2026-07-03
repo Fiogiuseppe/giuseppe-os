@@ -295,7 +295,10 @@ export default function Home() {
         )}
       </main>
 
-      <footer className="footer">v0.1 foundation · next step: real AI + persistent memory</footer>
+      <footer className="footer">
+        <p>It&apos;s not software that tells you what to do.</p>
+        <p>It&apos;s software that remembers who you chose to become.</p>
+      </footer>
     </div>
   );
 }

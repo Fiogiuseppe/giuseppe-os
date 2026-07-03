@@ -16,7 +16,8 @@ test.describe('Giuseppe OS navigation', () => {
 
   test('loads the home page', async ({ page }) => {
     await expect(page.getByText('GIUSEPPE OS')).toBeVisible();
-    await expect(page.getByText('v0.1 foundation · next step: real AI + persistent memory')).toBeVisible();
+    await expect(page.getByText("It's not software that tells you what to do.")).toBeVisible();
+    await expect(page.getByText("It's software that remembers who you chose to become.")).toBeVisible();
   });
 
   test('shows all navigation buttons', async ({ page }) => {
