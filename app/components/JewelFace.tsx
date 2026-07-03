@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 const PORTRAIT_AWAKE = '/images/jewel-face.png';
-const PORTRAIT_REST = '/images/jewel-face-closed.png';
+const PORTRAIT_REST = '/images/jewel-face_closed.png';
 
 function portraitForHour(hour: number) {
   return hour >= 6 && hour < 20 ? PORTRAIT_AWAKE : PORTRAIT_REST;
