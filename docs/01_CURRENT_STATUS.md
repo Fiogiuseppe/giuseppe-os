@@ -1,7 +1,7 @@
 # Giuseppe OS — Current Status
 
 **Last updated:** July 2026  
-**Version:** 1.3.0  
+**Version:** 1.3.1  
 **Branch:** `main`  
 **Production:** https://giuseppe-os.vercel.app  
 
@@ -71,7 +71,7 @@ Memory update uses quality filtering — not every interaction is stored as a du
 
 | Suite | Count | Status |
 |-------|-------|--------|
-| Playwright e2e | 40 tests | Passing |
+| Playwright e2e | 46 tests | Passing |
 | TypeScript | `npm run typecheck` | Passing |
 | Build | `npm run build` | Passing |
 | Full quality gate | `npm run quality:check` | Passing |

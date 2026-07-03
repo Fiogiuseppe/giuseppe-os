@@ -191,8 +191,8 @@ a {
   display: grid;
   grid-template-columns: minmax(120px, 168px) minmax(0, 1fr);
   gap: 14px;
+  flex: 1;
   min-height: 0;
-  overflow: hidden;
   align-items: start;
 }
 
@@ -211,7 +211,6 @@ a {
   gap: 10px;
   min-height: 0;
   min-width: 0;
-  overflow: hidden;
 }
 
 /* Jewel face companion — eyes blink every 7s */
@@ -375,8 +374,8 @@ a {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex: 1;
   min-height: 0;
-  overflow: hidden;
 }
 
 .discover-finance {
@@ -497,10 +496,10 @@ a {
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  padding: 24px 40px 8px;
+  padding: 20px 40px 4px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   animation: content-enter 0.5s var(--ease);
 }
 
@@ -741,12 +740,20 @@ a {
 .view-body {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding-right: 2px;
+  padding-bottom: 12px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.view-body > * {
+  flex: 1;
+  min-height: 0;
 }
 
 .progressive-body {
@@ -758,7 +765,6 @@ a {
   flex-direction: column;
   gap: 8px;
   min-height: 0;
-  overflow: hidden;
 }
 
 .progressive-level {
@@ -878,7 +884,8 @@ a {
 }
 
 .progressive-result {
-  max-height: min(36vh, 280px);
+  max-height: none;
+  overflow-y: visible;
 }
 
 .brain-domains {
@@ -1052,9 +1059,8 @@ a {
 .ritual-flow {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   min-height: 0;
-  overflow: hidden;
 }
 
 .ritual-step {
@@ -1111,6 +1117,10 @@ a {
 .decision-room {
   border-left: 2px solid var(--fg);
   padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 8px;
 }
 
 .decision-room-core {
@@ -1136,7 +1146,6 @@ a {
   flex-direction: column;
   gap: 20px;
   min-height: 0;
-  overflow: hidden;
 }
 
 .discovery-insight {
@@ -1174,7 +1183,6 @@ a {
   flex-direction: column;
   gap: 10px;
   min-height: 0;
-  overflow: hidden;
 }
 
 .ecosystem-focus {
@@ -1248,9 +1256,8 @@ a {
   flex-direction: column;
   gap: 6px;
   min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
   padding-right: 4px;
+  padding-bottom: 16px;
 }
 
 .memory-palace-intro {
@@ -1698,8 +1705,7 @@ a {
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid var(--border-soft);
-  max-height: min(42vh, 360px);
-  overflow-y: auto;
+  overflow-y: visible;
   overscroll-behavior: contain;
 }
 
@@ -1820,12 +1826,12 @@ a {
 
 .footer {
   border-top: 1px solid var(--border-soft);
-  padding: 10px 40px;
+  padding: 6px 40px;
   font-family: var(--font-serif), Georgia, serif;
-  font-size: 11px;
+  font-size: 10px;
   font-style: italic;
   text-align: center;
-  line-height: 1.5;
+  line-height: 1.4;
   color: var(--muted);
   flex-shrink: 0;
 }
@@ -1901,19 +1907,63 @@ label {
     overflow: visible;
   }
 
+  .app-body {
+    overflow: visible;
+    flex: 1 1 auto;
+  }
+
   .topbar {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    height: auto;
-    padding: 12px 16px;
-    gap: 10px;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 12px;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .topbar-brand {
+    flex-shrink: 0;
+    max-width: 42%;
+  }
+
+  .brand-sub {
+    display: none;
   }
 
   .topnav {
-    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+    flex-wrap: nowrap;
     justify-content: flex-start;
-    order: 3;
-    grid-column: 1 / -1;
+    gap: 2px;
+    order: unset;
+    grid-column: unset;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-left: 4px;
+  }
+
+  .topnav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .topnav button {
+    padding: 5px 9px;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  .brand-wordmark {
+    font-size: 14px;
+  }
+
+  .brand-mark {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
   }
 
   .topbar-status {
@@ -1943,12 +1993,30 @@ label {
     overflow: visible;
   }
 
-  .main,
+  .main {
+    overflow: visible;
+    flex: 1 1 auto;
+    min-height: auto;
+    padding: 14px 18px 20px;
+  }
+
   .home-shell,
   .view-body,
   .dashboard-grid {
     overflow: visible;
     max-height: none;
+    flex: 1 1 auto;
+    min-height: auto;
+  }
+
+  .view-body > * {
+    flex: 1 1 auto;
+    min-height: auto;
+  }
+
+  .footer {
+    padding: 8px 16px;
+    font-size: 9px;
   }
 
   .dashboard-grid,
@@ -1985,10 +2053,85 @@ label {
 
 @media (max-width: 900px) {
   .main {
-    padding: 16px 20px;
+    padding: 12px 16px 24px;
   }
 
   .view-title {
-    font-size: 26px;
+    font-size: 24px;
+    line-height: 1.05;
+  }
+
+  .companion-greeting {
+    font-size: 13px;
+    margin-top: 6px;
+  }
+
+  .page-header {
+    margin-bottom: 4px;
+  }
+
+  .daily-companion {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .jewel-face {
+    max-width: 72px;
+  }
+
+  .decision-room {
+    padding-left: 12px;
+    gap: 16px;
+    border-left-width: 1px;
+  }
+
+  .decision-room-core {
+    padding: 16px 14px;
+  }
+
+  .decision-room-question {
+    font-size: 20px !important;
+  }
+
+  .ritual-flow {
+    gap: 14px;
+  }
+
+  .ritual-step {
+    gap: 12px;
+  }
+
+  .ritual-content {
+    padding-bottom: 14px;
+  }
+
+  .textarea {
+    min-height: 100px;
+    height: auto;
+  }
+
+  .input,
+  .textarea {
+    margin: 8px 0 12px;
+  }
+
+  .primary,
+  .primary-wide {
+    min-height: 44px;
+    padding: 12px 18px;
+  }
+
+  .disclosure-trigger {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .memory-palace {
+    padding-bottom: 24px;
+  }
+
+  .footer {
+    display: none;
   }
 }

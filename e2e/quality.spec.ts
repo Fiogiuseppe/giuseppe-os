@@ -57,6 +57,7 @@ test.describe('Giuseppe OS quality loop', () => {
   });
 
   test('footer manifesto stays visible across navigation', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
     const nav = page.getByRole('navigation');
 
     await expectFooterManifesto(page);
@@ -191,7 +192,6 @@ test.describe('Giuseppe OS quality loop — responsiveness', () => {
     for (const { label, heading } of MAIN_SECTIONS) {
       await nav.getByRole('button', { name: label, exact: true }).click();
       await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
-      await expectFooterManifesto(page);
     }
   });
 });
