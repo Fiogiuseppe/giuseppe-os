@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 
 const NAV_VIEWS = [
   { label: 'Board', heading: /PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA/ },
+  { label: 'Awareness', heading: /I NOTICED SOMETHING/ },
   { label: 'Today', heading: /UN PASSO ALLA VOLTA VERSO LA LIBERTÀ/ },
   { label: 'Potential', heading: /TODAY'S OPPORTUNITY/ },
   { label: 'Projects', heading: /IL SISTEMA GIUSEPPE/ },

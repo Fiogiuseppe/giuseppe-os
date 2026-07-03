@@ -9,11 +9,13 @@ import {
   type DecisionResult
 } from '../engine/decisionEngine';
 import { runPotentialEngine } from '../engine/potentialEngine';
+import { runAwarenessEngine } from '../engine/awarenessEngine';
 
-type View = 'board' | 'today' | 'projects' | 'finance' | 'brain' | 'potential';
+type View = 'board' | 'awareness' | 'today' | 'projects' | 'finance' | 'brain' | 'potential';
 
 const NAV: { id: View; label: string }[] = [
   { id: 'board', label: 'Board' },
+  { id: 'awareness', label: 'Awareness' },
   { id: 'today', label: 'Today' },
   { id: 'potential', label: 'Potential' },
   { id: 'projects', label: 'Projects' },
@@ -27,6 +29,7 @@ export default function Home() {
   const [reason, setReason] = useState('');
   const [result, setResult] = useState<DecisionResult | null>(null);
   const potential = useMemo(() => runPotentialEngine(), []);
+  const awareness = useMemo(() => runAwarenessEngine(), []);
   const today = potential.todaysOpportunity;
 
   return (
@@ -65,6 +68,39 @@ export default function Home() {
               <div className="card"><div className="kicker">NEXT MOVE</div><h2>Pubblica un pensiero vero.</h2><p>Reputazione prima di perfezione.</p></div>
               <div className="card"><div className="kicker">CFO</div><h2>Automatizza investimenti.</h2><p>Compra libertà, non status.</p></div>
               <div className="card"><div className="kicker">STRATEGIST</div><h2>Congela una nuova idea.</h2><p>Il rischio è dispersione.</p></div>
+            </section>
+          </>
+        )}
+
+        {view === 'awareness' && (
+          <>
+            <section className="hero">
+              <div>
+                <div className="kicker">AWARENESS</div>
+                <div className="h1">I NOTICED SOMETHING.</div>
+              </div>
+              <div className="card">
+                <div className="kicker">INSIGHT</div>
+                <h2>{awareness.insight}</h2>
+                <p>{awareness.whyItMatters}</p>
+              </div>
+            </section>
+
+            <section className="decision">
+              <div className="card">
+                <div className="kicker">EVIDENCE FROM MEMORY</div>
+                <ul>{awareness.evidence.map(item => <li key={item}>{item}</li>)}</ul>
+                <div className="kicker">RISK IF IGNORED</div>
+                <p>{awareness.riskIfIgnored}</p>
+              </div>
+              <div className="card">
+                <div className="kicker">REFLECT</div>
+                <p>{awareness.reflectionQuestion}</p>
+                <div className="kicker">RECOMMENDED ACTION</div>
+                <p>{awareness.recommendedAction}</p>
+                <div className="kicker">CONFIDENCE</div>
+                <div className="potential-score">{awareness.confidenceScore}</div>
+              </div>
             </section>
           </>
         )}
