@@ -14,15 +14,73 @@ import { runAwarenessEngine } from '../engine/awarenessEngine';
 
 type View = 'home' | 'board' | 'today' | 'projects' | 'finance' | 'awareness' | 'brain';
 
-const NAV: { id: View; label: string }[] = [
-  { id: 'home', label: 'Home' },
-  { id: 'board', label: 'Board' },
-  { id: 'today', label: 'Today' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'finance', label: 'Finance' },
-  { id: 'awareness', label: 'Awareness' },
-  { id: 'brain', label: 'Brain' }
+const NAV: { id: View; label: string; index: string }[] = [
+  { id: 'home', label: 'Home', index: '01' },
+  { id: 'board', label: 'Board', index: '02' },
+  { id: 'today', label: 'Today', index: '03' },
+  { id: 'projects', label: 'Projects', index: '04' },
+  { id: 'finance', label: 'Finance', index: '05' },
+  { id: 'awareness', label: 'Awareness', index: '06' },
+  { id: 'brain', label: 'Brain', index: '07' }
 ];
+
+const VIEW_INDEX: Record<View, string> = {
+  home: '01',
+  board: '02',
+  today: '03',
+  projects: '04',
+  finance: '05',
+  awareness: '06',
+  brain: '07'
+};
+
+const AMBIENT_WORDS = [
+  'libertà',
+  'legacy',
+  'north star',
+  'ritual',
+  'awareness',
+  'memory',
+  'board',
+  'create',
+  'freedom',
+  'manifesto',
+  'focus',
+  'decision',
+  'potential',
+  'mission',
+  'values',
+  'patterns',
+  'clarity',
+  'concentration',
+  'reputation',
+  'impact',
+  'poetry',
+  'system',
+  'becoming',
+  'courage'
+];
+
+function AmbientField() {
+  return (
+    <div className="ambient-field" aria-hidden="true">
+      {AMBIENT_WORDS.map((word, i) => (
+        <span
+          key={word}
+          className="ambient-word"
+          style={{
+            ['--x' as string]: `${(i * 17 + 5) % 88}%`,
+            ['--y' as string]: `${(i * 23 + 8) % 82}%`,
+            ['--delay' as string]: `${(i % 8) * 0.7}s`,
+            ['--duration' as string]: `${14 + (i % 6) * 2}s`
+          }}
+        >
+          {word}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 const VIEW_HEADINGS: Record<View, string> = {
   home: 'GIUSEPPE OS',
@@ -44,14 +102,14 @@ const PROJECT_PROGRESS: Record<string, number> = {
 };
 
 function StrategicCard({
-  icon,
+  sectionIndex,
   title,
   description,
   linkLabel,
   onNavigate,
   badge
 }: {
-  icon: string;
+  sectionIndex: string;
   title: string;
   description: string;
   linkLabel: string;
@@ -61,7 +119,7 @@ function StrategicCard({
   return (
     <div className="card strategic-card">
       <div className="strategic-top">
-        <div className="strategic-icon">{icon}</div>
+        <span className="section-index">{sectionIndex}</span>
         {badge && <span className="badge-new">{badge}</span>}
       </div>
       <h3>{title}</h3>
@@ -75,8 +133,8 @@ function FinancePrivacyCard({ onViewAll }: { onViewAll: () => void }) {
   return (
     <div className="card">
       <div className="card-head">
-        <h3>Financial Overview</h3>
-        <button type="button" className="card-link" onClick={onViewAll}>View all →</button>
+        <h3><span className="section-index">09</span> Financial Overview</h3>
+        <button type="button" className="card-link" onClick={onViewAll}>View all</button>
       </div>
       <div className="finance-privacy">
         <div className="finance-list">
@@ -104,8 +162,8 @@ function ActiveProjectsCard({ onViewAll }: { onViewAll: () => void }) {
   return (
     <div className="card span-6 card-scroll">
       <div className="card-head">
-        <h3>Active Projects</h3>
-        <button type="button" className="card-link" onClick={onViewAll}>View all →</button>
+        <h3><span className="section-index">08</span> Active Projects</h3>
+        <button type="button" className="card-link" onClick={onViewAll}>View all</button>
       </div>
       {rows.map(([name, project]) => (
         <div className="project-row" key={name}>
@@ -267,16 +325,17 @@ export default function Home() {
     <div className="app">
       <aside className="sidebar">
         <div className="sidebar-brand">
-          <div className="sidebar-star">✦</div>
+          <span className="brand-index">Personal OS</span>
           <div className="sidebar-logo">Giuseppe OS</div>
         </div>
         <nav className="sidebar-nav" aria-label="Main navigation">
-          {NAV.map(({ id, label }) => (
+          {NAV.map(({ id, label, index }) => (
             <button
               key={id}
               className={view === id ? 'active' : undefined}
               onClick={() => setView(id)}
             >
+              <span className="nav-index" aria-hidden="true">{index}</span>
               <span>{label}</span>
               {id === 'awareness' && <span className="nav-badge" aria-hidden="true">1</span>}
             </button>
@@ -289,13 +348,15 @@ export default function Home() {
       </aside>
 
       <div className="content">
+        <AmbientField />
         <main className={`main ${view === 'home' ? 'main-home' : ''}`} role="main">
           {view === 'home' && (
             <div className="home-shell">
               <div className="home-header-row">
                 <div>
+                  <span className="section-index">00</span>
                   <h1 className="home-greeting">Good morning, Giuseppe.</h1>
-                  <p className="view-subtitle">Here is your operating system for becoming who you chose to become.</p>
+                  <p className="view-subtitle">Operating system for becoming who you chose to become.</p>
                   <div className="view-title">GIUSEPPE OS</div>
                 </div>
                 <div className="status-pill"><span className="status-dot" /> System Online</div>
@@ -304,37 +365,37 @@ export default function Home() {
               <div className="dashboard-grid">
                 <div className="span-3">
                   <StrategicCard
-                    icon="★"
+                    sectionIndex="02"
                     title="North Star"
                     description="Create impact and freedom. Build a legacy that matters."
-                    linkLabel="View North Star →"
+                    linkLabel="View North Star"
                     onNavigate={() => setView('board')}
                   />
                 </div>
                 <div className="span-3">
                   <StrategicCard
-                    icon="◎"
+                    sectionIndex="03"
                     title="Mission 2036"
                     description={brain.mission_2036}
-                    linkLabel="View Mission →"
+                    linkLabel="View Mission"
                     onNavigate={() => setView('board')}
                   />
                 </div>
                 <div className="span-3">
                   <StrategicCard
-                    icon="☰"
+                    sectionIndex="04"
                     title="Today's Focus"
                     description={today.title}
-                    linkLabel="View Priorities →"
+                    linkLabel="View Priorities"
                     onNavigate={() => setView('today')}
                   />
                 </div>
                 <div className="span-3">
                   <StrategicCard
-                    icon="◉"
+                    sectionIndex="05"
                     title="Awareness"
                     description="I noticed something you should see."
-                    linkLabel="Open Awareness →"
+                    linkLabel="Open Awareness"
                     onNavigate={() => setView('awareness')}
                     badge="New"
                   />
@@ -351,20 +412,20 @@ export default function Home() {
                     <div className="kicker">DAILY RITUAL</div>
                     <div className="ritual-ring"><span>75%</span></div>
                     <p>You completed 3 of 4 essential rituals today.</p>
-                    <button type="button" className="card-link" onClick={() => setView('today')}>Open Daily Ritual →</button>
+                    <button type="button" className="card-link" onClick={() => setView('today')}>Open Daily Ritual</button>
                   </div>
                   <div className="card card-glow">
                     <div className="kicker">DECISION ENGINE</div>
                     <h3>Ask your 6 advisors.</h3>
                     <p>Get clarity on any decision.</p>
                     <button type="button" className="primary primary-wide" onClick={() => setView('today')}>
-                      Ask a Question →
+                      Ask a Question
                     </button>
                   </div>
                 </div>
 
                 <div className="card insight-banner span-12">
-                  <div className="insight-icon">💡</div>
+                  <div className="insight-icon">INSIGHT</div>
                   <p>{awareness.insight}</p>
                 </div>
               </div>
@@ -373,7 +434,7 @@ export default function Home() {
 
           {view !== 'home' && (
             <header className="page-header">
-              <div className="kicker">{view.toUpperCase()}</div>
+              <div className="kicker">{VIEW_INDEX[view]} {view.toUpperCase()}</div>
               <div className="view-title">{VIEW_HEADINGS[view]}</div>
             </header>
           )}
