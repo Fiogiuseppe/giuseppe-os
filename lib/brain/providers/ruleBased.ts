@@ -1,5 +1,7 @@
 import { runDecisionEngine } from '../../../engine/decisionEngine';
 import { runAwarenessEngine } from '../../../engine/awarenessEngine';
+import { runPotentialEngine } from '../../../engine/potentialEngine';
+import { runLearningEngine } from '../engines/learningEngine';
 import type { AICompletionRequest, AICompletionResponse, AIProvider } from './types';
 
 function formatDecisionResult(result: ReturnType<typeof runDecisionEngine>): string {
@@ -45,10 +47,11 @@ export function createRuleBasedProvider(): AIProvider {
         };
       }
 
-      if (intent === 'reflect') {
-        const awareness = runAwarenessEngine();
+      if (intent === 'awareness' || intent === 'reflect') {
+        const awareness = runAwarenessEngine({ proactive: true });
         return {
           content: [
+            awareness.headline,
             awareness.insight,
             '',
             `Perché conta: ${awareness.whyItMatters}`,
@@ -56,6 +59,34 @@ export function createRuleBasedProvider(): AIProvider {
             `Prossimo passo: ${awareness.recommendedAction}`
           ].join('\n'),
           model: 'giuseppe-awareness-engine'
+        };
+      }
+
+      if (intent === 'potential') {
+        const potential = runPotentialEngine();
+        const today = potential.todaysOpportunity;
+        return {
+          content: [
+            `Opportunity: ${today.title}`,
+            `Reason: ${today.reason}`,
+            `First action: ${today.firstAction}`,
+            `Impact: ${today.estimatedImpact}`,
+            `Mission alignment: ${today.missionAlignment}`,
+            `Confidence: ${today.confidenceScore}`
+          ].join('\n'),
+          model: 'giuseppe-potential-engine'
+        };
+      }
+
+      if (intent === 'learn') {
+        const learning = runLearningEngine();
+        return {
+          content: [
+            `Patterns: ${learning.patterns.join('; ')}`,
+            `Lessons: ${learning.lessons.map(item => item.lesson).join('; ') || 'none'}`,
+            `Growth: ${learning.growthOpportunities.map(item => item.title).join('; ')}`
+          ].join('\n'),
+          model: 'giuseppe-learning-engine'
         };
       }
 

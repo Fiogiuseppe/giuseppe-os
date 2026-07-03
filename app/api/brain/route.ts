@@ -1,9 +1,19 @@
 import { mapBrainError, runExecutiveBrain } from '../../../lib/brain/executiveBrain';
 import type { BrainIntent, BrainRequest } from '../../../lib/brain/types';
 
+const INTENTS: BrainIntent[] = [
+  'auto',
+  'query',
+  'decide',
+  'reflect',
+  'awareness',
+  'potential',
+  'learn'
+];
+
 function parseIntent(value: unknown): BrainIntent | null {
-  if (value === 'query' || value === 'decide' || value === 'reflect') {
-    return value;
+  if (typeof value === 'string' && INTENTS.includes(value as BrainIntent)) {
+    return value as BrainIntent;
   }
   return null;
 }
@@ -11,7 +21,7 @@ function parseIntent(value: unknown): BrainIntent | null {
 function parseRequest(body: Record<string, unknown>): BrainRequest {
   const intent = parseIntent(body.intent);
   if (!intent) {
-    throw new Error('Invalid intent. Use query, decide, or reflect.');
+    throw new Error('Invalid intent.');
   }
 
   return {
@@ -38,6 +48,15 @@ export async function GET() {
   return Response.json({
     status: 'ok',
     service: 'giuseppe-brain',
-    intents: ['query', 'decide', 'reflect']
+    version: '1.0-intelligence-foundation',
+    intents: INTENTS.filter(intent => intent !== 'auto'),
+    architecture: [
+      'executive-brain',
+      'context-builder',
+      'ai-provider',
+      'memory-update',
+      'learning-engine',
+      'reality-layer'
+    ]
   });
 }

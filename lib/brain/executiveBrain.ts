@@ -1,13 +1,19 @@
 import { buildContext } from './context/buildContext';
+import { detectIntent, detectTopics } from './intent/detectIntent';
+import { routeEngines } from './intent/routeEngines';
+import { runEnginePipeline } from './engines/pipeline';
 import { loadBrain, loadWorkingMemory } from './memory/store';
 import { applyMemoryUpdate, estimateConfidence, extractResponseNextAction } from './memory/update';
+import { evaluateMissionAlignment } from './missionGate';
 import { resolveAIProvider } from './providers';
 import { ProviderConfigurationError, ProviderRequestError } from './providers/types';
+import { fetchRealityContext } from '../reality';
 import type { BrainRequest, BrainResponse } from './types';
 
 function validateRequest(request: BrainRequest): void {
-  if (!request.intent || !['query', 'decide', 'reflect'].includes(request.intent)) {
-    throw new Error('Invalid intent. Use query, decide, or reflect.');
+  const intents = ['auto', 'query', 'decide', 'reflect', 'awareness', 'potential', 'learn'];
+  if (!request.intent || !intents.includes(request.intent)) {
+    throw new Error('Invalid intent.');
   }
 
   const hasMessage = Boolean(request.message?.trim());
@@ -17,19 +23,86 @@ function validateRequest(request: BrainRequest): void {
     throw new Error('Decision intent requires message or decision.');
   }
 
-  if (request.intent !== 'decide' && !hasMessage) {
+  if (!['auto', 'decide', 'awareness', 'potential', 'learn'].includes(request.intent) && !hasMessage) {
     throw new Error('Message is required.');
   }
+}
+
+function buildHeadline(intent: BrainRequest['intent'], outputs: Awaited<ReturnType<typeof runEnginePipeline>>['outputs']): string | undefined {
+  if (intent === 'awareness' && outputs.awareness) {
+    return outputs.awareness.headline;
+  }
+  return undefined;
+}
+
+function composeAnswer(intent: BrainRequest['intent'], providerAnswer: string, outputs: Awaited<ReturnType<typeof runEnginePipeline>>['outputs']): string {
+  if (intent === 'awareness' && outputs.awareness) {
+    return [
+      outputs.awareness.headline,
+      outputs.awareness.insight,
+      '',
+      outputs.awareness.whyItMatters,
+      '',
+      `Recommended action: ${outputs.awareness.recommendedAction}`,
+      '',
+      providerAnswer
+    ].join('\n');
+  }
+
+  if (intent === 'potential' && outputs.opportunity) {
+    return [
+      `Opportunity: ${outputs.opportunity.title}`,
+      `Reason: ${outputs.opportunity.reason}`,
+      `First action: ${outputs.opportunity.firstAction}`,
+      `Impact: ${outputs.opportunity.estimatedImpact}`,
+      `Mission alignment: ${outputs.opportunity.missionAlignment}`,
+      `Confidence: ${outputs.opportunity.confidenceScore}`,
+      '',
+      providerAnswer
+    ].join('\n');
+  }
+
+  if (intent === 'learn' && outputs.learning) {
+    return [
+      'Learning report',
+      `Patterns: ${outputs.learning.patterns.join('; ')}`,
+      `Lessons: ${outputs.learning.lessons.map(item => item.lesson).join('; ') || 'none'}`,
+      '',
+      providerAnswer
+    ].join('\n');
+  }
+
+  return providerAnswer;
 }
 
 export async function runExecutiveBrain(request: BrainRequest): Promise<BrainResponse> {
   validateRequest(request);
 
+  const resolvedIntent = detectIntent(request);
+  const normalizedRequest: BrainRequest = { ...request, intent: resolvedIntent };
+
   const brain = await loadBrain();
   const workingMemory = await loadWorkingMemory();
-  const context = buildContext(request, brain, workingMemory);
-  const provider = resolveAIProvider();
+  const topics = detectTopics(
+    [normalizedRequest.message, normalizedRequest.decision, normalizedRequest.reason].filter(Boolean).join(' ')
+  );
 
+  const plan = routeEngines(resolvedIntent, topics);
+  const { outputs, engineContext } = await runEnginePipeline(normalizedRequest, plan, brain);
+
+  const reality = await fetchRealityContext(normalizedRequest.message);
+  const realityContext = reality.facts.length
+    ? reality.facts.map(fact => `${fact.label}: ${fact.value}`).join('\n')
+    : 'No live reality connectors active yet.';
+
+  const context = buildContext(
+    normalizedRequest,
+    brain,
+    workingMemory,
+    `${engineContext}\n\nREALITY LAYER\n${realityContext}`
+  );
+
+  const provider = resolveAIProvider();
   const completion = await provider.complete({
     system: context.systemPrompt,
     messages: [{ role: 'user', content: context.userPrompt }],
@@ -38,21 +111,40 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
     temperature: 0.4
   });
 
+  const answer = composeAnswer(resolvedIntent, completion.content, outputs);
+  const missionAligned = evaluateMissionAlignment(normalizedRequest, answer);
+
   const memoryResult = await applyMemoryUpdate({
-    request,
+    request: normalizedRequest,
     context,
-    answer: completion.content,
+    answer,
     workingMemory
   });
 
   return {
-    intent: request.intent,
-    answer: completion.content,
-    nextAction: extractResponseNextAction(completion.content),
+    intent: resolvedIntent,
+    answer,
+    headline: buildHeadline(resolvedIntent, outputs),
+    nextAction: extractResponseNextAction(answer) ?? outputs.awareness?.recommendedAction ?? outputs.opportunity?.firstAction,
     confidence: estimateConfidence(context),
-    sources: context.sources,
+    sources: [
+      ...context.sources,
+      ...reality.facts.map(fact => ({
+        field: fact.id,
+        sourceType: 'reality' as const,
+        reliability: fact.reliability,
+        observedAt: fact.observedAt
+      }))
+    ],
+    slicesUsed: context.slices.map(slice => slice.id),
+    engines: outputs.enginesUsed,
     memoryUpdated: memoryResult.updated,
-    timestamp: new Date().toISOString()
+    memoryDiscarded: memoryResult.discarded,
+    missionAligned,
+    timestamp: new Date().toISOString(),
+    awareness: outputs.awareness,
+    opportunity: outputs.opportunity,
+    learning: outputs.learning
   };
 }
 

@@ -8,6 +8,7 @@ export type DecisionRecord = {
 };
 
 export type AwarenessInsight = {
+  headline: string;
   insight: string;
   whyItMatters: string;
   evidence: string[];
@@ -15,6 +16,8 @@ export type AwarenessInsight = {
   reflectionQuestion: string;
   recommendedAction: string;
   confidenceScore: number;
+  signalType: 'pattern' | 'contradiction' | 'opportunity' | 'risk';
+  proactive: boolean;
 };
 
 type BrainProject = {
@@ -48,6 +51,7 @@ const memory = brain as GiuseppeBrain;
 
 type InsightCandidate = {
   id: string;
+  signalType: 'pattern' | 'contradiction' | 'opportunity' | 'risk';
   insight: string;
   whyItMatters: string;
   evidence: string[];
@@ -107,6 +111,7 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
   return [
     {
       id: 'dispersion',
+      signalType: 'pattern',
       insight: 'Stai portando troppi fronti attivi contemporaneamente.',
       whyItMatters:
         `La North Star chiede libertà per creare ciò che conta — ma ${activeCount} progetti attivi competono per la stessa attenzione. La missione 2036 non si raggiunge con più idee, ma con più concentrazione.`,
@@ -130,6 +135,7 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
     },
     {
       id: 'liquidity-discipline',
+      signalType: 'contradiction',
       insight: 'Hai liquidità forte, ma la disciplina automatica non è ancora il centro del sistema.',
       whyItMatters:
         `${liquidityPhrase()}, ogni mese senza automazione è un mese in cui comprare libertà dipende dalla forza di volontà — non dal sistema.`,
@@ -153,6 +159,7 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
     },
     {
       id: 'sacred-creative-stall',
+      signalType: 'risk',
       insight: 'Il lavoro sacro creativo sta aspettando mentre i fronti attivi prendono tutta l\'energia.',
       whyItMatters:
         `La North Star parla di creare ciò che conta. ${slowActive.join(' e ')} sono capitale creativo sacro — ma restano in slow-active mentre la dispersione è il rischio principale.`,
@@ -176,6 +183,7 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
     },
     {
       id: 'reputation-gap',
+      signalType: 'opportunity',
       insight: 'Vuoi visibilità, ma la strategia giusta è reputazione stimata — e la pubblicazione è in ritardo.',
       whyItMatters:
         `La missione 2036 richiede opzionalità e riconoscimento tra professionisti, non fama generica. "${memory.priorities[0]}" è la priorità #1 — ma resta un impegno, non ancora un'abitudine visibile.`,
@@ -199,6 +207,7 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
     },
     {
       id: 'lego-accelerator',
+      signalType: 'opportunity',
       insight: 'LEGO è il motore principale — ma ownership e visibilità non stanno ancora lavorando al massimo per libertà 2036.',
       whyItMatters:
         `LEGO non è la destinazione: è l'acceleratore. "${memory.career_goals[0]}" e "${memory.career_goals[2]}" devono convertire reddito e reputazione in opzionalità futura.`,
@@ -227,18 +236,21 @@ function confidenceFromSignals(signals: number, weight: number): number {
   return clamp(Math.round(base), 55, 92);
 }
 
-export function runAwarenessEngine(input: { decisionHistory?: DecisionRecord[] } = {}): AwarenessInsight {
+export function runAwarenessEngine(input: { decisionHistory?: DecisionRecord[]; proactive?: boolean } = {}): AwarenessInsight {
   const history = input.decisionHistory ?? [];
   const ranked = buildCandidates(history).sort((a, b) => b.weight - a.weight);
   const top = ranked[0];
 
   return {
+    headline: 'I noticed something.',
     insight: top.insight,
     whyItMatters: top.whyItMatters,
     evidence: top.evidence,
     riskIfIgnored: top.riskIfIgnored,
     reflectionQuestion: top.reflectionQuestion,
     recommendedAction: top.recommendedAction,
-    confidenceScore: confidenceFromSignals(top.confidenceSignals, top.weight)
+    confidenceScore: confidenceFromSignals(top.confidenceSignals, top.weight),
+    signalType: top.signalType,
+    proactive: input.proactive ?? false
   };
 }

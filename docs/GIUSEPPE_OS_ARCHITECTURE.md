@@ -1,8 +1,8 @@
 # Giuseppe OS — System Architecture
 
-**Version:** 0.3 (Architecture Phase)  
+**Version:** 1.0 (Intelligence Foundation)  
 **Status:** Single Source of Truth  
-**Last updated:** 2026  
+**Last updated:** July 2026  
 **Owner:** Giuseppe  
 
 This document defines the intelligence, memory, engines, board, flows, and permanent rules of Giuseppe OS. It is the authoritative reference for all future design and implementation. No feature should be built unless it can be traced back to a section of this document.
@@ -226,6 +226,35 @@ Giuseppe OS is not a single engine. It is a **constellation of engines** orchest
                     │   ENGINE    │
                     └─────────────┘
 ```
+
+## 3.0 Executive Brain (v1.0)
+
+**Responsibility:** Central orchestrator. Nothing talks directly to the AI.
+
+**Pipeline:**
+```
+Request → Intent → Engine Routing → Reality Layer → Context Builder → Mission Gate → AI Provider → Memory Update → Response
+```
+
+**Location:** `lib/brain/executiveBrain.ts` · **API:** `POST /api/brain`
+
+**Owns:**
+- Intent detection (`auto` resolves to query/decide/reflect/awareness/potential/learn)
+- Engine routing (decision, awareness, potential, learning)
+- Context assembly via relevance slices (not full memory dump)
+- AI provider invocation (Claude Sonnet default; swappable)
+- Mission alignment gate before response
+- Memory update quality filter
+
+**Does NOT own:**
+- Counsellor personas (Board Engine / Decision Engine)
+- Slice content definitions (Context Builder)
+- Provider HTTP details (AI Provider Layer)
+- Live connectors (Reality Layer — architecture only in v1.0)
+
+**Current state (v1.0):** Implemented. Dashboard UI still calls engines client-side; migration to Brain API is v1.1.
+
+See `docs/INTELLIGENCE_FOUNDATION.md` for full module map.
 
 ## 3.1 Memory Engine
 

@@ -1,80 +1,56 @@
 import type { BrainRequest, ContextPacket, ContextSource, GiuseppeBrain, WorkingMemory } from '../types';
-import { publicFinanceSnapshot } from '../memory/publicFinance';
+import { detectTopics } from '../intent/detectIntent';
+import { selectSlices } from './slices';
 
 function nowIso(): string {
   return new Date().toISOString();
 }
 
-function activeProjects(brain: GiuseppeBrain): string[] {
-  return Object.entries(brain.projects)
-    .filter(([, project]) => project.status === 'active' || project.status === 'slow-active')
-    .map(([name, project]) => `${name} (${project.role})`);
-}
-
-function buildSources(brain: GiuseppeBrain): ContextSource[] {
+function buildSources(slices: ReturnType<typeof selectSlices>): ContextSource[] {
   const observedAt = nowIso();
-  return [
-    { field: 'north_star', sourceType: 'identity', reliability: 'high', observedAt },
-    { field: 'mission_2036', sourceType: 'identity', reliability: 'high', observedAt },
-    { field: 'manifesto', sourceType: 'identity', reliability: 'high', observedAt },
-    { field: 'values', sourceType: 'identity', reliability: 'high', observedAt },
-    { field: 'projects', sourceType: 'memory', reliability: 'high', observedAt },
-    { field: 'patterns', sourceType: 'memory', reliability: 'medium', observedAt },
-    { field: 'priorities', sourceType: 'memory', reliability: 'medium', observedAt },
-    { field: 'finance', sourceType: 'memory', reliability: 'medium', observedAt },
-    { field: 'rules', sourceType: 'memory', reliability: 'high', observedAt },
-    { field: 'skills', sourceType: 'memory', reliability: 'medium', observedAt }
-  ];
+  return slices.map(slice => ({
+    field: slice.id,
+    sourceType: slice.topic === 'identity' ? 'identity' : 'memory',
+    reliability: slice.topic === 'identity' ? 'high' : 'medium',
+    observedAt
+  }));
 }
 
-function buildSystemPrompt(brain: GiuseppeBrain, workingMemory: WorkingMemory): string {
-  const finance = publicFinanceSnapshot(brain);
+function buildSystemPrompt(slices: ReturnType<typeof selectSlices>, workingMemory: WorkingMemory): string {
   const recentSessions = workingMemory.sessions
     .slice(-3)
     .map(session => `- [${session.intent}] ${session.summary}`)
     .join('\n');
 
+  const sliceBlock = slices
+    .map(slice => `## ${slice.label}\n${slice.content}`)
+    .join('\n\n');
+
   return [
     'You are the Executive Brain of Giuseppe OS.',
-    'You help Giuseppe live his spiritual purpose inside practical reality.',
+    'You are NOT a chatbot. You are a personal intelligence operating system.',
+    'Before answering, ask: "Will this help Giuseppe become the person he chose to become?"',
     'Speak with calm intelligence. Be direct, warm, and timeless.',
-    'Never sound like a generic SaaS assistant or motivational chatbot.',
-    'Always ground answers in Giuseppe-specific memory when relevant.',
-    'End with one concrete next action when appropriate.',
+    'Never sound like generic SaaS, crypto UI, or motivational filler.',
+    'Use only the context slices below. Do not invent Giuseppe-specific facts.',
+    'Label inferences clearly. End with one concrete next action when appropriate.',
     '',
-    'IDENTITY',
-    `North Star: ${brain.north_star}`,
-    `Mission 2036: ${brain.mission_2036}`,
-    `Manifesto: ${brain.manifesto}`,
-    `Values: ${brain.values.join(', ')}`,
-    '',
-    'RULES',
-    brain.rules.map(rule => `- ${rule}`).join('\n'),
-    '',
-    'ACTIVE PROJECTS',
-    activeProjects(brain).map(project => `- ${project}`).join('\n'),
-    '',
-    'PRIORITIES',
-    brain.priorities.map(item => `- ${item}`).join('\n'),
-    '',
-    'PATTERNS',
-    brain.patterns.map(pattern => `- ${pattern}`).join('\n'),
-    '',
-    'FINANCE (privacy-safe snapshot)',
-    `Liquidity tier: ${finance.liquidityTier}`,
-    `Goals: ${finance.goals.join(', ')}`,
+    'RELEVANT MEMORY SLICES',
+    sliceBlock,
     '',
     'RECENT SESSIONS',
     recentSessions || '- none',
     '',
     'RESPONSE FORMAT',
-    'Write in clear prose. Use short paragraphs.',
-    'If you infer something not in memory, label it as inference.',
-    'Prefer Italian when Giuseppe writes in Italian.'
+    'Clear prose. Short paragraphs. Prefer Italian when Giuseppe writes in Italian.'
   ].join('\n');
 }
 
-function buildUserPrompt(request: BrainRequest): string {
+function buildUserPrompt(request: BrainRequest, engineContext?: string): string {
+  const engineBlock = engineContext
+    ? `\n\nENGINE SIGNALS (merge, do not repeat blindly):\n${engineContext}`
+    : '';
+
   if (request.intent === 'decide') {
     const decision = request.decision?.trim() || request.message.trim();
     const reason = request.reason?.trim() || '';
@@ -83,9 +59,9 @@ function buildUserPrompt(request: BrainRequest): string {
       `Decision: ${decision}`,
       reason ? `Reason: ${reason}` : 'Reason: not provided',
       '',
-      'Classify the decision, surface hidden needs and biases,',
-      'debate from multiple counsellor perspectives,',
-      'and return a better version plus one next action.'
+      'Classify, surface hidden needs and biases, debate from counsellor angles,',
+      'return a better version plus one next action.',
+      engineBlock
     ].join('\n');
   }
 
@@ -93,33 +69,60 @@ function buildUserPrompt(request: BrainRequest): string {
     return [
       'Giuseppe wants reflection grounded in memory and patterns.',
       request.message.trim(),
-      '',
-      'Name what matters, what might be drifting, and one disciplined next move.'
+      engineBlock
+    ].join('\n');
+  }
+
+  if (request.intent === 'awareness') {
+    return [
+      'Proactive awareness scan. Open with "I noticed something." energy.',
+      request.message.trim() || 'Scan memory for patterns, contradictions, opportunities, and risks.',
+      engineBlock
+    ].join('\n');
+  }
+
+  if (request.intent === 'potential') {
+    return [
+      'Surface the highest-alignment opportunity for Giuseppe right now.',
+      request.message.trim() || 'What should Giuseppe focus on today?',
+      engineBlock
+    ].join('\n');
+  }
+
+  if (request.intent === 'learn') {
+    return [
+      'Analyze memory for lessons, recurring mistakes, and growth opportunities.',
+      request.message.trim() || 'What is Giuseppe learning about himself?',
+      engineBlock
     ].join('\n');
   }
 
   return [
     'Giuseppe asked:',
     request.message.trim(),
-    '',
-    'Answer as his personal operating system — not as a dashboard.'
+    engineBlock
   ].join('\n');
 }
 
 export function buildContext(
   request: BrainRequest,
   brain: GiuseppeBrain,
-  workingMemory: WorkingMemory
+  workingMemory: WorkingMemory,
+  engineContext?: string
 ): ContextPacket {
-  const message = request.message?.trim() ?? '';
-  const lowContext = message.length === 0 && request.intent !== 'decide';
+  const message = [request.message, request.decision, request.reason].filter(Boolean).join(' ');
+  const topics = detectTopics(message);
+  const slices = selectSlices(brain, topics);
+  const lowContext = message.trim().length === 0 && request.intent !== 'decide';
 
   return {
     intent: request.intent,
     assembledAt: nowIso(),
-    systemPrompt: buildSystemPrompt(brain, workingMemory),
-    userPrompt: buildUserPrompt(request),
-    sources: buildSources(brain),
+    systemPrompt: buildSystemPrompt(slices, workingMemory),
+    userPrompt: buildUserPrompt(request, engineContext),
+    sources: buildSources(slices),
+    slices,
+    topics,
     lowContext,
     identity: {
       northStar: brain.north_star,
@@ -128,7 +131,9 @@ export function buildContext(
       values: brain.values
     },
     situational: {
-      activeProjects: activeProjects(brain),
+      activeProjects: Object.entries(brain.projects)
+        .filter(([, p]) => p.status === 'active' || p.status === 'slow-active')
+        .map(([name]) => name),
       priorities: brain.priorities,
       patterns: brain.patterns
     }

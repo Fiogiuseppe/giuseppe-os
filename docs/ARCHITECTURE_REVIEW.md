@@ -733,4 +733,23 @@ When the architecture doc is next revised, add:
 
 ---
 
-*This review is a snapshot before v1.0. The architecture document remains the single source of truth for intent. This review is the single source of truth for gap analysis and build priority.*
+---
+
+## v1.0 Update (July 2026)
+
+**Executive Brain + Context Builder are now implemented** at `lib/brain/executiveBrain.ts` and `lib/brain/context/`, exposed via `POST /api/brain`.
+
+| Gap (pre-v1.0) | Status (v1.0) |
+|----------------|---------------|
+| Executive Brain missing | **Implemented** — intent routing, engine pipeline, mission gate |
+| Context Builder missing | **Implemented** — relevance slices, no full memory dump |
+| AI provider coupling | **Resolved** — provider abstraction; Claude default |
+| Memory type distinction | **Partial** — quality-filtered records + long-term store |
+| UI calls engines directly | **Still open** — dashboard not yet wired to Brain API |
+| Supabase persistence | **Still open** — local JSON files |
+
+Full specification: `docs/INTELLIGENCE_FOUNDATION.md`.
+
+---
+
+*This review is a snapshot. Pre-v1.0 gap analysis remains below for historical context. For current architecture, see `docs/INTELLIGENCE_FOUNDATION.md` and `docs/GIUSEPPE_OS_ARCHITECTURE.md`.*

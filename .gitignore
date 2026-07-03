@@ -4,6 +4,8 @@ node_modules/
 out/
 .env
 .env.local
+memory/working_memory.test.json
+memory/long_term.test.json
 tsconfig.tsbuildinfo
 playwright-report/
 test-results/

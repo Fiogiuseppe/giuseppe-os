@@ -16,6 +16,7 @@ export type OpportunityDimensions = {
 
 export type Opportunity = {
   title: string;
+  reason: string;
   description: string;
   whyThisMatters: string;
   firstAction: string;
@@ -366,6 +367,7 @@ function buildCandidates(): Opportunity[] {
 
     return {
       title: template.title,
+      reason: template.whyThisMatters,
       description: template.description,
       whyThisMatters: template.whyThisMatters,
       firstAction: template.firstAction,

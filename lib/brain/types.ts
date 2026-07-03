@@ -1,8 +1,48 @@
-export type BrainIntent = 'query' | 'decide' | 'reflect';
+export type BrainIntent =
+  | 'auto'
+  | 'query'
+  | 'decide'
+  | 'reflect'
+  | 'awareness'
+  | 'potential'
+  | 'learn';
 
-export type SourceType = 'identity' | 'user' | 'memory' | 'inference' | 'session';
+export type SourceType =
+  | 'identity'
+  | 'user'
+  | 'memory'
+  | 'inference'
+  | 'session'
+  | 'reality'
+  | 'assumption';
 
-export type Reliability = 'high' | 'medium' | 'low';
+export type Reliability = 'high' | 'medium' | 'low' | 'stale';
+
+export type MemoryRecordType =
+  | 'identity'
+  | 'goals'
+  | 'project'
+  | 'lesson'
+  | 'decision'
+  | 'pattern'
+  | 'relationship'
+  | 'finance'
+  | 'preference'
+  | 'timeline';
+
+export type ContextTopic =
+  | 'identity'
+  | 'finance'
+  | 'freedom'
+  | 'travel'
+  | 'creative'
+  | 'reputation'
+  | 'projects'
+  | 'learning'
+  | 'relationships'
+  | 'patterns';
+
+export type AwarenessSignalType = 'pattern' | 'contradiction' | 'opportunity' | 'risk';
 
 export interface ContextSource {
   field: string;
@@ -46,9 +86,36 @@ export interface WorkingMemorySession {
   query: string;
 }
 
+export interface MemoryRecord {
+  id: string;
+  type: MemoryRecordType;
+  content: string;
+  createdAt: string;
+  confidence: number;
+  source: 'interaction' | 'learning' | 'user';
+}
+
 export interface WorkingMemory {
   sessions: WorkingMemorySession[];
   notes: string[];
+  records: MemoryRecord[];
+}
+
+export interface LongTermMemory {
+  decisions: Array<{
+    id: string;
+    decision: string;
+    reason: string;
+    category?: string;
+    timestamp: string;
+  }>;
+  lessons: Array<{
+    id: string;
+    lesson: string;
+    source: string;
+    timestamp: string;
+  }>;
+  patterns_detected: string[];
 }
 
 export interface BrainRequest {
@@ -58,12 +125,21 @@ export interface BrainRequest {
   reason?: string;
 }
 
+export interface ContextSlice {
+  id: string;
+  topic: ContextTopic;
+  label: string;
+  content: string;
+}
+
 export interface ContextPacket {
   intent: BrainIntent;
   assembledAt: string;
   systemPrompt: string;
   userPrompt: string;
   sources: ContextSource[];
+  slices: ContextSlice[];
+  topics: ContextTopic[];
   lowContext: boolean;
   identity: {
     northStar: string;
@@ -78,17 +154,62 @@ export interface ContextPacket {
   };
 }
 
+export interface LessonInsight {
+  lesson: string;
+  evidence: string[];
+  confidence: number;
+}
+
+export interface GrowthOpportunity {
+  title: string;
+  reason: string;
+  firstAction: string;
+}
+
+export interface LearningReport {
+  patterns: string[];
+  mistakes: string[];
+  evolvingPriorities: string[];
+  inconsistencies: string[];
+  abandonedProjects: string[];
+  lessons: LessonInsight[];
+  growthOpportunities: GrowthOpportunity[];
+  analyzedAt: string;
+}
+
+export interface EngineOutputs {
+  enginesUsed: string[];
+  awareness?: import('../../engine/awarenessEngine').AwarenessInsight;
+  opportunity?: import('../../engine/potentialEngine').Opportunity;
+  learning?: LearningReport;
+}
+
 export interface BrainResponse {
   intent: BrainIntent;
   answer: string;
+  headline?: string;
   nextAction?: string;
   confidence: number;
   sources: ContextSource[];
+  slicesUsed: string[];
+  engines: string[];
   memoryUpdated: boolean;
+  memoryDiscarded: boolean;
+  missionAligned: boolean;
   timestamp: string;
+  awareness?: import('../../engine/awarenessEngine').AwarenessInsight;
+  opportunity?: import('../../engine/potentialEngine').Opportunity;
+  learning?: LearningReport;
 }
 
 export interface MemoryUpdateResult {
   updated: boolean;
+  discarded: boolean;
   sessionId?: string;
+  recordsAdded: MemoryRecord[];
+}
+
+export interface EngineRoutePlan {
+  engines: Array<'decision' | 'awareness' | 'potential' | 'learning' | 'context' | 'memory' | 'reality'>;
+  topics: ContextTopic[];
 }

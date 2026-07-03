@@ -41,6 +41,16 @@ Every decision must be evaluated against:
 - Knowledge Capital
 - Freedom Capital
 
+## v1.0 Intelligence Foundation
+
+Giuseppe OS v1.0 introduces the **Executive Brain** — the central orchestrator. Nothing talks directly to the AI. Every request flows through:
+
+`Executive Brain → Context Builder → AI Provider → Memory Update → Response`
+
+The system asks before every response: *Will this help Giuseppe become the person he chose to become?*
+
+See `docs/INTELLIGENCE_FOUNDATION.md` for the full module map.
+
 ## Non-negotiable Principles
 
 1. Buy freedom, not status.
