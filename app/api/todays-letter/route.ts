@@ -1,3 +1,4 @@
+import { MAX_LETTER_WORDS } from '../../../lib/todays-letter/prompt';
 import { generateTodaysLetter, mapTodaysLetterError } from '../../../lib/todays-letter/generate';
 
 export async function POST() {
@@ -14,8 +15,10 @@ export async function GET() {
   return Response.json({
     status: 'ok',
     service: 'giuseppe-todays-letter',
-    version: '1.5.0-todays-letter',
+    version: '1.5.1-todays-letter',
     method: 'POST',
-    maxWords: 250
+    maxWords: MAX_LETTER_WORDS,
+    provider: 'anthropic',
+    cache: 'daily'
   });
 }

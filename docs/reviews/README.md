@@ -6,6 +6,7 @@ Visual design review packages for Giuseppe OS major releases.
 
 | Version | File | Date |
 |---------|------|------|
+| 1.5.1 | [`DESIGN_REVIEW_1.5.1.pdf`](DESIGN_REVIEW_1.5.1.pdf) | July 2026 — Today's Letter via Anthropic with daily cache |
 | 1.5.0 | [`DESIGN_REVIEW_1.5.0.pdf`](DESIGN_REVIEW_1.5.0.pdf) | July 2026 — Today's Letter intelligence on Today home |
 | 1.4.0 | [`DESIGN_REVIEW_1.4.0.pdf`](DESIGN_REVIEW_1.4.0.pdf) | July 2026 — AI v0.1 for Decisions via Executive Brain |
 | 1.3.2 | [`DESIGN_REVIEW_1.3.2.pdf`](DESIGN_REVIEW_1.3.2.pdf) | July 2026 — Editorial Today layout & time-aware portrait |

@@ -7,6 +7,8 @@ out/
 .env.local
 memory/working_memory.test.json
 memory/long_term.test.json
+memory/todays_letter_cache.json
+memory/todays_letter.test.json
 tsconfig.tsbuildinfo
 playwright-report/
 test-results/

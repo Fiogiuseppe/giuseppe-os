@@ -25,7 +25,9 @@ export function parseLetterSections(answer: string): Partial<TodaysLetterSection
   fields.observation = pick(/observation:\s*(.+)/i) ?? pick(/one important observation:\s*(.+)/i);
   fields.whyItMatters = pick(/why it matters(?: today)?:\s*(.+)/i);
   fields.recommendation =
-    pick(/recommendation:\s*(.+)/i) ?? pick(/one concrete recommendation:\s*(.+)/i);
+    pick(/recommendation:\s*(.+)/i) ??
+    pick(/one concrete action:\s*(.+)/i) ??
+    pick(/one concrete recommendation:\s*(.+)/i);
   fields.creativeSuggestion =
     pick(/creative suggestion:\s*(.+)/i) ?? pick(/one creative suggestion:\s*(.+)/i);
   fields.reflectionQuestion =

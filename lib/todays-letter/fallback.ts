@@ -1,5 +1,3 @@
-import { runPotentialEngine } from '../../engine/potentialEngine';
-import { runAwarenessEngine } from '../../engine/awarenessEngine';
 import type { TodaysLetterContext, TodaysLetterSections } from './types';
 
 function greetingForDayPart(dayPart: TodaysLetterContext['dayPart']): string {
@@ -15,19 +13,28 @@ function greetingForDayPart(dayPart: TodaysLetterContext['dayPart']): string {
   }
 }
 
+function missingNote(value: string | undefined, label: string): string {
+  return value?.trim() ? value : `Informazione mancante: ${label}.`;
+}
+
 export function buildFallbackLetter(context: TodaysLetterContext): TodaysLetterSections {
-  const potential = runPotentialEngine();
-  const awareness = runAwarenessEngine({ proactive: true });
-  const today = potential.todaysOpportunity;
-  const topPriority = context.priorities[0] ?? today.firstAction;
-  const topPattern = context.patterns[0] ?? awareness.insight;
+  const leadProject = context.activeProjects[0];
+  const topPriority = context.priorities[0];
 
   return {
     greeting: greetingForDayPart(context.dayPart),
-    observation: topPattern,
-    whyItMatters: `${today.whyThisMatters} Oggi conta per la North Star: ${context.northStar.toLowerCase()}`,
-    recommendation: topPriority,
-    creativeSuggestion: potential.creativeChallenge,
-    reflectionQuestion: awareness.reflectionQuestion
+    observation: topPriority
+      ? `La priorità in cima è: ${topPriority}.`
+      : 'Informazione mancante: nessuna priorità documentata.',
+    whyItMatters: context.northStar
+      ? `Conta perché serve la North Star: ${context.northStar}`
+      : 'Informazione mancante: North Star non documentata.',
+    recommendation: topPriority ?? 'Informazione mancante: nessuna azione concreta disponibile.',
+    creativeSuggestion: leadProject
+      ? `Dedica 30 minuti a ${leadProject.name}: ${leadProject.role}`
+      : 'Informazione mancante: nessun progetto attivo documentato.',
+    reflectionQuestion: context.mission
+      ? `Questa scelta mi avvicina alla Mission 2036: ${context.mission}?`
+      : missingNote(undefined, 'missione 2036')
   };
 }

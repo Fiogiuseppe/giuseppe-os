@@ -309,9 +309,21 @@ a {
   max-width: 100%;
 }
 
-.companion-letter-loading {
+.companion-letter-loading,
+.companion-greeting--loading {
   color: var(--muted);
   font-style: italic;
+  animation: companion-letter-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes companion-letter-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .companion-letter-error {

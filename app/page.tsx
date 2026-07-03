@@ -391,9 +391,6 @@ export default function Home() {
                     {!letterLoading && !letterError && todaysLetter && (
                       <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter.sections.observation}</p>
                     )}
-                    {!letterLoading && !letterError && !todaysLetter && (
-                      <p className="companion-panel-text companion-panel-text--sentence">{todayOpp.title}</p>
-                    )}
                   </section>
 
                   <section className="companion-panel">
@@ -403,53 +400,54 @@ export default function Home() {
                         …
                       </p>
                     )}
-                    {!letterLoading && todaysLetter && (
-                      <p className="companion-panel-text">{todaysLetter.sections.recommendation}</p>
+                    {!letterLoading && letterError && (
+                      <p className="companion-panel-text companion-panel-text--sentence companion-letter-error">
+                        —
+                      </p>
                     )}
-                    {!letterLoading && !todaysLetter && (
-                      <p className="companion-panel-text">{todayOpp.firstAction}</p>
+                    {!letterLoading && !letterError && todaysLetter && (
+                      <p className="companion-panel-text">{todaysLetter.sections.recommendation}</p>
                     )}
                   </section>
 
                   <div className="companion-editorial-extra">
-                  {!todayWhy && (
+                  {!todayWhy && todaysLetter && (
                     <DisclosureTrigger label="Why it matters" onClick={() => setTodayWhy(true)} />
                   )}
                   <DisclosurePanel open={todayWhy}>
                     <section className="companion-panel">
                       <div className="kicker">WHY IT MATTERS</div>
-                      <p className="companion-panel-text companion-panel-text--sentence">{todayOpp.whyThisMatters}</p>
+                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter?.sections.whyItMatters}</p>
                     </section>
                   </DisclosurePanel>
 
-                  {!todayCreative && (
+                  {!todayCreative && todaysLetter && (
                     <DisclosureTrigger label="Creative suggestion" onClick={() => setTodayCreative(true)} />
                   )}
                   <DisclosurePanel open={todayCreative}>
                     <section className="companion-panel">
                       <div className="kicker">CREATIVE SUGGESTION</div>
-                      <p className="companion-panel-text companion-panel-text--sentence">{potential.creativeChallenge}</p>
+                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter?.sections.creativeSuggestion}</p>
                     </section>
                   </DisclosurePanel>
 
-                  {!todayReflect && (
+                  {!todayReflect && todaysLetter && (
                     <DisclosureTrigger label="Reflection" onClick={() => setTodayReflect(true)} />
                   )}
                   <DisclosurePanel open={todayReflect}>
                     <section className="companion-panel">
                       <div className="kicker">REFLECTION</div>
-                      <p className="companion-panel-text companion-panel-text--sentence">{awareness.reflectionQuestion}</p>
+                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter?.sections.reflectionQuestion}</p>
                     </section>
                   </DisclosurePanel>
 
-                  {!todayOpportunity && (
+                  {!todayOpportunity && todaysLetter && (
                     <DisclosureTrigger label="Opportunity" onClick={() => setTodayOpportunity(true)} />
                   )}
                   <DisclosurePanel open={todayOpportunity}>
                     <section className="companion-panel">
                       <div className="kicker">OPPORTUNITY</div>
-                      <p className="companion-panel-text">{todayOpp.title}</p>
-                      <p className="companion-panel-text companion-panel-text--sentence">{todayOpp.description}</p>
+                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter?.sections.observation}</p>
                     </section>
                   </DisclosurePanel>
                   </div>
@@ -460,8 +458,12 @@ export default function Home() {
                 </div>
 
                 <div className="companion-editorial-right">
-                  <p className="companion-greeting">
-                    {todaysLetter?.sections.greeting ?? 'Good morning, Giuseppe.'}
+                  <p className={`companion-greeting${letterLoading ? ' companion-greeting--loading' : ''}`}>
+                    {letterLoading
+                      ? '…'
+                      : letterError
+                        ? ''
+                        : todaysLetter?.sections.greeting ?? ''}
                   </p>
                 </div>
               </div>

@@ -1,9 +1,10 @@
-import { resolveAIProvider } from '../brain/providers';
+import { createClaudeProvider } from '../brain/providers/claude';
 import { ProviderConfigurationError, ProviderRequestError } from '../brain/providers/types';
 import { buildTodaysLetterContext, formatContextForPrompt } from './buildContext';
+import { readCachedLetter, writeCachedLetter } from './cache';
 import { buildFallbackLetter } from './fallback';
 import { assembleLetter, countWords, parseLetterSections } from './parse';
-import { TODAYS_LETTER_SYSTEM_PROMPT } from './prompt';
+import { MAX_LETTER_WORDS, TODAYS_LETTER_SYSTEM_PROMPT } from './prompt';
 import type { TodaysLetterResponse, TodaysLetterSections, TodaysLetterSource } from './types';
 
 function normalizeSections(
@@ -23,7 +24,9 @@ function normalizeSections(
 function buildResponse(
   sections: TodaysLetterSections,
   source: TodaysLetterSource,
-  generatedAt: string
+  generatedAt: string,
+  dateKey: string,
+  cached: boolean
 ): TodaysLetterResponse {
   const letter = assembleLetter(sections);
   return {
@@ -31,17 +34,48 @@ function buildResponse(
     sections,
     wordCount: countWords(letter),
     source,
-    generatedAt
+    generatedAt,
+    dateKey,
+    cached
   };
+}
+
+function useAnthropic(): boolean {
+  return Boolean(process.env.ANTHROPIC_API_KEY?.trim());
+}
+
+function resolveLetterMode(): 'anthropic' | 'fallback' {
+  if (process.env.BRAIN_AI_PROVIDER?.trim().toLowerCase() === 'rule-based') {
+    return 'fallback';
+  }
+  if (useAnthropic()) {
+    return 'anthropic';
+  }
+  throw new ProviderConfigurationError(
+    'ANTHROPIC_API_KEY is required for Today\'s Letter.'
+  );
 }
 
 export async function generateTodaysLetter(): Promise<TodaysLetterResponse> {
   const context = await buildTodaysLetterContext();
-  const fallbackSections = buildFallbackLetter(context);
-  const provider = resolveAIProvider();
+  const cached = await readCachedLetter(context.dateKey);
+  if (cached) {
+    return cached;
+  }
 
-  if (provider.name === 'rule-based') {
-    return buildResponse(fallbackSections, 'fallback', context.generatedAt);
+  const fallbackSections = buildFallbackLetter(context);
+  const mode = resolveLetterMode();
+
+  if (mode === 'fallback') {
+    const response = buildResponse(
+      fallbackSections,
+      'fallback',
+      context.generatedAt,
+      context.dateKey,
+      false
+    );
+    await writeCachedLetter(context.dateKey, response);
+    return response;
   }
 
   const userPrompt = [
@@ -49,22 +83,17 @@ export async function generateTodaysLetter(): Promise<TodaysLetterResponse> {
     formatContextForPrompt(context)
   ].join('\n\n');
 
-  try {
-    const completion = await provider.complete({
-      system: TODAYS_LETTER_SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userPrompt }],
-      maxTokens: 900,
-      temperature: 0.5
-    });
+  const completion = await createClaudeProvider().complete({
+    system: TODAYS_LETTER_SYSTEM_PROMPT,
+    messages: [{ role: 'user', content: userPrompt }],
+    maxTokens: 700,
+    temperature: 0.35
+  });
 
-    const sections = normalizeSections(parseLetterSections(completion.content), fallbackSections);
-    return buildResponse(sections, 'ai', context.generatedAt);
-  } catch (error) {
-    if (error instanceof ProviderConfigurationError) {
-      return buildResponse(fallbackSections, 'fallback', context.generatedAt);
-    }
-    throw error;
-  }
+  const sections = normalizeSections(parseLetterSections(completion.content), fallbackSections);
+  const response = buildResponse(sections, 'anthropic', context.generatedAt, context.dateKey, false);
+  await writeCachedLetter(context.dateKey, response);
+  return response;
 }
 
 export function mapTodaysLetterError(error: unknown): { status: number; message: string } {

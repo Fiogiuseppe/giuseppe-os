@@ -3,19 +3,12 @@ export interface TodaysLetterContext {
   localDate: string;
   localTime: string;
   dayPart: 'morning' | 'afternoon' | 'evening' | 'night';
+  dateKey: string;
+  constitution: string;
   mission: string;
   northStar: string;
-  manifesto: string;
-  values: string[];
-  rules: string[];
   activeProjects: Array<{ name: string; role: string; status: string }>;
   priorities: string[];
-  patterns: string[];
-  financialSummary: {
-    liquidityTier: string;
-    goals: string[];
-  };
-  recentDecisions: Array<{ decision: string; reason: string; timestamp: string }>;
 }
 
 export interface TodaysLetterSections {
@@ -27,7 +20,7 @@ export interface TodaysLetterSections {
   reflectionQuestion: string;
 }
 
-export type TodaysLetterSource = 'ai' | 'fallback';
+export type TodaysLetterSource = 'anthropic' | 'fallback';
 
 export interface TodaysLetterResponse {
   letter: string;
@@ -35,4 +28,6 @@ export interface TodaysLetterResponse {
   wordCount: number;
   source: TodaysLetterSource;
   generatedAt: string;
+  dateKey: string;
+  cached: boolean;
 }

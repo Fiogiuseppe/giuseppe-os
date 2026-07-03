@@ -30,7 +30,10 @@ test.describe('Giuseppe OS navigation', () => {
   });
 
   test('loads the home page', async ({ page }) => {
-    await expect(page.locator('.companion-greeting')).toContainText(/Good (morning|afternoon|evening|night),?\s*Giuseppe/i);
+    await expect(page.locator('.companion-greeting')).toContainText(
+      /Good (morning|afternoon|evening|night),?\s*Giuseppe/i,
+      { timeout: 15_000 }
+    );
     await expect(page.getByRole('button', { name: 'Giuseppe OS home' })).toBeVisible();
     await expect(page.locator('footer.footer').getByText("It's not software that tells you what to do. It's software that remembers who you chose to become.")).toBeVisible();
   });

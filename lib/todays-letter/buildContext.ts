@@ -1,5 +1,6 @@
-import { loadBrain, loadLongTermMemory } from '../brain/memory/store';
-import { publicFinanceSnapshot } from '../brain/memory/publicFinance';
+import { loadBrain } from '../brain/memory/store';
+import { letterDateKey } from './cache';
+import { loadConstitutionExcerpt } from './loadConstitution';
 import type { TodaysLetterContext } from './types';
 
 function resolveDayPart(hour: number): TodaysLetterContext['dayPart'] {
@@ -29,8 +30,7 @@ function formatLocalTime(date: Date): string {
 
 export async function buildTodaysLetterContext(now = new Date()): Promise<TodaysLetterContext> {
   const brain = await loadBrain();
-  const longTerm = await loadLongTermMemory();
-  const finance = publicFinanceSnapshot(brain);
+  const constitution = await loadConstitutionExcerpt();
   const hour = Number(
     new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Europe/Copenhagen' }).format(
       now
@@ -42,50 +42,37 @@ export async function buildTodaysLetterContext(now = new Date()): Promise<Todays
     localDate: formatLocalDate(now),
     localTime: formatLocalTime(now),
     dayPart: resolveDayPart(hour),
+    dateKey: letterDateKey(now),
+    constitution,
     mission: brain.mission_2036,
     northStar: brain.north_star,
-    manifesto: brain.manifesto,
-    values: brain.values,
-    rules: brain.rules,
     activeProjects: Object.entries(brain.projects)
       .filter(([, project]) => project.status === 'active' || project.status === 'slow-active')
       .map(([name, project]) => ({ name, role: project.role, status: project.status })),
-    priorities: brain.priorities,
-    patterns: brain.patterns,
-    financialSummary: {
-      liquidityTier: finance.liquidityTier,
-      goals: finance.goals
-    },
-    recentDecisions: longTerm.decisions.slice(-3).map(item => ({
-      decision: item.decision,
-      reason: item.reason,
-      timestamp: item.timestamp
-    }))
+    priorities: brain.priorities
   };
 }
 
 export function formatContextForPrompt(context: TodaysLetterContext): string {
-  const projects = context.activeProjects.map(p => `- ${p.name} (${p.status}): ${p.role}`).join('\n');
-  const decisions =
-    context.recentDecisions.length > 0
-      ? context.recentDecisions.map(d => `- ${d.decision}${d.reason ? ` — ${d.reason}` : ''}`).join('\n')
-      : '- none recorded yet';
+  const projects =
+    context.activeProjects.length > 0
+      ? context.activeProjects.map(p => `- ${p.name} (${p.status}): ${p.role}`).join('\n')
+      : '- MISSING: no active projects documented';
+
+  const priorities =
+    context.priorities.length > 0
+      ? context.priorities.join(' | ')
+      : 'MISSING: no priorities documented';
 
   return [
     `DATE: ${context.localDate}`,
-    `TIME: ${context.localTime} (${context.dayPart})`,
-    `MISSION 2036: ${context.mission}`,
-    `NORTH STAR: ${context.northStar}`,
-    `MANIFESTO: ${context.manifesto}`,
-    `VALUES: ${context.values.join(' · ')}`,
-    `RULES: ${context.rules.join(' | ')}`,
-    'ACTIVE PROJECTS:',
+    `TIME: ${context.localTime}`,
+    'CONSTITUTION:',
+    context.constitution,
+    `MISSION 2036: ${context.mission || 'MISSING'}`,
+    `NORTH STAR: ${context.northStar || 'MISSING'}`,
+    'CURRENT PROJECTS:',
     projects,
-    `PRIORITIES: ${context.priorities.join(' | ')}`,
-    `PATTERNS: ${context.patterns.join(' | ')}`,
-    `FINANCE: liquidity ${context.financialSummary.liquidityTier}; goals ${context.financialSummary.goals.join(' | ')}`,
-    'RECENT DECISIONS:',
-    decisions,
-    'Never invent balances. Financial amounts are redacted.'
+    `PRIORITIES: ${priorities}`
   ].join('\n');
 }

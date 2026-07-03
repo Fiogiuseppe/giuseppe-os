@@ -46,7 +46,10 @@ test.describe('Giuseppe OS potential engine', () => {
 
   test('navigation still works from Potential page', async ({ page }) => {
     await page.getByRole('navigation').getByRole('button', { name: 'Today' }).click();
-    await expect(page.locator('.companion-greeting')).toContainText(/Good (morning|afternoon|evening|night),?\s*Giuseppe/i);
+    await expect(page.locator('.companion-greeting')).toContainText(
+      /Good (morning|afternoon|evening|night),?\s*Giuseppe/i,
+      { timeout: 15_000 }
+    );
 
     await page.getByRole('navigation').getByRole('button', { name: 'Create' }).click();
     await expandPotential(page);
