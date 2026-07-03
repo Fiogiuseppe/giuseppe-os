@@ -10,6 +10,22 @@ const NAV_VIEWS = [
   { label: 'Brain', heading: /CHI HO SCELTO DI DIVENTARE/ }
 ] as const;
 
+async function expectNoPageScroll(page: import('@playwright/test').Page) {
+  const metrics = await page.evaluate(() => ({
+    docScrollHeight: document.documentElement.scrollHeight,
+    docClientHeight: document.documentElement.clientHeight,
+    bodyScrollHeight: document.body.scrollHeight,
+    bodyClientHeight: document.body.clientHeight,
+    bodyOverflowY: getComputedStyle(document.body).overflowY,
+    htmlOverflowY: getComputedStyle(document.documentElement).overflowY
+  }));
+
+  expect(metrics.bodyOverflowY).toBe('hidden');
+  expect(metrics.htmlOverflowY).toBe('hidden');
+  expect(metrics.docScrollHeight).toBeLessThanOrEqual(metrics.docClientHeight + 1);
+  expect(metrics.bodyScrollHeight).toBeLessThanOrEqual(metrics.bodyClientHeight + 1);
+}
+
 test.describe('Giuseppe OS navigation', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
@@ -51,6 +67,19 @@ test.describe('Giuseppe OS navigation', () => {
     await expect(decisionInput).toHaveValue('comprare casa a Copenaghen');
     await expect(reasonInput).toHaveValue('Voglio più stabilità per la famiglia.');
     await expect(page.getByRole('button', { name: 'Chiedi al Board' })).toBeEnabled();
+  });
+
+  test('desktop viewport has no page scroll on any main section', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.goto('/');
+
+    const nav = page.getByRole('navigation');
+
+    for (const { label } of NAV_VIEWS) {
+      await nav.getByRole('button', { name: label, exact: true }).click();
+      await expect(page.getByRole('main')).toBeVisible();
+      await expectNoPageScroll(page);
+    }
   });
 });
 

@@ -102,7 +102,7 @@ function ActiveProjectsCard({ onViewAll }: { onViewAll: () => void }) {
     .slice(0, 3);
 
   return (
-    <div className="card span-6">
+    <div className="card span-6 card-scroll">
       <div className="card-head">
         <h3>Active Projects</h3>
         <button type="button" className="card-link" onClick={onViewAll}>View all →</button>
@@ -208,7 +208,7 @@ function PotentialPanel() {
   const today = potential.todaysOpportunity;
 
   return (
-    <>
+    <div className="potential-panel">
       <section className="hero">
         <div className="potential-card potential-span2 card-glow">
           <div className="kicker">TODAY&apos;S OPPORTUNITY</div>
@@ -226,7 +226,7 @@ function PotentialPanel() {
           <p>Score {Math.round(today.totalScore)} · {today.sourceProject ?? 'sistema'}</p>
         </div>
       </section>
-      <section className="potential-grid">
+      <section className="potential-grid potential-panel-scroll">
         {[
           ['CREATIVE CHALLENGE', potential.creativeChallenge],
           ['SKILL TO LEARN', potential.skillToLearn],
@@ -253,7 +253,7 @@ function PotentialPanel() {
           </ul>
         </div>
       </section>
-    </>
+    </div>
   );
 }
 
@@ -289,9 +289,9 @@ export default function Home() {
       </aside>
 
       <div className="content">
-        <main className="main" role="main">
+        <main className={`main ${view === 'home' ? 'main-home' : ''}`} role="main">
           {view === 'home' && (
-            <>
+            <div className="home-shell">
               <div className="home-header-row">
                 <div>
                   <h1 className="home-greeting">Good morning, Giuseppe.</h1>
@@ -368,7 +368,7 @@ export default function Home() {
                   <p>{awareness.insight}</p>
                 </div>
               </div>
-            </>
+            </div>
           )}
 
           {view !== 'home' && (
@@ -378,6 +378,8 @@ export default function Home() {
             </header>
           )}
 
+          {view !== 'home' && (
+            <div className="view-body">
           {view === 'board' && (
             <>
               <section className="hero">
@@ -431,7 +433,7 @@ export default function Home() {
                 <h2>Non più idee: più concentrazione.</h2>
                 <p>Ogni progetto deve rafforzare l&apos;ecosistema.</p>
               </section>
-              <section className="projects-grid">
+              <section className="projects-grid card-scroll">
                 {Object.entries(brain.projects).map(([name, project]) => (
                   <div className="card" key={name}>
                     <div className="kicker">{project.status.toUpperCase()}</div>
@@ -513,6 +515,8 @@ export default function Home() {
                 </div>
               </section>
             </>
+          )}
+            </div>
           )}
         </main>
 
