@@ -94,6 +94,9 @@ test.describe('Giuseppe OS decision board', () => {
     await page.getByPlaceholder('Motivo vero.').fill(reason);
     await page.getByRole('button', { name: 'Chiedi al Board' }).click();
     await expect(page.locator('.result')).toBeVisible();
+    await page.getByRole('button', { name: 'Perché?' }).click();
+    await page.getByRole('button', { name: 'Mostra il Board' }).click();
+    await page.getByRole('button', { name: 'Versione migliore' }).click();
   }
 
   test('submits the decision form and shows board output', async ({ page }) => {

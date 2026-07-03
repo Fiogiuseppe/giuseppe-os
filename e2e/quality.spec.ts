@@ -90,6 +90,7 @@ test.describe('Giuseppe OS quality loop', () => {
     await awarenessButton.click();
     await expect(page.getByRole('main').locator('.view-title')).toHaveText('I NOTICED SOMETHING.');
     await expect(page.getByRole('heading', { name: /Stai portando|Hai liquidità|Il lavoro sacro|Vuoi visibilità|LEGO è il motore/ })).toBeVisible();
+    await page.getByRole('button', { name: 'Suggested action' }).click();
     await expect(page.getByText('RECOMMENDED ACTION')).toBeVisible();
     await expect(page.locator('.potential-score')).toBeVisible();
   });
@@ -170,6 +171,7 @@ test.describe('Giuseppe OS quality loop', () => {
 
   test('finance view hides sensitive personal numbers', async ({ page }) => {
     await page.getByRole('navigation').getByRole('button', { name: 'Finance', exact: true }).click();
+    await page.getByRole('button', { name: 'Financial details' }).click();
 
     const main = page.getByRole('main');
     await expect(main.getByText('CASH RESERVE')).toBeVisible();

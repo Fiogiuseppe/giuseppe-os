@@ -1,9 +1,14 @@
 import { test, expect } from '@playwright/test';
 
+async function expandPotential(page: import('@playwright/test').Page) {
+  await page.getByRole('button', { name: 'Explore opportunities' }).click();
+}
+
 test.describe('Giuseppe OS potential engine', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.getByRole('navigation').getByRole('button', { name: 'Board' }).click();
+    await expandPotential(page);
   });
 
   test('opens the Potential page', async ({ page }) => {
@@ -44,6 +49,7 @@ test.describe('Giuseppe OS potential engine', () => {
     await expect(page.getByText('Good morning, Giuseppe.')).toBeVisible();
 
     await page.getByRole('navigation').getByRole('button', { name: 'Board' }).click();
+    await expandPotential(page);
     await expect(page.getByText("TODAY'S OPPORTUNITY")).toBeVisible();
   });
 });
