@@ -1277,6 +1277,12 @@ a {
   text-transform: uppercase;
 }
 
+@media (max-width: 1200px) {
+  .memory-palace-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .memory-shelf {
   transition: border-color 0.35s var(--ease), background 0.35s var(--ease);
 }

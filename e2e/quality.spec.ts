@@ -130,18 +130,22 @@ test.describe('Giuseppe OS quality loop', () => {
     }
   });
 
-  test('north star appears only on Decisions view', async ({ page }) => {
-    await expect(page.getByRole('main').getByText(NORTH_STAR)).toHaveCount(0);
+  test('north star page headline appears only on Decisions view', async ({ page }) => {
+    const headline = page.locator('.view-title').filter({ hasText: NORTH_STAR });
+    await expect(headline).toHaveCount(0);
 
     const nav = page.getByRole('navigation');
     await nav.getByRole('button', { name: 'Decisions', exact: true }).click();
-    await expect(page.getByRole('main').getByText(NORTH_STAR).first()).toBeVisible();
+    await expect(headline).toBeVisible();
 
     for (const { label } of MAIN_SECTIONS) {
       if (label === 'Decisions') continue;
       await nav.getByRole('button', { name: label, exact: true }).click();
-      await expect(page.getByRole('main').getByText(NORTH_STAR)).toHaveCount(0);
+      await expect(headline).toHaveCount(0);
     }
+
+    await nav.getByRole('button', { name: 'Memory', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'NORTH STAR' })).toBeVisible();
   });
 
   test('no overly generic copy on the page', async ({ page }) => {

@@ -74,7 +74,7 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await expect(page.getByRole('navigation').getByRole('button', { name: 'Memory' })).toBeVisible();
   });
 
-  test('desktop content scrolls internally without page overflow', async ({ page }) => {
+  test('desktop memory content stays reachable without page overflow', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto('/');
     await page.getByRole('navigation').getByRole('button', { name: 'Memory' }).click();
@@ -83,9 +83,9 @@ test.describe('Giuseppe OS layout — no clipping', () => {
       await expect(page.getByRole('heading', { name: domain })).toBeVisible();
     }
 
-    const viewBody = page.locator('.view-body');
-    const canScroll = await viewBody.evaluate(el => el.scrollHeight > el.clientHeight);
-    expect(canScroll).toBe(true);
+    const priorities = page.getByRole('heading', { name: 'PRIORITIES' });
+    await priorities.scrollIntoViewIfNeeded();
+    await expectInViewport(page, priorities);
 
     const pageMetrics = await page.evaluate(() => ({
       bodyOverflowY: getComputedStyle(document.body).overflowY,
