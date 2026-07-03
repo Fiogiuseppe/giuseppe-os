@@ -6,7 +6,7 @@ export function JewelFace() {
         alt=""
         className="jewel-face-img"
         width={1680}
-        height={2100}
+        height={1680}
         draggable={false}
       />
     </div>
