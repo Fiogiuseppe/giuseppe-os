@@ -148,6 +148,26 @@ Each entry includes:
 
 ---
 
+### 2026-07 — Today becomes the Daily Briefing (Personal Intelligence OS v1.7)
+
+**Decision:** Giuseppe OS is a Personal Intelligence Operating System. Today is no longer a dashboard — it is Giuseppe's daily briefing. The intelligence pipeline is: Reality Engine → Personal Relevance Engine → Daily Briefing Generator → Today UI.
+
+**Rationale:** The product optimizes Giuseppe's long-term trajectory and life outcome — not productivity, time, or generic AI assistance. The briefing delivers max 3 high-leverage recommendations across 6 sections: One Big Move, Reality, Opportunity, Ignore, Nourish, Reflection. Recommendations must improve at least one of eight capitals (Wealth, Knowledge, Creative, Relationship, Health, Freedom, Time, Reputation).
+
+**Implications:** `lib/briefing/` is the canonical module for briefing types and thinking chain. `lib/todays-letter/` remains as the generator implementation layer (API route unchanged for now). `lib/philosophy/core.ts` holds capitals and trajectory rules. Future engines must contribute to trajectory optimization. `/api/briefing` may be added later; `/api/todays-letter` returns `briefing` + legacy `letter` field.
+
+---
+
+### 2026-07 — Trajectory Engine as highest-level decision filter
+
+**Decision:** Add `lib/trajectory/` as the highest-level filter in the intelligence pipeline. Every recommendation must pass the trajectory question and ten-year test before appearing in the Daily Briefing. Pipeline order: Reality Engine → Personal Relevance Engine → Trajectory Engine → Daily Briefing Generator.
+
+**Rationale:** Giuseppe OS optimizes long-term trajectory, not daily activity. Recommendations that weaken the 10-year vision are filtered out; unclear ones get low confidence. The engine evaluates against mission, North Star, constitution, goals, projects, risks, past decisions, and observed behaviour.
+
+**Implications:** `lib/trajectory/engine.ts` filters relevance items and post-processes briefing sections (`oneBigMove`, `opportunity`, `nourish`). `lib/philosophy/core.ts` exports trajectory questions and preferences. API pipeline metadata includes `trajectoryApproved`, `trajectoryFiltered`, and `trajectoryNote`. All future engines must support trajectory evaluation. Cache schema bumped to `daily-briefing-v2`.
+
+---
+
 ## Template for New Entries
 
 ```markdown
