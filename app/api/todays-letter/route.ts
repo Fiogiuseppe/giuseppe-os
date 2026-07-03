@@ -24,6 +24,7 @@ export async function GET() {
     pipeline: [
       'reality-engine',
       'personal-relevance-engine',
+      'trajectory-engine',
       'daily-briefing-generator'
     ]
   });

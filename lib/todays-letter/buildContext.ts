@@ -1,9 +1,19 @@
 import { DAILY_THINKING_CHAIN } from '../briefing/thinkingChain';
 import type { DailyBriefingContext } from '../briefing/types';
-import { CORE_PHILOSOPHY_PROMPT, MISSION_QUESTION, REALITY_FILTER_QUESTION } from '../philosophy/core';
+import {
+  CORE_PHILOSOPHY_PROMPT,
+  MISSION_QUESTION,
+  REALITY_FILTER_QUESTION,
+  TEN_YEAR_QUESTION,
+  TRAJECTORY_QUESTION
+} from '../philosophy/core';
 import { loadBrain } from '../brain/memory/store';
 import { runPersonalRelevanceEngine } from '../relevance/engine';
 import { runRealityEngine } from '../reality/engine';
+import {
+  filterRelevanceByTrajectory,
+  runTrajectoryEngine
+} from '../trajectory/engine';
 import { letterDateKey } from './cache';
 import { loadConstitutionExcerpt } from './loadConstitution';
 
@@ -36,7 +46,24 @@ export async function buildDailyBriefingContext(now = new Date()): Promise<Daily
   const brain = await loadBrain();
   const constitution = await loadConstitutionExcerpt();
   const reality = await runRealityEngine(now);
-  const relevance = await runPersonalRelevanceEngine(reality);
+  const rawRelevance = await runPersonalRelevanceEngine(reality);
+  const trajectory = await runTrajectoryEngine({
+    constitution,
+    mission: brain.mission_2036,
+    northStar: brain.north_star,
+    values: brain.values,
+    patterns: brain.patterns,
+    priorities: brain.priorities,
+    creativeGoals: brain.creative_goals,
+    careerGoals: brain.career_goals,
+    financeGoals: brain.finance.main_goals,
+    reality,
+    relevance: rawRelevance
+  });
+  const relevance = {
+    ...rawRelevance,
+    items: filterRelevanceByTrajectory(rawRelevance.items, trajectory)
+  };
   const hour = Number(
     new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Europe/Copenhagen' }).format(
       now
@@ -64,7 +91,8 @@ export async function buildDailyBriefingContext(now = new Date()): Promise<Daily
       .map(([name, project]) => ({ name, role: project.role, status: project.status })),
     priorities: brain.priorities,
     reality,
-    relevance
+    relevance,
+    trajectory
   };
 }
 
@@ -85,10 +113,19 @@ export function formatContextForPrompt(context: DailyBriefingContext): string {
               `- [${item.confidence}] ${item.headline} — ${item.whyForGiuseppe} (capitals: ${item.capitals.join(', ')})`
           )
           .join('\n')
-      : '- MISSING: no high-leverage relevance signals';
+      : '- MISSING: no trajectory-approved relevance signals';
+
+  const trajectoryItems = context.trajectory.evaluations
+    .map(
+      evaluation =>
+        `- [${evaluation.direction}/${evaluation.confidence}] ${evaluation.recommendation} — ${evaluation.rationale}`
+    )
+    .join('\n');
 
   return [
     CORE_PHILOSOPHY_PROMPT,
+    `TRAJECTORY FILTER: ${TRAJECTORY_QUESTION}`,
+    `TEN-YEAR TEST: ${TEN_YEAR_QUESTION}`,
     `MISSION FILTER: ${MISSION_QUESTION}`,
     `REALITY FILTER: ${REALITY_FILTER_QUESTION}`,
     'THINKING CHAIN:',
@@ -112,8 +149,11 @@ export function formatContextForPrompt(context: DailyBriefingContext): string {
     'REALITY ENGINE:',
     context.reality.note,
     `Signals collected: ${context.reality.signals.length}`,
-    'PERSONAL RELEVANCE (max 3 high-leverage signals):',
+    'PERSONAL RELEVANCE (trajectory-approved):',
     relevanceItems,
+    'TRAJECTORY ENGINE:',
+    trajectoryItems || '- No trajectory evaluations',
+    `TRAJECTORY NOTE: ${context.trajectory.trajectoryNote}`,
     `CONFIDENCE: ${context.relevance.confidenceNote}`
   ].join('\n');
 }

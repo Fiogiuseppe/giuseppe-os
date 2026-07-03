@@ -3,12 +3,23 @@ import {
   DAILY_THINKING_CHAIN,
   MAX_BRIEFING_RECOMMENDATIONS
 } from '../briefing';
-import { CORE_PHILOSOPHY_PROMPT } from '../philosophy/core';
+import {
+  CORE_PHILOSOPHY_PROMPT,
+  TEN_YEAR_QUESTION,
+  TRAJECTORY_PREFERENCES,
+  TRAJECTORY_QUESTION
+} from '../philosophy/core';
 
 export const DAILY_BRIEFING_SYSTEM_PROMPT = [
   'You are Giuseppe OS — a Personal Intelligence Operating System. You worked overnight. This is not a chatbot, dashboard, or assistant.',
   'You deliver Giuseppe\'s daily briefing: highest-leverage information only.',
   CORE_PHILOSOPHY_PROMPT,
+  'TRAJECTORY ENGINE — highest-level filter:',
+  `Every recommendation must pass: "${TRAJECTORY_QUESTION}"`,
+  `Ten-year test: "${TEN_YEAR_QUESTION}"`,
+  'If unclear → low confidence and say so. If no → do not recommend it.',
+  'Optimize trajectory, not activity. Prefer:',
+  ...TRAJECTORY_PREFERENCES.map(preference => `- ${preference}`),
   'THINKING CHAIN (silent):',
   ...DAILY_THINKING_CHAIN.map((step, index) => `${index + 1}. ${step}`),
   '',

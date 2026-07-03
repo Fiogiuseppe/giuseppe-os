@@ -1,6 +1,8 @@
 import { createClaudeProvider } from '../brain/providers/claude';
+import { loadBrain, loadLongTermMemory } from '../brain/memory/store';
 import { ProviderConfigurationError, ProviderRequestError } from '../brain/providers/types';
 import type { DailyBriefingContext, DailyBriefingResponse, DailyBriefingSections } from '../briefing/types';
+import { applyTrajectoryToBriefing } from '../trajectory/briefingFilter';
 import { buildDailyBriefingContext, formatContextForPrompt } from './buildContext';
 import { readCachedLetter, letterDateKey, usePlatformLetterCache, writeCachedLetter } from './cache';
 import { buildFallbackBriefing } from './fallback';
@@ -27,9 +29,21 @@ function pipelineMeta(context: DailyBriefingContext) {
   return {
     realitySignals: context.reality.signals.length,
     relevanceItems: context.relevance.items.length,
+    trajectoryApproved: context.trajectory.approvedCount,
+    trajectoryFiltered: context.trajectory.filteredCount,
     externalFeedsActive: context.reality.externalFeedsActive,
-    confidenceNote: context.relevance.confidenceNote
+    confidenceNote: context.relevance.confidenceNote,
+    trajectoryNote: context.trajectory.trajectoryNote
   };
+}
+
+async function filterSectionsThroughTrajectory(
+  sections: DailyBriefingSections,
+  context: DailyBriefingContext
+): Promise<DailyBriefingSections> {
+  const brain = await loadBrain();
+  const longTerm = await loadLongTermMemory();
+  return applyTrajectoryToBriefing(sections, context, brain, longTerm);
 }
 
 function buildResponse(
@@ -76,7 +90,8 @@ async function generateDailyBriefingFresh(): Promise<DailyBriefingResponse> {
   let response: DailyBriefingResponse;
 
   if (mode === 'fallback') {
-    response = buildResponse(fallbackSections, 'fallback', context, false);
+    const sections = await filterSectionsThroughTrajectory(fallbackSections, context);
+    response = buildResponse(sections, 'fallback', context, false);
   } else {
     const userPrompt = [
       'Write Giuseppe his Daily Briefing using only this intelligence pipeline context:',
@@ -90,7 +105,10 @@ async function generateDailyBriefingFresh(): Promise<DailyBriefingResponse> {
       temperature: 0.35
     });
 
-    const sections = normalizeSections(parseBriefingSections(completion.content), fallbackSections);
+    const sections = await filterSectionsThroughTrajectory(
+      normalizeSections(parseBriefingSections(completion.content), fallbackSections),
+      context
+    );
     response = buildResponse(sections, 'anthropic', context, false);
   }
 

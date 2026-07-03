@@ -4,8 +4,24 @@ export const SYSTEM_PURPOSE =
 export const TRAJECTORY_FOCUS =
   'Giuseppe OS protects Giuseppe\'s trajectory — not his time, not his productivity.';
 
+export const TRAJECTORY_QUESTION =
+  'If Giuseppe follows this recommendation, does it increase or decrease the probability of achieving his long-term vision?';
+
+export const TEN_YEAR_QUESTION =
+  'Will Giuseppe thank himself for this decision in 10 years?';
+
 export const MISSION_QUESTION =
   'Will this increase Giuseppe\'s probability of becoming the person he chose to become?';
+
+export const TRAJECTORY_PREFERENCES = [
+  'high leverage over urgency',
+  'compounding over immediate reward',
+  'freedom over comfort',
+  'ownership over consumption',
+  'deep work over busy work',
+  'meaning over entertainment',
+  'consistency over intensity'
+] as const;
 
 export const CAPITALS = [
   {
@@ -79,8 +95,13 @@ export const CORE_PHILOSOPHY_PROMPT = [
   'CORE PHILOSOPHY — Personal Intelligence Operating System:',
   `Purpose: ${SYSTEM_PURPOSE}`,
   TRAJECTORY_FOCUS,
-  `Every recommendation must answer: "${MISSION_QUESTION}"`,
+  `Trajectory filter: "${TRAJECTORY_QUESTION}"`,
+  `Ten-year test: "${TEN_YEAR_QUESTION}"`,
+  `Mission filter: "${MISSION_QUESTION}"`,
   'If it does not materially improve that probability, it should not exist.',
+  '',
+  'TRAJECTORY PREFERENCES:',
+  ...TRAJECTORY_PREFERENCES.map(preference => `- ${preference}`),
   '',
   'REALITY FILTER:',
   'Never summarize the news. Answer: "Why does this matter for Giuseppe?"',

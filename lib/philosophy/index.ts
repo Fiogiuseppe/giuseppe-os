@@ -1,4 +1,7 @@
-export type { CapitalId, OptimizationTargetId } from './core';
+export type {
+  CapitalId,
+  OptimizationTargetId
+} from './core';
 
 export {
   ABSOLUTE_RULE,
@@ -11,6 +14,9 @@ export {
   OPTIMIZATION_TARGETS,
   REALITY_FILTER_QUESTION,
   SYSTEM_PURPOSE,
+  TEN_YEAR_QUESTION,
   TRAJECTORY_FOCUS,
+  TRAJECTORY_PREFERENCES,
+  TRAJECTORY_QUESTION,
   WORLD_CONNECTION_QUESTION
 } from './core';

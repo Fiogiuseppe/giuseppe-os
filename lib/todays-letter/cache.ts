@@ -3,7 +3,7 @@ import os from 'os';
 import path from 'path';
 import type { DailyBriefingResponse } from '../briefing/types';
 
-export const CACHE_SCHEMA = 'daily-briefing-v1';
+export const CACHE_SCHEMA = 'daily-briefing-v2';
 
 function isServerless(): boolean {
   return process.env.VERCEL === '1' || Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME);

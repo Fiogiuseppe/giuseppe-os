@@ -1,5 +1,6 @@
 import type { PersonalRelevanceReport } from '../relevance/types';
 import type { RealityReport } from '../reality/types';
+import type { TrajectoryReport } from '../trajectory/types';
 
 export interface DailyBriefingSections {
   greeting: string;
@@ -16,8 +17,11 @@ export type DailyBriefingSource = 'anthropic' | 'fallback';
 export interface DailyBriefingPipelineMeta {
   realitySignals: number;
   relevanceItems: number;
+  trajectoryApproved: number;
+  trajectoryFiltered: number;
   externalFeedsActive: number;
   confidenceNote: string;
+  trajectoryNote: string;
 }
 
 export interface DailyBriefingContext {
@@ -40,6 +44,7 @@ export interface DailyBriefingContext {
   priorities: string[];
   reality: RealityReport;
   relevance: PersonalRelevanceReport;
+  trajectory: TrajectoryReport;
 }
 
 export interface DailyBriefingResponse {
