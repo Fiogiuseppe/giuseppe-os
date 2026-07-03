@@ -1,16 +1,11 @@
-import { Syne, IBM_Plex_Mono } from 'next/font/google';
+import { Libre_Baskerville } from 'next/font/google';
 import './globals.css';
 
-const display = Syne({
+const serif = Libre_Baskerville({
   subsets: ['latin'],
-  weight: ['700', '800'],
-  variable: '--font-display'
-});
-
-const mono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-mono'
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-serif'
 });
 
 export const metadata = {
@@ -20,7 +15,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="it" className={`${display.variable} ${mono.variable}`}>
+    <html lang="it" className={serif.variable}>
       <body>{children}</body>
     </html>
   );

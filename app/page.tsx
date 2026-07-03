@@ -14,73 +14,15 @@ import { runAwarenessEngine } from '../engine/awarenessEngine';
 
 type View = 'home' | 'board' | 'today' | 'projects' | 'finance' | 'awareness' | 'brain';
 
-const NAV: { id: View; label: string; index: string }[] = [
-  { id: 'home', label: 'Home', index: '01' },
-  { id: 'board', label: 'Board', index: '02' },
-  { id: 'today', label: 'Today', index: '03' },
-  { id: 'projects', label: 'Projects', index: '04' },
-  { id: 'finance', label: 'Finance', index: '05' },
-  { id: 'awareness', label: 'Awareness', index: '06' },
-  { id: 'brain', label: 'Brain', index: '07' }
+const NAV: { id: View; label: string }[] = [
+  { id: 'home', label: 'Home' },
+  { id: 'board', label: 'Board' },
+  { id: 'today', label: 'Today' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'finance', label: 'Finance' },
+  { id: 'awareness', label: 'Awareness' },
+  { id: 'brain', label: 'Brain' }
 ];
-
-const VIEW_INDEX: Record<View, string> = {
-  home: '01',
-  board: '02',
-  today: '03',
-  projects: '04',
-  finance: '05',
-  awareness: '06',
-  brain: '07'
-};
-
-const AMBIENT_WORDS = [
-  'libertà',
-  'legacy',
-  'north star',
-  'ritual',
-  'awareness',
-  'memory',
-  'board',
-  'create',
-  'freedom',
-  'manifesto',
-  'focus',
-  'decision',
-  'potential',
-  'mission',
-  'values',
-  'patterns',
-  'clarity',
-  'concentration',
-  'reputation',
-  'impact',
-  'poetry',
-  'system',
-  'becoming',
-  'courage'
-];
-
-function AmbientField() {
-  return (
-    <div className="ambient-field" aria-hidden="true">
-      {AMBIENT_WORDS.map((word, i) => (
-        <span
-          key={word}
-          className="ambient-word"
-          style={{
-            ['--x' as string]: `${(i * 17 + 5) % 88}%`,
-            ['--y' as string]: `${(i * 23 + 8) % 82}%`,
-            ['--delay' as string]: `${(i % 8) * 0.7}s`,
-            ['--duration' as string]: `${14 + (i % 6) * 2}s`
-          }}
-        >
-          {word}
-        </span>
-      ))}
-    </div>
-  );
-}
 
 const VIEW_HEADINGS: Record<View, string> = {
   home: 'GIUSEPPE OS',
@@ -102,14 +44,14 @@ const PROJECT_PROGRESS: Record<string, number> = {
 };
 
 function StrategicCard({
-  sectionIndex,
+  label,
   title,
   description,
   linkLabel,
   onNavigate,
   badge
 }: {
-  sectionIndex: string;
+  label: string;
   title: string;
   description: string;
   linkLabel: string;
@@ -119,7 +61,7 @@ function StrategicCard({
   return (
     <div className="card strategic-card">
       <div className="strategic-top">
-        <span className="section-index">{sectionIndex}</span>
+        <span className="kicker">{label}</span>
         {badge && <span className="badge-new">{badge}</span>}
       </div>
       <h3>{title}</h3>
@@ -133,7 +75,7 @@ function FinancePrivacyCard({ onViewAll }: { onViewAll: () => void }) {
   return (
     <div className="card">
       <div className="card-head">
-        <h3><span className="section-index">09</span> Financial Overview</h3>
+        <h3>Financial Overview</h3>
         <button type="button" className="card-link" onClick={onViewAll}>View all</button>
       </div>
       <div className="finance-privacy">
@@ -162,7 +104,7 @@ function ActiveProjectsCard({ onViewAll }: { onViewAll: () => void }) {
   return (
     <div className="card span-6 card-scroll">
       <div className="card-head">
-        <h3><span className="section-index">08</span> Active Projects</h3>
+        <h3>Active Projects</h3>
         <button type="button" className="card-link" onClick={onViewAll}>View all</button>
       </div>
       {rows.map(([name, project]) => (
@@ -329,13 +271,12 @@ export default function Home() {
           <div className="sidebar-logo">Giuseppe OS</div>
         </div>
         <nav className="sidebar-nav" aria-label="Main navigation">
-          {NAV.map(({ id, label, index }) => (
+          {NAV.map(({ id, label }) => (
             <button
               key={id}
               className={view === id ? 'active' : undefined}
               onClick={() => setView(id)}
             >
-              <span className="nav-index" aria-hidden="true">{index}</span>
               <span>{label}</span>
               {id === 'awareness' && <span className="nav-badge" aria-hidden="true">1</span>}
             </button>
@@ -348,13 +289,11 @@ export default function Home() {
       </aside>
 
       <div className="content">
-        <AmbientField />
         <main className={`main ${view === 'home' ? 'main-home' : ''}`} role="main">
           {view === 'home' && (
             <div className="home-shell">
               <div className="home-header-row">
                 <div>
-                  <span className="section-index">00</span>
                   <h1 className="home-greeting">Good morning, Giuseppe.</h1>
                   <p className="view-subtitle">Operating system for becoming who you chose to become.</p>
                   <div className="view-title">GIUSEPPE OS</div>
@@ -365,7 +304,7 @@ export default function Home() {
               <div className="dashboard-grid">
                 <div className="span-3">
                   <StrategicCard
-                    sectionIndex="02"
+                    label="North Star"
                     title="North Star"
                     description="Create impact and freedom. Build a legacy that matters."
                     linkLabel="View North Star"
@@ -374,7 +313,7 @@ export default function Home() {
                 </div>
                 <div className="span-3">
                   <StrategicCard
-                    sectionIndex="03"
+                    label="Mission 2036"
                     title="Mission 2036"
                     description={brain.mission_2036}
                     linkLabel="View Mission"
@@ -383,7 +322,7 @@ export default function Home() {
                 </div>
                 <div className="span-3">
                   <StrategicCard
-                    sectionIndex="04"
+                    label="Today's Focus"
                     title="Today's Focus"
                     description={today.title}
                     linkLabel="View Priorities"
@@ -392,7 +331,7 @@ export default function Home() {
                 </div>
                 <div className="span-3">
                   <StrategicCard
-                    sectionIndex="05"
+                    label="Awareness"
                     title="Awareness"
                     description="I noticed something you should see."
                     linkLabel="Open Awareness"
@@ -434,7 +373,7 @@ export default function Home() {
 
           {view !== 'home' && (
             <header className="page-header">
-              <div className="kicker">{VIEW_INDEX[view]} {view.toUpperCase()}</div>
+              <div className="kicker">{view}</div>
               <div className="view-title">{VIEW_HEADINGS[view]}</div>
             </header>
           )}

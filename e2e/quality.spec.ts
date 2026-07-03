@@ -154,14 +154,13 @@ test.describe('Giuseppe OS quality loop', () => {
     }
   });
 
-  test('dark dashboard visual identity is preserved', async ({ page }) => {
+  test('portfolio-aligned visual identity is preserved', async ({ page }) => {
     const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-    expect(bodyBg).toBe('rgb(0, 0, 0)');
+    expect(bodyBg).toBe('rgb(247, 245, 232)');
 
     await expect(page.getByText('GIUSEPPE OS').first()).toBeVisible();
     await expect(page.locator('.card').first()).toBeVisible();
     await expect(page.locator('.sidebar')).toBeVisible();
-    await expect(page.locator('.ambient-field')).toBeVisible();
   });
 
   test('architecture-aligned north star appears on Board', async ({ page }) => {
