@@ -103,13 +103,14 @@ a {
 
 .brand-logo {
   display: block;
-  height: 22px;
+  height: 26px;
   width: auto;
-  max-width: 180px;
+  max-width: 200px;
   object-fit: contain;
   object-position: left center;
   pointer-events: none;
   user-select: none;
+  filter: brightness(0);
 }
 
 .topnav {
@@ -139,7 +140,7 @@ a {
 
 .topnav button.active {
   color: var(--fg);
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(0, 0, 0, 0.06);
 }
 
 .topbar-status {
@@ -166,48 +167,97 @@ a {
 }
 
 .companion-greeting {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--muted);
-  margin: 8px 0 0;
+  margin: 0;
   font-weight: 500;
+  letter-spacing: -0.02em;
 }
 
-.daily-companion {
-  display: flex;
-  flex-direction: column;
+.page-header-today {
+  display: none;
+}
+
+.main-home {
+  gap: 0;
+  padding-top: 12px;
+}
+
+/* Today — editorial three-column composition */
+.daily-companion.editorial-today {
+  display: grid;
+  grid-template-columns: minmax(200px, 1.1fr) minmax(260px, 1.6fr) minmax(160px, 0.9fr);
   align-items: center;
-  gap: 18px;
+  gap: clamp(16px, 3vw, 40px);
   flex: 1;
   min-height: 0;
+  width: 100%;
+}
+
+.companion-editorial-left {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-self: center;
+  min-width: 0;
+}
+
+.companion-headline {
+  margin: 0;
+  font-size: clamp(30px, 3.8vw, 52px);
+  line-height: 0.92;
+  letter-spacing: -0.06em;
+}
+
+.companion-panel {
+  border: 1px solid var(--fg);
+  padding: 12px 14px;
+  background: transparent;
+}
+
+.companion-panel-text {
+  margin: 8px 0 0;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--fg);
+}
+
+.companion-panel-text--sentence {
+  text-transform: none;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.45;
+  color: var(--muted);
 }
 
 .companion-presence {
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-}
-
-.companion-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-height: 0;
   min-width: 0;
-  width: 100%;
-  max-width: 720px;
-  align-self: center;
 }
 
-/* Jewel face — static hero portrait, 10× prior size, centered */
+.companion-editorial-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: center;
+  min-width: 0;
+  padding-left: 8px;
+}
+
+/* Jewel face — static hero portrait, centered editorial focal point */
 .jewel-face {
-  width: min(1680px, 92vw, 58vh);
-  max-width: 1680px;
+  width: min(520px, 100%, 54vh);
+  max-width: 520px;
   aspect-ratio: 1 / 1;
-  border-radius: 2px;
+  border-radius: 0;
   overflow: hidden;
-  background: #000;
+  background: transparent;
   margin: 0 auto;
 }
 
@@ -359,7 +409,7 @@ a {
 }
 
 .main-home {
-  gap: 8px;
+  gap: 0;
 }
 
 .home-shell {
@@ -1784,8 +1834,8 @@ label {
   }
 
   .brand-logo {
-    height: 18px;
-    max-width: 120px;
+    height: 20px;
+    max-width: 130px;
   }
 
   .topnav {
@@ -1916,16 +1966,32 @@ label {
     margin-bottom: 4px;
   }
 
-  .daily-companion {
-    gap: 14px;
+  .daily-companion.editorial-today {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .companion-editorial-left {
+    order: 1;
+  }
+
+  .companion-presence {
+    order: 0;
+  }
+
+  .companion-editorial-right {
+    order: 2;
+    padding-left: 0;
+  }
+
+  .companion-headline {
+    font-size: 28px;
   }
 
   .jewel-face {
-    width: min(1680px, 94vw, 46vh);
-  }
-
-  .companion-content {
-    max-width: 100%;
+    width: min(360px, 88vw, 42vh);
+    max-width: 360px;
   }
 
   .decision-room {

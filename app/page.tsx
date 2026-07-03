@@ -234,6 +234,7 @@ export default function Home() {
   const [reason, setReason] = useState('');
   const [decisionResult, setDecisionResult] = useState<DecisionResult | null>(null);
 
+  const [todayWhy, setTodayWhy] = useState(false);
   const [todayCreative, setTodayCreative] = useState(false);
   const [todayReflect, setTodayReflect] = useState(false);
   const [todayOpportunity, setTodayOpportunity] = useState(false);
@@ -289,72 +290,86 @@ export default function Home() {
 
       <div className="app-body">
         <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}`} role="main">
-          <header className={`page-header progressive-header space-header-${view}`}>
-            <div className="space-meta">
-              <div className="kicker">{view}</div>
-              {activeNav && <span className="space-role">{activeNav.role}</span>}
-            </div>
-            <div className="view-title">{VIEW_HEADINGS[view]}</div>
-            {view === 'today' && (
-              <p className="companion-greeting">Good morning, Giuseppe.</p>
+          <header className={`page-header progressive-header space-header-${view}${view === 'today' ? ' page-header-today' : ''}`}>
+            {view !== 'today' && (
+              <>
+                <div className="space-meta">
+                  <div className="kicker">{view}</div>
+                  {activeNav && <span className="space-role">{activeNav.role}</span>}
+                </div>
+                <div className="view-title">{VIEW_HEADINGS[view]}</div>
+              </>
             )}
           </header>
 
           <div className={`view-body progressive-body mental-space mental-space-${view}`}>
             {view === 'today' && (
-              <div className="daily-companion">
+              <div className="daily-companion editorial-today">
+                <div className="companion-editorial-left">
+                  <div className="space-meta">
+                    <div className="kicker">today</div>
+                    <span className="space-role">Daily companion</span>
+                  </div>
+                  <h1 className="view-title companion-headline">{VIEW_HEADINGS.today}</h1>
+
+                  <section className="companion-panel">
+                    <div className="kicker">TODAY&apos;S FOCUS</div>
+                    <p className="companion-panel-text">{todayOpp.title}</p>
+                  </section>
+
+                  <section className="companion-panel">
+                    <div className="kicker">RECOMMENDED ACTION</div>
+                    <p className="companion-panel-text">{todayOpp.firstAction}</p>
+                  </section>
+
+                  {!todayWhy && (
+                    <DisclosureTrigger label="Why it matters" onClick={() => setTodayWhy(true)} />
+                  )}
+                  <DisclosurePanel open={todayWhy}>
+                    <section className="companion-panel">
+                      <div className="kicker">WHY IT MATTERS</div>
+                      <p className="companion-panel-text companion-panel-text--sentence">{todayOpp.whyThisMatters}</p>
+                    </section>
+                  </DisclosurePanel>
+
+                  {!todayCreative && (
+                    <DisclosureTrigger label="Creative suggestion" onClick={() => setTodayCreative(true)} />
+                  )}
+                  <DisclosurePanel open={todayCreative}>
+                    <section className="companion-panel">
+                      <div className="kicker">CREATIVE SUGGESTION</div>
+                      <p className="companion-panel-text companion-panel-text--sentence">{potential.creativeChallenge}</p>
+                    </section>
+                  </DisclosurePanel>
+
+                  {!todayReflect && (
+                    <DisclosureTrigger label="Reflection" onClick={() => setTodayReflect(true)} />
+                  )}
+                  <DisclosurePanel open={todayReflect}>
+                    <section className="companion-panel">
+                      <div className="kicker">REFLECTION</div>
+                      <p className="companion-panel-text companion-panel-text--sentence">{awareness.reflectionQuestion}</p>
+                    </section>
+                  </DisclosurePanel>
+
+                  {!todayOpportunity && (
+                    <DisclosureTrigger label="Opportunity" onClick={() => setTodayOpportunity(true)} />
+                  )}
+                  <DisclosurePanel open={todayOpportunity}>
+                    <section className="companion-panel">
+                      <div className="kicker">OPPORTUNITY</div>
+                      <p className="companion-panel-text">{todayOpp.title}</p>
+                      <p className="companion-panel-text companion-panel-text--sentence">{todayOpp.description}</p>
+                    </section>
+                  </DisclosurePanel>
+                </div>
+
                 <div className="companion-presence">
                   <JewelFace />
                 </div>
-                <div className="companion-content">
-                <section className="companion-block card card-glow">
-                  <div className="kicker">TODAY&apos;S FOCUS</div>
-                  <h2 className="focus-line">{todayOpp.title}</h2>
-                </section>
 
-                <section className="companion-block card">
-                  <div className="kicker">WHY IT MATTERS</div>
-                  <p className="insight-line">{todayOpp.whyThisMatters}</p>
-                </section>
-
-                <section className="companion-block card present-action">
-                  <div className="kicker">RECOMMENDED ACTION</div>
-                  <p className="action-line">{todayOpp.firstAction}</p>
-                  <button type="button" className="primary-action" onClick={() => setView('decisions')}>
-                    Take this step
-                  </button>
-                </section>
-
-                {!todayCreative && (
-                  <DisclosureTrigger label="Creative suggestion" onClick={() => setTodayCreative(true)} />
-                )}
-                <DisclosurePanel open={todayCreative}>
-                  <section className="card companion-block">
-                    <div className="kicker">CREATIVE SUGGESTION</div>
-                    <p>{potential.creativeChallenge}</p>
-                  </section>
-                </DisclosurePanel>
-
-                {!todayReflect && (
-                  <DisclosureTrigger label="Reflection" onClick={() => setTodayReflect(true)} />
-                )}
-                <DisclosurePanel open={todayReflect}>
-                  <section className="card companion-block">
-                    <div className="kicker">REFLECTION</div>
-                    <p>{awareness.reflectionQuestion}</p>
-                  </section>
-                </DisclosurePanel>
-
-                {!todayOpportunity && (
-                  <DisclosureTrigger label="Opportunity" onClick={() => setTodayOpportunity(true)} />
-                )}
-                <DisclosurePanel open={todayOpportunity}>
-                  <section className="card companion-block">
-                    <div className="kicker">OPPORTUNITY</div>
-                    <h2>{todayOpp.title}</h2>
-                    <p>{todayOpp.description}</p>
-                  </section>
-                </DisclosurePanel>
+                <div className="companion-editorial-right">
+                  <p className="companion-greeting">Good morning, Giuseppe.</p>
                 </div>
               </div>
             )}

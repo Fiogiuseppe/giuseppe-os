@@ -5,8 +5,8 @@ export function JewelFace() {
         src="/images/jewel-face.png"
         alt=""
         className="jewel-face-img"
-        width={1680}
-        height={1680}
+        width={520}
+        height={520}
         draggable={false}
       />
     </div>

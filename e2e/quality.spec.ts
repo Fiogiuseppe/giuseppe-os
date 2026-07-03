@@ -156,8 +156,8 @@ test.describe('Giuseppe OS quality loop', () => {
     const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     expect(bodyBg).toBe('rgb(247, 245, 232)');
 
-    await expect(page.getByText('Giuseppe').first()).toBeVisible();
-    await expect(page.locator('.card').first()).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Giuseppe OS home' })).toBeVisible();
+    await expect(page.locator('.companion-panel').first()).toBeVisible();
     await expect(page.locator('.topbar')).toBeVisible();
   });
 
