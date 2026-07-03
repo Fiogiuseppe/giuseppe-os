@@ -2,6 +2,7 @@ node_modules/
 .tools/
 .next/
 out/
+tsconfig.tsbuildinfo
 playwright-report/
 test-results/
 blob-report/
