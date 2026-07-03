@@ -20,6 +20,7 @@ export async function GET() {
     maxWords: MAX_LETTER_WORDS,
     provider: 'anthropic',
     cache: 'daily',
+    cacheLayers: ['file', 'platform-data-cache'],
     pipeline: ['reality-engine', 'personal-relevance-engine', 'todays-letter-generator']
   });
 }

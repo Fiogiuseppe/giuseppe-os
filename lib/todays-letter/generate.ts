@@ -1,8 +1,9 @@
 import { createClaudeProvider } from '../brain/providers/claude';
 import { ProviderConfigurationError, ProviderRequestError } from '../brain/providers/types';
 import { buildTodaysLetterContext, formatContextForPrompt } from './buildContext';
-import { readCachedLetter, writeCachedLetter } from './cache';
+import { readCachedLetter, letterDateKey, usePlatformLetterCache, writeCachedLetter } from './cache';
 import { buildFallbackLetter } from './fallback';
+import { getPlatformCachedLetter } from './platformCache';
 import { assembleLetter, countWords, parseLetterSections } from './parse';
 import { MAX_LETTER_WORDS, TODAYS_LETTER_SYSTEM_PROMPT } from './prompt';
 import type {
@@ -73,38 +74,48 @@ function resolveLetterMode(): 'anthropic' | 'fallback' {
   );
 }
 
-export async function generateTodaysLetter(): Promise<TodaysLetterResponse> {
+async function generateTodaysLetterFresh(): Promise<TodaysLetterResponse> {
   const context = await buildTodaysLetterContext();
-  const cached = await readCachedLetter(context.dateKey);
-  if (cached) {
-    return cached;
-  }
-
   const fallbackSections = buildFallbackLetter(context);
   const mode = resolveLetterMode();
 
+  let response: TodaysLetterResponse;
+
   if (mode === 'fallback') {
-    const response = buildResponse(fallbackSections, 'fallback', context, false);
-    await writeCachedLetter(context.dateKey, response);
-    return response;
+    response = buildResponse(fallbackSections, 'fallback', context, false);
+  } else {
+    const userPrompt = [
+      'Write Giuseppe his Today letter using only this intelligence pipeline context:',
+      formatContextForPrompt(context)
+    ].join('\n\n');
+
+    const completion = await createClaudeProvider().complete({
+      system: TODAYS_LETTER_SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: userPrompt }],
+      maxTokens: 900,
+      temperature: 0.35
+    });
+
+    const sections = normalizeSections(parseLetterSections(completion.content), fallbackSections);
+    response = buildResponse(sections, 'anthropic', context, false);
   }
 
-  const userPrompt = [
-    'Write Giuseppe his Today letter using only this intelligence pipeline context:',
-    formatContextForPrompt(context)
-  ].join('\n\n');
-
-  const completion = await createClaudeProvider().complete({
-    system: TODAYS_LETTER_SYSTEM_PROMPT,
-    messages: [{ role: 'user', content: userPrompt }],
-    maxTokens: 900,
-    temperature: 0.35
-  });
-
-  const sections = normalizeSections(parseLetterSections(completion.content), fallbackSections);
-  const response = buildResponse(sections, 'anthropic', context, false);
   await writeCachedLetter(context.dateKey, response);
   return response;
+}
+
+export async function generateTodaysLetter(): Promise<TodaysLetterResponse> {
+  const dateKey = letterDateKey();
+  const fileCached = await readCachedLetter(dateKey);
+  if (fileCached) {
+    return fileCached;
+  }
+
+  if (usePlatformLetterCache()) {
+    return getPlatformCachedLetter(dateKey, generateTodaysLetterFresh);
+  }
+
+  return generateTodaysLetterFresh();
 }
 
 export function mapTodaysLetterError(error: unknown): { status: number; message: string } {
