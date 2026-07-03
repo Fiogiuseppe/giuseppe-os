@@ -5,7 +5,13 @@ import { readCachedLetter, writeCachedLetter } from './cache';
 import { buildFallbackLetter } from './fallback';
 import { assembleLetter, countWords, parseLetterSections } from './parse';
 import { MAX_LETTER_WORDS, TODAYS_LETTER_SYSTEM_PROMPT } from './prompt';
-import type { TodaysLetterResponse, TodaysLetterSections, TodaysLetterSource } from './types';
+import type {
+  TodaysLetterContext,
+  TodaysLetterPipelineMeta,
+  TodaysLetterResponse,
+  TodaysLetterSections,
+  TodaysLetterSource
+} from './types';
 
 function normalizeSections(
   partial: Partial<TodaysLetterSections>,
@@ -15,17 +21,27 @@ function normalizeSections(
     greeting: partial.greeting?.trim() || fallback.greeting,
     observation: partial.observation?.trim() || fallback.observation,
     whyItMatters: partial.whyItMatters?.trim() || fallback.whyItMatters,
-    recommendation: partial.recommendation?.trim() || fallback.recommendation,
+    thingToIgnore: partial.thingToIgnore?.trim() || fallback.thingToIgnore,
+    thingToFocusOn: partial.thingToFocusOn?.trim() || fallback.thingToFocusOn,
     creativeSuggestion: partial.creativeSuggestion?.trim() || fallback.creativeSuggestion,
+    opportunity: partial.opportunity?.trim() || fallback.opportunity,
     reflectionQuestion: partial.reflectionQuestion?.trim() || fallback.reflectionQuestion
+  };
+}
+
+function pipelineMeta(context: TodaysLetterContext): TodaysLetterPipelineMeta {
+  return {
+    realitySignals: context.reality.signals.length,
+    relevanceItems: context.relevance.items.length,
+    externalFeedsActive: context.reality.externalFeedsActive,
+    confidenceNote: context.relevance.confidenceNote
   };
 }
 
 function buildResponse(
   sections: TodaysLetterSections,
   source: TodaysLetterSource,
-  generatedAt: string,
-  dateKey: string,
+  context: TodaysLetterContext,
   cached: boolean
 ): TodaysLetterResponse {
   const letter = assembleLetter(sections);
@@ -34,9 +50,10 @@ function buildResponse(
     sections,
     wordCount: countWords(letter),
     source,
-    generatedAt,
-    dateKey,
-    cached
+    generatedAt: context.generatedAt,
+    dateKey: context.dateKey,
+    cached,
+    pipeline: pipelineMeta(context)
   };
 }
 
@@ -67,31 +84,25 @@ export async function generateTodaysLetter(): Promise<TodaysLetterResponse> {
   const mode = resolveLetterMode();
 
   if (mode === 'fallback') {
-    const response = buildResponse(
-      fallbackSections,
-      'fallback',
-      context.generatedAt,
-      context.dateKey,
-      false
-    );
+    const response = buildResponse(fallbackSections, 'fallback', context, false);
     await writeCachedLetter(context.dateKey, response);
     return response;
   }
 
   const userPrompt = [
-    'Write Giuseppe his Today letter using only this context:',
+    'Write Giuseppe his Today letter using only this intelligence pipeline context:',
     formatContextForPrompt(context)
   ].join('\n\n');
 
   const completion = await createClaudeProvider().complete({
     system: TODAYS_LETTER_SYSTEM_PROMPT,
     messages: [{ role: 'user', content: userPrompt }],
-    maxTokens: 700,
+    maxTokens: 900,
     temperature: 0.35
   });
 
   const sections = normalizeSections(parseLetterSections(completion.content), fallbackSections);
-  const response = buildResponse(sections, 'anthropic', context.generatedAt, context.dateKey, false);
+  const response = buildResponse(sections, 'anthropic', context, false);
   await writeCachedLetter(context.dateKey, response);
   return response;
 }

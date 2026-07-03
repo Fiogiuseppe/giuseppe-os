@@ -1,4 +1,6 @@
 import { loadBrain } from '../brain/memory/store';
+import { runPersonalRelevanceEngine } from '../relevance/engine';
+import { runRealityEngine } from '../reality/engine';
 import { letterDateKey } from './cache';
 import { loadConstitutionExcerpt } from './loadConstitution';
 import type { TodaysLetterContext } from './types';
@@ -31,6 +33,8 @@ function formatLocalTime(date: Date): string {
 export async function buildTodaysLetterContext(now = new Date()): Promise<TodaysLetterContext> {
   const brain = await loadBrain();
   const constitution = await loadConstitutionExcerpt();
+  const reality = await runRealityEngine(now);
+  const relevance = await runPersonalRelevanceEngine(reality);
   const hour = Number(
     new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Europe/Copenhagen' }).format(
       now
@@ -46,10 +50,19 @@ export async function buildTodaysLetterContext(now = new Date()): Promise<Todays
     constitution,
     mission: brain.mission_2036,
     northStar: brain.north_star,
+    values: brain.values,
+    patterns: brain.patterns,
+    creativeGoals: brain.creative_goals,
+    careerGoals: brain.career_goals,
+    financeGoals: brain.finance.main_goals,
+    learningGoals: brain.reading_queue,
+    relationships: brain.contacts,
     activeProjects: Object.entries(brain.projects)
       .filter(([, project]) => project.status === 'active' || project.status === 'slow-active')
       .map(([name, project]) => ({ name, role: project.role, status: project.status })),
-    priorities: brain.priorities
+    priorities: brain.priorities,
+    reality,
+    relevance
   };
 }
 
@@ -59,10 +72,18 @@ export function formatContextForPrompt(context: TodaysLetterContext): string {
       ? context.activeProjects.map(p => `- ${p.name} (${p.status}): ${p.role}`).join('\n')
       : '- MISSING: no active projects documented';
 
-  const priorities =
-    context.priorities.length > 0
-      ? context.priorities.join(' | ')
-      : 'MISSING: no priorities documented';
+  const relevanceItems =
+    context.relevance.items.length > 0
+      ? context.relevance.items
+          .map(
+            item =>
+              `- [${item.confidence}] ${item.headline} — ${item.whyForGiuseppe} (score ${item.relevanceScore})`
+          )
+          .join('\n')
+      : '- MISSING: no personal relevance signals';
+
+  const realityNote = context.reality.note;
+  const confidenceNote = context.relevance.confidenceNote;
 
   return [
     `DATE: ${context.localDate}`,
@@ -71,8 +92,21 @@ export function formatContextForPrompt(context: TodaysLetterContext): string {
     context.constitution,
     `MISSION 2036: ${context.mission || 'MISSING'}`,
     `NORTH STAR: ${context.northStar || 'MISSING'}`,
+    `VALUES: ${context.values.join(', ') || 'MISSING'}`,
+    `PATTERNS: ${context.patterns.join(' | ') || 'MISSING'}`,
+    `CREATIVE GOALS: ${context.creativeGoals.join(' | ') || 'MISSING'}`,
+    `CAREER GOALS: ${context.careerGoals.join(' | ') || 'MISSING'}`,
+    `FINANCE GOALS: ${context.financeGoals.join(' | ') || 'MISSING'}`,
+    `LEARNING GOALS: ${context.learningGoals.join(' | ') || 'MISSING'}`,
+    `RELATIONSHIPS: ${context.relationships.join(' | ') || 'MISSING'}`,
     'CURRENT PROJECTS:',
     projects,
-    `PRIORITIES: ${priorities}`
+    `PRIORITIES: ${context.priorities.join(' | ') || 'MISSING'}`,
+    'REALITY ENGINE:',
+    realityNote,
+    `Signals collected: ${context.reality.signals.length}`,
+    'PERSONAL RELEVANCE (top 5 for Giuseppe):',
+    relevanceItems,
+    `CONFIDENCE: ${confidenceNote}`
   ].join('\n');
 }

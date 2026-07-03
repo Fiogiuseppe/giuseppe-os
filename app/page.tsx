@@ -264,6 +264,7 @@ export default function Home() {
   }
 
   const [todayWhy, setTodayWhy] = useState(false);
+  const [todayIgnore, setTodayIgnore] = useState(false);
   const [todayCreative, setTodayCreative] = useState(false);
   const [todayReflect, setTodayReflect] = useState(false);
   const [todayOpportunity, setTodayOpportunity] = useState(false);
@@ -394,7 +395,7 @@ export default function Home() {
                   </section>
 
                   <section className="companion-panel">
-                    <div className="kicker">RECOMMENDED ACTION</div>
+                    <div className="kicker">FOCUS TODAY</div>
                     {letterLoading && (
                       <p className="companion-panel-text companion-panel-text--sentence companion-letter-loading">
                         …
@@ -406,7 +407,7 @@ export default function Home() {
                       </p>
                     )}
                     {!letterLoading && !letterError && todaysLetter && (
-                      <p className="companion-panel-text">{todaysLetter.sections.recommendation}</p>
+                      <p className="companion-panel-text">{todaysLetter.sections.thingToFocusOn}</p>
                     )}
                   </section>
 
@@ -421,6 +422,16 @@ export default function Home() {
                     </section>
                   </DisclosurePanel>
 
+                  {!todayIgnore && todaysLetter && (
+                    <DisclosureTrigger label="Ignore today" onClick={() => setTodayIgnore(true)} />
+                  )}
+                  <DisclosurePanel open={todayIgnore}>
+                    <section className="companion-panel">
+                      <div className="kicker">IGNORE TODAY</div>
+                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter?.sections.thingToIgnore}</p>
+                    </section>
+                  </DisclosurePanel>
+
                   {!todayCreative && todaysLetter && (
                     <DisclosureTrigger label="Creative suggestion" onClick={() => setTodayCreative(true)} />
                   )}
@@ -431,6 +442,16 @@ export default function Home() {
                     </section>
                   </DisclosurePanel>
 
+                  {!todayOpportunity && todaysLetter && (
+                    <DisclosureTrigger label="Opportunity" onClick={() => setTodayOpportunity(true)} />
+                  )}
+                  <DisclosurePanel open={todayOpportunity}>
+                    <section className="companion-panel">
+                      <div className="kicker">OPPORTUNITY</div>
+                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter?.sections.opportunity}</p>
+                    </section>
+                  </DisclosurePanel>
+
                   {!todayReflect && todaysLetter && (
                     <DisclosureTrigger label="Reflection" onClick={() => setTodayReflect(true)} />
                   )}
@@ -438,16 +459,6 @@ export default function Home() {
                     <section className="companion-panel">
                       <div className="kicker">REFLECTION</div>
                       <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter?.sections.reflectionQuestion}</p>
-                    </section>
-                  </DisclosurePanel>
-
-                  {!todayOpportunity && todaysLetter && (
-                    <DisclosureTrigger label="Opportunity" onClick={() => setTodayOpportunity(true)} />
-                  )}
-                  <DisclosurePanel open={todayOpportunity}>
-                    <section className="companion-panel">
-                      <div className="kicker">OPPORTUNITY</div>
-                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter?.sections.observation}</p>
                     </section>
                   </DisclosurePanel>
                   </div>

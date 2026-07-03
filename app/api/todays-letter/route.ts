@@ -14,11 +14,12 @@ export async function POST() {
 export async function GET() {
   return Response.json({
     status: 'ok',
-    service: 'giuseppe-todays-letter',
-    version: '1.5.1-todays-letter',
+    service: 'giuseppe-intelligence-pipeline',
+    version: '1.6.0-intelligence-pipeline',
     method: 'POST',
     maxWords: MAX_LETTER_WORDS,
     provider: 'anthropic',
-    cache: 'daily'
+    cache: 'daily',
+    pipeline: ['reality-engine', 'personal-relevance-engine', 'todays-letter-generator']
   });
 }

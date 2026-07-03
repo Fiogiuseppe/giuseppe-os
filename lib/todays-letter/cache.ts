@@ -19,8 +19,11 @@ export function letterDateKey(now = new Date()): string {
   }).format(now);
 }
 
+const CACHE_SCHEMA = 'intelligence-pipeline-v1';
+
 interface LetterCacheFile {
   dateKey: string;
+  schemaVersion: string;
   letter: TodaysLetterResponse;
 }
 
@@ -28,7 +31,12 @@ export async function readCachedLetter(dateKey: string): Promise<TodaysLetterRes
   try {
     const raw = await readFile(cachePath(), 'utf8');
     const parsed = JSON.parse(raw) as LetterCacheFile;
-    if (parsed.dateKey === dateKey && parsed.letter?.letter) {
+    if (
+      parsed.dateKey === dateKey &&
+      parsed.schemaVersion === CACHE_SCHEMA &&
+      parsed.letter?.letter &&
+      parsed.letter.sections?.thingToFocusOn
+    ) {
       return { ...parsed.letter, cached: true };
     }
     return null;
@@ -40,6 +48,10 @@ export async function readCachedLetter(dateKey: string): Promise<TodaysLetterRes
 export async function writeCachedLetter(dateKey: string, letter: TodaysLetterResponse): Promise<void> {
   const target = cachePath();
   await mkdir(path.dirname(target), { recursive: true });
-  const payload: LetterCacheFile = { dateKey, letter: { ...letter, cached: false } };
+  const payload: LetterCacheFile = {
+    dateKey,
+    schemaVersion: CACHE_SCHEMA,
+    letter: { ...letter, cached: false }
+  };
   await writeFile(target, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
 }

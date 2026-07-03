@@ -10,9 +10,14 @@ export function parseLetterSections(answer: string): Partial<TodaysLetterSection
   const cleaned = stripCodeFence(answer);
 
   try {
-    const parsed = JSON.parse(cleaned) as Partial<TodaysLetterSections>;
+    const parsed = JSON.parse(cleaned) as Partial<TodaysLetterSections> & {
+      recommendation?: string;
+    };
     if (parsed && typeof parsed === 'object') {
-      return parsed;
+      return {
+        ...parsed,
+        thingToFocusOn: parsed.thingToFocusOn ?? parsed.recommendation
+      };
     }
   } catch {
     // Fall through to regex parsing.
@@ -23,15 +28,19 @@ export function parseLetterSections(answer: string): Partial<TodaysLetterSection
 
   fields.greeting = pick(/greeting:\s*(.+)/i);
   fields.observation = pick(/observation:\s*(.+)/i) ?? pick(/one important observation:\s*(.+)/i);
-  fields.whyItMatters = pick(/why it matters(?: today)?:\s*(.+)/i);
-  fields.recommendation =
-    pick(/recommendation:\s*(.+)/i) ??
-    pick(/one concrete action:\s*(.+)/i) ??
-    pick(/one concrete recommendation:\s*(.+)/i);
+  fields.whyItMatters =
+    pick(/why (?:this )?matters:\s*(.+)/i) ?? pick(/why it matters(?: today)?:\s*(.+)/i);
+  fields.thingToIgnore =
+    pick(/thingToIgnore:\s*(.+)/i) ?? pick(/one thing you should ignore today:\s*(.+)/i);
+  fields.thingToFocusOn =
+    pick(/thingToFocusOn:\s*(.+)/i) ??
+    pick(/one thing you should focus on:\s*(.+)/i) ??
+    pick(/recommendation:\s*(.+)/i);
   fields.creativeSuggestion =
-    pick(/creative suggestion:\s*(.+)/i) ?? pick(/one creative suggestion:\s*(.+)/i);
+    pick(/creativeSuggestion:\s*(.+)/i) ?? pick(/one creative suggestion:\s*(.+)/i);
+  fields.opportunity = pick(/opportunity:\s*(.+)/i) ?? pick(/one opportunity:\s*(.+)/i);
   fields.reflectionQuestion =
-    pick(/reflection question:\s*(.+)/i) ?? pick(/one reflection question:\s*(.+)/i);
+    pick(/reflectionQuestion:\s*(.+)/i) ?? pick(/one reflection question:\s*(.+)/i);
 
   return fields;
 }
@@ -44,9 +53,13 @@ export function assembleLetter(sections: TodaysLetterSections): string {
     '',
     sections.whyItMatters,
     '',
-    sections.recommendation,
+    sections.thingToIgnore,
+    '',
+    sections.thingToFocusOn,
     '',
     sections.creativeSuggestion,
+    '',
+    sections.opportunity,
     '',
     sections.reflectionQuestion
   ].join('\n');
