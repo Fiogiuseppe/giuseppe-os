@@ -1,0 +1,64 @@
+{
+  "north_star": "PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.",
+  "mission_2036": "Costruire una persona che possa scegliere se lavorare oppure no.",
+  "manifesto": "Un sistema pensante che mi aiuta a vivere il mio proposito spirituale nella realtà pratica.",
+  "values": [
+    "Libertà",
+    "Verità",
+    "Bellezza",
+    "Crescita",
+    "Generosità"
+  ],
+  "rules": [
+    "Compra tempo, non status.",
+    "Non sacrificare il lungo termine per il breve.",
+    "Ogni decisione deve aumentare almeno un capitale.",
+    "Non più idee: più concentrazione.",
+    "Una cosa eccezionale vale più di dieci mediocri.",
+    "Pubblica prima di perfezionare all'infinito.",
+    "Il nome Giuseppe è la marca madre."
+  ],
+  "projects": {
+    "LEGO": {
+      "role": "Motore principale di reddito, reputazione, network.",
+      "status": "active"
+    },
+    "Brand Giuseppe": {
+      "role": "Marca madre.",
+      "status": "active"
+    },
+    "Visceral Poems": {
+      "role": "Capitale creativo e reputazionale sacro.",
+      "status": "slow-active"
+    },
+    "UREES": {
+      "role": "Oggetto di culto, pochi pezzi, alta identità.",
+      "status": "slow-active"
+    },
+    "Medium/LinkedIn": {
+      "role": "Canale per mostrare come pensa.",
+      "status": "active"
+    },
+    "Freelance": {
+      "role": "Solo premium o reputazionale.",
+      "status": "selective"
+    }
+  },
+  "finance": {
+    "cash_dkk": 200000,
+    "monthly_income_notes": "LEGO + stanza affittata",
+    "main_goals": [
+      "investire",
+      "comprare casa a Copenaghen",
+      "Wrangler solo quando sostenibile",
+      "libertà 2036"
+    ]
+  },
+  "patterns": [
+    "Quando è entusiasta apre troppi progetti.",
+    "Il rischio principale è dispersione, non mancanza di idee.",
+    "Sottovaluta spesso il valore economico del proprio lavoro.",
+    "Prende decisioni migliori quando ragiona a 10 anni.",
+    "Vuole fama, ma la strategia giusta è reputazione stimata tra professionisti."
+  ]
+}
