@@ -1,12 +1,16 @@
-export type {
-  OptimizationTargetId
-} from './core';
+export type { CapitalId, OptimizationTargetId } from './core';
 
 export {
   ABSOLUTE_RULE,
+  CAPITALS,
   CORE_PHILOSOPHY_PROMPT,
+  CREATIVE_IDENTITY_RULE,
   HOUSE_RULE,
+  LIFE_OPTIMIZATION_RULE,
   MISSION_QUESTION,
   OPTIMIZATION_TARGETS,
+  REALITY_FILTER_QUESTION,
+  SYSTEM_PURPOSE,
+  TRAJECTORY_FOCUS,
   WORLD_CONNECTION_QUESTION
 } from './core';
