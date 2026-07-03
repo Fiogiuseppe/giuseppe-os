@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import brain from '../memory/giuseppe_brain.json';
 import { financeDisplay } from './financeDisplay';
 import {
@@ -9,6 +9,8 @@ import {
 } from '../engine/decisionEngine';
 import type { DecisionAIResult } from '../lib/brain/decisions/types';
 import { decideViaBrain } from './lib/decideViaBrain';
+import { fetchTodaysLetter } from './lib/fetchTodaysLetter';
+import type { TodaysLetterResponse } from '../lib/todays-letter/types';
 import { buildMemoryPalaceCards } from './lib/memoryPalaceCards';
 import { runPotentialEngine } from '../engine/potentialEngine';
 import { runAwarenessEngine } from '../engine/awarenessEngine';
@@ -266,6 +268,39 @@ export default function Home() {
   const [todayReflect, setTodayReflect] = useState(false);
   const [todayOpportunity, setTodayOpportunity] = useState(false);
 
+  const [todaysLetter, setTodaysLetter] = useState<TodaysLetterResponse | null>(null);
+  const [letterLoading, setLetterLoading] = useState(true);
+  const [letterError, setLetterError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadLetter() {
+      setLetterLoading(true);
+      setLetterError(null);
+
+      const response = await fetchTodaysLetter();
+      if (cancelled) {
+        return;
+      }
+
+      setLetterLoading(false);
+
+      if (!response.ok) {
+        setLetterError(response.message);
+        return;
+      }
+
+      setTodaysLetter(response.letter);
+    }
+
+    void loadLetter();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const [awarenessWhy, setAwarenessWhy] = useState(false);
   const [awarenessEvidence, setAwarenessEvidence] = useState(false);
   const [awarenessReflect, setAwarenessReflect] = useState(false);
@@ -341,14 +376,39 @@ export default function Home() {
                   </div>
                   <h1 className="view-title companion-headline">{VIEW_HEADINGS.today}</h1>
 
-                  <section className="companion-panel">
-                    <div className="kicker">TODAY&apos;S FOCUS</div>
-                    <p className="companion-panel-text">{todayOpp.title}</p>
+                  <section className="companion-panel companion-panel-letter">
+                    <div className="kicker">TODAY&apos;S LETTER</div>
+                    {letterLoading && (
+                      <p className="companion-panel-text companion-panel-text--sentence companion-letter-loading">
+                        Giuseppe OS sta pensando…
+                      </p>
+                    )}
+                    {!letterLoading && letterError && (
+                      <p className="companion-panel-text companion-panel-text--sentence companion-letter-error">
+                        {letterError}
+                      </p>
+                    )}
+                    {!letterLoading && !letterError && todaysLetter && (
+                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter.sections.observation}</p>
+                    )}
+                    {!letterLoading && !letterError && !todaysLetter && (
+                      <p className="companion-panel-text companion-panel-text--sentence">{todayOpp.title}</p>
+                    )}
                   </section>
 
                   <section className="companion-panel">
                     <div className="kicker">RECOMMENDED ACTION</div>
-                    <p className="companion-panel-text">{todayOpp.firstAction}</p>
+                    {letterLoading && (
+                      <p className="companion-panel-text companion-panel-text--sentence companion-letter-loading">
+                        …
+                      </p>
+                    )}
+                    {!letterLoading && todaysLetter && (
+                      <p className="companion-panel-text">{todaysLetter.sections.recommendation}</p>
+                    )}
+                    {!letterLoading && !todaysLetter && (
+                      <p className="companion-panel-text">{todayOpp.firstAction}</p>
+                    )}
                   </section>
 
                   <div className="companion-editorial-extra">
@@ -400,7 +460,9 @@ export default function Home() {
                 </div>
 
                 <div className="companion-editorial-right">
-                  <p className="companion-greeting">Good morning, Giuseppe.</p>
+                  <p className="companion-greeting">
+                    {todaysLetter?.sections.greeting ?? 'Good morning, Giuseppe.'}
+                  </p>
                 </div>
               </div>
             )}
