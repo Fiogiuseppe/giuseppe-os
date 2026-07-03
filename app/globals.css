@@ -87,44 +87,29 @@ a {
 
 .topbar-brand {
   display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
+  align-items: center;
   background: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
   color: var(--fg);
   transition: opacity 0.3s var(--ease);
+  flex-shrink: 0;
 }
 
 .topbar-brand:hover {
   opacity: 0.7;
 }
 
-.brand-mark {
-  width: 22px;
+.brand-logo {
+  display: block;
   height: 22px;
-  display: inline-grid;
-  place-items: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: #fff;
-  background: var(--accent);
-  flex-shrink: 0;
-}
-
-.brand-wordmark {
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
-
-.brand-sub {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: 0.04em;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+  object-position: left center;
+  pointer-events: none;
+  user-select: none;
 }
 
 .topnav {
@@ -1795,11 +1780,12 @@ label {
 
   .topbar-brand {
     flex-shrink: 0;
-    max-width: 42%;
+    max-width: 38%;
   }
 
-  .brand-sub {
-    display: none;
+  .brand-logo {
+    height: 18px;
+    max-width: 120px;
   }
 
   .topnav {
@@ -1824,16 +1810,6 @@ label {
     padding: 5px 9px;
     font-size: 10px;
     flex-shrink: 0;
-  }
-
-  .brand-wordmark {
-    font-size: 14px;
-  }
-
-  .brand-mark {
-    width: 18px;
-    height: 18px;
-    font-size: 10px;
   }
 
   .topbar-status {
