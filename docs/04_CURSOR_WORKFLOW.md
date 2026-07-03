@@ -7,12 +7,17 @@
 
 ## Session Start (Required)
 
+**Primary guide:** [`docs/CURSOR_STARTUP.md`](CURSOR_STARTUP.md)
+
 Before implementing anything, read these files in order:
 
-1. [`docs/00_PROJECT_STATE.md`](00_PROJECT_STATE.md) — vision, architecture, design direction
-2. [`docs/01_CURRENT_STATUS.md`](01_CURRENT_STATUS.md) — what exists, what is broken, what is missing
-3. [`docs/02_NEXT_STEPS.md`](02_NEXT_STEPS.md) — current implementation priorities
-4. [`docs/04_CURSOR_WORKFLOW.md`](04_CURSOR_WORKFLOW.md) — this file
+1. [`docs/PRODUCT_CONSTITUTION.md`](PRODUCT_CONSTITUTION.md) — product philosophy
+2. [`docs/ENGINEERING_CONSTITUTION.md`](ENGINEERING_CONSTITUTION.md) — engineering rules
+3. [`docs/DESIGN_DNA.md`](DESIGN_DNA.md) — permanent design language
+4. [`docs/00_PROJECT_STATE.md`](00_PROJECT_STATE.md) — vision, architecture, design direction
+5. [`docs/01_CURRENT_STATUS.md`](01_CURRENT_STATUS.md) — what exists, what is broken, what is missing
+6. [`docs/02_NEXT_STEPS.md`](02_NEXT_STEPS.md) — current implementation priorities
+7. [`docs/04_CURSOR_WORKFLOW.md`](04_CURSOR_WORKFLOW.md) — this file
 
 If the task touches architecture or product direction, also read:
 

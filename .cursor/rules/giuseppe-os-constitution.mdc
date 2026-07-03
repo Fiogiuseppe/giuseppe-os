@@ -1,0 +1,38 @@
+---
+description: Giuseppe OS development constitution — read before any implementation
+alwaysApply: true
+---
+
+# Giuseppe OS Constitution
+
+The **repository is the source of truth**. The conversation is temporary.
+
+## Before implementing anything
+
+Read in order:
+1. `docs/CURSOR_STARTUP.md`
+2. `docs/PRODUCT_CONSTITUTION.md`
+3. `docs/ENGINEERING_CONSTITUTION.md`
+4. `docs/DESIGN_DNA.md`
+5. `docs/01_CURRENT_STATUS.md`
+6. `docs/02_NEXT_STEPS.md`
+
+If conversation contradicts the Constitution, **ask Giuseppe before violating it**.
+
+## Mission gate
+
+> Does this help Giuseppe become the person he chose to become?
+
+If no — rethink.
+
+## Quality loop (no shortcuts)
+
+Implement → `npm run quality:check` → fix → commit (never broken code)
+
+## Non-negotiables
+
+- Giuseppe OS is a companion, not a dashboard
+- Progressive disclosure — system knows more than it shows
+- Executive Brain orchestrates — never call AI from UI directly
+- Never expose secrets or sensitive personal data
+- Documentation-only tasks must not touch `app/` code
