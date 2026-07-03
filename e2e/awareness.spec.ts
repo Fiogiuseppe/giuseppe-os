@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { unlockApp } from './helpers/auth';
 
 test.describe('Giuseppe OS awareness engine', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await unlockApp(page);
     await page.getByRole('navigation').getByRole('button', { name: 'Awareness' }).click();
   });
 

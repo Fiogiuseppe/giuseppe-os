@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { unlockApp } from './helpers/auth';
 
 const NORTH_STAR = 'PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.';
 const FOOTER_LINE_1 = "It's not software that tells you what to do.";
@@ -37,7 +38,7 @@ async function expectPrimaryHeading(page: import('@playwright/test').Page) {
 
 test.describe('Giuseppe OS quality loop', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await unlockApp(page);
   });
 
   test('all main sections are reachable', async ({ page }) => {
@@ -166,7 +167,7 @@ test.describe('Giuseppe OS quality loop', () => {
 test.describe('Giuseppe OS quality loop — responsiveness', () => {
   test('mobile viewport keeps navigation and headings usable', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/');
+    await unlockApp(page);
 
     const nav = page.getByRole('navigation');
     await expect(nav.getByRole('button', { name: 'Board' })).toBeVisible();
