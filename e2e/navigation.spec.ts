@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 
 const NAV_VIEWS = [
+  { label: 'Home', heading: /GIUSEPPE OS/ },
   { label: 'Board', heading: /PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA/ },
-  { label: 'Awareness', heading: /I NOTICED SOMETHING/ },
   { label: 'Today', heading: /UN PASSO ALLA VOLTA VERSO LA LIBERTÀ/ },
-  { label: 'Potential', heading: /TODAY'S OPPORTUNITY/ },
   { label: 'Projects', heading: /IL SISTEMA GIUSEPPE/ },
   { label: 'Finance', heading: /COMPRA LIBERTÀ, NON STATUS/ },
+  { label: 'Awareness', heading: /I NOTICED SOMETHING/ },
   { label: 'Brain', heading: /CHI HO SCELTO DI DIVENTARE/ }
 ] as const;
 
@@ -16,7 +16,7 @@ test.describe('Giuseppe OS navigation', () => {
   });
 
   test('loads the home page', async ({ page }) => {
-    await expect(page.getByText('GIUSEPPE OS')).toBeVisible();
+    await expect(page.getByText('GIUSEPPE OS').first()).toBeVisible();
     await expect(page.getByText("It's not software that tells you what to do.")).toBeVisible();
     await expect(page.getByText("It's software that remembers who you chose to become.")).toBeVisible();
   });
@@ -33,9 +33,9 @@ test.describe('Giuseppe OS navigation', () => {
     const nav = page.getByRole('navigation');
 
     for (const { label, heading } of NAV_VIEWS) {
-      await nav.getByRole('button', { name: label }).click();
-      await expect(page.getByRole('main').getByText(heading)).toBeVisible();
-      await expect(nav.getByRole('button', { name: label })).toHaveClass(/active/);
+      await nav.getByRole('button', { name: label, exact: true }).click();
+      await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
+      await expect(nav.getByRole('button', { name: label, exact: true })).toHaveClass(/active/);
     }
   });
 

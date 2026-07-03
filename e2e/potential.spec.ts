@@ -3,18 +3,18 @@ import { test, expect } from '@playwright/test';
 test.describe('Giuseppe OS potential engine', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('navigation').getByRole('button', { name: 'Potential' }).click();
+    await page.getByRole('navigation').getByRole('button', { name: 'Board' }).click();
   });
 
   test('opens the Potential page', async ({ page }) => {
     await expect(page.getByText("TODAY'S OPPORTUNITY")).toBeVisible();
     await expect(page.getByText('OPPORTUNITY HISTORY')).toBeVisible();
-    await expect(page.getByRole('navigation').getByRole('button', { name: 'Potential' })).toHaveClass(/active/);
+    await expect(page.getByRole('navigation').getByRole('button', { name: 'Board' })).toHaveClass(/active/);
   });
 
   test('shows today opportunity with confidence score', async ({ page }) => {
-    await expect(page.locator('.potential-score')).toBeVisible();
-    const scoreText = await page.locator('.potential-score').textContent();
+    await expect(page.locator('.potential-score').first()).toBeVisible();
+    const scoreText = await page.locator('.potential-score').first().textContent();
     const score = Number(scoreText?.trim());
     expect(score).toBeGreaterThanOrEqual(0);
     expect(score).toBeLessThanOrEqual(100);
@@ -40,10 +40,10 @@ test.describe('Giuseppe OS potential engine', () => {
   });
 
   test('navigation still works from Potential page', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Board' }).click();
-    await expect(page.getByText('PURPOSE ENGINE')).toBeVisible();
+    await page.getByRole('navigation').getByRole('button', { name: 'Home' }).click();
+    await expect(page.getByText('NORTH STAR')).toBeVisible();
 
-    await page.getByRole('navigation').getByRole('button', { name: 'Potential' }).click();
+    await page.getByRole('navigation').getByRole('button', { name: 'Board' }).click();
     await expect(page.getByText("TODAY'S OPPORTUNITY")).toBeVisible();
   });
 });

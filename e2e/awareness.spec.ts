@@ -7,7 +7,7 @@ test.describe('Giuseppe OS awareness engine', () => {
   });
 
   test('opens the Awareness page', async ({ page }) => {
-    await expect(page.getByText('I NOTICED SOMETHING.')).toBeVisible();
+    await expect(page.getByRole('main').locator('.view-title')).toHaveText('I NOTICED SOMETHING.');
     await expect(page.getByText('INSIGHT')).toBeVisible();
     await expect(page.getByRole('navigation').getByRole('button', { name: 'Awareness' })).toHaveClass(/active/);
   });
@@ -16,7 +16,7 @@ test.describe('Giuseppe OS awareness engine', () => {
     await expect(page.getByText('EVIDENCE FROM MEMORY')).toBeVisible();
     await expect(page.getByText('RISK IF IGNORED')).toBeVisible();
     await expect(page.getByText('REFLECT')).toBeVisible();
-    await expect(page.locator('.hero .card h2')).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Stai portando|Hai liquidità|Il lavoro sacro|Vuoi visibilità|LEGO è il motore/ })).toBeVisible();
   });
 
   test('shows confidence score', async ({ page }) => {
@@ -37,6 +37,6 @@ test.describe('Giuseppe OS awareness engine', () => {
     await expect(page.getByText('PURPOSE ENGINE')).toBeVisible();
 
     await page.getByRole('navigation').getByRole('button', { name: 'Awareness' }).click();
-    await expect(page.getByText('I NOTICED SOMETHING.')).toBeVisible();
+    await expect(page.getByRole('main').locator('.view-title')).toHaveText('I NOTICED SOMETHING.');
   });
 });

@@ -5,12 +5,12 @@ const FOOTER_LINE_1 = "It's not software that tells you what to do.";
 const FOOTER_LINE_2 = "It's software that remembers who you chose to become.";
 
 const MAIN_SECTIONS = [
+  { label: 'Home', heading: /GIUSEPPE OS/ },
   { label: 'Board', heading: /PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA/ },
-  { label: 'Awareness', heading: /I NOTICED SOMETHING/ },
   { label: 'Today', heading: /UN PASSO ALLA VOLTA VERSO LA LIBERTÀ/ },
-  { label: 'Potential', heading: /TODAY'S OPPORTUNITY/ },
   { label: 'Projects', heading: /IL SISTEMA GIUSEPPE/ },
   { label: 'Finance', heading: /COMPRA LIBERTÀ, NON STATUS/ },
+  { label: 'Awareness', heading: /I NOTICED SOMETHING/ },
   { label: 'Brain', heading: /CHI HO SCELTO DI DIVENTARE/ }
 ] as const;
 
@@ -29,7 +29,7 @@ async function expectFooterManifesto(page: import('@playwright/test').Page) {
 
 async function expectPrimaryHeading(page: import('@playwright/test').Page) {
   const main = page.getByRole('main');
-  const heading = main.locator('.h1, .potential-h1').first();
+  const heading = main.locator('.view-title').first();
   await expect(heading).toBeVisible();
   const text = await heading.textContent();
   expect(text?.trim().length).toBeGreaterThan(0);
@@ -44,9 +44,9 @@ test.describe('Giuseppe OS quality loop', () => {
     const nav = page.getByRole('navigation');
 
     for (const { label, heading } of MAIN_SECTIONS) {
-      await nav.getByRole('button', { name: label }).click();
+      await nav.getByRole('button', { name: label, exact: true }).click();
       await expect(page.getByRole('main')).toBeVisible();
-      await expect(page.getByRole('main').getByText(heading)).toBeVisible();
+      await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
     }
   });
 
@@ -87,8 +87,8 @@ test.describe('Giuseppe OS quality loop', () => {
     await expect(awarenessButton).toBeVisible();
 
     await awarenessButton.click();
-    await expect(page.getByText('I NOTICED SOMETHING.')).toBeVisible();
-    await expect(page.locator('.hero .card h2')).toBeVisible();
+    await expect(page.getByRole('main').locator('.view-title')).toHaveText('I NOTICED SOMETHING.');
+    await expect(page.getByRole('heading', { name: /Stai portando|Hai liquidità|Il lavoro sacro|Vuoi visibilità|LEGO è il motore/ })).toBeVisible();
     await expect(page.getByText('RECOMMENDED ACTION')).toBeVisible();
     await expect(page.locator('.potential-score')).toBeVisible();
   });
@@ -110,7 +110,7 @@ test.describe('Giuseppe OS quality loop', () => {
     await expect(page.getByRole('navigation')).toBeVisible();
     await expect(page.getByRole('main')).toBeVisible();
     await expect(page.locator('footer.footer')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Board' })).toBeVisible();
+    await expect(page.getByRole('navigation').getByRole('button', { name: 'Board', exact: true })).toBeVisible();
   });
 
   test('visual hierarchy uses kickers before headlines', async ({ page }) => {
@@ -131,12 +131,12 @@ test.describe('Giuseppe OS quality loop', () => {
     }
   });
 
-  test('north star is not duplicated outside Board view', async ({ page }) => {
+  test('north star appears only on Home and Board views', async ({ page }) => {
     await expect(page.getByRole('main').getByText(NORTH_STAR)).toHaveCount(1);
 
     const nav = page.getByRole('navigation');
     for (const { label } of MAIN_SECTIONS) {
-      if (label === 'Board') continue;
+      if (label === 'Home' || label === 'Board') continue;
       await nav.getByRole('button', { name: label }).click();
       await expect(page.getByRole('main').getByText(NORTH_STAR)).toHaveCount(0);
     }
@@ -150,15 +150,16 @@ test.describe('Giuseppe OS quality loop', () => {
     }
   });
 
-  test('visual identity tokens are preserved', async ({ page }) => {
+  test('dark dashboard visual identity is preserved', async ({ page }) => {
     const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-    expect(bodyBg).toBe('rgb(245, 241, 232)');
+    expect(bodyBg).toBe('rgb(7, 11, 20)');
 
-    await expect(page.getByText('GIUSEPPE OS')).toBeVisible();
+    await expect(page.getByText('GIUSEPPE OS').first()).toBeVisible();
     await expect(page.locator('.card').first()).toBeVisible();
+    await expect(page.locator('.sidebar')).toBeVisible();
   });
 
-  test('architecture-aligned north star appears on Board', async ({ page }) => {
+  test('architecture-aligned north star appears on Home', async ({ page }) => {
     await expect(page.getByRole('main').getByText(NORTH_STAR)).toBeVisible();
   });
 
@@ -166,9 +167,9 @@ test.describe('Giuseppe OS quality loop', () => {
     await page.getByRole('navigation').getByRole('button', { name: 'Finance' }).click();
 
     const main = page.getByRole('main');
-    await expect(main.getByText('•••••')).toBeVisible();
-    await expect(main.getByText('Hidden')).toBeVisible();
     await expect(main.getByText('CASH RESERVE')).toBeVisible();
+    await expect(main.getByText('Hidden')).toBeVisible();
+    await expect(main.locator('.privacy-blur').first()).toBeVisible();
     await expect(page.getByText('200000')).not.toBeVisible();
     await expect(page.getByText(/DKK/)).not.toBeVisible();
     await expect(page.getByText('stanza affittata')).not.toBeVisible();
@@ -181,11 +182,11 @@ test.describe('Giuseppe OS quality loop — responsiveness', () => {
     await page.goto('/');
 
     const nav = page.getByRole('navigation');
-    await expect(nav.getByRole('button', { name: 'Board' })).toBeVisible();
+    await expect(nav.getByRole('button', { name: 'Home' })).toBeVisible();
 
     for (const { label, heading } of MAIN_SECTIONS) {
-      await nav.getByRole('button', { name: label }).click();
-      await expect(page.getByRole('main').getByText(heading)).toBeVisible();
+      await nav.getByRole('button', { name: label, exact: true }).click();
+      await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
       await expectFooterManifesto(page);
     }
   });
