@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import brain from '../memory/giuseppe_brain.json';
 import {
   runDecisionEngine,
@@ -8,12 +8,14 @@ import {
   COUNSELLOR_LABELS,
   type DecisionResult
 } from '../engine/decisionEngine';
+import { runPotentialEngine } from '../engine/potentialEngine';
 
-type View = 'board' | 'today' | 'projects' | 'finance' | 'brain';
+type View = 'board' | 'today' | 'projects' | 'finance' | 'brain' | 'potential';
 
 const NAV: { id: View; label: string }[] = [
   { id: 'board', label: 'Board' },
   { id: 'today', label: 'Today' },
+  { id: 'potential', label: 'Potential' },
   { id: 'projects', label: 'Projects' },
   { id: 'finance', label: 'Finance' },
   { id: 'brain', label: 'Brain' }
@@ -24,6 +26,8 @@ export default function Home() {
   const [decision, setDecision] = useState('');
   const [reason, setReason] = useState('');
   const [result, setResult] = useState<DecisionResult | null>(null);
+  const potential = useMemo(() => runPotentialEngine(), []);
+  const today = potential.todaysOpportunity;
 
   return (
     <div className="shell">
@@ -42,7 +46,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <main className="main">
+      <main className={view === 'potential' ? 'main potential-main' : 'main'}>
         {view === 'board' && (
           <>
             <section className="hero">
@@ -116,6 +120,81 @@ export default function Home() {
                     <p>{result.nextAction}</p>
                   </div>
                 )}
+              </div>
+            </section>
+          </>
+        )}
+
+        {view === 'potential' && (
+          <>
+            <section className="potential-hero">
+              <div className="potential-card potential-span2">
+                <div className="kicker">TODAY&apos;S OPPORTUNITY</div>
+                <div className="potential-h1">{today.title}</div>
+                <p>{today.description}</p>
+                <p><b>Perché conta:</b> {today.whyThisMatters}</p>
+                <p><b>Prima azione:</b> {today.firstAction}</p>
+                <div className="potential-meta">
+                  Impatto {today.estimatedImpact} · {today.timeRequired} · energia {today.energyRequired} · allineamento {today.missionAlignment}
+                </div>
+              </div>
+              <div className="potential-card">
+                <div className="kicker">CONFIDENCE</div>
+                <div className="potential-score">{today.confidenceScore}</div>
+                <p>Score {Math.round(today.totalScore)} · {today.sourceProject ?? 'sistema'}</p>
+              </div>
+            </section>
+
+            <section className="potential-grid">
+              <div className="potential-card">
+                <div className="kicker">CREATIVE CHALLENGE</div>
+                <h2>Sfida.</h2>
+                <p>{potential.creativeChallenge}</p>
+              </div>
+              <div className="potential-card">
+                <div className="kicker">SKILL TO LEARN</div>
+                <h2>Competenza.</h2>
+                <p>{potential.skillToLearn}</p>
+              </div>
+              <div className="potential-card">
+                <div className="kicker">PERSON TO CONTACT</div>
+                <h2>Contatto.</h2>
+                <p>{potential.personToContact}</p>
+              </div>
+              <div className="potential-card">
+                <div className="kicker">ARTICLE TO READ</div>
+                <h2>Lettura.</h2>
+                <p>{potential.articleToRead}</p>
+              </div>
+              <div className="potential-card">
+                <div className="kicker">PROJECT TO FINISH</div>
+                <h2>Progetto.</h2>
+                <p>{potential.projectToFinish}</p>
+              </div>
+              <div className="potential-card">
+                <div className="kicker">RISK TO AVOID</div>
+                <h2>Rischio.</h2>
+                <p>{potential.riskToAvoid}</p>
+              </div>
+              <div className="potential-card">
+                <div className="kicker">QUESTION OF THE DAY</div>
+                <h2>Domanda.</h2>
+                <p>{potential.questionOfTheDay}</p>
+              </div>
+              <div className="potential-card">
+                <div className="kicker">WEEKLY FOCUS</div>
+                <h2>Focus.</h2>
+                <p>{potential.weeklyFocus}</p>
+              </div>
+              <div className="potential-card potential-span4">
+                <div className="kicker">OPPORTUNITY HISTORY</div>
+                <ul>
+                  {potential.opportunityHistory.map(item => (
+                    <li key={item.title}>
+                      {item.title} — confidence {item.confidenceScore}, score {Math.round(item.totalScore)}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </section>
           </>
