@@ -4,11 +4,11 @@ import { useMemo, useState } from 'react';
 import brain from '../memory/giuseppe_brain.json';
 import { financeDisplay } from './financeDisplay';
 import {
-  runDecisionEngine,
   getCapitalLabel,
-  COUNSELLOR_LABELS,
-  type DecisionResult
+  COUNSELLOR_LABELS
 } from '../engine/decisionEngine';
+import type { DecisionAIResult } from '../lib/brain/decisions/types';
+import { decideViaBrain } from './lib/decideViaBrain';
 import { runPotentialEngine } from '../engine/potentialEngine';
 import { runAwarenessEngine } from '../engine/awarenessEngine';
 import {
@@ -51,7 +51,7 @@ function recommendedProject() {
   return active[0] ?? Object.entries(brain.projects)[0];
 }
 
-function DecisionResultDisclosure({ result }: { result: DecisionResult }) {
+function DecisionResultDisclosure({ result }: { result: DecisionAIResult }) {
   const [whyOpen, setWhyOpen] = useState(false);
   const [boardOpen, setBoardOpen] = useState(false);
   const [capitalsOpen, setCapitalsOpen] = useState(false);
@@ -60,12 +60,16 @@ function DecisionResultDisclosure({ result }: { result: DecisionResult }) {
   return (
     <div className="result progressive-result space-today-result">
       <div className="kicker">RECOMMENDATION</div>
-      <h3>Categoria: {result.categoryLabel}</h3>
+      <h3>{result.recommendation}</h3>
+      <p>Categoria: {result.categoryLabel}</p>
+      <div className="potential-score">{result.confidenceScore}</div>
       <div className="kicker">PROSSIMO PASSO</div>
       <p>{result.nextAction}</p>
 
       {!whyOpen && <DisclosureTrigger label="Perché?" onClick={() => setWhyOpen(true)} />}
       <DisclosurePanel open={whyOpen}>
+        <div className="kicker">PERCHÉ CONTA</div>
+        <p>{result.whyItMatters}</p>
         <div className="kicker">BISOGNO NASCOSTO</div>
         <p><b>Bisogno nascosto:</b> {result.hiddenNeed}</p>
         <p><b>Bias possibile:</b> {result.bias}</p>
@@ -232,7 +236,30 @@ export default function Home() {
 
   const [decision, setDecision] = useState('');
   const [reason, setReason] = useState('');
-  const [decisionResult, setDecisionResult] = useState<DecisionResult | null>(null);
+  const [decisionResult, setDecisionResult] = useState<DecisionAIResult | null>(null);
+  const [decisionLoading, setDecisionLoading] = useState(false);
+  const [decisionError, setDecisionError] = useState<string | null>(null);
+
+  async function handleAskBoard() {
+    if (!decision.trim()) {
+      return;
+    }
+
+    setDecisionLoading(true);
+    setDecisionError(null);
+    setDecisionResult(null);
+
+    const response = await decideViaBrain(decision, reason);
+
+    setDecisionLoading(false);
+
+    if (!response.ok) {
+      setDecisionError(response.message);
+      return;
+    }
+
+    setDecisionResult(response.decision);
+  }
 
   const [todayWhy, setTodayWhy] = useState(false);
   const [todayCreative, setTodayCreative] = useState(false);
@@ -469,15 +496,18 @@ export default function Home() {
                     />
                     <button
                       className="primary"
-                      onClick={() => setDecisionResult(runDecisionEngine({ decision, reason }))}
+                      type="button"
+                      disabled={decisionLoading || !decision.trim()}
+                      onClick={() => void handleAskBoard()}
                     >
-                      Chiedi al Board
+                      {decisionLoading ? 'Il Board sta pensando…' : 'Chiedi al Board'}
                     </button>
+                    {decisionError && <p className="decision-error">{decisionError}</p>}
                   </RitualStep>
 
                   {decisionResult && (
                     <DecisionResultDisclosure
-                      key={`${decisionResult.categoryLabel}-${decisionResult.nextAction}`}
+                      key={`${decisionResult.categoryLabel}-${decisionResult.nextAction}-${decisionResult.confidenceScore}`}
                       result={decisionResult}
                     />
                   )}

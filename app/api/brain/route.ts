@@ -28,7 +28,8 @@ function parseRequest(body: Record<string, unknown>): BrainRequest {
     intent,
     message: typeof body.message === 'string' ? body.message : '',
     decision: typeof body.decision === 'string' ? body.decision : undefined,
-    reason: typeof body.reason === 'string' ? body.reason : undefined
+    reason: typeof body.reason === 'string' ? body.reason : undefined,
+    persist: typeof body.persist === 'boolean' ? body.persist : undefined
   };
 }
 
@@ -48,7 +49,7 @@ export async function GET() {
   return Response.json({
     status: 'ok',
     service: 'giuseppe-brain',
-    version: '1.0-intelligence-foundation',
+    version: '1.4.0-ai-v0.1-decisions',
     intents: INTENTS.filter(intent => intent !== 'auto'),
     architecture: [
       'executive-brain',

@@ -1,11 +1,13 @@
 import { buildContext } from './context/buildContext';
+import { assembleDecisionAIResult } from './decisions/assemble';
+import type { DecisionResponseSource } from './decisions/types';
 import { detectIntent, detectTopics } from './intent/detectIntent';
 import { routeEngines } from './intent/routeEngines';
 import { runEnginePipeline } from './engines/pipeline';
 import { loadBrain, loadWorkingMemory } from './memory/store';
 import { applyMemoryUpdate, estimateConfidence, extractResponseNextAction } from './memory/update';
 import { evaluateMissionAlignment } from './missionGate';
-import { resolveAIProvider } from './providers';
+import { resolveAIProvider, createRuleBasedProvider } from './providers';
 import { ProviderConfigurationError, ProviderRequestError } from './providers/types';
 import { fetchRealityContext } from '../reality';
 import type { BrainRequest, BrainResponse } from './types';
@@ -103,30 +105,61 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
   );
 
   const provider = resolveAIProvider();
-  const completion = await provider.complete({
+  const completionRequest = {
     system: context.systemPrompt,
-    messages: [{ role: 'user', content: context.userPrompt }],
+    messages: [{ role: 'user' as const, content: context.userPrompt }],
     context,
     maxTokens: 1200,
     temperature: 0.4
-  });
+  };
+
+  let completion;
+  let decisionSource: DecisionResponseSource = provider.name === 'rule-based' ? 'engine' : 'ai';
+
+  try {
+    completion = await provider.complete(completionRequest);
+  } catch (error) {
+    if (resolvedIntent === 'decide' && outputs.decision && error instanceof ProviderConfigurationError) {
+      completion = await createRuleBasedProvider().complete(completionRequest);
+      decisionSource = 'fallback';
+    } else {
+      throw error;
+    }
+  }
 
   const answer = composeAnswer(resolvedIntent, completion.content, outputs);
   const missionAligned = evaluateMissionAlignment(normalizedRequest, answer);
+  const confidence = estimateConfidence(context);
+  const persist = normalizedRequest.persist ?? resolvedIntent !== 'decide';
 
   const memoryResult = await applyMemoryUpdate({
     request: normalizedRequest,
     context,
     answer,
-    workingMemory
+    workingMemory,
+    persist
   });
+
+  const decision =
+    resolvedIntent === 'decide' && outputs.decision
+      ? assembleDecisionAIResult({
+          engine: outputs.decision,
+          answer,
+          confidence,
+          source: decisionSource
+        })
+      : undefined;
 
   return {
     intent: resolvedIntent,
     answer,
     headline: buildHeadline(resolvedIntent, outputs),
-    nextAction: extractResponseNextAction(answer) ?? outputs.awareness?.recommendedAction ?? outputs.opportunity?.firstAction,
-    confidence: estimateConfidence(context),
+    nextAction:
+      decision?.nextAction ??
+      extractResponseNextAction(answer) ??
+      outputs.awareness?.recommendedAction ??
+      outputs.opportunity?.firstAction,
+    confidence,
     sources: [
       ...context.sources,
       ...reality.facts.map(fact => ({
@@ -142,6 +175,7 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
     memoryDiscarded: memoryResult.discarded,
     missionAligned,
     timestamp: new Date().toISOString(),
+    decision,
     awareness: outputs.awareness,
     opportunity: outputs.opportunity,
     learning: outputs.learning
@@ -150,7 +184,11 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
 
 export function mapBrainError(error: unknown): { status: number; message: string } {
   if (error instanceof ProviderConfigurationError) {
-    return { status: 503, message: error.message };
+    return {
+      status: 503,
+      message:
+        'Giuseppe OS Brain non è configurato. Aggiungi ANTHROPIC_API_KEY in .env.local per attivare l’intelligenza AI.'
+    };
   }
 
   if (error instanceof ProviderRequestError) {

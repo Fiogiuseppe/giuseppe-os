@@ -6,7 +6,6 @@ export function routeEngines(intent: BrainIntent, topics: ContextTopic[]): Engin
   switch (intent) {
     case 'decide':
       engines.add('decision');
-      engines.add('awareness');
       break;
     case 'reflect':
       engines.add('awareness');

@@ -6,6 +6,8 @@ Visual design review packages for Giuseppe OS major releases.
 
 | Version | File | Date |
 |---------|------|------|
+| 1.4.0 | [`DESIGN_REVIEW_1.4.0.pdf`](DESIGN_REVIEW_1.4.0.pdf) | July 2026 — AI v0.1 for Decisions via Executive Brain |
+| 1.3.2 | [`DESIGN_REVIEW_1.3.2.pdf`](DESIGN_REVIEW_1.3.2.pdf) | July 2026 — Editorial Today layout & time-aware portrait |
 | 1.3.1 | [`DESIGN_REVIEW_1.3.1.pdf`](DESIGN_REVIEW_1.3.1.pdf) | July 2026 — Layout clipping fixes |
 | 1.3.0 | [`DESIGN_REVIEW_1.3.0.pdf`](DESIGN_REVIEW_1.3.0.pdf) | July 2026 — Top navigation & daily companion IA |
 | 1.2.0 | [`DESIGN_REVIEW_1.2.0.pdf`](DESIGN_REVIEW_1.2.0.pdf) | July 2026 — Distinct Mental Spaces |

@@ -1,4 +1,5 @@
 import type { BrainRequest, ContextPacket, ContextSource, GiuseppeBrain, WorkingMemory } from '../types';
+import { DECIDE_JSON_INSTRUCTION } from '../decisions/prompt';
 import { detectTopics } from '../intent/detectIntent';
 import { selectSlices } from './slices';
 
@@ -16,7 +17,11 @@ function buildSources(slices: ReturnType<typeof selectSlices>): ContextSource[] 
   }));
 }
 
-function buildSystemPrompt(slices: ReturnType<typeof selectSlices>, workingMemory: WorkingMemory): string {
+function buildSystemPrompt(
+  slices: ReturnType<typeof selectSlices>,
+  workingMemory: WorkingMemory,
+  intent: BrainRequest['intent']
+): string {
   const recentSessions = workingMemory.sessions
     .slice(-3)
     .map(session => `- [${session.intent}] ${session.summary}`)
@@ -42,7 +47,7 @@ function buildSystemPrompt(slices: ReturnType<typeof selectSlices>, workingMemor
     recentSessions || '- none',
     '',
     'RESPONSE FORMAT',
-    'Clear prose. Short paragraphs. Prefer Italian when Giuseppe writes in Italian.'
+    intent === 'decide' ? DECIDE_JSON_INSTRUCTION : 'Clear prose. Short paragraphs. Prefer Italian when Giuseppe writes in Italian.'
   ].join('\n');
 }
 
@@ -118,7 +123,7 @@ export function buildContext(
   return {
     intent: request.intent,
     assembledAt: nowIso(),
-    systemPrompt: buildSystemPrompt(slices, workingMemory),
+    systemPrompt: buildSystemPrompt(slices, workingMemory, request.intent),
     userPrompt: buildUserPrompt(request, engineContext),
     sources: buildSources(slices),
     slices,

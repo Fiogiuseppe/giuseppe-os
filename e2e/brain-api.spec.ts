@@ -10,7 +10,7 @@ test.describe('Giuseppe OS Brain API', () => {
     const body = await response.json();
     expect(body.status).toBe('ok');
     expect(body.service).toBe('giuseppe-brain');
-    expect(body.version).toBe('1.0-intelligence-foundation');
+    expect(body.version).toBe('1.4.0-ai-v0.1-decisions');
     expect(body.intents).toEqual(INTENTS);
     expect(body.architecture).toContain('executive-brain');
     expect(body.provider).toBeUndefined();
@@ -54,10 +54,16 @@ test.describe('Giuseppe OS Brain API', () => {
     const body = await response.json();
 
     expect(body.intent).toBe('decide');
-    expect(body.answer).toMatch(/Categoria:/);
-    expect(body.answer).toMatch(/Prossimo passo:/);
+    expect(body.decision?.recommendation).toBeTruthy();
+    expect(body.decision?.whyItMatters).toBeTruthy();
+    expect(body.decision?.hiddenNeed).toBeTruthy();
+    expect(body.decision?.bias).toBeTruthy();
+    expect(body.decision?.boardPerspective).toBeTruthy();
+    expect(body.decision?.nextAction).toBeTruthy();
+    expect(body.decision?.confidenceScore).toBeGreaterThanOrEqual(0);
     expect(body.nextAction).toBeTruthy();
     expect(body.engines).toContain('decision');
+    expect(body.memoryUpdated).toBe(false);
     expect(body.provider).toBeUndefined();
   });
 

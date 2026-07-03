@@ -123,6 +123,8 @@ export interface BrainRequest {
   message: string;
   decision?: string;
   reason?: string;
+  /** When false, skip all memory persistence (default: false for decide, true otherwise). */
+  persist?: boolean;
 }
 
 export interface ContextSlice {
@@ -179,6 +181,7 @@ export interface LearningReport {
 
 export interface EngineOutputs {
   enginesUsed: string[];
+  decision?: import('../../engine/decisionEngine').DecisionResult;
   awareness?: import('../../engine/awarenessEngine').AwarenessInsight;
   opportunity?: import('../../engine/potentialEngine').Opportunity;
   learning?: LearningReport;
@@ -197,6 +200,7 @@ export interface BrainResponse {
   memoryDiscarded: boolean;
   missionAligned: boolean;
   timestamp: string;
+  decision?: import('./decisions/types').DecisionAIResult;
   awareness?: import('../../engine/awarenessEngine').AwarenessInsight;
   opportunity?: import('../../engine/potentialEngine').Opportunity;
   learning?: LearningReport;

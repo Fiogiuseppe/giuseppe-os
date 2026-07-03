@@ -67,6 +67,7 @@ export async function runEnginePipeline(
     const decision = request.decision?.trim() || request.message.trim();
     const reason = request.reason?.trim() || '';
     const decisionResult = runDecisionEngine({ decision, reason });
+    outputs.decision = decisionResult;
     outputs.enginesUsed.push('decision');
     blocks.push(formatDecisionOutput(decisionResult));
   }

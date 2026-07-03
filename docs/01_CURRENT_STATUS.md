@@ -1,7 +1,7 @@
 # Giuseppe OS — Current Status
 
 **Last updated:** July 2026  
-**Version:** 1.3.1  
+**Version:** 1.4.0  
 **Branch:** `main`  
 **Production:** https://giuseppe-os.vercel.app  
 
@@ -14,13 +14,13 @@
 | **Dashboard shell** | Live | Single-page Next.js app at `app/page.tsx` |
 | **Navigation** | Live | Top bar: Today, Decisions, Discover, Create, Memory |
 | **Today (Home)** | Live | Daily companion — focus, why, action; creative/reflect/opportunity behind disclosure |
-| **Decisions** | Live | Board ritual, decision form, north star, counsellor output |
+| **Decisions** | Live | AI v0.1 — form routes through `/api/brain`; structured recommendation + board output |
 | **Discover** | Live | Awareness insights + freedom/finance cockpit (progressive disclosure) |
 | **Create** | Live | Projects ecosystem + potential opportunities |
 | **Memory** | Live | Brain memory palace accordions |
 | **Design system** | Live | v1.3 Apple-like top nav; v1.2 mental spaces preserved |
 | **Desktop viewport lock** | Live | No body scroll on desktop main sections |
-| **Brain API integration in UI** | **Not done** | UI still calls engines client-side; `/api/brain` exists but dashboard does not use it yet |
+| **Brain API integration in UI** | **Partial** | Decisions form uses `/api/brain` with `persist: false`; other views still client-side engines |
 
 ---
 
@@ -28,7 +28,7 @@
 
 | Engine | Implemented | Wired to UI | Wired to Executive Brain |
 |--------|-------------|-------------|--------------------------|
-| Decision Engine | Yes | Yes (Decisions) | Yes (via `/api/brain`) |
+| Decision Engine | Yes | Yes (via Brain) | Yes (via `/api/brain`) |
 | Awareness Engine | Yes | Yes (Discover) | Yes |
 | Potential Engine | Yes | Yes (Create / Today) | Yes |
 | Learning Engine | Yes | No | Yes (`learn` intent) |

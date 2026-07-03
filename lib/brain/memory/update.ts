@@ -73,8 +73,18 @@ export async function applyMemoryUpdate(params: {
   context: ContextPacket;
   answer: string;
   workingMemory: WorkingMemory;
+  persist?: boolean;
 }): Promise<MemoryUpdateResult> {
-  const { request, context, answer, workingMemory } = params;
+  const { request, context, answer, workingMemory, persist = true } = params;
+
+  if (!persist) {
+    return {
+      updated: false,
+      discarded: false,
+      recordsAdded: []
+    };
+  }
+
   const decision = shouldRemember(request, answer, context);
 
   if (!decision.remember) {

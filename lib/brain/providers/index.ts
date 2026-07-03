@@ -38,3 +38,5 @@ export function resolveAIProvider(): AIProvider {
       return createClaudeProvider();
   }
 }
+
+export { createRuleBasedProvider };

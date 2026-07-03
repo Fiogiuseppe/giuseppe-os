@@ -1,32 +1,25 @@
-import { runDecisionEngine } from '../../../engine/decisionEngine';
+import { runDecisionEngine, COUNSELLOR_LABELS } from '../../../engine/decisionEngine';
 import { runAwarenessEngine } from '../../../engine/awarenessEngine';
 import { runPotentialEngine } from '../../../engine/potentialEngine';
 import { runLearningEngine } from '../engines/learningEngine';
 import type { AICompletionRequest, AICompletionResponse, AIProvider } from './types';
 
 function formatDecisionResult(result: ReturnType<typeof runDecisionEngine>): string {
-  const counsellors = Object.entries(result.counsellors)
-    .map(([key, text]) => `${key}: ${text}`)
+  const boardPerspective = Object.entries(result.counsellors)
+    .map(([key, text]) => `${COUNSELLOR_LABELS[key as keyof typeof result.counsellors]}: ${text}`)
     .join('\n');
 
-  const capitals = Object.entries(result.capitals)
-    .map(([key, value]) => `${key} (${value.score}): ${value.note}`)
-    .join('\n');
-
-  return [
-    `Categoria: ${result.categoryLabel}`,
-    `Bisogno nascosto: ${result.hiddenNeed}`,
-    `Bias possibile: ${result.bias}`,
-    '',
-    'Sei capitali:',
-    capitals,
-    '',
-    'Board:',
-    counsellors,
-    '',
-    `Versione migliore: ${result.betterVersion}`,
-    `Prossimo passo: ${result.nextAction}`
-  ].join('\n');
+  return JSON.stringify({
+    recommendation: result.betterVersion,
+    whyItMatters: `Questa scelta tocca la North Star: ${result.betterVersion}`,
+    hiddenNeed: result.hiddenNeed,
+    bias: result.bias,
+    boardPerspective,
+    nextAction: result.nextAction,
+    confidenceScore: 72,
+    categoryLabel: result.categoryLabel,
+    betterVersion: result.betterVersion
+  });
 }
 
 export function createRuleBasedProvider(): AIProvider {
