@@ -41,7 +41,7 @@ test.describe('Giuseppe OS potential engine', () => {
 
   test('navigation still works from Potential page', async ({ page }) => {
     await page.getByRole('navigation').getByRole('button', { name: 'Home' }).click();
-    await expect(page.getByText('NORTH STAR')).toBeVisible();
+    await expect(page.getByText('Good morning, Giuseppe.')).toBeVisible();
 
     await page.getByRole('navigation').getByRole('button', { name: 'Board' }).click();
     await expect(page.getByText("TODAY'S OPPORTUNITY")).toBeVisible();

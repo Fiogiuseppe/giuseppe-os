@@ -23,8 +23,9 @@ const BANNED_GENERIC_COPY = [
 ];
 
 async function expectFooterManifesto(page: import('@playwright/test').Page) {
-  await expect(page.getByText(FOOTER_LINE_1)).toBeVisible();
-  await expect(page.getByText(FOOTER_LINE_2)).toBeVisible();
+  const footer = page.locator('footer.footer');
+  await expect(footer.getByText(FOOTER_LINE_1)).toBeVisible();
+  await expect(footer.getByText(FOOTER_LINE_2)).toBeVisible();
 }
 
 async function expectPrimaryHeading(page: import('@playwright/test').Page) {
@@ -131,13 +132,16 @@ test.describe('Giuseppe OS quality loop', () => {
     }
   });
 
-  test('north star appears only on Home and Board views', async ({ page }) => {
-    await expect(page.getByRole('main').getByText(NORTH_STAR)).toHaveCount(1);
+  test('north star appears only on Board view', async ({ page }) => {
+    await expect(page.getByRole('main').getByText(NORTH_STAR)).toHaveCount(0);
 
     const nav = page.getByRole('navigation');
+    await nav.getByRole('button', { name: 'Board', exact: true }).click();
+    await expect(page.getByRole('main').getByText(NORTH_STAR).first()).toBeVisible();
+
     for (const { label } of MAIN_SECTIONS) {
-      if (label === 'Home' || label === 'Board') continue;
-      await nav.getByRole('button', { name: label }).click();
+      if (label === 'Board') continue;
+      await nav.getByRole('button', { name: label, exact: true }).click();
       await expect(page.getByRole('main').getByText(NORTH_STAR)).toHaveCount(0);
     }
   });
@@ -152,19 +156,20 @@ test.describe('Giuseppe OS quality loop', () => {
 
   test('dark dashboard visual identity is preserved', async ({ page }) => {
     const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-    expect(bodyBg).toBe('rgb(7, 11, 20)');
+    expect(bodyBg).toBe('rgb(9, 9, 11)');
 
     await expect(page.getByText('GIUSEPPE OS').first()).toBeVisible();
     await expect(page.locator('.card').first()).toBeVisible();
     await expect(page.locator('.sidebar')).toBeVisible();
   });
 
-  test('architecture-aligned north star appears on Home', async ({ page }) => {
-    await expect(page.getByRole('main').getByText(NORTH_STAR)).toBeVisible();
+  test('architecture-aligned north star appears on Board', async ({ page }) => {
+    await page.getByRole('navigation').getByRole('button', { name: 'Board', exact: true }).click();
+    await expect(page.getByRole('main').getByText(NORTH_STAR).first()).toBeVisible();
   });
 
   test('finance view hides sensitive personal numbers', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Finance' }).click();
+    await page.getByRole('navigation').getByRole('button', { name: 'Finance', exact: true }).click();
 
     const main = page.getByRole('main');
     await expect(main.getByText('CASH RESERVE')).toBeVisible();

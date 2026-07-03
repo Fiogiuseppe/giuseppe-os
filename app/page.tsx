@@ -34,9 +34,104 @@ const VIEW_HEADINGS: Record<View, string> = {
   brain: 'CHI HO SCELTO DI DIVENTARE.'
 };
 
-function FinanceOverview({ compact = false }: { compact?: boolean }) {
+const PROJECT_PROGRESS: Record<string, number> = {
+  LEGO: 87,
+  'Brand Giuseppe': 74,
+  'Medium/LinkedIn': 68,
+  'Visceral Poems': 75,
+  UREES: 82,
+  Freelance: 45
+};
+
+function StrategicCard({
+  icon,
+  title,
+  description,
+  linkLabel,
+  onNavigate,
+  badge
+}: {
+  icon: string;
+  title: string;
+  description: string;
+  linkLabel: string;
+  onNavigate: () => void;
+  badge?: string;
+}) {
   return (
-    <div className={compact ? 'grid' : 'grid'}>
+    <div className="card strategic-card">
+      <div className="strategic-top">
+        <div className="strategic-icon">{icon}</div>
+        {badge && <span className="badge-new">{badge}</span>}
+      </div>
+      <h3>{title}</h3>
+      <p>{description}</p>
+      <button type="button" className="card-link" onClick={onNavigate}>{linkLabel}</button>
+    </div>
+  );
+}
+
+function FinancePrivacyCard({ onViewAll }: { onViewAll: () => void }) {
+  return (
+    <div className="card">
+      <div className="card-head">
+        <h3>Financial Overview</h3>
+        <button type="button" className="card-link" onClick={onViewAll}>View all →</button>
+      </div>
+      <div className="finance-privacy">
+        <div className="finance-list">
+          <div className="finance-row"><span>Cash Reserve</span><span>{financeDisplay.cashReserve}</span></div>
+          <div className="finance-row"><span>Investments</span><span>•••••</span></div>
+          <div className="finance-row"><span>Savings</span><span>•••••</span></div>
+          <div className="finance-row"><span>Monthly Income</span><span>{financeDisplay.income}</span></div>
+          <div className="finance-row"><span>Monthly Expenses</span><span>•••••</span></div>
+        </div>
+        <div className="finance-lock">
+          <div className="finance-lock-icon">🔒</div>
+          <p>Information hidden for privacy</p>
+        </div>
+      </div>
+      <p className="card-muted">Last updated: today</p>
+    </div>
+  );
+}
+
+function ActiveProjectsCard({ onViewAll }: { onViewAll: () => void }) {
+  const rows = Object.entries(brain.projects)
+    .filter(([, project]) => project.status === 'active' || project.status === 'slow-active')
+    .slice(0, 3);
+
+  return (
+    <div className="card span-6">
+      <div className="card-head">
+        <h3>Active Projects</h3>
+        <button type="button" className="card-link" onClick={onViewAll}>View all →</button>
+      </div>
+      {rows.map(([name, project]) => (
+        <div className="project-row" key={name}>
+          <div className="project-avatar">{name.slice(0, 2).toUpperCase()}</div>
+          <div className="project-meta">
+            <h4>{name}</h4>
+            <p>{project.role}</p>
+            <div className="progress-bar">
+              <div className="progress-fill" style={{ width: `${PROJECT_PROGRESS[name] ?? 60}%` }} />
+            </div>
+          </div>
+          <div className="project-status">
+            <span className="status-active-dot" />
+            Active
+          </div>
+          <div className="project-progress">{PROJECT_PROGRESS[name] ?? 60}%</div>
+        </div>
+      ))}
+      <p className="card-muted">{rows.length} active projects</p>
+    </div>
+  );
+}
+
+function FinanceOverview() {
+  return (
+    <div className="grid">
       <div className="card card-glow privacy-overlay">
         <div className="kicker">CASH RESERVE</div>
         <h2 className="privacy-blur">{financeDisplay.cashReserve}</h2>
@@ -167,12 +262,14 @@ export default function Home() {
   const potential = useMemo(() => runPotentialEngine(), []);
   const awareness = useMemo(() => runAwarenessEngine(), []);
   const today = potential.todaysOpportunity;
-  const activeProjects = Object.entries(brain.projects).filter(([, p]) => p.status === 'active');
 
   return (
     <div className="app">
       <aside className="sidebar">
-        <div className="sidebar-logo">GIUSEPPE OS</div>
+        <div className="sidebar-brand">
+          <div className="sidebar-star">✦</div>
+          <div className="sidebar-logo">Giuseppe OS</div>
+        </div>
         <nav className="sidebar-nav" aria-label="Main navigation">
           {NAV.map(({ id, label }) => (
             <button
@@ -180,65 +277,105 @@ export default function Home() {
               className={view === id ? 'active' : undefined}
               onClick={() => setView(id)}
             >
-              {label}
+              <span>{label}</span>
+              {id === 'awareness' && <span className="nav-badge" aria-hidden="true">1</span>}
             </button>
           ))}
         </nav>
+        <div className="sidebar-manifesto">
+          <p>It&apos;s not software that tells you what to do.</p>
+          <p>It&apos;s software that remembers who you chose to become.</p>
+        </div>
       </aside>
 
       <div className="content">
         <main className="main" role="main">
-          <header className="page-header">
-            <div className="kicker">{view === 'home' ? 'DASHBOARD' : view.toUpperCase()}</div>
-            <div className="view-title">{VIEW_HEADINGS[view]}</div>
-            {view === 'home' && (
-              <p className="view-subtitle">Personal operating system — philosophy, intelligence, and alignment in one calm view.</p>
-            )}
-          </header>
-
           {view === 'home' && (
-            <div className="dashboard-grid">
-              <div className="card card-glow span-6">
-                <div className="kicker">NORTH STAR</div>
-                <h2>{brain.north_star}</h2>
+            <>
+              <div className="home-header-row">
+                <div>
+                  <h1 className="home-greeting">Good morning, Giuseppe.</h1>
+                  <p className="view-subtitle">Here is your operating system for becoming who you chose to become.</p>
+                  <div className="view-title">GIUSEPPE OS</div>
+                </div>
+                <div className="status-pill"><span className="status-dot" /> System Online</div>
               </div>
-              <div className="card span-6">
-                <div className="kicker">MISSION 2036</div>
-                <h2>{brain.mission_2036}</h2>
-                <p>{brain.manifesto}</p>
-              </div>
-              <div className="card card-glow span-6">
-                <div className="kicker">TODAY&apos;S FOCUS</div>
-                <h2>{today.title}</h2>
-                <p>{today.description}</p>
-                <p><b>Prima azione:</b> {today.firstAction}</p>
-                <div className="potential-score">{today.confidenceScore}</div>
-              </div>
-              <div className="card span-6">
-                <div className="kicker">AWARENESS</div>
-                <h2>{awareness.insight}</h2>
-                <p>{awareness.recommendedAction}</p>
-              </div>
-              <div className="card span-12">
-                <div className="kicker">ACTIVE PROJECTS</div>
-                <div className="projects-grid">
-                  {activeProjects.map(([name, project]) => (
-                    <div className="card" key={name}>
-                      <div className="kicker">{project.status.toUpperCase()}</div>
-                      <h3>{name}</h3>
-                      <p>{project.role}</p>
-                    </div>
-                  ))}
+
+              <div className="dashboard-grid">
+                <div className="span-3">
+                  <StrategicCard
+                    icon="★"
+                    title="North Star"
+                    description="Create impact and freedom. Build a legacy that matters."
+                    linkLabel="View North Star →"
+                    onNavigate={() => setView('board')}
+                  />
+                </div>
+                <div className="span-3">
+                  <StrategicCard
+                    icon="◎"
+                    title="Mission 2036"
+                    description={brain.mission_2036}
+                    linkLabel="View Mission →"
+                    onNavigate={() => setView('board')}
+                  />
+                </div>
+                <div className="span-3">
+                  <StrategicCard
+                    icon="☰"
+                    title="Today's Focus"
+                    description={today.title}
+                    linkLabel="View Priorities →"
+                    onNavigate={() => setView('today')}
+                  />
+                </div>
+                <div className="span-3">
+                  <StrategicCard
+                    icon="◉"
+                    title="Awareness"
+                    description="I noticed something you should see."
+                    linkLabel="Open Awareness →"
+                    onNavigate={() => setView('awareness')}
+                    badge="New"
+                  />
+                </div>
+
+                <ActiveProjectsCard onViewAll={() => setView('projects')} />
+
+                <div className="span-3 stack-col">
+                  <FinancePrivacyCard onViewAll={() => setView('finance')} />
+                </div>
+
+                <div className="span-3 stack-col">
+                  <div className="card">
+                    <div className="kicker">DAILY RITUAL</div>
+                    <div className="ritual-ring"><span>75%</span></div>
+                    <p>You completed 3 of 4 essential rituals today.</p>
+                    <button type="button" className="card-link" onClick={() => setView('today')}>Open Daily Ritual →</button>
+                  </div>
+                  <div className="card card-glow">
+                    <div className="kicker">DECISION ENGINE</div>
+                    <h3>Ask your 6 advisors.</h3>
+                    <p>Get clarity on any decision.</p>
+                    <button type="button" className="primary primary-wide" onClick={() => setView('today')}>
+                      Ask a Question →
+                    </button>
+                  </div>
+                </div>
+
+                <div className="card insight-banner span-12">
+                  <div className="insight-icon">💡</div>
+                  <p>{awareness.insight}</p>
                 </div>
               </div>
-              <div className="span-12">
-                <div className="kicker">FINANCIAL OVERVIEW</div>
-                <FinanceOverview compact />
-              </div>
-              <div className="span-12">
-                <DecisionEnginePanel />
-              </div>
-            </div>
+            </>
+          )}
+
+          {view !== 'home' && (
+            <header className="page-header">
+              <div className="kicker">{view.toUpperCase()}</div>
+              <div className="view-title">{VIEW_HEADINGS[view]}</div>
+            </header>
           )}
 
           {view === 'board' && (
