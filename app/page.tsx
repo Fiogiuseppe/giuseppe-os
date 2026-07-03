@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import brain from '../memory/giuseppe_brain.json';
+import { financeDisplay } from './financeDisplay';
 import {
   runDecisionEngine,
   getCapitalLabel,
@@ -278,19 +279,19 @@ export default function Home() {
 
             <section className="grid">
               <div className="card">
-                <div className="kicker">CASH</div>
-                <h2>{brain.finance.cash_dkk.toLocaleString('it-IT')} DKK</h2>
-                <p>Liquidità disponibile.</p>
+                <div className="kicker">CASH RESERVE</div>
+                <h2>{financeDisplay.cashReserve}</h2>
+                <p>{financeDisplay.cashCaption}</p>
               </div>
               <div className="card">
                 <div className="kicker">INCOME</div>
-                <h2>Entrate attive.</h2>
-                <p>{brain.finance.monthly_income_notes}</p>
+                <h2>{financeDisplay.income}</h2>
+                <p>{financeDisplay.incomeCaption}</p>
               </div>
               <div className="card">
                 <div className="kicker">GOALS</div>
                 <h2>Obiettivi finanziari.</h2>
-                <ul>{brain.finance.main_goals.map(goal => <li key={goal}>{goal}</li>)}</ul>
+                <ul>{financeDisplay.goals.map(goal => <li key={goal}>{goal}</li>)}</ul>
               </div>
             </section>
           </>

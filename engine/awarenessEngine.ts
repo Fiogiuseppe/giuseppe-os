@@ -1,4 +1,5 @@
 import brain from '../memory/giuseppe_brain.json';
+import { liquidityPhrase, incomeLabel } from '../lib/publicFinance';
 
 export type DecisionRecord = {
   decision: string;
@@ -30,6 +31,7 @@ type GiuseppeBrain = {
   projects: Record<string, BrainProject>;
   finance: {
     cash_dkk: number;
+    liquidity_tier?: string;
     monthly_income_notes: string;
     main_goals: string[];
   };
@@ -130,7 +132,7 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
       id: 'liquidity-discipline',
       insight: 'Hai liquidità forte, ma la disciplina automatica non è ancora il centro del sistema.',
       whyItMatters:
-        `Con ${memory.finance.cash_dkk.toLocaleString('it-IT')} DKK disponibili, ogni mese senza automazione è un mese in cui comprare libertà dipende dalla forza di volontà — non dal sistema.`,
+        `${liquidityPhrase()}, ogni mese senza automazione è un mese in cui comprare libertà dipende dalla forza di volontà — non dal sistema.`,
       evidence: [
         `Obiettivo finanziario: "${memory.finance.main_goals[0]}"`,
         `Priorità: "${memory.priorities[1]}"`,
@@ -144,7 +146,7 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
       recommendedAction:
         'Imposta oggi un trasferimento mensile automatico verso ETF o fondo emergenza, prima di qualsiasi altra decisione finanziaria.',
       weight:
-        (memory.finance.cash_dkk >= 150000 ? 5 : 2) +
+        (memory.finance.liquidity_tier === 'comfortable' ? 5 : 2) +
         (memory.priorities.some(priority => /automat/i.test(priority)) ? 4 : 0) +
         signals.finance,
       confidenceSignals: 5
@@ -203,7 +205,7 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
       evidence: [
         `Progetto LEGO: "${memory.projects.LEGO.role}"`,
         `Obiettivo carriera: "${memory.career_goals[0]}"`,
-        `Entrate: ${memory.finance.monthly_income_notes}`,
+        `Entrate: ${incomeLabel()}`,
         `Missione 2036: "${memory.mission_2036}"`
       ],
       riskIfIgnored:
@@ -214,7 +216,7 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
         'Prepara tre esempi concreti di impatto e chiedi un incontro di 20 minuti con un leader LEGO chiave.',
       weight:
         (memory.projects.LEGO?.status === 'active' ? 4 : 0) +
-        (memory.finance.monthly_income_notes.includes('LEGO') ? 3 : 0),
+        (memory.projects.LEGO?.status === 'active' ? 3 : 0),
       confidenceSignals: 3
     }
   ];

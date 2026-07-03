@@ -1,4 +1,5 @@
 import brain from '../memory/giuseppe_brain.json';
+import { liquidityPhrase } from '../lib/publicFinance';
 
 export type DecisionInput = {
   decision: string;
@@ -271,14 +272,14 @@ function buildCounsellors(
 ): DecisionResult['counsellors'] {
   const { decision, reason } = input;
   const reasonText = reason.trim() || 'non chiarito';
-  const cash = brain.finance.cash_dkk.toLocaleString('it-IT');
+  const liquidity = liquidityPhrase();
 
   const freedomNote = capitals.freedom.note;
   const financialNote = capitals.financial.note;
 
   return {
     CEO2036: `Verdetto 2036 su "${decision.trim()}": procedi solo se aumenta libertà a 10 anni. ${betterVersion.split('.')[0]}. Il motivo "${reasonText}" punta a: ${hiddenNeed.toLowerCase()} — valido solo se non è distrazione dal North Star.`,
-    CFO: `Con ${cash} DKK di liquidità, questa mossa ${capitals.financial.score === 'down' ? 'riduce' : capitals.financial.score === 'up' ? 'può aumentare' : 'non chiarisce'} il tuo capitale finanziario. ${financialNote} Compra mesi di libertà, non status.`,
+    CFO: `${liquidity}, questa mossa ${capitals.financial.score === 'down' ? 'riduce' : capitals.financial.score === 'up' ? 'può aumentare' : 'non chiarisce'} il tuo capitale finanziario. ${financialNote} Compra mesi di libertà, non status.`,
     Strategist: `Nel sistema Giuseppe (LEGO, Brand, UREES, Visceral), "${decision.trim()}" ${category === 'creative_project' || category === 'reputation' ? 'può rafforzare l’ecosistema se resta concentrata' : category === 'emotional_purchase' ? 'apre un fronte emotivo che distrae dalle priorità' : 'va valutata contro il rischio di dispersione'}. ${bias.includes('dispersione') ? 'Pattern di dispersione rilevato — congela nuove idee.' : 'Non aprire un nuovo fronte senza chiudere un ciclo.'}`,
     CreativeDirector: `${category === 'creative_project' || category === 'reputation' ? `"${decision.trim()}" può alimentare il linguaggio personale Giuseppe se resta vero e non performativo.` : `"${decision.trim()}" non è mossa creativa primaria — chiediti se aumenta significato o solo rumore.`} ${capitals.creative.note} Una cosa eccezionale vale più di dieci mediocri.`,
     Psychologist: `Motivo dichiarato: "${reasonText}". Sotto la superficie cerco: ${hiddenNeed} Bias rilevato: ${bias.toLowerCase()} ${reason.length < 12 ? '— il motivo è troppo corto: potresti non aver ancora nominato il bisogno vero.' : ''}`,

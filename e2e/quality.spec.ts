@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { unlockApp } from './helpers/auth';
 
 const NORTH_STAR = 'PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.';
 const FOOTER_LINE_1 = "It's not software that tells you what to do.";
@@ -38,7 +37,7 @@ async function expectPrimaryHeading(page: import('@playwright/test').Page) {
 
 test.describe('Giuseppe OS quality loop', () => {
   test.beforeEach(async ({ page }) => {
-    await unlockApp(page);
+    await page.goto('/');
   });
 
   test('all main sections are reachable', async ({ page }) => {
@@ -162,12 +161,24 @@ test.describe('Giuseppe OS quality loop', () => {
   test('architecture-aligned north star appears on Board', async ({ page }) => {
     await expect(page.getByRole('main').getByText(NORTH_STAR)).toBeVisible();
   });
+
+  test('finance view hides sensitive personal numbers', async ({ page }) => {
+    await page.getByRole('navigation').getByRole('button', { name: 'Finance' }).click();
+
+    const main = page.getByRole('main');
+    await expect(main.getByText('•••••')).toBeVisible();
+    await expect(main.getByText('Hidden')).toBeVisible();
+    await expect(main.getByText('CASH RESERVE')).toBeVisible();
+    await expect(page.getByText('200000')).not.toBeVisible();
+    await expect(page.getByText(/DKK/)).not.toBeVisible();
+    await expect(page.getByText('stanza affittata')).not.toBeVisible();
+  });
 });
 
 test.describe('Giuseppe OS quality loop — responsiveness', () => {
   test('mobile viewport keeps navigation and headings usable', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await unlockApp(page);
+    await page.goto('/');
 
     const nav = page.getByRole('navigation');
     await expect(nav.getByRole('button', { name: 'Board' })).toBeVisible();

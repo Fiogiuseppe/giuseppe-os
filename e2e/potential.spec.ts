@@ -1,9 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { unlockApp } from './helpers/auth';
 
 test.describe('Giuseppe OS potential engine', () => {
   test.beforeEach(async ({ page }) => {
-    await unlockApp(page);
+    await page.goto('/');
     await page.getByRole('navigation').getByRole('button', { name: 'Potential' }).click();
   });
 

@@ -45,12 +45,13 @@
     }
   },
   "finance": {
-    "cash_dkk": 200000,
-    "monthly_income_notes": "LEGO + stanza affittata",
+    "cash_dkk": 0,
+    "liquidity_tier": "comfortable",
+    "monthly_income_notes": "Demo Data",
     "main_goals": [
-      "investire",
-      "comprare casa a Copenaghen",
-      "Wrangler solo quando sostenibile",
+      "Investire con disciplina",
+      "Comprare libertà, non status",
+      "Demo Data",
       "libertà 2036"
     ]
   },

@@ -1,4 +1,5 @@
 import brain from '../memory/giuseppe_brain.json';
+import { liquidityPhrase } from '../lib/publicFinance';
 
 export type OpportunityDimensions = {
   missionAlignment: number;
@@ -55,6 +56,7 @@ type GiuseppeBrain = {
   projects: Record<string, BrainProject>;
   finance: {
     cash_dkk: number;
+    liquidity_tier?: string;
     monthly_income_notes: string;
     main_goals: string[];
   };
@@ -151,7 +153,7 @@ function buildCandidates(): Opportunity[] {
       description:
         'Imposta o aumenta un trasferimento mensile automatico verso investimenti — compra mesi di libertà, non status.',
       whyThisMatters:
-        `Con ${memory.finance.cash_dkk.toLocaleString('it-IT')} DKK di liquidità, la disciplina automatica protegge il percorso verso casa e libertà 2036.`,
+        `${liquidityPhrase()}, la disciplina automatica protegge il percorso verso casa e libertà 2036.`,
       firstAction: 'Apri la banca e imposta un trasferimento fisso mensile verso ETF o fondo emergenza.',
       missionAlignment: 'Converte liquidità in opzionalità futura.',
       timeRequired: '20 min',
