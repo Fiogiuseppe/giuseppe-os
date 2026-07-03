@@ -13,7 +13,8 @@ export function DisclosureTrigger({
 }) {
   return (
     <button type="button" className={className} onClick={onClick}>
-      {label}
+      <span className="disclosure-trigger-label">{label}</span>
+      <span className="disclosure-trigger-arrow" aria-hidden="true">→</span>
     </button>
   );
 }
@@ -63,17 +64,49 @@ export function AccordionDomain({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className={`accordion-domain ${open ? 'open' : ''}`}>
-      <button type="button" className="accordion-domain-trigger" onClick={() => setOpen(value => !value)}>
+    <div className={`accordion-domain memory-shelf ${open ? 'open' : ''}`}>
+      <button
+        type="button"
+        className="accordion-domain-trigger"
+        onClick={() => setOpen(value => !value)}
+        aria-expanded={open}
+      >
         <div>
           <div className="kicker">{kicker}</div>
           <h3>{title}</h3>
         </div>
         <span className="accordion-chevron">{open ? '−' : '+'}</span>
       </button>
-      <DisclosurePanel open={open}>
-        <div className="accordion-domain-body">{children}</div>
-      </DisclosurePanel>
+      {open ? (
+        <div className="accordion-collapse open">
+          <div className="accordion-domain-body">{children}</div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+export function RitualStep({
+  step,
+  label,
+  children,
+  isLast = false
+}: {
+  step: number;
+  label: string;
+  children: ReactNode;
+  isLast?: boolean;
+}) {
+  return (
+    <div className={`ritual-step ${isLast ? 'ritual-step-last' : ''}`}>
+      <div className="ritual-rail">
+        <span className="ritual-number">{step}</span>
+        {!isLast && <span className="ritual-line" />}
+      </div>
+      <div className="ritual-content">
+        <div className="kicker">{label}</div>
+        {children}
+      </div>
     </div>
   );
 }

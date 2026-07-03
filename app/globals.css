@@ -639,6 +639,406 @@ a {
   margin-bottom: 4px;
 }
 
+/* ── v1.2 Mental Spaces ── */
+
+.space-role {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-left: 8px;
+}
+
+.space-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Home — Present Awareness */
+.mental-space-present {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  flex: 1;
+}
+
+.present-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-shrink: 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.present-moment {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+
+.present-core {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+  justify-content: center;
+}
+
+.present-block {
+  padding: 18px 20px;
+  transition: transform 0.4s var(--ease), border-color 0.4s var(--ease);
+}
+
+.present-block:hover {
+  transform: translateY(-1px);
+}
+
+.present-insight {
+  border-left: 2px solid var(--accent);
+}
+
+.primary-action {
+  margin-top: 10px;
+  background: var(--fg);
+  color: var(--bg);
+  border: none;
+  padding: 10px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.primary-action:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.present-indicators {
+  opacity: 0.85;
+}
+
+/* Today — Ritual / Action */
+.ritual-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ritual-step {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.ritual-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4px;
+}
+
+.ritual-number {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  flex-shrink: 0;
+}
+
+.ritual-line {
+  width: 1px;
+  flex: 1;
+  min-height: 12px;
+  margin-top: 6px;
+  background: var(--border-soft);
+}
+
+.ritual-content {
+  padding-bottom: 10px;
+}
+
+.ritual-content h2 {
+  font-size: clamp(15px, 1.8vw, 20px);
+  font-weight: 600;
+  margin: 4px 0 8px;
+  letter-spacing: -0.04em;
+}
+
+.space-today .view-title {
+  font-size: clamp(22px, 3.2vw, 40px);
+}
+
+/* Board — Decision Room */
+.space-board .view-body,
+.decision-room {
+  border-left: 2px solid var(--fg);
+  padding-left: 18px;
+}
+
+.decision-room-core {
+  padding: 20px 22px;
+}
+
+.decision-room-question {
+  font-size: clamp(18px, 2.4vw, 28px) !important;
+  letter-spacing: -0.05em;
+}
+
+.space-board .disclosure-trigger {
+  font-size: 13px;
+}
+
+/* Awareness — Quiet Discovery */
+.mental-space-awareness {
+  padding-top: 8px;
+}
+
+.quiet-discovery {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.discovery-insight {
+  padding: 28px 24px;
+  border: none;
+  background: transparent;
+}
+
+.discovery-insight h2 {
+  font-size: clamp(18px, 2.2vw, 26px) !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  color: var(--fg);
+  max-width: 640px;
+}
+
+.discovery-trail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.discovery-panel {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.space-awareness .view-title {
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+/* Projects — Energy Ecosystem */
+.energy-ecosystem {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ecosystem-focus {
+  border-top: 2px solid var(--accent);
+  padding-top: 16px;
+}
+
+.project-map .project-select-card {
+  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.project-map .project-select-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+/* Finance — Freedom Cockpit */
+.freedom-cockpit {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.cockpit-gauge {
+  text-align: center;
+  padding: 22px 20px;
+}
+
+.freedom-gauge-ring {
+  width: 100px;
+  height: 100px;
+  margin: 10px auto 12px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.freedom-gauge-ring::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 1px solid var(--border-soft);
+}
+
+.cockpit-recommendation {
+  text-align: center;
+}
+
+.space-finance .view-title {
+  text-align: center;
+}
+
+.space-finance .space-meta {
+  justify-content: center;
+  width: 100%;
+}
+
+.space-finance .progressive-header {
+  text-align: center;
+}
+
+/* Brain — Memory Palace */
+.memory-palace {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+}
+
+.memory-palace-intro {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--muted);
+  margin: 0 0 8px;
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+.memory-shelf {
+  transition: border-color 0.35s var(--ease), background 0.35s var(--ease);
+}
+
+.memory-shelf:hover {
+  border-color: var(--border);
+}
+
+.memory-shelf.open {
+  border-color: var(--accent);
+  background: rgba(0, 31, 255, 0.03);
+}
+
+.accordion-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s var(--ease);
+}
+
+.accordion-collapse.open {
+  grid-template-rows: 1fr;
+}
+
+.accordion-collapse > .accordion-domain-body {
+  overflow: hidden;
+}
+
+.accordion-domain-trigger {
+  transition: background 0.3s var(--ease);
+}
+
+.accordion-domain-trigger:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.accordion-chevron {
+  transition: transform 0.35s var(--ease), color 0.35s var(--ease);
+}
+
+.accordion-domain.open .accordion-chevron {
+  color: var(--accent);
+  transform: rotate(0deg);
+}
+
+/* Disclosure micro-interactions */
+.disclosure-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: gap 0.3s var(--ease), opacity 0.3s var(--ease), color 0.3s var(--ease);
+}
+
+.disclosure-trigger:hover {
+  opacity: 1;
+  gap: 12px;
+}
+
+.disclosure-trigger-arrow {
+  font-size: 11px;
+  transition: transform 0.3s var(--ease);
+}
+
+.disclosure-trigger:hover .disclosure-trigger-arrow {
+  transform: translateX(3px);
+}
+
+.disclosure-panel {
+  animation: disclosure-reveal 0.45s var(--ease);
+}
+
+@keyframes disclosure-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Per-space main rhythm */
+.space-home .main { gap: 10px; }
+.space-today .main { gap: 6px; }
+.space-board .main { gap: 6px; }
+.space-awareness .main { gap: 14px; }
+.space-projects .main { gap: 8px; }
+.space-finance .main { gap: 10px; }
+.space-brain .main { gap: 6px; }
+
+.status-indicator {
+  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease), background 0.3s var(--ease);
+}
+
+.status-indicator:hover {
+  transform: translateY(-1px);
+  background: rgba(0, 0, 0, 0.02);
+}
+
 .hero {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;

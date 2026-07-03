@@ -11,18 +11,24 @@ import {
 } from '../engine/decisionEngine';
 import { runPotentialEngine } from '../engine/potentialEngine';
 import { runAwarenessEngine } from '../engine/awarenessEngine';
-import { AccordionDomain, DisclosurePanel, DisclosureTrigger, StatusPill } from './components/Disclosure';
+import {
+  AccordionDomain,
+  DisclosurePanel,
+  DisclosureTrigger,
+  RitualStep,
+  StatusPill
+} from './components/Disclosure';
 
 type View = 'home' | 'board' | 'today' | 'projects' | 'finance' | 'awareness' | 'brain';
 
-const NAV: { id: View; label: string }[] = [
-  { id: 'home', label: 'Home' },
-  { id: 'board', label: 'Board' },
-  { id: 'today', label: 'Today' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'finance', label: 'Finance' },
-  { id: 'awareness', label: 'Awareness' },
-  { id: 'brain', label: 'Brain' }
+const NAV: { id: View; label: string; role: string }[] = [
+  { id: 'home', label: 'Home', role: 'Present awareness' },
+  { id: 'board', label: 'Board', role: 'Decision room' },
+  { id: 'today', label: 'Today', role: 'Ritual / action' },
+  { id: 'projects', label: 'Projects', role: 'Energy allocation' },
+  { id: 'finance', label: 'Finance', role: 'Freedom cockpit' },
+  { id: 'awareness', label: 'Awareness', role: 'Quiet discovery' },
+  { id: 'brain', label: 'Brain', role: 'Memory palace' }
 ];
 
 const VIEW_HEADINGS: Record<View, string> = {
@@ -60,7 +66,7 @@ function DecisionResultDisclosure({ result }: { result: DecisionResult }) {
   const [betterOpen, setBetterOpen] = useState(false);
 
   return (
-    <div className="result progressive-result">
+    <div className="result progressive-result space-today-result">
       <div className="kicker">RECOMMENDATION</div>
       <h3>Categoria: {result.categoryLabel}</h3>
       <div className="kicker">PROSSIMO PASSO</div>
@@ -74,7 +80,9 @@ function DecisionResultDisclosure({ result }: { result: DecisionResult }) {
       </DisclosurePanel>
 
       {!boardOpen && whyOpen && <DisclosureTrigger label="Mostra il Board" onClick={() => setBoardOpen(true)} />}
-      {!boardOpen && !whyOpen && <DisclosureTrigger label="Mostra il Board" onClick={() => { setWhyOpen(true); setBoardOpen(true); }} />}
+      {!boardOpen && !whyOpen && (
+        <DisclosureTrigger label="Mostra il Board" onClick={() => { setWhyOpen(true); setBoardOpen(true); }} />
+      )}
       <DisclosurePanel open={boardOpen}>
         <div className="kicker">BOARD</div>
         {Object.entries(result.counsellors).map(([key, text]) => (
@@ -108,9 +116,7 @@ function PotentialPanelDisclosure() {
 
   return (
     <div className="potential-panel">
-      {!open && (
-        <DisclosureTrigger label="Explore opportunities" onClick={() => setOpen(true)} />
-      )}
+      {!open && <DisclosureTrigger label="Explore opportunities" onClick={() => setOpen(true)} />}
       <DisclosurePanel open={open}>
         <section className="hero">
           <div className="potential-card potential-span2 card-glow">
@@ -198,7 +204,7 @@ function ProjectsListDisclosure() {
     <>
       {!open && <DisclosureTrigger label="Open projects" onClick={() => setOpen(true)} />}
       <DisclosurePanel open={open}>
-        <section className="projects-grid card-scroll">
+        <section className="projects-grid card-scroll project-map">
           {Object.entries(brain.projects).map(([name, project]) => (
             <button
               type="button"
@@ -243,11 +249,15 @@ export default function Home() {
 
   const [boardWhy, setBoardWhy] = useState(false);
   const [boardDiscussion, setBoardDiscussion] = useState(false);
+  const [boardAdvisors, setBoardAdvisors] = useState(false);
+  const [boardEvidence, setBoardEvidence] = useState(false);
+  const [boardConfidence, setBoardConfidence] = useState(false);
   const [boardPurpose, setBoardPurpose] = useState(false);
 
   const [projectsWhy, setProjectsWhy] = useState(false);
-
   const [financeGoals, setFinanceGoals] = useState(false);
+
+  const activeNav = NAV.find(item => item.id === view);
 
   return (
     <div className="app">
@@ -275,34 +285,39 @@ export default function Home() {
       </aside>
 
       <div className="content">
-        <main className={`main ${view === 'home' ? 'main-home' : 'main-progressive'}`} role="main">
+        <main className={`main space-${view} ${view === 'home' ? 'main-home' : 'main-progressive'}`} role="main">
           {view === 'home' && (
-            <div className="home-shell progressive-home">
-              <header className="progressive-hero">
+            <div className="home-shell mental-space mental-space-present">
+              <header className="present-header">
                 <div>
                   <p className="home-greeting">Good morning, Giuseppe.</p>
+                  <p className="present-moment">The present moment</p>
                   <div className="view-title">GIUSEPPE OS</div>
                 </div>
                 <div className="status-pill"><span className="status-dot" /> System Online</div>
               </header>
 
-              <section className="progressive-focus card card-glow">
-                <div className="kicker">TODAY&apos;S FOCUS</div>
-                <h2 className="focus-line">{today.title}</h2>
-              </section>
+              <div className="present-core">
+                <section className="present-block card card-glow">
+                  <div className="kicker">TODAY&apos;S FOCUS</div>
+                  <h2 className="focus-line">{today.title}</h2>
+                </section>
 
-              <section className="progressive-insight card">
-                <div className="kicker">AWARENESS</div>
-                <p className="insight-line">{awareness.insight}</p>
-              </section>
+                <section className="present-block card present-insight">
+                  <div className="kicker">AWARENESS</div>
+                  <p className="insight-line">{awareness.insight}</p>
+                </section>
 
-              <section className="progressive-action card">
-                <div className="kicker">RECOMMENDED ACTION</div>
-                <p className="action-line">{today.firstAction}</p>
-                <button type="button" className="card-link" onClick={() => setView('today')}>Take this step</button>
-              </section>
+                <section className="present-block card present-action">
+                  <div className="kicker">RECOMMENDED ACTION</div>
+                  <p className="action-line">{today.firstAction}</p>
+                  <button type="button" className="primary-action" onClick={() => setView('today')}>
+                    Take this step
+                  </button>
+                </section>
+              </div>
 
-              <div className="status-indicators-row">
+              <div className="status-indicators-row present-indicators">
                 <StatusPill label="Projects" value={`${activeProjectCount()} active`} onClick={() => setView('projects')} />
                 <StatusPill label="Finance" value="Freedom path" onClick={() => setView('finance')} />
                 <StatusPill label="Brain" value="Memory" onClick={() => setView('brain')} />
@@ -312,28 +327,28 @@ export default function Home() {
           )}
 
           {view !== 'home' && (
-            <header className="page-header progressive-header">
-              <div className="kicker">{view}</div>
+            <header className={`page-header progressive-header space-header-${view}`}>
+              <div className="space-meta">
+                <div className="kicker">{view}</div>
+                {activeNav && <span className="space-role">{activeNav.role}</span>}
+              </div>
               <div className="view-title">{VIEW_HEADINGS[view]}</div>
             </header>
           )}
 
           {view !== 'home' && (
-            <div className="view-body progressive-body">
+            <div className={`view-body progressive-body mental-space mental-space-${view}`}>
               {view === 'today' && (
-                <div className="progressive-stack">
-                  <section className="card card-glow progressive-level">
-                    <div className="kicker">TODAY</div>
+                <div className="ritual-flow">
+                  <RitualStep step={1} label="TODAY">
                     <h2>{potential.weeklyFocus}</h2>
-                  </section>
+                  </RitualStep>
 
-                  <section className="card progressive-level">
-                    <div className="kicker">NEXT MOVE</div>
+                  <RitualStep step={2} label="NEXT MOVE">
                     <h2>{today.firstAction}</h2>
-                  </section>
+                  </RitualStep>
 
-                  <section className="card progressive-level decision-form-card">
-                    <div className="kicker">DECISION ENGINE</div>
+                  <RitualStep step={3} label="DECISION ENGINE" isLast>
                     <h2>Chiedi al Board.</h2>
                     <label>Decisione</label>
                     <input
@@ -355,7 +370,7 @@ export default function Home() {
                     >
                       Chiedi al Board
                     </button>
-                  </section>
+                  </RitualStep>
 
                   {decisionResult && (
                     <DecisionResultDisclosure
@@ -367,19 +382,17 @@ export default function Home() {
               )}
 
               {view === 'board' && (
-                <div className="progressive-stack">
-                  <section className="card card-glow progressive-level">
+                <div className="decision-room">
+                  <section className="decision-room-core card card-glow">
                     <div className="kicker">RECOMMENDATION</div>
-                    <h2>Pubblica un pensiero vero.</h2>
+                    <h2 className="decision-room-question">Pubblica un pensiero vero.</h2>
                     <p>Reputazione prima di perfezione.</p>
                   </section>
 
                   {!boardWhy && <DisclosureTrigger label="Perché?" onClick={() => setBoardWhy(true)} />}
                   <DisclosurePanel open={boardWhy}>
-                    <section className="grid board-why-grid">
-                      <div className="card"><div className="kicker">NEXT MOVE</div><h2>Pubblica un pensiero vero.</h2><p>Reputazione prima di perfezione.</p></div>
-                      <div className="card"><div className="kicker">CFO</div><h2>Automatizza investimenti.</h2><p>Compra libertà, non status.</p></div>
-                      <div className="card"><div className="kicker">STRATEGIST</div><h2>Congela una nuova idea.</h2><p>Il rischio è dispersione.</p></div>
+                    <section className="card decision-room-why">
+                      <p>La reputazione stimata richiede prove pubbliche. Il perfezionismo è paura travestita da standard.</p>
                     </section>
                   </DisclosurePanel>
 
@@ -389,6 +402,43 @@ export default function Home() {
                   {!boardDiscussion && !boardWhy && (
                     <DisclosureTrigger label="Board discussion" onClick={() => { setBoardWhy(true); setBoardDiscussion(true); }} />
                   )}
+                  <DisclosurePanel open={boardDiscussion}>
+                    <section className="card">
+                      <div className="kicker">BOARD DISCUSSION</div>
+                      <p>Il Board concorda: concentrati su un pensiero vero, non su dieci bozze perfette.</p>
+                    </section>
+                  </DisclosurePanel>
+
+                  {!boardAdvisors && boardDiscussion && (
+                    <DisclosureTrigger label="Advisors" onClick={() => setBoardAdvisors(true)} />
+                  )}
+                  <DisclosurePanel open={boardAdvisors}>
+                    <section className="grid board-why-grid">
+                      <div className="card"><div className="kicker">NEXT MOVE</div><h2>Pubblica un pensiero vero.</h2><p>Reputazione prima di perfezione.</p></div>
+                      <div className="card"><div className="kicker">CFO</div><h2>Automatizza investimenti.</h2><p>Compra libertà, non status.</p></div>
+                      <div className="card"><div className="kicker">STRATEGIST</div><h2>Congela una nuova idea.</h2><p>Il rischio è dispersione.</p></div>
+                    </section>
+                  </DisclosurePanel>
+
+                  {!boardEvidence && boardAdvisors && (
+                    <DisclosureTrigger label="Evidence" onClick={() => setBoardEvidence(true)} />
+                  )}
+                  <DisclosurePanel open={boardEvidence}>
+                    <section className="card">
+                      <div className="kicker">EVIDENCE FROM MEMORY</div>
+                      <ul>{brain.patterns.slice(0, 3).map(item => <li key={item}>{item}</li>)}</ul>
+                    </section>
+                  </DisclosurePanel>
+
+                  {!boardConfidence && (
+                    <DisclosureTrigger label="Confidence" onClick={() => setBoardConfidence(true)} />
+                  )}
+                  <DisclosurePanel open={boardConfidence}>
+                    <section className="card">
+                      <div className="kicker">CONFIDENCE</div>
+                      <div className="potential-score">{today.confidenceScore}</div>
+                    </section>
+                  </DisclosurePanel>
 
                   {!boardPurpose && (
                     <DisclosureTrigger label="Explore purpose" onClick={() => setBoardPurpose(true)} />
@@ -412,8 +462,8 @@ export default function Home() {
               )}
 
               {view === 'projects' && (
-                <div className="progressive-stack">
-                  <section className="card card-glow progressive-level">
+                <div className="energy-ecosystem">
+                  <section className="ecosystem-focus card card-glow">
                     <div className="kicker">TODAY&apos;S PROJECT RECOMMENDATION</div>
                     <h2>{projectName}</h2>
                     <p>{brain.projects[projectName as keyof typeof brain.projects].role}</p>
@@ -433,14 +483,16 @@ export default function Home() {
               )}
 
               {view === 'finance' && (
-                <div className="progressive-stack">
-                  <section className="card card-glow progressive-level finance-freedom-card">
+                <div className="freedom-cockpit">
+                  <section className="cockpit-gauge card card-glow">
                     <div className="kicker">FREEDOM SCORE</div>
-                    <div className="potential-score">72</div>
+                    <div className="freedom-gauge-ring">
+                      <div className="potential-score">72</div>
+                    </div>
                     <p>Stai comprando libertà, non status.</p>
                   </section>
 
-                  <section className="card progressive-level">
+                  <section className="card cockpit-recommendation">
                     <div className="kicker">RECOMMENDATION</div>
                     <h2>Automatizza investimenti.</h2>
                     <p>Misura mesi di libertà, non solo rendimento.</p>
@@ -459,65 +511,63 @@ export default function Home() {
               )}
 
               {view === 'awareness' && (
-                <div className="progressive-stack">
-                  <section className="card card-glow progressive-level">
-                    <div className="kicker">AWARENESS</div>
-                    <p>Pattern intelligence from memory.</p>
-                  </section>
-
-                  <section className="card progressive-level">
+                <div className="quiet-discovery">
+                  <section className="discovery-insight card">
                     <div className="kicker">INSIGHT</div>
                     <h2>{awareness.insight}</h2>
                   </section>
 
-                  {!awarenessWhy && <DisclosureTrigger label="Tell me more" onClick={() => setAwarenessWhy(true)} />}
-                  <DisclosurePanel open={awarenessWhy}>
-                    <div className="card">
-                      <p>{awareness.whyItMatters}</p>
-                    </div>
-                  </DisclosurePanel>
+                  <div className="discovery-trail">
+                    {!awarenessWhy && <DisclosureTrigger label="Tell me more" onClick={() => setAwarenessWhy(true)} />}
+                    <DisclosurePanel open={awarenessWhy}>
+                      <div className="card discovery-panel">
+                        <p>{awareness.whyItMatters}</p>
+                      </div>
+                    </DisclosurePanel>
 
-                  {!awarenessEvidence && awarenessWhy && (
-                    <DisclosureTrigger label="Show evidence" onClick={() => setAwarenessEvidence(true)} />
-                  )}
-                  {!awarenessEvidence && !awarenessWhy && (
-                    <DisclosureTrigger label="Show evidence" onClick={() => { setAwarenessWhy(true); setAwarenessEvidence(true); }} />
-                  )}
-                  <DisclosurePanel open={awarenessEvidence}>
-                    <div className="card">
-                      <div className="kicker">EVIDENCE FROM MEMORY</div>
-                      <ul>{awareness.evidence.map(item => <li key={item}>{item}</li>)}</ul>
-                      <div className="kicker">RISK IF IGNORED</div>
-                      <p>{awareness.riskIfIgnored}</p>
-                    </div>
-                  </DisclosurePanel>
+                    {!awarenessEvidence && awarenessWhy && (
+                      <DisclosureTrigger label="Show evidence" onClick={() => setAwarenessEvidence(true)} />
+                    )}
+                    {!awarenessEvidence && !awarenessWhy && (
+                      <DisclosureTrigger label="Show evidence" onClick={() => { setAwarenessWhy(true); setAwarenessEvidence(true); }} />
+                    )}
+                    <DisclosurePanel open={awarenessEvidence}>
+                      <div className="card discovery-panel">
+                        <div className="kicker">EVIDENCE FROM MEMORY</div>
+                        <ul>{awareness.evidence.map(item => <li key={item}>{item}</li>)}</ul>
+                        <div className="kicker">RISK IF IGNORED</div>
+                        <p>{awareness.riskIfIgnored}</p>
+                      </div>
+                    </DisclosurePanel>
 
-                  {!awarenessReflect && awarenessEvidence && (
-                    <DisclosureTrigger label="Reflect" onClick={() => setAwarenessReflect(true)} />
-                  )}
-                  <DisclosurePanel open={awarenessReflect}>
-                    <div className="card">
-                      <div className="kicker">REFLECT</div>
-                      <p>{awareness.reflectionQuestion}</p>
-                    </div>
-                  </DisclosurePanel>
+                    {!awarenessReflect && awarenessEvidence && (
+                      <DisclosureTrigger label="Reflect" onClick={() => setAwarenessReflect(true)} />
+                    )}
+                    <DisclosurePanel open={awarenessReflect}>
+                      <div className="card discovery-panel">
+                        <div className="kicker">REFLECT</div>
+                        <p>{awareness.reflectionQuestion}</p>
+                      </div>
+                    </DisclosurePanel>
 
-                  {!awarenessAction && (
-                    <DisclosureTrigger label="Suggested action" onClick={() => setAwarenessAction(true)} />
-                  )}
-                  <DisclosurePanel open={awarenessAction}>
-                    <div className="card">
-                      <div className="kicker">RECOMMENDED ACTION</div>
-                      <p>{awareness.recommendedAction}</p>
-                      <div className="kicker">CONFIDENCE</div>
-                      <div className="potential-score">{awareness.confidenceScore}</div>
-                    </div>
-                  </DisclosurePanel>
+                    {!awarenessAction && (
+                      <DisclosureTrigger label="Suggested action" onClick={() => setAwarenessAction(true)} />
+                    )}
+                    <DisclosurePanel open={awarenessAction}>
+                      <div className="card discovery-panel">
+                        <div className="kicker">RECOMMENDED ACTION</div>
+                        <p>{awareness.recommendedAction}</p>
+                        <div className="kicker">CONFIDENCE</div>
+                        <div className="potential-score">{awareness.confidenceScore}</div>
+                      </div>
+                    </DisclosurePanel>
+                  </div>
                 </div>
               )}
 
               {view === 'brain' && (
-                <div className="brain-domains progressive-stack">
+                <div className="memory-palace">
+                  <p className="memory-palace-intro">Open a layer of memory.</p>
                   <AccordionDomain title="Identity" kicker="IDENTITY">
                     <p>{brain.manifesto}</p>
                   </AccordionDomain>

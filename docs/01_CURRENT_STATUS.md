@@ -1,7 +1,7 @@
 # Giuseppe OS — Current Status
 
 **Last updated:** July 2026  
-**Version:** 1.1.0  
+**Version:** 1.2.0  
 **Branch:** `main`  
 **Production:** https://giuseppe-os.vercel.app  
 
@@ -20,7 +20,7 @@
 | **Projects** | Live | Static project cards from brain JSON |
 | **Finance** | Live | Liquidity tier visible; sensitive numbers blurred |
 | **Brain** | Live | Memory overview panel |
-| **Design system** | Live | fiogiuseppe.com palette; v1.1 progressive disclosure hierarchy |
+| **Design system** | Live | v1.2 distinct mental spaces per section; progressive disclosure preserved |
 | **Desktop viewport lock** | Live | No body scroll on desktop main sections |
 | **Brain API integration in UI** | **Not done** | UI still calls engines client-side; `/api/brain` exists but dashboard does not use it yet |
 
