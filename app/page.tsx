@@ -298,9 +298,9 @@ export default function Home() {
           <div className={`view-body progressive-body mental-space mental-space-${view}`}>
             {view === 'today' && (
               <div className="daily-companion">
-                <aside className="companion-presence">
+                <div className="companion-presence">
                   <JewelFace />
-                </aside>
+                </div>
                 <div className="companion-content">
                 <section className="companion-block card card-glow">
                   <div className="kicker">TODAY&apos;S FOCUS</div>
