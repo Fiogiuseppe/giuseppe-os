@@ -1,7 +1,7 @@
-import type { TodaysLetterResponse } from '../../lib/todays-letter/types';
+import type { DailyBriefingResponse } from '../../lib/briefing/types';
 
 export type FetchTodaysLetterResult =
-  | { ok: true; letter: TodaysLetterResponse }
+  | { ok: true; letter: DailyBriefingResponse }
   | { ok: false; message: string; status: number };
 
 export async function fetchTodaysLetter(): Promise<FetchTodaysLetterResult> {
@@ -15,20 +15,20 @@ export async function fetchTodaysLetter(): Promise<FetchTodaysLetterResult> {
       message:
         typeof body.error === 'string'
           ? body.error
-          : 'Giuseppe OS non ha potuto preparare la lettera di oggi.'
+          : 'Giuseppe OS non ha potuto preparare il briefing di oggi.'
     };
   }
 
-  if (!body.letter || !body.sections) {
+  if ((!body.briefing && !body.letter) || !body.sections?.oneBigMove) {
     return {
       ok: false,
       status: 502,
-      message: 'Lettera di oggi incompleta.'
+      message: 'Briefing di oggi incompleto.'
     };
   }
 
   return {
     ok: true,
-    letter: body as TodaysLetterResponse
+    letter: body as DailyBriefingResponse
   };
 }

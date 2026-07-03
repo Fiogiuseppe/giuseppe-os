@@ -1,4 +1,4 @@
-import type { TodaysLetterSections } from './types';
+import type { DailyBriefingSections } from '../briefing/types';
 
 function stripCodeFence(text: string): string {
   const trimmed = text.trim();
@@ -6,64 +6,72 @@ function stripCodeFence(text: string): string {
   return fenced?.[1]?.trim() ?? trimmed;
 }
 
-export function parseLetterSections(answer: string): Partial<TodaysLetterSections> {
+function mapLegacyFields(
+  parsed: Partial<DailyBriefingSections> & Record<string, string | undefined>
+): Partial<DailyBriefingSections> {
+  return {
+    greeting: parsed.greeting,
+    oneBigMove: parsed.oneBigMove ?? parsed.thingToFocusOn ?? parsed.recommendation,
+    reality: parsed.reality ?? parsed.observation,
+    opportunity: parsed.opportunity,
+    ignore: parsed.ignore ?? parsed.thingToIgnore,
+    nourish: parsed.nourish ?? parsed.creativeSuggestion,
+    reflection: parsed.reflection ?? parsed.reflectionQuestion
+  };
+}
+
+export function parseBriefingSections(answer: string): Partial<DailyBriefingSections> {
   const cleaned = stripCodeFence(answer);
 
   try {
-    const parsed = JSON.parse(cleaned) as Partial<TodaysLetterSections> & {
-      recommendation?: string;
-    };
+    const parsed = JSON.parse(cleaned) as Partial<DailyBriefingSections> & Record<string, string | undefined>;
     if (parsed && typeof parsed === 'object') {
-      return {
-        ...parsed,
-        thingToFocusOn: parsed.thingToFocusOn ?? parsed.recommendation
-      };
+      return mapLegacyFields(parsed);
     }
   } catch {
     // Fall through to regex parsing.
   }
 
-  const fields: Partial<TodaysLetterSections> = {};
+  const fields: Partial<DailyBriefingSections> = {};
   const pick = (pattern: RegExp) => answer.match(pattern)?.[1]?.trim();
 
   fields.greeting = pick(/greeting:\s*(.+)/i);
-  fields.observation = pick(/observation:\s*(.+)/i) ?? pick(/one important observation:\s*(.+)/i);
-  fields.whyItMatters =
-    pick(/why (?:this )?matters:\s*(.+)/i) ?? pick(/why it matters(?: today)?:\s*(.+)/i);
-  fields.thingToIgnore =
-    pick(/thingToIgnore:\s*(.+)/i) ?? pick(/one thing you should ignore today:\s*(.+)/i);
-  fields.thingToFocusOn =
-    pick(/thingToFocusOn:\s*(.+)/i) ??
-    pick(/one thing you should focus on:\s*(.+)/i) ??
-    pick(/recommendation:\s*(.+)/i);
-  fields.creativeSuggestion =
-    pick(/creativeSuggestion:\s*(.+)/i) ?? pick(/one creative suggestion:\s*(.+)/i);
-  fields.opportunity = pick(/opportunity:\s*(.+)/i) ?? pick(/one opportunity:\s*(.+)/i);
-  fields.reflectionQuestion =
-    pick(/reflectionQuestion:\s*(.+)/i) ?? pick(/one reflection question:\s*(.+)/i);
+  fields.oneBigMove =
+    pick(/oneBigMove:\s*(.+)/i) ??
+    pick(/one big move:\s*(.+)/i) ??
+    pick(/thingToFocusOn:\s*(.+)/i);
+  fields.reality = pick(/reality:\s*(.+)/i) ?? pick(/observation:\s*(.+)/i);
+  fields.opportunity = pick(/opportunity:\s*(.+)/i);
+  fields.ignore = pick(/ignore:\s*(.+)/i) ?? pick(/thingToIgnore:\s*(.+)/i);
+  fields.nourish = pick(/nourish:\s*(.+)/i) ?? pick(/creativeSuggestion:\s*(.+)/i);
+  fields.reflection = pick(/reflection:\s*(.+)/i) ?? pick(/reflectionQuestion:\s*(.+)/i);
 
   return fields;
 }
 
-export function assembleLetter(sections: TodaysLetterSections): string {
+/** @deprecated Use parseBriefingSections */
+export const parseLetterSections = parseBriefingSections;
+
+export function assembleBriefing(sections: DailyBriefingSections): string {
   return [
     sections.greeting,
     '',
-    sections.observation,
+    sections.oneBigMove,
     '',
-    sections.whyItMatters,
-    '',
-    sections.thingToIgnore,
-    '',
-    sections.thingToFocusOn,
-    '',
-    sections.creativeSuggestion,
+    sections.reality,
     '',
     sections.opportunity,
     '',
-    sections.reflectionQuestion
+    sections.ignore,
+    '',
+    sections.nourish,
+    '',
+    sections.reflection
   ].join('\n');
 }
+
+/** @deprecated Use assembleBriefing */
+export const assembleLetter = assembleBriefing;
 
 export function countWords(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;

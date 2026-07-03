@@ -1,9 +1,9 @@
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import os from 'os';
 import path from 'path';
-import type { TodaysLetterResponse } from './types';
+import type { DailyBriefingResponse } from '../briefing/types';
 
-export const CACHE_SCHEMA = 'intelligence-pipeline-v1';
+export const CACHE_SCHEMA = 'daily-briefing-v1';
 
 function isServerless(): boolean {
   return process.env.VERCEL === '1' || Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME);
@@ -31,19 +31,19 @@ export function letterDateKey(now = new Date()): string {
 interface LetterCacheFile {
   dateKey: string;
   schemaVersion: string;
-  letter: TodaysLetterResponse;
+  letter: DailyBriefingResponse;
 }
 
 function isValidCachedLetter(parsed: LetterCacheFile, dateKey: string): boolean {
   return (
     parsed.dateKey === dateKey &&
     parsed.schemaVersion === CACHE_SCHEMA &&
-    Boolean(parsed.letter?.letter) &&
-    Boolean(parsed.letter.sections?.thingToFocusOn)
+    Boolean(parsed.letter?.briefing) &&
+    Boolean(parsed.letter.sections?.oneBigMove)
   );
 }
 
-export async function readCachedLetter(dateKey: string): Promise<TodaysLetterResponse | null> {
+export async function readCachedLetter(dateKey: string): Promise<DailyBriefingResponse | null> {
   try {
     const raw = await readFile(cachePath(), 'utf8');
     const parsed = JSON.parse(raw) as LetterCacheFile;
@@ -56,14 +56,14 @@ export async function readCachedLetter(dateKey: string): Promise<TodaysLetterRes
   }
 }
 
-export async function writeCachedLetter(dateKey: string, letter: TodaysLetterResponse): Promise<boolean> {
+export async function writeCachedLetter(dateKey: string, letter: DailyBriefingResponse): Promise<boolean> {
   try {
     const target = cachePath();
     await mkdir(path.dirname(target), { recursive: true });
     const payload: LetterCacheFile = {
       dateKey,
       schemaVersion: CACHE_SCHEMA,
-      letter: { ...letter, cached: false }
+      letter: { ...letter, cached: false, letter: letter.briefing }
     };
     await writeFile(target, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
     return true;

@@ -1,55 +1,22 @@
-import type { PersonalRelevanceReport } from '../relevance/types';
-import type { RealityReport } from '../reality/types';
+export type {
+  DailyBriefingContext,
+  DailyBriefingPipelineMeta,
+  DailyBriefingResponse,
+  DailyBriefingSections,
+  DailyBriefingSource
+} from '../briefing/types';
 
-export interface TodaysLetterContext {
-  generatedAt: string;
-  localDate: string;
-  localTime: string;
-  dayPart: 'morning' | 'afternoon' | 'evening' | 'night';
-  dateKey: string;
-  constitution: string;
-  mission: string;
-  northStar: string;
-  values: string[];
-  patterns: string[];
-  creativeGoals: string[];
-  careerGoals: string[];
-  financeGoals: string[];
-  learningGoals: string[];
-  relationships: string[];
-  activeProjects: Array<{ name: string; role: string; status: string }>;
-  priorities: string[];
-  reality: RealityReport;
-  relevance: PersonalRelevanceReport;
-}
+/** @deprecated Use DailyBriefingContext */
+export type TodaysLetterContext = import('../briefing/types').DailyBriefingContext;
 
-export interface TodaysLetterSections {
-  greeting: string;
-  observation: string;
-  whyItMatters: string;
-  thingToIgnore: string;
-  thingToFocusOn: string;
-  creativeSuggestion: string;
-  opportunity: string;
-  reflectionQuestion: string;
-}
+/** @deprecated Use DailyBriefingSections */
+export type TodaysLetterSections = import('../briefing/types').DailyBriefingSections;
 
-export type TodaysLetterSource = 'anthropic' | 'fallback';
+/** @deprecated Use DailyBriefingSource */
+export type TodaysLetterSource = import('../briefing/types').DailyBriefingSource;
 
-export interface TodaysLetterPipelineMeta {
-  realitySignals: number;
-  relevanceItems: number;
-  externalFeedsActive: number;
-  confidenceNote: string;
-}
+/** @deprecated Use DailyBriefingPipelineMeta */
+export type TodaysLetterPipelineMeta = import('../briefing/types').DailyBriefingPipelineMeta;
 
-export interface TodaysLetterResponse {
-  letter: string;
-  sections: TodaysLetterSections;
-  wordCount: number;
-  source: TodaysLetterSource;
-  generatedAt: string;
-  dateKey: string;
-  cached: boolean;
-  pipeline: TodaysLetterPipelineMeta;
-}
+/** @deprecated Use DailyBriefingResponse */
+export type TodaysLetterResponse = import('../briefing/types').DailyBriefingResponse;

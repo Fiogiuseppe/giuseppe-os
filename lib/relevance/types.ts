@@ -1,4 +1,4 @@
-import type { OptimizationTargetId } from '../philosophy/core';
+import type { CapitalId } from '../philosophy/core';
 
 export type RelevanceDimension =
   | 'mission'
@@ -24,7 +24,7 @@ export interface PersonalRelevanceItem {
   relevanceScore: number;
   confidence: 'high' | 'medium' | 'low';
   dimensions: RelevanceDimension[];
-  optimizationTargets: OptimizationTargetId[];
+  capitals: CapitalId[];
 }
 
 export interface PersonalRelevanceReport {

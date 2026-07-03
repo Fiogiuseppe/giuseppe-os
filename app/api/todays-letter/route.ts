@@ -1,12 +1,12 @@
-import { MAX_LETTER_WORDS } from '../../../lib/todays-letter/prompt';
-import { generateTodaysLetter, mapTodaysLetterError } from '../../../lib/todays-letter/generate';
+import { MAX_BRIEFING_WORDS } from '../../../lib/todays-letter/prompt';
+import { generateDailyBriefing, mapBriefingError } from '../../../lib/todays-letter/generate';
 
 export async function POST() {
   try {
-    const response = await generateTodaysLetter();
+    const response = await generateDailyBriefing();
     return Response.json(response);
   } catch (error) {
-    const mapped = mapTodaysLetterError(error);
+    const mapped = mapBriefingError(error);
     return Response.json({ error: mapped.message }, { status: mapped.status });
   }
 }
@@ -14,13 +14,17 @@ export async function POST() {
 export async function GET() {
   return Response.json({
     status: 'ok',
-    service: 'giuseppe-intelligence-pipeline',
-    version: '1.6.0-intelligence-pipeline',
+    service: 'giuseppe-personal-intelligence-os',
+    version: '1.7.0-daily-briefing',
     method: 'POST',
-    maxWords: MAX_LETTER_WORDS,
+    maxWords: MAX_BRIEFING_WORDS,
     provider: 'anthropic',
     cache: 'daily',
     cacheLayers: ['file', 'platform-data-cache'],
-    pipeline: ['reality-engine', 'personal-relevance-engine', 'todays-letter-generator']
+    pipeline: [
+      'reality-engine',
+      'personal-relevance-engine',
+      'daily-briefing-generator'
+    ]
   });
 }

@@ -1,12 +1,13 @@
-import { CORE_PHILOSOPHY_PROMPT, MISSION_QUESTION } from '../philosophy/core';
+import { DAILY_THINKING_CHAIN } from '../briefing/thinkingChain';
+import type { DailyBriefingContext } from '../briefing/types';
+import { CORE_PHILOSOPHY_PROMPT, MISSION_QUESTION, REALITY_FILTER_QUESTION } from '../philosophy/core';
 import { loadBrain } from '../brain/memory/store';
 import { runPersonalRelevanceEngine } from '../relevance/engine';
 import { runRealityEngine } from '../reality/engine';
 import { letterDateKey } from './cache';
 import { loadConstitutionExcerpt } from './loadConstitution';
-import type { TodaysLetterContext } from './types';
 
-function resolveDayPart(hour: number): TodaysLetterContext['dayPart'] {
+function resolveDayPart(hour: number): DailyBriefingContext['dayPart'] {
   if (hour >= 6 && hour < 12) return 'morning';
   if (hour >= 12 && hour < 18) return 'afternoon';
   if (hour >= 18 && hour < 22) return 'evening';
@@ -31,7 +32,7 @@ function formatLocalTime(date: Date): string {
   }).format(date);
 }
 
-export async function buildTodaysLetterContext(now = new Date()): Promise<TodaysLetterContext> {
+export async function buildDailyBriefingContext(now = new Date()): Promise<DailyBriefingContext> {
   const brain = await loadBrain();
   const constitution = await loadConstitutionExcerpt();
   const reality = await runRealityEngine(now);
@@ -67,7 +68,10 @@ export async function buildTodaysLetterContext(now = new Date()): Promise<Todays
   };
 }
 
-export function formatContextForPrompt(context: TodaysLetterContext): string {
+/** @deprecated Use buildDailyBriefingContext */
+export const buildTodaysLetterContext = buildDailyBriefingContext;
+
+export function formatContextForPrompt(context: DailyBriefingContext): string {
   const projects =
     context.activeProjects.length > 0
       ? context.activeProjects.map(p => `- ${p.name} (${p.status}): ${p.role}`).join('\n')
@@ -78,17 +82,17 @@ export function formatContextForPrompt(context: TodaysLetterContext): string {
       ? context.relevance.items
           .map(
             item =>
-              `- [${item.confidence}] ${item.headline} — ${item.whyForGiuseppe} (targets: ${item.optimizationTargets.join(', ')})`
+              `- [${item.confidence}] ${item.headline} — ${item.whyForGiuseppe} (capitals: ${item.capitals.join(', ')})`
           )
           .join('\n')
-      : '- MISSING: no personal relevance signals';
-
-  const realityNote = context.reality.note;
-  const confidenceNote = context.relevance.confidenceNote;
+      : '- MISSING: no high-leverage relevance signals';
 
   return [
     CORE_PHILOSOPHY_PROMPT,
     `MISSION FILTER: ${MISSION_QUESTION}`,
+    `REALITY FILTER: ${REALITY_FILTER_QUESTION}`,
+    'THINKING CHAIN:',
+    ...DAILY_THINKING_CHAIN.map((step, index) => `${index + 1}. ${step}`),
     `DATE: ${context.localDate}`,
     `TIME: ${context.localTime}`,
     'CONSTITUTION:',
@@ -106,10 +110,10 @@ export function formatContextForPrompt(context: TodaysLetterContext): string {
     projects,
     `PRIORITIES: ${context.priorities.join(' | ') || 'MISSING'}`,
     'REALITY ENGINE:',
-    realityNote,
+    context.reality.note,
     `Signals collected: ${context.reality.signals.length}`,
-    'PERSONAL RELEVANCE (top 5 for Giuseppe):',
+    'PERSONAL RELEVANCE (max 3 high-leverage signals):',
     relevanceItems,
-    `CONFIDENCE: ${confidenceNote}`
+    `CONFIDENCE: ${context.relevance.confidenceNote}`
   ].join('\n');
 }
