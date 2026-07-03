@@ -50,3 +50,50 @@ test.describe('Giuseppe OS navigation', () => {
     await expect(page.getByRole('button', { name: 'Chiedi al Board' })).toBeEnabled();
   });
 });
+
+test.describe('Giuseppe OS decision board', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('navigation').getByRole('button', { name: 'Today' }).click();
+  });
+
+  async function askBoard(page: import('@playwright/test').Page, decision: string, reason: string) {
+    await page.getByPlaceholder('Es. comprare casa, pubblicare un post, investire...').fill(decision);
+    await page.getByPlaceholder('Motivo vero.').fill(reason);
+    await page.getByRole('button', { name: 'Chiedi al Board' }).click();
+    await expect(page.locator('.result')).toBeVisible();
+  }
+
+  test('submits the decision form and shows board output', async ({ page }) => {
+    await askBoard(page, 'comprare casa a Copenaghen', 'Voglio più stabilità per la famiglia.');
+
+    await expect(page.getByText('Categoria: Immobiliare')).toBeVisible();
+    await expect(page.getByText('Bisogno nascosto:')).toBeVisible();
+    await expect(page.getByText('Versione migliore')).toBeVisible();
+    await expect(page.getByText('Prossimo passo')).toBeVisible();
+  });
+
+  test('different decisions produce different categories', async ({ page }) => {
+    await askBoard(page, 'comprare casa a Copenaghen', 'Voglio più stabilità per la famiglia.');
+    await expect(page.getByText('Categoria: Immobiliare')).toBeVisible();
+
+    await askBoard(page, 'pubblicare un post su LinkedIn', 'Voglio mostrare come penso.');
+    await expect(page.getByText('Categoria: Reputazione')).toBeVisible();
+    await expect(page.getByText('Categoria: Immobiliare')).not.toBeVisible();
+  });
+
+  test('board output contains at least four counsellors', async ({ page }) => {
+    await askBoard(page, 'investire in ETF', 'Voglio comprare libertà futura.');
+
+    const counsellors = ['CEO 2036', 'CFO', 'Strategist', 'Creative Director', 'Psychologist', 'Mentor'];
+    let visibleCount = 0;
+
+    for (const name of counsellors) {
+      if (await page.getByText(new RegExp(`${name}:`)).isVisible()) {
+        visibleCount += 1;
+      }
+    }
+
+    expect(visibleCount).toBeGreaterThanOrEqual(4);
+  });
+});
