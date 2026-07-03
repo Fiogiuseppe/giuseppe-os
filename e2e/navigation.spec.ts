@@ -32,8 +32,7 @@ test.describe('Giuseppe OS navigation', () => {
   test('loads the home page', async ({ page }) => {
     await expect(page.getByText('Good morning, Giuseppe.')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Giuseppe OS home' })).toBeVisible();
-    await expect(page.locator('footer.footer').getByText("It's not software that tells you what to do.")).toBeVisible();
-    await expect(page.locator('footer.footer').getByText("It's software that remembers who you chose to become.")).toBeVisible();
+    await expect(page.locator('footer.footer').getByText("It's not software that tells you what to do. It's software that remembers who you chose to become.")).toBeVisible();
   });
 
   test('shows all navigation buttons', async ({ page }) => {

@@ -1,8 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const NORTH_STAR = 'PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.';
-const FOOTER_LINE_1 = "It's not software that tells you what to do.";
-const FOOTER_LINE_2 = "It's software that remembers who you chose to become.";
+const FOOTER_MANIFESTO = "It's not software that tells you what to do. It's software that remembers who you chose to become.";
 
 const MAIN_SECTIONS = [
   { label: 'Today', heading: /IL MIGLIOR PASSO DI OGGI/ },
@@ -22,8 +21,7 @@ const BANNED_GENERIC_COPY = [
 
 async function expectFooterManifesto(page: import('@playwright/test').Page) {
   const footer = page.locator('footer.footer');
-  await expect(footer.getByText(FOOTER_LINE_1)).toBeVisible();
-  await expect(footer.getByText(FOOTER_LINE_2)).toBeVisible();
+  await expect(footer.getByText(FOOTER_MANIFESTO)).toBeVisible();
 }
 
 async function expectPrimaryHeading(page: import('@playwright/test').Page) {
