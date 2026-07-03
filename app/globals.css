@@ -188,11 +188,183 @@ a {
 }
 
 .daily-companion {
+  display: grid;
+  grid-template-columns: minmax(120px, 168px) minmax(0, 1fr);
+  gap: 14px;
+  min-height: 0;
+  overflow: hidden;
+  align-items: start;
+}
+
+.companion-presence {
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.companion-content {
   display: flex;
   flex-direction: column;
   gap: 10px;
   min-height: 0;
+  min-width: 0;
   overflow: hidden;
+}
+
+/* Jewel face companion — eyes blink every 7s */
+.jewel-face {
+  position: relative;
+  width: 100%;
+  max-width: 168px;
+  aspect-ratio: 4 / 5;
+  border-radius: 2px;
+  overflow: hidden;
+  background: #e8e6dc;
+}
+
+.jewel-face-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  pointer-events: none;
+  user-select: none;
+}
+
+.jewel-face-eyes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.jewel-eye-slot {
+  position: absolute;
+  width: 22%;
+  height: 9%;
+  top: 36.5%;
+  overflow: hidden;
+}
+
+.jewel-eye-slot--left {
+  left: 24%;
+}
+
+.jewel-eye-slot--right {
+  left: 54%;
+}
+
+.jewel-eye-reveal {
+  position: absolute;
+  inset: 18% 8%;
+  z-index: 1;
+  opacity: 0;
+  animation: jewel-eye-reveal 7s var(--ease) infinite;
+}
+
+.jewel-eye-iris {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #4a7dff 0%, #1a3fd4 42%, #0a1f6e 100%);
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.35);
+}
+
+.jewel-eye-pupil {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 38%;
+  height: 38%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #050814;
+}
+
+.jewel-eye-shine {
+  position: absolute;
+  top: 22%;
+  left: 28%;
+  width: 22%;
+  height: 22%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.jewel-lid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(80, 120, 255, 0.55) 0%, transparent 45%),
+    linear-gradient(180deg, #2a4fd4 0%, #1a3fd4 55%, #1236b8 100%);
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.12);
+}
+
+.jewel-lid--upper {
+  top: 0;
+  height: 52%;
+  transform-origin: center bottom;
+  animation: jewel-lid-upper 7s var(--ease) infinite;
+}
+
+.jewel-lid--lower {
+  bottom: 0;
+  height: 52%;
+  transform-origin: center top;
+  animation: jewel-lid-lower 7s var(--ease) infinite;
+}
+
+.jewel-lashes {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 2px,
+    rgba(220, 228, 255, 0.95) 2px 3px,
+    transparent 3px 5px
+  );
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+}
+
+.jewel-lashes--upper {
+  bottom: 0;
+}
+
+.jewel-lashes--lower {
+  top: 0;
+}
+
+@keyframes jewel-lid-upper {
+  0%, 72%, 100% { transform: translateY(0); }
+  78% { transform: translateY(-92%); }
+  88% { transform: translateY(-92%); }
+}
+
+@keyframes jewel-lid-lower {
+  0%, 72%, 100% { transform: translateY(0); }
+  78% { transform: translateY(92%); }
+  88% { transform: translateY(92%); }
+}
+
+@keyframes jewel-eye-reveal {
+  0%, 72%, 100% { opacity: 0; }
+  78%, 88% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jewel-lid--upper,
+  .jewel-lid--lower,
+  .jewel-eye-reveal {
+    animation: none;
+  }
 }
 
 .companion-block {

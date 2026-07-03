@@ -17,6 +17,7 @@ import {
   DisclosureTrigger,
   RitualStep
 } from './components/Disclosure';
+import { JewelFace } from './components/JewelFace';
 
 type View = 'today' | 'decisions' | 'discover' | 'create' | 'memory';
 
@@ -297,6 +298,10 @@ export default function Home() {
           <div className={`view-body progressive-body mental-space mental-space-${view}`}>
             {view === 'today' && (
               <div className="daily-companion">
+                <aside className="companion-presence">
+                  <JewelFace />
+                </aside>
+                <div className="companion-content">
                 <section className="companion-block card card-glow">
                   <div className="kicker">TODAY&apos;S FOCUS</div>
                   <h2 className="focus-line">{todayOpp.title}</h2>
@@ -345,6 +350,7 @@ export default function Home() {
                     <p>{todayOpp.description}</p>
                   </section>
                 </DisclosurePanel>
+                </div>
               </div>
             )}
 
