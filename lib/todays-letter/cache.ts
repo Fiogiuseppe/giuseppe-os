@@ -42,6 +42,10 @@ export function usePlatformLetterCache(): boolean {
   return process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
 }
 
+export function clearCachedLetter(dateKey: string, locale: 'it' | 'en' = 'it'): void {
+  memoryCache.delete(letterCacheKey(dateKey, locale));
+}
+
 export function resetLetterCacheForTests(): void {
   memoryCache.clear();
 }

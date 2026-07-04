@@ -18,7 +18,7 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: 'BRAIN_AI_PROVIDER=rule-based npm run dev',
+    command: 'AI_MODE=mock BRAIN_AI_PROVIDER=claude npm run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000

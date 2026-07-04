@@ -27,6 +27,7 @@ import {
 import TodayAvatarNav from './components/TodayAvatarNav';
 import TodayMobileRitual from './components/TodayMobileRitual';
 import { AppTopbar } from './components/AppTopbar';
+import { DevAiControls } from './components/DevAiControls';
 import { useLanguage } from './lib/i18n/LanguageContext';
 import { isAppView, type AppView } from './lib/views';
 
@@ -436,11 +437,11 @@ export default function Home() {
   useEffect(() => {
     let cancelled = false;
 
-    async function loadLetter() {
+    async function loadLetter(regenerate = false) {
       setLetterLoading(true);
       setLetterError(null);
 
-      const response = await fetchTodaysLetter(locale);
+      const response = await fetchTodaysLetter(locale, { regenerate });
       if (cancelled) {
         return;
       }
@@ -455,12 +456,27 @@ export default function Home() {
       setTodaysLetter(response.letter);
     }
 
-    void loadLetter();
+    void loadLetter(false);
 
     return () => {
       cancelled = true;
     };
   }, [locale]);
+
+  async function handleRegenerateBriefing() {
+    setLetterLoading(true);
+    setLetterError(null);
+
+    const response = await fetchTodaysLetter(locale, { regenerate: true });
+    setLetterLoading(false);
+
+    if (!response.ok) {
+      setLetterError(response.message);
+      return;
+    }
+
+    setTodaysLetter(response.letter);
+  }
 
   const [createFocus, setCreateFocus] = useState<'projects' | 'potential' | 'why' | null>(null);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
@@ -837,6 +853,7 @@ export default function Home() {
         </main>
 
         <footer className="footer">
+          <DevAiControls letterLoading={letterLoading} onRegenerate={() => void handleRegenerateBriefing()} />
           <Link href="/about" className="footer-link">
             {t('footer.about')}
           </Link>

@@ -1,9 +1,12 @@
+import { isAIMockMode } from '../../ai/mode';
+import { wrapProviderWithLogging } from '../../ai/loggedProvider';
 import type { AIProvider, AIProviderName } from './types';
 import { createClaudeProvider } from './claude';
 import { createOpenAIProvider } from './openai';
 import { createGeminiProvider } from './gemini';
 import { createLocalProvider } from './local';
 import { createRuleBasedProvider } from './ruleBased';
+import { createMockProvider } from './mock';
 
 function resolveProviderName(): AIProviderName {
   const configured = process.env.BRAIN_AI_PROVIDER?.trim().toLowerCase();
@@ -21,22 +24,28 @@ function resolveProviderName(): AIProviderName {
   return 'claude';
 }
 
-export function resolveAIProvider(): AIProvider {
-  const name = resolveProviderName();
-
+function resolveLiveProvider(name: AIProviderName): AIProvider {
   switch (name) {
     case 'openai':
-      return createOpenAIProvider();
+      return wrapProviderWithLogging(createOpenAIProvider(), 'brain');
     case 'gemini':
-      return createGeminiProvider();
+      return wrapProviderWithLogging(createGeminiProvider(), 'brain');
     case 'local':
-      return createLocalProvider();
+      return wrapProviderWithLogging(createLocalProvider(), 'brain');
     case 'rule-based':
       return createRuleBasedProvider();
     case 'claude':
     default:
-      return createClaudeProvider();
+      return wrapProviderWithLogging(createClaudeProvider(), 'brain');
   }
 }
 
-export { createRuleBasedProvider };
+export function resolveAIProvider(): AIProvider {
+  if (isAIMockMode()) {
+    return createMockProvider();
+  }
+
+  return resolveLiveProvider(resolveProviderName());
+}
+
+export { createRuleBasedProvider, createMockProvider };

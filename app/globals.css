@@ -230,12 +230,14 @@ html.about-route body {
   letter-spacing: -0.035em;
   color: var(--fg);
   overflow-wrap: anywhere;
+  text-transform: uppercase;
 }
 
 .today-action-text--loading,
 .today-action-text--error {
   color: var(--muted);
   font-style: italic;
+  text-transform: none;
 }
 
 .today-action-text--loading {
@@ -2159,6 +2161,60 @@ html.about-route body {
   margin-top: 2px;
 }
 
+.dev-ai-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ai-mode-indicator {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.ai-mode-indicator--mock {
+  color: #6b4f1d;
+  border-color: rgba(107, 79, 29, 0.25);
+  background: rgba(107, 79, 29, 0.08);
+}
+
+.ai-mode-indicator--live {
+  color: var(--accent);
+  border-color: rgba(0, 31, 255, 0.2);
+  background: rgba(0, 31, 255, 0.06);
+}
+
+.regenerate-ai-button {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.regenerate-ai-button:hover:not(:disabled) {
+  color: var(--fg);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.regenerate-ai-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 /* Language switch — shows only the alternate locale */
 .language-switch {
   display: inline-flex;
@@ -2653,6 +2709,8 @@ label {
     font-weight: 500;
     line-height: 1.32;
     color: var(--fg);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
   }
 
   .today-ritual-reflection {

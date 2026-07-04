@@ -4,11 +4,21 @@ export type FetchTodaysLetterResult =
   | { ok: true; letter: DailyBriefingResponse }
   | { ok: false; message: string; status: number };
 
-export async function fetchTodaysLetter(locale: 'it' | 'en' = 'it'): Promise<FetchTodaysLetterResult> {
+export type FetchTodaysLetterOptions = {
+  regenerate?: boolean;
+};
+
+export async function fetchTodaysLetter(
+  locale: 'it' | 'en' = 'it',
+  options: FetchTodaysLetterOptions = {}
+): Promise<FetchTodaysLetterResult> {
   const response = await fetch('/api/todays-letter', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ locale })
+    body: JSON.stringify({
+      locale,
+      regenerate: options.regenerate === true
+    })
   });
   const body = await response.json().catch(() => ({}));
 

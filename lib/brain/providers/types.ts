@@ -1,6 +1,6 @@
 import type { ContextPacket } from '../types';
 
-export type AIProviderName = 'claude' | 'openai' | 'gemini' | 'local' | 'rule-based';
+export type AIProviderName = 'claude' | 'openai' | 'gemini' | 'local' | 'rule-based' | 'mock';
 
 export interface AIMessage {
   role: 'user' | 'assistant';
