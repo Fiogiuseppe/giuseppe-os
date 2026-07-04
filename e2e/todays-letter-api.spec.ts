@@ -29,7 +29,8 @@ test.describe('Giuseppe OS Daily Briefing API', () => {
       'reality-engine',
       'personal-relevance-engine',
       'trajectory-engine',
-      'daily-briefing-generator'
+      'daily-briefing-generator',
+      'quality-engine'
     ]);
   });
 
@@ -59,6 +60,9 @@ test.describe('Giuseppe OS Daily Briefing API', () => {
     expect(typeof body.pipeline.trajectoryApproved).toBe('number');
     expect(typeof body.pipeline.trajectoryFiltered).toBe('number');
     expect(typeof body.pipeline.trajectoryNote).toBe('string');
+    expect(typeof body.pipeline.qualityPassed).toBe('boolean');
+    expect(['high', 'medium', 'low']).toContain(body.pipeline.qualityConfidence);
+    expect(typeof body.pipeline.qualityNote).toBe('string');
   });
 
   test('POST /api/todays-letter returns cached briefing on repeat', async ({ request }) => {

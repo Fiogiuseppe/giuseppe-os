@@ -1,12 +1,12 @@
 export const DAILY_THINKING_CHAIN = [
-  'What happened in the world?',
-  'What happened in Giuseppe\'s life?',
+  'What changed in the world?',
+  'What changed in Giuseppe\'s life?',
   'What changed since yesterday?',
   'What opportunities appeared?',
   'What risks appeared?',
   'What deserves Giuseppe\'s attention?',
-  'What should he ignore?',
-  'How can today\'s decisions improve his long-term trajectory?'
+  'What should he intentionally ignore?',
+  'What single decision increases the probability that Giuseppe reaches the life he wants in 10 years?'
 ] as const;
 
 export const BRIEFING_ABSOLUTE_RULE =

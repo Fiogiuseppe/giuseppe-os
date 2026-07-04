@@ -1,6 +1,6 @@
 # Giuseppe OS — Project State
 
-**Version:** 1.0 (Intelligence Foundation)  
+**Version:** 1.7 (Personal Intelligence OS — Daily Brief)  
 **Last updated:** July 2026  
 **Repository:** Private — source of truth for all project knowledge  
 
@@ -8,30 +8,32 @@
 
 ## What Giuseppe OS Is
 
-Giuseppe OS is a **Personal Intelligence Operating System** — not a chatbot, not a productivity app, not a finance tracker.
+Giuseppe OS is a **Personal Intelligence Operating System** — not a productivity app, not a dashboard, not an AI assistant.
 
-It is a thinking environment that helps Giuseppe live his spiritual purpose inside practical reality. It remembers who Giuseppe chose to become and helps him decide, act, review, and learn in alignment with that choice.
+Its purpose is simple: **increase the probability that Giuseppe lives an extraordinary life.**
 
-The AI is one component. The **Executive Brain** is the real system.
+It protects Giuseppe's **trajectory** — not his inbox, calendar, tasks, or productivity. The AI is one component. The intelligence pipeline is the product.
 
-Before any response is generated, the system asks:
+Before anything is shown, the system asks:
 
-> *Will this response help Giuseppe become the person he chose to become?*
+> *Will Giuseppe thank himself in ten years for following this recommendation?*
+
+If not, silence is better than noise.
 
 ---
 
 ## Vision
 
-Close the gap between **spiritual intention** and **daily action**.
+Close the gap between **who Giuseppe chose to become** and **what he does each day**.
 
 Giuseppe OS exists to:
 
-1. **Remember** what matters when enthusiasm or anxiety is high.
-2. **Slow down** decisions long enough for truth to appear.
-3. **Translate** inner purpose into one next action.
-4. **Compound** lessons so the same mistakes become expensive only once.
-5. **Protect** sacred creative work from premature industrialization.
-6. **Build** a life where work becomes optional by 2036.
+1. **Filter reality** — not summarize the news; answer why it matters for Giuseppe.
+2. **Reduce noise** — max three recommendations per Daily Brief.
+3. **Protect attention** — ignore is as valuable as opportunity.
+4. **Optimize trajectory** — freedom, compounding, ownership, deep work, meaning.
+5. **Compound learning** — understand Giuseppe better every week.
+6. **Build freedom by 2036** — money is fuel, not the destination.
 
 ---
 
@@ -45,35 +47,29 @@ Giuseppe OS exists to:
 
 ---
 
-## Architecture (v1.0)
+## Architecture (v1.7)
 
 ```
-User Request
+Today (Home)
      ↓
-Executive Brain (orchestrator)          ← lib/brain/executiveBrain.ts
+Daily Brief Generator                    ← lib/todays-letter/
      ↓
-Intent Detection + Engine Routing       ← lib/brain/intent/
+Quality Engine                           ← lib/briefing/quality.ts
      ↓
-Engines (decision, awareness, potential, learning)
+Trajectory Engine                        ← lib/trajectory/
      ↓
-Reality Layer (stubs)                   ← lib/reality/
+Personal Relevance Engine (max 3)        ← lib/relevance/
      ↓
-Context Builder (relevance slices)      ← lib/brain/context/
+Reality Engine                           ← lib/reality/
      ↓
-Mission Gate                            ← lib/brain/missionGate.ts
-     ↓
-AI Provider (swappable)                 ← lib/brain/providers/
-     ↓
-Memory Update (quality filter)          ← lib/brain/memory/
-     ↓
-BrainResponse
+Giuseppe Brain + Constitution            ← memory/giuseppe_brain.json
 ```
 
-**API entry point:** `POST /api/brain`  
-**Nothing talks directly to the AI.** Everything goes through the Executive Brain.
+**Today API:** `POST /api/todays-letter`  
+**Brain API:** `POST /api/brain` (Decisions, Awareness, Potential, Learning)
 
-Full technical spec: [`docs/INTELLIGENCE_FOUNDATION.md`](INTELLIGENCE_FOUNDATION.md)  
-Authoritative architecture: [`docs/GIUSEPPE_OS_ARCHITECTURE.md`](GIUSEPPE_OS_ARCHITECTURE.md)
+Philosophy and capitals: `lib/philosophy/core.ts`  
+Full product constitution: [`docs/PRODUCT_CONSTITUTION.md`](PRODUCT_CONSTITUTION.md)
 
 ---
 
@@ -81,48 +77,42 @@ Authoritative architecture: [`docs/GIUSEPPE_OS_ARCHITECTURE.md`](GIUSEPPE_OS_ARC
 
 | Engine | Location | Role |
 |--------|----------|------|
-| **Executive Brain** | `lib/brain/executiveBrain.ts` | Central orchestrator |
-| **Decision Engine** | `engine/decisionEngine.ts` | Classify decisions, six capitals, board debate, next action |
-| **Awareness Engine** | `engine/awarenessEngine.ts` | Proactive insights — patterns, contradictions, risks |
-| **Potential Engine** | `engine/potentialEngine.ts` | Mission-aligned opportunities |
-| **Learning Engine** | `lib/brain/engines/learningEngine.ts` | Pattern analysis, lessons, growth opportunities |
-| **Context Builder** | `lib/brain/context/` | Relevance-based memory slices (not full dumps) |
-| **AI Provider Layer** | `lib/brain/providers/` | Claude default; OpenAI/Gemini/local/rule-based |
-| **Reality Layer** | `lib/reality/` | Architecture stubs for future live connectors |
-
-Legacy stubs (not yet wired to Executive Brain): `purposeEngine.ts`, `weeklyEngine.ts`
+| **Reality Engine** | `lib/reality/engine.ts` | Collect and filter world signals |
+| **Personal Relevance Engine** | `lib/relevance/engine.ts` | Filter to Giuseppe-specific, max 3 signals |
+| **Trajectory Engine** | `lib/trajectory/engine.ts` | Ten-year decision filter |
+| **Quality Engine** | `lib/briefing/quality.ts` | Gate Daily Brief before publish |
+| **Daily Brief Generator** | `lib/todays-letter/generate.ts` | Today page intelligence |
+| **Executive Brain** | `lib/brain/executiveBrain.ts` | Orchestrator for `/api/brain` |
+| **Learning Engine** | `lib/brain/engines/learningEngine.ts` | Pattern analysis (briefing feedback planned) |
 
 ---
 
-## Design Direction
+## Eight Capitals
 
-Visual identity aligned with [fiogiuseppe.com](https://fiogiuseppe.com):
+Every recommendation must improve at least one:
 
-- **Cream background:** `#f7f5e8`
-- **Black text and structure**
-- **Electric blue accent:** `#001fff`
-- **Typography:** Helvetica (UI) + Libre Baskerville (editorial headlines)
-
-UX principles:
-
-- Editorial, calm, mission-first — not a SaaS dashboard
-- Desktop viewport locked — no page scroll on main sections
-- Finance view blurs/hides sensitive personal numbers in demo mode
-- North Star appears only on Board view
-- One active navigation item at a time
-
----
-
-## Six Capitals
-
-Every decision is evaluated against:
-
-- Financial Capital
-- Creative Capital
-- Reputation Capital
-- Social Capital
+- Wealth Capital
 - Knowledge Capital
+- Creative Capital
+- Relationship Capital
+- Health Capital
 - Freedom Capital
+- Time Capital
+- Reputation Capital
+
+---
+
+## Implementation Roadmap
+
+| Phase | Status |
+|-------|--------|
+| 1 — Supabase Persistence | Planned |
+| 2 — Trajectory Engine | **Shipped** |
+| 3 — Reality Engine | Partial (1 active connector) |
+| 4 — Personal Relevance Engine | **Shipped** |
+| 5 — Daily Brief | **Shipped** |
+| 6 — Learning Engine (briefing feedback) | Scaffolded |
+| 7 — Notification Engine | **Deferred** |
 
 ---
 
@@ -130,10 +120,8 @@ Every decision is evaluated against:
 
 | Document | Purpose |
 |----------|---------|
-| [`CONSTITUTION.md`](CONSTITUTION.md) | Non-negotiable principles |
-| [`GIUSEPPE_OS_ARCHITECTURE.md`](GIUSEPPE_OS_ARCHITECTURE.md) | Authoritative system design |
-| [`INTELLIGENCE_FOUNDATION.md`](INTELLIGENCE_FOUNDATION.md) | v1.0 pipeline specification |
-| [`ROADMAP.md`](ROADMAP.md) | Version milestones |
+| [`PRODUCT_CONSTITUTION.md`](PRODUCT_CONSTITUTION.md) | Non-negotiable product principles |
 | [`03_DECISIONS_LOG.md`](03_DECISIONS_LOG.md) | Running architecture decisions |
+| [`DESIGN_DNA.md`](DESIGN_DNA.md) | Visual and UX principles |
 | [`01_CURRENT_STATUS.md`](01_CURRENT_STATUS.md) | What exists right now |
 | [`02_NEXT_STEPS.md`](02_NEXT_STEPS.md) | Implementation priorities |

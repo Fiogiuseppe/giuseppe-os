@@ -168,6 +168,16 @@ Each entry includes:
 
 ---
 
+### 2026-07 — Product vision encoded + Quality Engine
+
+**Decision:** Giuseppe OS is explicitly a Personal Intelligence Operating System — not productivity, dashboard, or assistant. Today IS Home. The full product mission, daily question chain, eight capitals, silence principle, and deferred notifications policy are encoded in `lib/philosophy/core.ts`. A Quality Engine (`lib/briefing/quality.ts`) gates every Daily Brief before publication.
+
+**Rationale:** Intelligence must be measured by outcomes, not engagement. Weak advice is worse than silence. The briefing must never auto-publish without evaluating relevance, novelty, trajectory impact, evidence, and confidence. If quality is low, the system says: *"I don't think I have anything valuable enough to interrupt your attention today."*
+
+**Implications:** Pipeline order: Reality → Relevance → Trajectory → Briefing Generator → **Quality Engine**. `lib/learning/briefingFeedback.ts` scaffolds Helpful/Neutral/Not Helpful ratings for Phase 6. Notifications remain deferred until briefing quality is consistently high. `docs/00_PROJECT_STATE.md` updated to v1.7. Cache schema `daily-briefing-v3`.
+
+---
+
 ## Template for New Entries
 
 ```markdown

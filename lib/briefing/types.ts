@@ -22,6 +22,9 @@ export interface DailyBriefingPipelineMeta {
   externalFeedsActive: number;
   confidenceNote: string;
   trajectoryNote: string;
+  qualityPassed: boolean;
+  qualityConfidence: 'high' | 'medium' | 'low';
+  qualityNote: string;
 }
 
 export interface DailyBriefingContext {

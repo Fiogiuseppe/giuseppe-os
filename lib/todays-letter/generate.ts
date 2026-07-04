@@ -2,6 +2,11 @@ import { createClaudeProvider } from '../brain/providers/claude';
 import { loadBrain, loadLongTermMemory } from '../brain/memory/store';
 import { ProviderConfigurationError, ProviderRequestError } from '../brain/providers/types';
 import type { DailyBriefingContext, DailyBriefingResponse, DailyBriefingSections } from '../briefing/types';
+import {
+  buildQualitySilenceBriefing,
+  evaluateBriefingQuality,
+  type BriefingQualityReport
+} from '../briefing/quality';
 import { applyTrajectoryToBriefing } from '../trajectory/briefingFilter';
 import { buildDailyBriefingContext, formatContextForPrompt } from './buildContext';
 import { readCachedLetter, letterDateKey, usePlatformLetterCache, writeCachedLetter } from './cache';
@@ -25,7 +30,7 @@ function normalizeSections(
   };
 }
 
-function pipelineMeta(context: DailyBriefingContext) {
+function pipelineMeta(context: DailyBriefingContext, quality: BriefingQualityReport) {
   return {
     realitySignals: context.reality.signals.length,
     relevanceItems: context.relevance.items.length,
@@ -33,7 +38,24 @@ function pipelineMeta(context: DailyBriefingContext) {
     trajectoryFiltered: context.trajectory.filteredCount,
     externalFeedsActive: context.reality.externalFeedsActive,
     confidenceNote: context.relevance.confidenceNote,
-    trajectoryNote: context.trajectory.trajectoryNote
+    trajectoryNote: context.trajectory.trajectoryNote,
+    qualityPassed: quality.shouldPublish,
+    qualityConfidence: quality.confidence,
+    qualityNote: quality.qualityNote
+  };
+}
+
+function applyQualityGate(
+  sections: DailyBriefingSections,
+  context: DailyBriefingContext
+): { sections: DailyBriefingSections; quality: BriefingQualityReport } {
+  const quality = evaluateBriefingQuality(sections, context);
+  if (quality.shouldPublish) {
+    return { sections, quality };
+  }
+  return {
+    sections: buildQualitySilenceBriefing(context),
+    quality
   };
 }
 
@@ -50,6 +72,7 @@ function buildResponse(
   sections: DailyBriefingSections,
   source: DailyBriefingResponse['source'],
   context: DailyBriefingContext,
+  quality: BriefingQualityReport,
   cached: boolean
 ): DailyBriefingResponse {
   const briefing = assembleBriefing(sections);
@@ -62,7 +85,7 @@ function buildResponse(
     generatedAt: context.generatedAt,
     dateKey: context.dateKey,
     cached,
-    pipeline: pipelineMeta(context)
+    pipeline: pipelineMeta(context, quality)
   };
 }
 
@@ -90,8 +113,9 @@ async function generateDailyBriefingFresh(): Promise<DailyBriefingResponse> {
   let response: DailyBriefingResponse;
 
   if (mode === 'fallback') {
-    const sections = await filterSectionsThroughTrajectory(fallbackSections, context);
-    response = buildResponse(sections, 'fallback', context, false);
+    const filtered = await filterSectionsThroughTrajectory(fallbackSections, context);
+    const gated = applyQualityGate(filtered, context);
+    response = buildResponse(gated.sections, 'fallback', context, gated.quality, false);
   } else {
     const userPrompt = [
       'Write Giuseppe his Daily Briefing using only this intelligence pipeline context:',
@@ -105,11 +129,12 @@ async function generateDailyBriefingFresh(): Promise<DailyBriefingResponse> {
       temperature: 0.35
     });
 
-    const sections = await filterSectionsThroughTrajectory(
+    const filtered = await filterSectionsThroughTrajectory(
       normalizeSections(parseBriefingSections(completion.content), fallbackSections),
       context
     );
-    response = buildResponse(sections, 'anthropic', context, false);
+    const gated = applyQualityGate(filtered, context);
+    response = buildResponse(gated.sections, 'anthropic', context, gated.quality, false);
   }
 
   await writeCachedLetter(context.dateKey, response);

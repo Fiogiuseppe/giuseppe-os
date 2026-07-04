@@ -25,7 +25,8 @@ export async function GET() {
       'reality-engine',
       'personal-relevance-engine',
       'trajectory-engine',
-      'daily-briefing-generator'
+      'daily-briefing-generator',
+      'quality-engine'
     ]
   });
 }
