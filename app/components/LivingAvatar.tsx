@@ -6,9 +6,10 @@ import styles from './LivingAvatar.module.css';
 const EYES_OPEN = '/avatar/avatar-eyes-open.png';
 const EYES_CLOSED = '/avatar/avatar-eyes-closed.png';
 
-const BLINK_MIN_MS = 3000;
-const BLINK_MAX_MS = 7000;
-const BLINK_DURATION_MS = 140;
+const BLINK_MIN_MS = 2200;
+const BLINK_MAX_MS = 4500;
+const BLINK_DURATION_MS = 280;
+const FIRST_BLINK_MS = 1200;
 
 const PARALLAX_X = 9;
 const PARALLAX_Y = 7;
@@ -24,30 +25,35 @@ function clamp(value: number, min: number, max: number): number {
 
 export default function LivingAvatar() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [eyesOpen, setEyesOpen] = useState(true);
+  const [eyesClosed, setEyesClosed] = useState(false);
+
+  useEffect(() => {
+    [EYES_OPEN, EYES_CLOSED].forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   useEffect(() => {
     let blinkTimer: number | undefined;
-    let closeTimer: number | undefined;
+    let openTimer: number | undefined;
 
-    const scheduleBlink = () => {
-      blinkTimer = window.setTimeout(() => {
-        setEyesOpen(false);
-        closeTimer = window.setTimeout(() => {
-          setEyesOpen(true);
-          scheduleBlink();
-        }, BLINK_DURATION_MS);
-      }, randomBlinkDelay());
+    const blink = () => {
+      setEyesClosed(true);
+      openTimer = window.setTimeout(() => {
+        setEyesClosed(false);
+        blinkTimer = window.setTimeout(blink, randomBlinkDelay());
+      }, BLINK_DURATION_MS);
     };
 
-    scheduleBlink();
+    blinkTimer = window.setTimeout(blink, FIRST_BLINK_MS);
 
     return () => {
       if (blinkTimer !== undefined) {
         window.clearTimeout(blinkTimer);
       }
-      if (closeTimer !== undefined) {
-        window.clearTimeout(closeTimer);
+      if (openTimer !== undefined) {
+        window.clearTimeout(openTimer);
       }
     };
   }, []);
@@ -94,14 +100,25 @@ export default function LivingAvatar() {
       <div className={styles.parallax}>
         <div className={styles.idle}>
           <div className={styles.breath}>
-            <img
-              src={eyesOpen ? EYES_OPEN : EYES_CLOSED}
-              alt=""
-              className={styles.portrait}
-              width={1024}
-              height={1024}
-              draggable={false}
-            />
+            <div className={styles.portraitStack}>
+              <img
+                src={EYES_OPEN}
+                alt=""
+                className={`${styles.portraitLayer} ${styles.portraitOpen}`}
+                width={1024}
+                height={1024}
+                draggable={false}
+              />
+              <img
+                src={EYES_CLOSED}
+                alt=""
+                className={`${styles.portraitLayer} ${styles.portraitClosed}${eyesClosed ? ` ${styles.portraitClosedVisible}` : ''}`}
+                width={1024}
+                height={1024}
+                draggable={false}
+                aria-hidden="true"
+              />
+            </div>
           </div>
         </div>
       </div>

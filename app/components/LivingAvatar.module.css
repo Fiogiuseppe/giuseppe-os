@@ -21,18 +21,24 @@
 .idle {
   width: 100%;
   height: 100%;
-  animation: livingAvatarIdle 14s ease-in-out infinite;
+  animation: livingAvatarIdle 12s ease-in-out infinite;
   transform-origin: center center;
 }
 
 .breath {
   width: 100%;
   height: 100%;
-  animation: livingAvatarBreathe 7s ease-in-out infinite;
+  animation: livingAvatarBreathe 4.8s ease-in-out infinite;
   transform-origin: center center;
 }
 
-.portrait {
+.portraitStack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.portraitLayer {
   display: block;
   width: 100%;
   height: 100%;
@@ -42,8 +48,25 @@
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+.portraitOpen {
   transform: scale(1.1);
   transform-origin: center center;
+}
+
+.portraitClosed {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.1);
+  transform-origin: center center;
+  opacity: 0;
+  transition: opacity 0.14s ease-out;
+}
+
+.portraitClosedVisible {
+  opacity: 1;
+  transition: opacity 0s linear;
 }
 
 @keyframes livingAvatarBreathe {
@@ -53,7 +76,7 @@
   }
 
   50% {
-    transform: translateY(-5px) scale(1.008);
+    transform: translateY(-13px) scale(1.024);
   }
 }
 
@@ -64,11 +87,11 @@
   }
 
   33% {
-    transform: translate(1.5px, -1px) rotate(0.35deg);
+    transform: translate(2px, -1.5px) rotate(0.45deg);
   }
 
   66% {
-    transform: translate(-1.5px, 0.5px) rotate(-0.28deg);
+    transform: translate(-2px, 1px) rotate(-0.38deg);
   }
 }
 
@@ -77,8 +100,20 @@
     max-width: min(92vw, 58vh, 640px);
   }
 
-  .portrait {
+  .portraitOpen,
+  .portraitClosed {
     transform: scale(1.04);
+  }
+
+  @keyframes livingAvatarBreathe {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+
+    50% {
+      transform: translateY(-8px) scale(1.014);
+    }
   }
 }
 
@@ -90,5 +125,9 @@
   .idle,
   .breath {
     animation: none;
+  }
+
+  .portraitClosed {
+    transition: none;
   }
 }
