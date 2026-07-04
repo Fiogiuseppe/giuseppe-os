@@ -575,12 +575,12 @@ html.about-route body {
 
 .insights-stage-title {
   margin: 0;
-  max-width: 12em;
+  max-width: 13em;
   font-family: var(--font-display);
-  font-size: clamp(52px, 8vw, 90px);
+  font-size: clamp(72px, 11vw, 128px);
   font-weight: 400;
-  line-height: 0.78;
-  letter-spacing: -0.025em;
+  line-height: 0.76;
+  letter-spacing: -0.03em;
   font-synthesis: none;
   text-transform: uppercase;
   text-align: center;
@@ -1162,12 +1162,12 @@ html.about-route body {
 
 .insights-stage-title.view-title {
   font-family: var(--font-display);
-  font-size: clamp(52px, 8vw, 90px);
+  font-size: clamp(72px, 11vw, 128px);
   font-weight: 400;
-  line-height: 0.78;
-  letter-spacing: -0.025em;
+  line-height: 0.76;
+  letter-spacing: -0.03em;
   font-synthesis: none;
-  max-width: 12em;
+  max-width: 13em;
 }
 
 .view-subtitle {
@@ -3432,8 +3432,8 @@ label {
   }
 
   .insights-stage-title.view-title {
-    font-size: clamp(40px, 9vw, 72px);
-    line-height: 0.8;
+    font-size: clamp(56px, 10vw, 96px);
+    line-height: 0.78;
   }
 
   .card,
@@ -3569,8 +3569,8 @@ label {
   }
 
   .insights-stage-title.view-title {
-    font-size: clamp(40px, 11vw, 64px);
-    line-height: 0.8;
+    font-size: clamp(52px, 12vw, 88px);
+    line-height: 0.78;
   }
 
   .companion-greeting {
@@ -3708,9 +3708,9 @@ label {
 
   .insights-stage-title,
   .insights-stage-title.view-title {
-    max-width: 10em;
-    font-size: clamp(40px, 11vw, 64px);
-    line-height: 0.8;
+    max-width: 11em;
+    font-size: clamp(48px, 13vw, 80px);
+    line-height: 0.78;
   }
 
   .create-stage-title {
