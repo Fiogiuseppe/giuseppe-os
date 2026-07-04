@@ -14,7 +14,7 @@
   --surface: rgba(0, 0, 0, 0.03);
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --app-gutter: clamp(32px, 4vw, 56px);
-  --font-display: 'Quartz Defio', Georgia, serif;
+  --font-display: 'Quartz Defio', serif;
 }
 
 @font-face {
@@ -575,12 +575,13 @@ html.about-route body {
 
 .insights-stage-title {
   margin: 0;
-  max-width: 10em;
+  max-width: 12em;
   font-family: var(--font-display);
-  font-size: clamp(34px, 5.6vw, 68px);
+  font-size: clamp(52px, 8vw, 90px);
   font-weight: 400;
-  line-height: 0.92;
-  letter-spacing: -0.02em;
+  line-height: 0.78;
+  letter-spacing: -0.025em;
+  font-synthesis: none;
   text-transform: uppercase;
   text-align: center;
   color: var(--fg);
@@ -1157,6 +1158,16 @@ html.about-route body {
   max-width: 100%;
   color: var(--fg);
   letter-spacing: -0.06em;
+}
+
+.insights-stage-title.view-title {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 8vw, 90px);
+  font-weight: 400;
+  line-height: 0.78;
+  letter-spacing: -0.025em;
+  font-synthesis: none;
+  max-width: 12em;
 }
 
 .view-subtitle {
@@ -3700,6 +3711,11 @@ label {
     font-size: clamp(20px, 3vw, 36px);
   }
 
+  .insights-stage-title.view-title {
+    font-size: clamp(40px, 9vw, 72px);
+    line-height: 0.8;
+  }
+
   .card,
   .glass-card {
     padding: 11px 13px;
@@ -3836,6 +3852,11 @@ label {
     line-height: 1.05;
   }
 
+  .insights-stage-title.view-title {
+    font-size: clamp(40px, 11vw, 64px);
+    line-height: 0.8;
+  }
+
   .companion-greeting {
     font-size: 14px;
     margin-top: 4px;
@@ -3970,6 +3991,12 @@ label {
   }
 
   .insights-stage-title,
+  .insights-stage-title.view-title {
+    max-width: 10em;
+    font-size: clamp(40px, 11vw, 64px);
+    line-height: 0.8;
+  }
+
   .create-stage-title {
     max-width: 9em;
     font-size: clamp(26px, 7.5vw, 40px);
