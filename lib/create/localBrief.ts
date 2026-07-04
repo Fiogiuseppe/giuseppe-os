@@ -6,6 +6,7 @@ import { runExecutiveBrain } from '../brain/executiveBrain';
 import { loadLongTermMemory, loadWorkingMemory } from '../brain/memory/store';
 import type { AppLocale } from '../i18n/locale';
 import { resolveLocale } from '../i18n/locale';
+import { loadSelfModelSummary } from '../self-model/summary';
 
 export type CreateBriefSource = 'local' | 'live';
 
@@ -18,8 +19,12 @@ export async function generateLocalCreateBrief(
   localeInput?: AppLocale
 ): Promise<CreateBriefResponse> {
   const locale = resolveLocale(localeInput);
-  const [longTerm, working] = await Promise.all([loadLongTermMemory(), loadWorkingMemory()]);
-  const potential = runPotentialEngine({ longTerm, working, locale });
+  const [longTerm, working, selfModel] = await Promise.all([
+    loadLongTermMemory(),
+    loadWorkingMemory(),
+    loadSelfModelSummary()
+  ]);
+  const potential = runPotentialEngine({ longTerm, working, locale, selfModelSummary: selfModel.text });
 
   return {
     potential,

@@ -51,6 +51,7 @@ export interface DailyBriefingContext {
   relevance: PersonalRelevanceReport;
   trajectory: TrajectoryReport;
   oracle: OracleEvidence;
+  selfModelSummary: string;
 }
 
 export interface DailyBriefingResponse {

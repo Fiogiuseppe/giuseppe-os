@@ -448,7 +448,15 @@ function pickProjectToFinish(): string {
   return active[0] ?? 'Brand Giuseppe';
 }
 
-function pickRiskToAvoid(): string {
+function pickRiskToAvoid(selfModelSummary?: string): string {
+  if (selfModelSummary?.toLowerCase().includes('intent without execution')) {
+    return 'Intent without execution on similar decisions';
+  }
+
+  if (selfModelSummary?.toLowerCase().includes('needs attention')) {
+    return memory.patterns[1] ?? memory.patterns[0];
+  }
+
   return memory.patterns[0];
 }
 
@@ -461,6 +469,7 @@ export type PotentialEngineInput = {
   longTerm?: LongTermMemory;
   working?: WorkingMemory;
   locale?: 'it' | 'en';
+  selfModelSummary?: string;
 };
 
 export function runPotentialEngine(input: PotentialEngineInput = {}): PotentialBrief {
@@ -483,7 +492,7 @@ export function runPotentialEngine(input: PotentialEngineInput = {}): PotentialB
     personToContact: pickPersonToContact(),
     articleToRead: pickArticleToRead(locale),
     projectToFinish: pickProjectToFinish(),
-    riskToAvoid: pickRiskToAvoid(),
+    riskToAvoid: pickRiskToAvoid(input.selfModelSummary),
     questionOfTheDay: pickQuestionOfTheDay(locale),
     weeklyFocus: pickWeeklyFocus(locale),
     opportunityHistory

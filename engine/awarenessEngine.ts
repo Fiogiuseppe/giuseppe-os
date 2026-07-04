@@ -90,6 +90,7 @@ export type AwarenessEngineInput = {
   longTerm?: LongTermMemory;
   working?: WorkingMemory;
   locale?: 'it' | 'en';
+  selfModelPatterns?: string[];
 };
 
 export function runAwarenessEngine(input: AwarenessEngineInput = {}): AwarenessInsight {
@@ -99,7 +100,23 @@ export function runAwarenessEngine(input: AwarenessEngineInput = {}): AwarenessI
   const evidenceSnapshot = buildEvidenceSnapshot(longTerm, working);
   const assessment = assessEvidence(evidenceSnapshot);
 
-  const ranked = buildCandidates(history, longTerm, input.locale ?? 'it').sort((a, b) => b.weight - a.weight);
+  const ranked = buildCandidates(history, longTerm, input.locale ?? 'it')
+    .map(candidate => {
+      const patternBoost = (input.selfModelPatterns ?? []).some(pattern => {
+        const normalizedPattern = pattern.toLowerCase();
+        const normalizedInsight = candidate.insight.toLowerCase();
+        return (
+          normalizedInsight.includes(normalizedPattern.slice(0, 24)) ||
+          normalizedPattern.includes(normalizedInsight.slice(0, 24))
+        );
+      });
+
+      return {
+        ...candidate,
+        weight: candidate.weight + (patternBoost ? 1.5 : 0)
+      };
+    })
+    .sort((a, b) => b.weight - a.weight);
   const top = ranked[0];
   const recurringPattern = (longTerm.insight_history ?? []).some(entry => entry.insightId === top.id);
   const confidence = confidenceFromEvidence(assessment, top.confidenceSignals);

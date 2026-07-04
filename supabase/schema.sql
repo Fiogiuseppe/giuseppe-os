@@ -66,3 +66,13 @@ create index if not exists memory_decisions_created_at_idx on memory_decisions (
 create index if not exists memory_decisions_review_after_idx on memory_decisions (review_after);
 create index if not exists memory_decisions_status_idx on memory_decisions (status);
 create index if not exists memory_insights_created_at_idx on memory_insights (created_at desc);
+
+create table if not exists memory_self_model (
+  id text primary key,
+  version text not null,
+  dimensions jsonb not null,
+  patterns jsonb not null default '[]'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists memory_self_model_updated_at_idx on memory_self_model (updated_at desc);

@@ -204,6 +204,9 @@ export async function applyDecisionReview(params: {
     patterns_detected: nextPatterns
   });
 
+  const { updateSelfModelFromDecision } = await import('../self-model/update');
+  await updateSelfModelFromDecision(updated, params.answers);
+
   return updated;
 }
 

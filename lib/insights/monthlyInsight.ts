@@ -6,6 +6,7 @@ import { runExecutiveBrain } from '../brain/executiveBrain';
 import { loadLongTermMemory, loadWorkingMemory } from '../brain/memory/store';
 import type { AppLocale } from '../i18n/locale';
 import { resolveLocale } from '../i18n/locale';
+import { loadStrongestPatterns } from '../self-model/summary';
 
 export type MonthlyInsightSource = 'local' | 'live';
 
@@ -71,12 +72,17 @@ export async function generateLocalMonthlyInsight(
 ): Promise<MonthlyInsightResponse> {
   const locale = resolveLocale(localeInput);
   const monthKey = insightMonthKey();
-  const [longTerm, working] = await Promise.all([loadLongTermMemory(), loadWorkingMemory()]);
+  const [longTerm, working, selfModelPatterns] = await Promise.all([
+    loadLongTermMemory(),
+    loadWorkingMemory(),
+    loadStrongestPatterns()
+  ]);
   const insight = runAwarenessEngine({
     proactive: true,
     longTerm,
     working,
-    locale
+    locale,
+    selfModelPatterns: selfModelPatterns.map(pattern => pattern.pattern)
   });
 
   return {

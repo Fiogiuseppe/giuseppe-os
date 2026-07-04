@@ -1,4 +1,6 @@
 import { resetInMemoryStoreForTests, saveLongTermMemoryToMemory } from '../memory/inMemoryStore';
+import { resetSelfModelForTests } from '../self-model/inMemoryStore';
+import { loadSelfModel } from '../self-model/store';
 import { applyDecisionReview, recordDecisionRecommendation } from './learning';
 import { findDueReviews, findNextDueReview } from './followUp';
 import { computeReviewAfter, getReviewDelayDays } from './schedule';
@@ -12,6 +14,7 @@ function assert(condition: boolean, message: string): void {
 
 async function run(): Promise<void> {
   resetInMemoryStoreForTests();
+  resetSelfModelForTests();
 
   const delay = getReviewDelayDays('reputation');
   assert(delay === 7, 'reputation review delay should be 7 days');
@@ -77,6 +80,10 @@ async function run(): Promise<void> {
   assert(Boolean(reviewed?.reviewCompletedAt), 'reviewCompletedAt should be set');
   assert(Boolean(reviewed?.outcome), 'outcome summary should be stored');
   assert(reviewed?.outcomeRating === 4, 'outcome rating should persist');
+
+  const selfModel = await loadSelfModel();
+  assert(selfModel.dimensions.reputation.evidence_count > 0, 'review should write self-model evidence');
+  assert(selfModel.dimensions.execution.evidence_count > 0, 'execution should receive review evidence');
 
   const afterDue = findDueReviews([reviewed!]);
   assert(afterDue.length === 0, 'reviewed decisions should not be due again');

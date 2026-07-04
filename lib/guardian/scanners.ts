@@ -268,6 +268,67 @@ export function scanDecisionLearning(): GuardianFinding[] {
   return findings;
 }
 
+export function scanSelfModel(): GuardianFinding[] {
+  const findings: GuardianFinding[] = [];
+  const summary = read('lib/self-model/summary.ts');
+  const estimate = read('lib/self-model/estimate.ts');
+
+  if (!fileExists('lib/self-model/store.ts')) {
+    findings.push({
+      id: 'self-model:missing-store',
+      category: 'trust',
+      severity: 'high',
+      title: 'Self Model store is missing',
+      detail: 'lib/self-model/store.ts was not found.',
+      why: 'Without persistence, Giuseppe OS cannot build a measured model over time.',
+      recommendation: 'Restore lib/self-model/ with Supabase-backed load/save.',
+      file: 'lib/self-model/store.ts'
+    });
+  }
+
+  if (!summary.includes('SUFFICIENT_EVIDENCE_COUNT')) {
+    findings.push({
+      id: 'self-model:missing-evidence-gate',
+      category: 'trust',
+      severity: 'high',
+      title: 'Self Model summary may expose low-evidence estimates',
+      detail: 'getSelfModelSummary should gate on SUFFICIENT_EVIDENCE_COUNT.',
+      why: 'Surfacing unknown dimensions as facts erodes trust.',
+      recommendation: 'Only include dimensions where evidence_count meets the threshold.',
+      file: 'lib/self-model/summary.ts'
+    });
+  }
+
+  if (!estimate.includes('UNKNOWN_ESTIMATE')) {
+    findings.push({
+      id: 'self-model:missing-unknown-default',
+      category: 'ai-consistency',
+      severity: 'medium',
+      title: 'Self Model may invent estimates without evidence',
+      detail: 'deriveDimensionEstimate should default to unknown below the evidence threshold.',
+      why: 'Invented self-knowledge is worse than silence.',
+      recommendation: 'Keep current_estimate as unknown until evidence is sufficient.',
+      file: 'lib/self-model/estimate.ts'
+    });
+  }
+
+  const learning = read('lib/decision-learning/learning.ts');
+  if (!learning.includes('updateSelfModelFromDecision')) {
+    findings.push({
+      id: 'self-model:decision-hook-missing',
+      category: 'trust',
+      severity: 'medium',
+      title: 'Decision reviews may not update Self Model',
+      detail: 'applyDecisionReview should call updateSelfModelFromDecision after save.',
+      why: 'Reviewed outcomes are the strongest evidence for how Giuseppe actually decides.',
+      recommendation: 'Hook updateSelfModelFromDecision at the end of applyDecisionReview.',
+      file: 'lib/decision-learning/learning.ts'
+    });
+  }
+
+  return findings;
+}
+
 export function runAllScans(): GuardianFinding[] {
   return dedupeFindings([
     ...scanGuardianPresence(),
@@ -277,6 +338,7 @@ export function runAllScans(): GuardianFinding[] {
     ...scanDeadCode(),
     ...scanAiConsistency(),
     ...scanProductSimplicity(),
-    ...scanDecisionLearning()
+    ...scanDecisionLearning(),
+    ...scanSelfModel()
   ]);
 }
