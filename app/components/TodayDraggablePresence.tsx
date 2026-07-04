@@ -123,6 +123,7 @@ export function TodayDraggablePresence({ onNavigate, children }: TodayDraggableP
   const [ready, setReady] = useState(false);
   const [dragging, setDragging] = useState(false);
   const textSideFrameRef = useRef<number | null>(null);
+  const dragFrameRef = useRef<number | null>(null);
   const dragRef = useRef({
     active: false,
     moved: false,
@@ -207,6 +208,9 @@ export function TodayDraggablePresence({ onNavigate, children }: TodayDraggableP
       if (textSideFrameRef.current !== null) {
         window.cancelAnimationFrame(textSideFrameRef.current);
       }
+      if (dragFrameRef.current !== null) {
+        window.cancelAnimationFrame(dragFrameRef.current);
+      }
       clearWindowListeners();
     };
   }, [applyPositionToDom, clearWindowListeners]);
@@ -246,6 +250,13 @@ export function TodayDraggablePresence({ onNavigate, children }: TodayDraggableP
       const clamped = clampPosition({ x, y }, container, presence);
       applyPositionToDom(clamped);
 
+      if (dragFrameRef.current === null) {
+        dragFrameRef.current = window.requestAnimationFrame(() => {
+          dragFrameRef.current = null;
+          setPosition(positionRef.current);
+        });
+      }
+
       if (options?.liveTextSide) {
         scheduleTextSideUpdate(clamped.x);
       }
@@ -253,25 +264,22 @@ export function TodayDraggablePresence({ onNavigate, children }: TodayDraggableP
     [applyPositionToDom, scheduleTextSideUpdate]
   );
 
-  const finishDrag = useCallback(
-    (pointerId: number) => {
-      clearWindowListeners();
+  const finishDrag = useCallback(() => {
+    clearWindowListeners();
 
-      if (dragRef.current.moved) {
-        syncPosition(positionRef.current, { persist: true });
-      }
+    if (dragRef.current.moved) {
+      syncPosition(positionRef.current, { persist: true });
+    }
 
-      dragRef.current = {
-        active: false,
-        moved: false,
-        pointerId: -1,
-        originX: 0,
-        originY: 0
-      };
-      setDragging(false);
-    },
-    [clearWindowListeners, syncPosition]
-  );
+    dragRef.current = {
+      active: false,
+      moved: false,
+      pointerId: -1,
+      originX: 0,
+      originY: 0
+    };
+    setDragging(false);
+  }, [clearWindowListeners, syncPosition]);
 
   const handlePointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
@@ -312,7 +320,7 @@ export function TodayDraggablePresence({ onNavigate, children }: TodayDraggableP
           return;
         }
 
-        finishDrag(upEvent.pointerId);
+        finishDrag();
       };
 
       windowListenersRef.current = {

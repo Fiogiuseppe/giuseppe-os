@@ -218,7 +218,7 @@ html.about-route body {
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
-  max-width: min(440px, 34vw);
+  max-width: min(500px, 38vw);
   flex-shrink: 0;
   transition:
     left 0.4s var(--ease),
@@ -240,9 +240,9 @@ html.about-route body {
 
 .today-action-text {
   margin: 0;
-  font-size: clamp(31px, 4.8vh, 51px);
+  font-size: clamp(36px, 5.6vh, 58px);
   font-weight: 500;
-  line-height: 1.18;
+  line-height: 1.05;
   letter-spacing: -0.035em;
   color: var(--fg);
   overflow-wrap: anywhere;
