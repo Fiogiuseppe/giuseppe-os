@@ -2323,7 +2323,7 @@ html.about-route body {
   height: clamp(44px, 5vw, 52px);
   border: none;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--fg);
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -2331,7 +2331,10 @@ html.about-route body {
   font-size: clamp(18px, 2.2vw, 22px);
   line-height: 1;
   cursor: pointer;
-  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+  transition:
+    background 0.25s var(--ease),
+    opacity 0.25s var(--ease),
+    transform 0.25s var(--ease);
 }
 
 .decision-command-submit:disabled {
@@ -2339,8 +2342,11 @@ html.about-route body {
   cursor: not-allowed;
 }
 
-.decision-command-submit:not(:disabled):hover {
-  opacity: 0.82;
+.decision-command-submit:not(:disabled):hover,
+.decision-command-submit:not(:disabled):focus-visible {
+  background: var(--accent);
+  opacity: 1;
+  outline: none;
 }
 
 .decision-stage-reasoning {
