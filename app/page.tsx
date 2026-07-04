@@ -115,117 +115,6 @@ function DecisionResultDisclosure({ result }: { result: DecisionAIResult }) {
   );
 }
 
-function PotentialPanelDisclosure({ onOpen }: { onOpen: () => void }) {
-  const { t } = useLanguage();
-  return <DisclosureTrigger label={t('disclosure.exploreOpportunities')} onClick={onOpen} />;
-}
-
-function PotentialPanelFocus({
-  onClose,
-  potential
-}: {
-  onClose: () => void;
-  potential: PotentialBrief;
-}) {
-  const { t } = useLanguage();
-  const today = potential.todaysOpportunity;
-
-  return (
-    <div className="reading-focus-view">
-      <button type="button" className="reading-expand-close" onClick={onClose}>
-        <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-      </button>
-      <section className="hero">
-        <div className="potential-card potential-span2 card-glow">
-          <div className="kicker">{t('kickers.todaysOpportunity')}</div>
-          <div className="potential-h1">{today.title}</div>
-          <p>{today.description}</p>
-          <p><b>{t('potential.whyMatters')}:</b> {today.whyThisMatters}</p>
-          <p><b>{t('potential.firstAction')}:</b> {today.firstAction}</p>
-          <div className="potential-meta">
-            {t('potential.impact')} {today.estimatedImpact} · {today.timeRequired} · {t('potential.energy')} {today.energyRequired}
-          </div>
-        </div>
-        <div className="potential-card">
-          <div className="kicker">{t('kickers.confidence')}</div>
-          <div className="potential-score">
-            {formatConfidenceDisplay(t, today.confidenceScore, today.confidenceLabel)}
-          </div>
-          <p>
-            {today.hasEnoughData && today.totalScore !== null
-              ? `${t('potential.score')} ${Math.round(today.totalScore)} · ${today.sourceProject ?? t('potential.system')}`
-              : formatProgressDisplay(t)}
-          </p>
-        </div>
-      </section>
-      <section className="potential-grid">
-        {[
-          [t('kickers.creativeChallenge'), potential.creativeChallenge],
-          [t('kickers.skillToLearn'), potential.skillToLearn],
-          [t('kickers.personToContact'), potential.personToContact],
-          [t('kickers.articleToRead'), potential.articleToRead],
-          [t('kickers.projectToFinish'), potential.projectToFinish],
-          [t('kickers.riskToAvoid'), potential.riskToAvoid],
-          [t('kickers.questionOfTheDay'), potential.questionOfTheDay],
-          [t('kickers.weeklyFocus'), potential.weeklyFocus]
-        ].map(([label, value]) => (
-          <div className="potential-card" key={label}>
-            <div className="kicker">{label}</div>
-            <p>{value}</p>
-          </div>
-        ))}
-      </section>
-    </div>
-  );
-}
-
-function ProjectsListDisclosure({ onOpen }: { onOpen: () => void }) {
-  const { t } = useLanguage();
-  return <DisclosureTrigger label={t('disclosure.openProjects')} onClick={onOpen} />;
-}
-
-function ProjectsListFocus({
-  onClose,
-  selected,
-  onSelect
-}: {
-  onClose: () => void;
-  selected: string | null;
-  onSelect: (name: string) => void;
-}) {
-  const { t } = useLanguage();
-
-  return (
-    <div className="reading-focus-view">
-      <button type="button" className="reading-expand-close" onClick={onClose}>
-        <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-      </button>
-      <section className="projects-grid project-map">
-        {Object.entries(brain.projects).map(([name, project]) => (
-          <button
-            type="button"
-            key={name}
-            className={`card project-select-card ${selected === name ? 'selected' : ''}`}
-            onClick={() => onSelect(name)}
-          >
-            <div className="kicker">{project.status.toUpperCase()}</div>
-            <h2>{name}</h2>
-            <p>{project.role}</p>
-          </button>
-        ))}
-      </section>
-      {selected && (
-        <div className="card project-detail-card">
-          <div className="kicker">{t('kickers.projectDetails')}</div>
-          <h2>{selected}</h2>
-          <p>{brain.projects[selected as keyof typeof brain.projects].role}</p>
-          <p>{t('disclosure.progress')}: {formatProgressDisplay(t)}</p>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function Home() {
   const { t, locale } = useLanguage();
   const [view, setView] = useState<AppView>('today');
@@ -529,8 +418,8 @@ export default function Home() {
       <AppTopbar mode="spa" activeView={view} onNavigate={setView} />
 
       <div className="app-body">
-        <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}${view === 'decisions' ? ' main-decisions' : ''}${view === 'insights' ? ' main-insights' : ''}${view === 'memory' ? ' main-memory' : ''}`} role="main">
-          <header className={`page-header progressive-header space-header-${view}${view === 'today' ? ' page-header-today' : ''}${view === 'decisions' ? ' page-header-decisions' : ''}${view === 'insights' ? ' page-header-insights' : ''}${view === 'memory' ? ' page-header-memory' : ''}`}>
+        <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}${view === 'decisions' ? ' main-decisions' : ''}${view === 'insights' ? ' main-insights' : ''}${view === 'memory' ? ' main-memory' : ''}${view === 'create' ? ' main-create' : ''}`} role="main">
+          <header className={`page-header progressive-header space-header-${view}${view === 'today' ? ' page-header-today' : ''}${view === 'decisions' ? ' page-header-decisions' : ''}${view === 'insights' ? ' page-header-insights' : ''}${view === 'memory' ? ' page-header-memory' : ''}${view === 'create' ? ' page-header-create' : ''}`}>
             {view !== 'today' && (
               <>
                 <div className="space-meta">
@@ -653,58 +542,23 @@ export default function Home() {
             )}
 
             {view === 'create' && (
-              <div className={`energy-ecosystem${createFocus ? ' mental-space--reading' : ''}`}>
-                {createFocus === 'potential' && potential && (
-                  <PotentialPanelFocus onClose={() => setCreateFocus(null)} potential={potential} />
-                )}
-
-                {createFocus === 'potential' && createLoading && <p className="companion-letter-loading">…</p>}
-                {createFocus === 'potential' && createError && <p className="companion-letter-error">{createError}</p>}
-
-                {createFocus === 'projects' && (
-                  <ProjectsListFocus
-                    onClose={() => setCreateFocus(null)}
-                    selected={selectedProject}
-                    onSelect={setSelectedProject}
-                  />
-                )}
-
-                {createFocus === 'why' && (
-                  <div className="reading-focus-view">
-                    <button type="button" className="reading-expand-close" onClick={() => setCreateFocus(null)}>
-                      <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-                    </button>
-                    <section className="card">
-                      <div className="kicker">{t('kickers.strategist')}</div>
-                      <h2>{t('create.strategistHeadline')}</h2>
-                      <p>{t('create.strategistSubline')}</p>
-                    </section>
-                  </div>
-                )}
-
-                {createFocus === null && (
-                  <>
-                    <p className="section-question">{t('sectionQuestions.create')}</p>
-                    <section className="ecosystem-focus card card-glow">
-                      <div className="kicker">{t('create.focusLabel')}</div>
-                      <h2>{projectName}</h2>
-                      <p>{brain.projects[projectName as keyof typeof brain.projects].role}</p>
-                    </section>
-
-                    <DisclosureTrigger label={t('disclosure.why')} onClick={() => setCreateFocus('why')} />
-                    <ProjectsListDisclosure onOpen={() => setCreateFocus('projects')} />
-                    <PotentialPanelDisclosure
-                      onOpen={() => {
-                        setCreateFocus('potential');
-                        if (!potential && !createLoading) {
-                          void loadCreateBrief(false);
-                        }
-                      }}
-                    />
-                    {createLoading && <p className="companion-letter-loading">…</p>}
-                    {createError && <p className="companion-letter-error">{createError}</p>}
-                  </>
-                )}
+              <div className="create-space">
+                <CreateStage
+                  projectName={projectName}
+                  projectRole={brain.projects[projectName as keyof typeof brain.projects].role}
+                  focus={createFocus}
+                  onFocusChange={setCreateFocus}
+                  loading={createLoading}
+                  error={createError}
+                  potential={potential}
+                  selectedProject={selectedProject}
+                  onSelectProject={setSelectedProject}
+                  onRequestPotential={() => {
+                    if (!potential && !createLoading) {
+                      void loadCreateBrief(false);
+                    }
+                  }}
+                />
               </div>
             )}
 

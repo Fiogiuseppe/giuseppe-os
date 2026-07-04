@@ -93,7 +93,9 @@ export const messages = {
       }
     },
     memory: {
-      depthTitle: 'GLI STRATI PROFONDI'
+      depthTitle: 'GLI STRATI PROFONDI',
+      backToManifesto: 'Torna al manifesto',
+      constitutionNote: 'Un manifesto personale — tocca ogni dominio.'
     },
     decisions: {
       openingPrompt: 'Cosa stai decidendo?',
@@ -297,7 +299,9 @@ export const messages = {
       }
     },
     memory: {
-      depthTitle: 'THE DEEPER LAYERS'
+      depthTitle: 'THE DEEPER LAYERS',
+      backToManifesto: 'Back to manifesto',
+      constitutionNote: 'A personal manifesto — tap each domain.'
     },
     decisions: {
       openingPrompt: 'What are you deciding?',

@@ -200,6 +200,10 @@ html.about-route body {
   display: none;
 }
 
+.page-header-create {
+  display: none;
+}
+
 .main-home {
   gap: 0;
   padding: 0 var(--app-gutter) 2px;
@@ -531,6 +535,7 @@ html.about-route body {
 }
 
 .insights-space,
+.create-space,
 .discover-space {
   display: flex;
   flex-direction: column;
@@ -546,7 +551,8 @@ html.about-route body {
   text-align: center;
 }
 
-.insights-stage {
+.insights-stage,
+.create-stage {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -554,7 +560,8 @@ html.about-route body {
   width: 100%;
 }
 
-.insights-stage-title {
+.insights-stage-title,
+.create-stage-title {
   margin: 0;
   max-width: 10em;
   font-size: clamp(32px, 5.2vw, 64px);
@@ -566,7 +573,8 @@ html.about-route body {
   color: var(--fg);
 }
 
-.insights-stage-headline {
+.insights-stage-headline,
+.create-stage-headline {
   margin: clamp(-12px, -1.5vh, -4px) 0 0;
   max-width: min(560px, 92%);
   font-size: clamp(14px, 1.7vw, 18px);
@@ -642,6 +650,47 @@ html.about-route body {
 
 .insights-action-chip:active {
   transform: translateY(1px);
+}
+
+.insights-action-chip--active {
+  background: var(--fg);
+  color: #f7f5e8;
+}
+
+.create-hero-role {
+  margin: clamp(8px, 1vh, 12px) 0 0;
+  font-size: clamp(13px, 1.6vw, 16px);
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.create-projects-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.create-potential-lead h2 {
+  margin: 0 0 12px;
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.create-potential-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.create-potential-item p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .insights-built-over-time {
@@ -1250,6 +1299,20 @@ html.about-route body {
   overflow: hidden;
 }
 
+.main-create {
+  gap: 0;
+}
+
+.main-create .view-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .main-memory {
   gap: 0;
 }
@@ -1257,7 +1320,7 @@ html.about-route body {
 .main-memory .view-body {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   flex: 1;
   min-height: 0;
@@ -1266,131 +1329,35 @@ html.about-route body {
 
 .memory-space {
   width: 100%;
-  max-width: min(680px, 100%);
+  max-width: min(920px, 100%);
   margin: 0 auto;
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
-  padding: clamp(2px, 0.5vh, 8px) 0 clamp(4px, 1vh, 12px);
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
+  padding: clamp(4px, 1vh, 12px) 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-@media (min-width: 1024px) {
-  .memory-space {
-    max-width: min(1120px, 100%);
-    padding-top: clamp(4px, 1vh, 12px);
-  }
-
-  .memory-manifesto {
-    display: grid;
-    grid-template-columns: minmax(260px, 1.05fr) minmax(220px, 0.95fr);
-    grid-template-areas:
-      'header preamble'
-      'articles articles'
-      'continue continue';
-    column-gap: clamp(36px, 5vw, 80px);
-    row-gap: clamp(16px, 2.2vh, 24px);
-    align-items: end;
-  }
-
-  .manifesto-header {
-    grid-area: header;
-    align-self: end;
-  }
-
-  .manifesto-title {
-    max-width: none;
-    font-size: clamp(26px, 3.2vw, 40px);
-  }
-
-  .manifesto-preamble {
-    grid-area: preamble;
-    align-self: end;
-    padding: 0;
-    border-bottom: none;
-    text-align: right;
-  }
-
-  .manifesto-preamble-text {
-    margin-left: auto;
-    max-width: 22em;
-    font-size: clamp(11px, 1.1vw, 13px);
-  }
-
-  .manifesto-articles {
-    grid-area: articles;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(14px, 2vw, 28px) clamp(18px, 2.5vw, 36px);
-    padding-top: clamp(12px, 1.6vh, 18px);
-    border-top: 1px solid var(--border-soft);
-  }
-
-  .manifesto-article {
-    grid-template-columns: 1fr;
-    gap: clamp(6px, 0.8vh, 10px);
-    padding: 0;
-    border-top: none;
-  }
-
-  .manifesto-article:not(:nth-child(3n + 1)) {
-    padding-left: clamp(14px, 2vw, 28px);
-    border-left: 1px solid var(--border-soft);
-  }
-
-  .manifesto-article-label {
-    font-size: 9px;
-  }
-
-  .manifesto-line {
-    font-size: 10px;
-    line-height: 1.38;
-  }
-
-  .manifesto-article:has(.manifesto-article-label--accent) .manifesto-line {
-    font-size: clamp(11px, 1.2vw, 14px);
-  }
-
-  .manifesto-continue {
-    grid-area: continue;
-  }
-
-  .memory-manifesto--depth {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      'header'
-      'articles'
-      'continue';
-    align-items: start;
-  }
-
-  .memory-manifesto--depth .manifesto-header {
-    padding-bottom: 4px;
-    border-bottom: 1px solid var(--border-soft);
-  }
-
-  .memory-manifesto--depth .manifesto-articles {
-    padding-top: 10px;
-    border-top: none;
-  }
-
-  .memory-manifesto--depth .manifesto-article:not(:nth-child(3n + 1)) {
-    padding-left: clamp(10px, 1.5vw, 20px);
-  }
-}
-
-.memory-manifesto {
+.memory-stage {
   display: flex;
   flex-direction: column;
-  gap: clamp(10px, 1.6vh, 18px);
+  align-items: center;
+  gap: clamp(18px, 3vh, 28px);
+  width: 100%;
 }
 
-.manifesto-header {
-  text-align: left;
+.memory-stage-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
 }
 
-.manifesto-epigraph {
-  margin: 0 0 6px;
+.memory-stage-epigraph {
+  margin: 0;
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1398,146 +1365,155 @@ html.about-route body {
   font-weight: 500;
 }
 
-.manifesto-title {
+.memory-stage-title {
   margin: 0;
-  font-size: clamp(22px, 3.8vw, 44px);
+  max-width: 10em;
+  font-size: clamp(28px, 4.8vw, 56px);
   font-weight: 600;
   line-height: 0.95;
   letter-spacing: -0.06em;
   text-transform: uppercase;
-  max-width: 10em;
   color: var(--fg);
 }
 
-.manifesto-preamble {
-  padding-bottom: clamp(6px, 1vh, 12px);
-  border-bottom: 1px solid var(--border-soft);
-}
-
-.manifesto-preamble-text {
+.memory-stage-headline {
   margin: 0;
-  font-size: clamp(11px, 1.3vw, 13px);
-  line-height: 1.45;
+  max-width: min(520px, 92%);
+  font-size: clamp(13px, 1.6vw, 16px);
+  line-height: 1.35;
   color: var(--muted);
-  font-weight: 400;
-  max-width: 36em;
 }
 
-.manifesto-articles {
+.memory-hero-card {
+  width: min(760px, 100%);
+  padding: clamp(16px, 2.5vh, 24px) clamp(18px, 3vw, 28px);
+  border: 1.5px solid var(--fg);
+  border-radius: clamp(22px, 4vw, 36px);
+  background: transparent;
+  text-align: center;
+}
+
+.memory-hero-card .kicker,
+.memory-hero-kicker {
+  margin-bottom: clamp(8px, 1.2vh, 12px);
+}
+
+.memory-hero-text {
+  margin: 0;
+  font-size: clamp(18px, 2.8vw, 30px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+.memory-constellation {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: min(760px, 100%);
+}
+
+.memory-constellation--depth {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.memory-node {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 78px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--fg);
+  border-radius: clamp(16px, 3vw, 22px);
+  background: transparent;
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.25s var(--ease),
+    color 0.25s var(--ease),
+    transform 0.25s var(--ease);
 }
 
-.manifesto-article {
-  display: grid;
-  grid-template-columns: minmax(6.2em, 8em) 1fr;
-  gap: clamp(10px, 2vw, 24px);
-  align-items: start;
-  padding: clamp(5px, 0.8vh, 8px) 0;
-  border-top: 1px solid var(--border-soft);
+.memory-node:hover,
+.memory-node:focus-visible {
+  background: var(--fg);
+  color: #f7f5e8;
+  outline: none;
 }
 
-.manifesto-article-label {
+.memory-node:active {
+  transform: translateY(1px);
+}
+
+.memory-node--accent {
+  border-width: 2px;
+}
+
+.memory-node-label {
   margin: 0;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  line-height: 1.25;
-  color: var(--muted);
+  line-height: 1.2;
+  color: inherit;
 }
 
-.manifesto-article-label--accent {
-  color: var(--fg);
+.memory-node-label--accent {
+  font-size: 10px;
 }
 
-.manifesto-article-body {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.manifesto-line {
+.memory-node-teaser {
   margin: 0;
   font-size: 10px;
   line-height: 1.35;
   font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--fg);
+  letter-spacing: 0.01em;
+  color: inherit;
+  opacity: 0.82;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.manifesto-article:has(.manifesto-article-label--accent) .manifesto-line {
-  font-size: clamp(12px, 1.6vw, 15px);
+.memory-node:hover .memory-node-teaser,
+.memory-node:focus-visible .memory-node-teaser {
+  opacity: 0.92;
+}
+
+.memory-layer-back {
+  letter-spacing: 0.06em;
+}
+
+.memory-focus-stage {
+  width: 100%;
+  max-width: min(720px, 100%);
+}
+
+.memory-focus-panel--accent .memory-focus-line:first-child {
+  font-size: clamp(16px, 2.2vw, 22px);
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.03em;
   text-transform: uppercase;
 }
 
-.manifesto-continue {
-  align-self: flex-start;
-  margin: 2px 0 0;
-  padding: 0;
-  border: none;
-  background: none;
-  font: inherit;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-}
-
-.manifesto-continue:hover,
-.manifesto-continue:focus-visible {
-  color: var(--fg);
-}
-
-.manifesto-continue--close {
-  text-decoration: none;
-  letter-spacing: 0.06em;
-}
-
-.manifesto-depth {
+.memory-focus-body {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
-.manifesto-articles--depth .manifesto-article:first-child {
-  border-top: none;
-}
-
-.memory-manifesto--depth {
-  gap: clamp(6px, 1vh, 10px);
-}
-
-.memory-manifesto--depth .manifesto-header {
-  padding-bottom: 2px;
-}
-
-.memory-manifesto--depth .manifesto-title {
-  font-size: clamp(16px, 2.4vw, 22px);
-  max-width: none;
-}
-
-.memory-manifesto--depth .manifesto-article {
-  padding: 3px 0;
-  gap: clamp(8px, 1.5vw, 16px);
-}
-
-.memory-manifesto--depth .manifesto-line {
-  font-size: 9px;
-  line-height: 1.28;
-}
-
-.memory-manifesto--depth .manifesto-article:has(.manifesto-article-label--accent) .manifesto-line {
-  font-size: 10px;
-  line-height: 1.25;
+.memory-focus-line {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--fg);
 }
 
 .progressive-header {
@@ -3365,11 +3341,13 @@ label {
     height: 44px;
   }
 
-  .insights-stage {
+  .insights-stage,
+  .create-stage {
     gap: clamp(18px, 4vh, 28px);
   }
 
-  .insights-stage-title {
+  .insights-stage-title,
+  .create-stage-title {
     max-width: 9em;
     font-size: clamp(26px, 7.5vw, 40px);
   }
@@ -3390,6 +3368,10 @@ label {
   .insights-action-chip {
     padding: 10px 14px;
     font-size: 10px;
+  }
+
+  .create-potential-grid {
+    grid-template-columns: 1fr;
   }
 
   .decision-room-core {
@@ -3434,24 +3416,33 @@ label {
     align-items: center;
   }
 
-  .manifesto-article {
-    grid-template-columns: 1fr;
-    gap: 4px;
-    padding: 8px 0;
+  .memory-stage {
+    gap: clamp(14px, 3vh, 22px);
   }
 
-  .manifesto-title {
-    font-size: clamp(20px, 7vw, 32px);
-    max-width: none;
+  .memory-stage-title {
+    max-width: 9em;
+    font-size: clamp(24px, 7vw, 36px);
   }
 
-  .manifesto-line {
-    font-size: 11px;
-    line-height: 1.4;
+  .memory-constellation,
+  .memory-constellation--depth {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
 
-  .memory-space {
-    padding-bottom: 8px;
+  .memory-node {
+    min-height: 70px;
+    padding: 10px 12px;
+  }
+
+  .memory-hero-card {
+    padding: 14px 16px;
+    border-radius: 20px;
+  }
+
+  .memory-hero-text {
+    font-size: clamp(15px, 4.8vw, 22px);
   }
 
   .footer {

@@ -18,18 +18,43 @@ type AppTopbarProps =
 export function AppTopbar(props: AppTopbarProps) {
   const { t } = useLanguage();
 
+  function goToday() {
+    if (props.mode !== 'spa') {
+      return;
+    }
+
+    props.onNavigate('today');
+    const nextUrl = `${window.location.pathname}#today`;
+    if (window.location.hash !== '#today') {
+      window.history.replaceState(null, '', nextUrl);
+    }
+  }
+
   return (
     <header className="topbar">
-      <Link href="/" className="topbar-brand" aria-label={t('aria.home')}>
-        <img
-          src="/images/giuseppe-logo.png"
-          alt=""
-          className="brand-logo"
-          width={300}
-          height={87}
-          draggable={false}
-        />
-      </Link>
+      {props.mode === 'spa' ? (
+        <button type="button" className="topbar-brand" aria-label={t('aria.home')} onClick={goToday}>
+          <img
+            src="/images/giuseppe-logo.png"
+            alt=""
+            className="brand-logo"
+            width={300}
+            height={87}
+            draggable={false}
+          />
+        </button>
+      ) : (
+        <Link href="/#today" className="topbar-brand" aria-label={t('aria.home')}>
+          <img
+            src="/images/giuseppe-logo.png"
+            alt=""
+            className="brand-logo"
+            width={300}
+            height={87}
+            draggable={false}
+          />
+        </Link>
+      )}
       <nav className="topnav" aria-label={t('aria.mainNav')}>
         {APP_VIEWS.map(id => {
           if (props.mode === 'spa') {
