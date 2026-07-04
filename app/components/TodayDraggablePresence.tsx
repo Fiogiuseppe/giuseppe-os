@@ -14,15 +14,37 @@ type AvatarPosition = {
 };
 
 const DEFAULT_POSITION: AvatarPosition = { x: 50, y: 50 };
+const EDGE_PAD_PERCENT = 2;
 
-function clampPosition(position: AvatarPosition): AvatarPosition {
+function clampPosition(
+  position: AvatarPosition,
+  container?: HTMLElement | null,
+  presence?: HTMLElement | null
+): AvatarPosition {
+  if (!container || !presence || container.clientWidth === 0 || container.clientHeight === 0) {
+    return {
+      x: Math.min(82, Math.max(18, position.x)),
+      y: Math.min(68, Math.max(42, position.y))
+    };
+  }
+
+  const halfWidthPct = ((presence.offsetWidth / 2) / container.clientWidth) * 100;
+  const halfHeightPct = ((presence.offsetHeight / 2) / container.clientHeight) * 100;
+  const minX = halfWidthPct + EDGE_PAD_PERCENT;
+  const maxX = 100 - halfWidthPct - EDGE_PAD_PERCENT;
+  const minY = halfHeightPct + EDGE_PAD_PERCENT;
+  const maxY = 100 - halfHeightPct - EDGE_PAD_PERCENT;
+
   return {
-    x: Math.min(82, Math.max(18, position.x)),
-    y: Math.min(72, Math.max(28, position.y))
+    x: Math.min(maxX, Math.max(minX, position.x)),
+    y: Math.min(maxY, Math.max(minY, position.y))
   };
 }
 
-function readStoredPosition(): AvatarPosition {
+function readStoredPosition(
+  container?: HTMLElement | null,
+  presence?: HTMLElement | null
+): AvatarPosition {
   if (typeof window === 'undefined') {
     return DEFAULT_POSITION;
   }
@@ -38,7 +60,7 @@ function readStoredPosition(): AvatarPosition {
       return DEFAULT_POSITION;
     }
 
-    return clampPosition({ x: parsed.x, y: parsed.y });
+    return clampPosition({ x: parsed.x, y: parsed.y }, container, presence);
   } catch {
     return DEFAULT_POSITION;
   }
@@ -64,6 +86,7 @@ type TodayDraggablePresenceProps = {
 export function TodayDraggablePresence({ onNavigate, children }: TodayDraggablePresenceProps) {
   const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
+  const presenceRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<AvatarPosition>(DEFAULT_POSITION);
   const positionRef = useRef<AvatarPosition>(DEFAULT_POSITION);
   const [ready, setReady] = useState(false);
@@ -77,10 +100,62 @@ export function TodayDraggablePresence({ onNavigate, children }: TodayDraggableP
   });
 
   useEffect(() => {
-    const stored = readStoredPosition();
-    setPosition(stored);
-    positionRef.current = stored;
-    setReady(true);
+    function applyClampedPosition(next?: AvatarPosition) {
+      const container = containerRef.current;
+      const presence = presenceRef.current;
+      const base = next ?? readStoredPosition(container, presence);
+      const clamped = clampPosition(base, container, presence);
+      setPosition(clamped);
+      positionRef.current = clamped;
+      setReady(true);
+    }
+
+    applyClampedPosition();
+    const frame = window.requestAnimationFrame(() => {
+      applyClampedPosition();
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const presence = presenceRef.current;
+    if (!container || !presence) {
+      return;
+    }
+
+    const observer = new ResizeObserver(() => {
+      setPosition(current => {
+        const clamped = clampPosition(current, container, presence);
+        positionRef.current = clamped;
+        return clamped;
+      });
+    });
+
+    observer.observe(container);
+    observer.observe(presence);
+
+    return () => observer.disconnect();
+  }, [ready]);
+
+  useEffect(() => {
+    function handleResize() {
+      const container = containerRef.current;
+      const presence = presenceRef.current;
+      if (!container || !presence) {
+        return;
+      }
+
+      setPosition(current => {
+        const clamped = clampPosition(current, container, presence);
+        positionRef.current = clamped;
+        return clamped;
+      });
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
@@ -96,7 +171,9 @@ export function TodayDraggablePresence({ onNavigate, children }: TodayDraggableP
     const rect = container.getBoundingClientRect();
     const x = ((clientX - rect.left) / rect.width) * 100;
     const y = ((clientY - rect.top) / rect.height) * 100;
-    setPosition(clampPosition({ x, y }));
+    setPosition(
+      clampPosition({ x, y }, container, presenceRef.current)
+    );
   }, []);
 
   const handlePointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
@@ -170,6 +247,7 @@ export function TodayDraggablePresence({ onNavigate, children }: TodayDraggableP
         {children}
       </div>
       <div
+        ref={presenceRef}
         className={`today-presence${dragging ? ' today-presence--dragging' : ''}${ready ? ' today-presence--ready' : ''}`}
         style={
           ready
