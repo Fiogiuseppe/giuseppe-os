@@ -3,7 +3,7 @@ export type ChatMessage = {
   content: string;
 };
 
-export type ChatProviderName = 'groq' | 'requesty' | 'gemini' | 'ollama';
+export type ChatProviderName = 'groq' | 'gemini' | 'claude' | 'openai' | 'ollama' | 'requesty';
 
 export class ChatConfigurationError extends Error {
   constructor(message: string) {

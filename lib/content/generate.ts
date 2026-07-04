@@ -1,3 +1,4 @@
+import { CREATIVE_CONTENT_TEMPERATURE } from '../ai/jsonCompletion';
 import { isAIMockMode } from '../ai/mode';
 import { runWithAICallMeta } from '../ai/callContext';
 import { resolveAIProvider } from '../brain/providers';
@@ -45,11 +46,13 @@ function parseInstagramStory(content: string): string[] {
 
 async function generateFormatLive(format: ContentFormat, material: Awaited<ReturnType<typeof gatherSourceMaterial>>) {
   const provider = resolveAIProvider();
+  const isInstagram = format === 'instagram-story';
   const response = await provider.complete({
     system: buildContentSystemPrompt(),
     messages: [{ role: 'user', content: buildFormatUserPrompt(format, material) }],
     maxTokens: format === 'medium' ? 2200 : format === 'linkedin' ? 700 : 500,
-    temperature: 0.55
+    temperature: isInstagram ? 0.35 : CREATIVE_CONTENT_TEMPERATURE,
+    expectJson: isInstagram
   });
 
   if (format === 'instagram-story') {

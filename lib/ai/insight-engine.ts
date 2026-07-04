@@ -3,7 +3,7 @@ import { runAwarenessEngine } from '../../engine/awarenessEngine';
 import { buildGiuseppeSystemPrompt, buildAppContextBlock } from './app-context';
 import { runWithAICallMeta } from './callContext';
 import { isAILiveMode } from './mode';
-import { completeWithProviderChain } from './provider';
+import { completeJsonWithProviderChain } from './jsonProviderChain';
 import { loadLongTermMemory, loadWorkingMemory } from '../brain/memory/store';
 import { loadStrongestPatterns } from '../self-model/summary';
 import { resolveLocale, type AppLocale } from '../i18n/locale';
@@ -170,12 +170,12 @@ async function generateLiveInsight(locale: AppLocale): Promise<{
   const completion = await runWithAICallMeta(
     { page: 'insights', reason: 'online-insight' },
     () =>
-      completeWithProviderChain(
+      completeJsonWithProviderChain(
         {
           system,
           messages: [{ role: 'user', content: userPrompt }],
           maxTokens: 1200,
-          temperature: 0.45
+          expectJson: true
         },
         { route: 'insight-engine', page: 'insights', reason: 'online-insight' }
       )

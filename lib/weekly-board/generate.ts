@@ -1,6 +1,7 @@
 import { isAIMockMode, isAILiveMode } from '../ai/mode';
 import { runWithAICallMeta } from '../ai/callContext';
 import { wrapProviderWithLogging } from '../ai/loggedProvider';
+import { completeWithJsonContract, JsonContractError } from '../ai/jsonCompletion';
 import { resolveAIProvider } from '../brain/providers';
 import { ProviderConfigurationError, ProviderRequestError } from '../brain/providers/types';
 import { hasLiveAiCredentials } from '../ai/mode';
@@ -85,11 +86,11 @@ async function buildLiveWeeklyBoard(context: WeeklyBoardContext): Promise<Weekly
     ].join('\n\n');
 
     const provider = wrapProviderWithLogging(resolveAIProvider(), 'weekly-board');
-    const completion = await provider.complete({
+    const completion = await completeWithJsonContract(provider, {
       system: WEEKLY_BOARD_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }],
       maxTokens: 900,
-      temperature: 0.35
+      expectJson: true
     });
 
     const parsed = normalizeWeeklyBoardSections(parseWeeklyBoardResponse(completion.content), fallback);
@@ -99,6 +100,10 @@ async function buildLiveWeeklyBoard(context: WeeklyBoardContext): Promise<Weekly
         : 'fallback';
     return buildResponse(parsed, liveSource, context, false);
   } catch (error) {
+    if (error instanceof JsonContractError) {
+      throw error;
+    }
+
     if (!(error instanceof ProviderConfigurationError || error instanceof ProviderRequestError)) {
       throw error;
     }

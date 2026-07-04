@@ -12,6 +12,8 @@ export interface AICompletionRequest {
   messages: AIMessage[];
   maxTokens?: number;
   temperature?: number;
+  /** When true, providers that support JSON mode request structured output. */
+  expectJson?: boolean;
   context?: ContextPacket;
 }
 

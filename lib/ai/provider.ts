@@ -1,15 +1,6 @@
-import {
-  hasGeminiApiKey,
-  hasGroqApiKey,
-  hasRequestyApiKey,
-  isAIMockMode,
-  resolveConfiguredAiProvider
-} from './mode';
+import { isAIMockMode } from './mode';
 import { wrapProviderWithLogging } from './loggedProvider';
-import { createGroqProvider } from '../brain/providers/groq';
-import { createGeminiProvider } from '../brain/providers/gemini';
-import { createRequestyProvider } from '../brain/providers/requesty';
-import { createOpenAIProvider } from '../brain/providers/openai';
+import { createCompletionProvider } from './completionAdapter';
 import { createRuleBasedProvider } from '../brain/providers/ruleBased';
 import {
   ProviderConfigurationError,
@@ -24,79 +15,17 @@ export type ProviderCompletionResult = AICompletionResponse & {
   provider: AIProviderName;
 };
 
-function providerAvailable(name: AIProviderName): boolean {
-  switch (name) {
-    case 'groq':
-      return hasGroqApiKey();
-    case 'gemini':
-      return hasGeminiApiKey();
-    case 'requesty':
-      return hasRequestyApiKey();
-    case 'openai':
-      return Boolean(process.env.OPENAI_API_KEY?.trim());
-    case 'local':
-    case 'rule-based':
-      return true;
-    default:
-      return false;
-  }
-}
-
-function createRawProvider(name: AIProviderName): AIProvider | null {
-  if (!providerAvailable(name)) {
-    return null;
-  }
-
-  switch (name) {
-    case 'groq':
-      return createGroqProvider();
-    case 'gemini':
-      return createGeminiProvider();
-    case 'requesty':
-      return createRequestyProvider();
-    case 'openai':
-      return createOpenAIProvider();
-    case 'rule-based':
-      return createRuleBasedProvider();
-    default:
-      return null;
-  }
-}
-
-const FALLBACK_ORDER: AIProviderName[] = ['groq', 'gemini', 'requesty', 'openai'];
-
+/**
+ * Builds the provider execution chain.
+ * Today: single orchestrator-backed provider (+ rule-based in mock mode).
+ * Future: fallback list, voting, cost routing — without changing callers.
+ */
 export function buildProviderChain(): AIProvider[] {
   if (isAIMockMode()) {
     return [createRuleBasedProvider()];
   }
 
-  const preferred = resolveConfiguredAiProvider();
-  const chain: AIProvider[] = [];
-  const seen = new Set<AIProviderName>();
-
-  const add = (name: AIProviderName) => {
-    if (seen.has(name)) {
-      return;
-    }
-
-    const provider = createRawProvider(name);
-    if (!provider) {
-      return;
-    }
-
-    seen.add(name);
-    chain.push(provider);
-  };
-
-  if (preferred !== 'local') {
-    add(preferred);
-  }
-
-  for (const name of FALLBACK_ORDER) {
-    add(name);
-  }
-
-  return chain.length ? chain : [createRuleBasedProvider()];
+  return [createCompletionProvider()];
 }
 
 export async function completeWithProviderChain(

@@ -1,42 +1,22 @@
-import { isAIMockMode, resolveConfiguredAiProvider } from '../../ai/mode';
+import { isAIMockMode } from '../../ai/mode';
 import { wrapProviderWithLogging } from '../../ai/loggedProvider';
+import { createCompletionProvider } from '../../ai/completionAdapter';
 import type { AIProvider, AIProviderName } from './types';
-import { createGroqProvider } from './groq';
-import { createRequestyProvider } from './requesty';
-import { createOpenAIProvider } from './openai';
-import { createGeminiProvider } from './gemini';
-import { createLocalProvider } from './local';
-import { createRuleBasedProvider } from './ruleBased';
 import { createMockProvider } from './mock';
+import { createRuleBasedProvider } from './ruleBased';
 
-function resolveProviderName(): AIProviderName {
-  return resolveConfiguredAiProvider();
-}
+/** @deprecated Legacy requesty provider — use AI_PROVIDER orchestrator instead. */
+export { createRequestyProvider } from './requesty';
 
-function resolveLiveProvider(name: AIProviderName): AIProvider {
-  switch (name) {
-    case 'openai':
-      return wrapProviderWithLogging(createOpenAIProvider(), 'brain');
-    case 'gemini':
-      return wrapProviderWithLogging(createGeminiProvider(), 'brain');
-    case 'local':
-      return wrapProviderWithLogging(createLocalProvider(), 'brain');
-    case 'rule-based':
-      return createRuleBasedProvider();
-    case 'requesty':
-      return wrapProviderWithLogging(createRequestyProvider(), 'brain');
-    case 'groq':
-    default:
-      return wrapProviderWithLogging(createGroqProvider(), 'brain');
-  }
-}
+/** @deprecated Legacy gemini completion provider — use getAIProvider() instead. */
+export { createGeminiProvider } from './gemini';
 
 export function resolveAIProvider(): AIProvider {
   if (isAIMockMode()) {
     return createMockProvider();
   }
 
-  return resolveLiveProvider(resolveProviderName());
+  return wrapProviderWithLogging(createCompletionProvider(), 'brain');
 }
 
-export { createRuleBasedProvider, createMockProvider, createGroqProvider, createRequestyProvider, createGeminiProvider };
+export { createRuleBasedProvider, createMockProvider };

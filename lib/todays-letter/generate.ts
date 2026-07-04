@@ -1,6 +1,7 @@
 import { isAIMockMode, isAILiveMode } from '../ai/mode';
 import { runWithAICallMeta } from '../ai/callContext';
 import { wrapProviderWithLogging } from '../ai/loggedProvider';
+import { completeWithJsonContract, JsonContractError } from '../ai/jsonCompletion';
 import { resolveAIProvider } from '../brain/providers';
 import { ProviderConfigurationError, ProviderRequestError } from '../brain/providers/types';
 import { hasLiveAiCredentials } from '../ai/mode';
@@ -168,11 +169,11 @@ async function buildLiveBriefing(
     ].join('\n\n');
 
     const provider = wrapProviderWithLogging(resolveAIProvider(), 'todays-letter');
-    const completion = await provider.complete({
+    const completion = await completeWithJsonContract(provider, {
       system: DAILY_BRIEFING_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }],
       maxTokens: 1000,
-      temperature: 0.35
+      expectJson: true
     });
 
     const parsed = normalizeSections(parseBriefingSections(completion.content), fallbackSections);
@@ -186,6 +187,10 @@ async function buildLiveBriefing(
         : 'fallback';
     return buildResponse(gated.sections, liveSource, context, gated.quality, false);
   } catch (error) {
+    if (error instanceof JsonContractError) {
+      throw error;
+    }
+
     if (!(error instanceof ProviderConfigurationError || error instanceof ProviderRequestError)) {
       throw error;
     }
@@ -252,11 +257,19 @@ export async function generateDailyBriefing(
 export const generateTodaysLetter = generateDailyBriefing;
 
 export function mapBriefingError(error: unknown): { status: number; message: string } {
+  if (error instanceof JsonContractError) {
+    return {
+      status: 502,
+      message:
+        'Il briefing AI ha restituito JSON non valido dopo un tentativo di correzione. Riprova o usa il briefing locale.'
+    };
+  }
+
   if (error instanceof ProviderConfigurationError) {
     return {
       status: 503,
       message:
-        'Giuseppe OS non può preparare il briefing di oggi. Verifica GROQ_API_KEY sul server.'
+        'Giuseppe OS non può preparare il briefing di oggi. Verifica la configurazione AI sul server.'
     };
   }
 

@@ -11,7 +11,7 @@ import {
   TRAJECTORY_QUESTION
 } from '../philosophy/core';
 import { GOLDEN_RULE } from '../architecture/pipeline';
-import { ORACLE_EVIDENCE_RULE, ORACLE_VOICE_RULE } from './voiceRules';
+import { ORACLE_EVIDENCE_RULE, ORACLE_VOICE_RULE, buildOracleEvidenceTail } from './voiceRules';
 
 export const WEEKLY_BOARD_SYSTEM_PROMPT = [
   ORACLE_EVIDENCE_RULE,
@@ -42,9 +42,11 @@ export const WEEKLY_BOARD_SYSTEM_PROMPT = [
   '  "challenge": "one weekly fork framed as memory/regret — one sentence, evidence-backed",',
   '  "trajectoryCheck": "one paragraph grounded in this week\'s actual evidence — not generic advice"',
   '}',
-  'Prefer Italian in the body. Speak as io to tu.'
+  'Prefer Italian in the body. Speak as io to tu.',
+  '',
+  buildOracleEvidenceTail()
 ].join('\n');
 
 export function formatWeeklyEvidencePrompt(evidenceBlock: string, weekLabel: string): string {
-  return ['WEEK:', weekLabel, '', evidenceBlock].join('\n');
+  return ['WEEK:', weekLabel, '', buildOracleEvidenceTail(), '', evidenceBlock].join('\n');
 }

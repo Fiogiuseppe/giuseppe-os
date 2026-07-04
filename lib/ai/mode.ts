@@ -2,7 +2,15 @@ import { readGeminiApiKey, readGroqApiKey, readRequestyApiKey } from './credenti
 
 export type AIMode = 'mock' | 'live';
 
-export type ConfiguredAiProvider = 'groq' | 'requesty' | 'gemini' | 'openai' | 'local' | 'rule-based';
+export type ConfiguredAiProvider =
+  | 'groq'
+  | 'gemini'
+  | 'claude'
+  | 'openai'
+  | 'ollama'
+  | 'requesty'
+  | 'local'
+  | 'rule-based';
 
 export function hasRequestyApiKey(): boolean {
   return Boolean(readRequestyApiKey());
@@ -21,13 +29,17 @@ export function hasLiveAiCredentials(): boolean {
 }
 
 export function resolveConfiguredAiProvider(): ConfiguredAiProvider {
-  const configured = process.env.BRAIN_AI_PROVIDER?.trim().toLowerCase();
+  const configured =
+    process.env.AI_PROVIDER?.trim().toLowerCase() ??
+    process.env.BRAIN_AI_PROVIDER?.trim().toLowerCase();
 
   if (
     configured === 'groq' ||
-    configured === 'requesty' ||
     configured === 'gemini' ||
+    configured === 'claude' ||
     configured === 'openai' ||
+    configured === 'ollama' ||
+    configured === 'requesty' ||
     configured === 'local' ||
     configured === 'rule-based'
   ) {

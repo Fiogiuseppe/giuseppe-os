@@ -18,6 +18,7 @@ import { letterDateKey } from './cache';
 import { loadConstitutionExcerpt } from './loadConstitution';
 import { gatherOracleEvidence } from '../oracle/evidence';
 import { formatEvidenceForPrompt } from '../oracle/formatEvidence';
+import { buildOracleEvidenceTail } from '../oracle/voiceRules';
 import { loadSelfModelSummary } from '../self-model/summary';
 
 function resolveDayPart(hour: number): DailyBriefingContext['dayPart'] {
@@ -163,6 +164,7 @@ export function formatContextForPrompt(context: DailyBriefingContext): string {
     `TRAJECTORY NOTE: ${context.trajectory.trajectoryNote}`,
     `CONFIDENCE: ${context.relevance.confidenceNote}`,
     '',
+    buildOracleEvidenceTail(),
     formatEvidenceForPrompt(context.oracle),
     context.selfModelSummary ? `\n${context.selfModelSummary}` : ''
   ].join('\n');

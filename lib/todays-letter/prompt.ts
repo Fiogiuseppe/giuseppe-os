@@ -12,7 +12,7 @@ import {
   TRAJECTORY_QUESTION
 } from '../philosophy/core';
 import { GOLDEN_RULE } from '../architecture/pipeline';
-import { ORACLE_EVIDENCE_RULE, ORACLE_VOICE_RULE } from '../oracle/voiceRules';
+import { ORACLE_EVIDENCE_RULE, ORACLE_VOICE_RULE, buildOracleEvidenceTail } from '../oracle/voiceRules';
 
 export const DAILY_BRIEFING_SYSTEM_PROMPT = [
   ORACLE_EVIDENCE_RULE,
@@ -50,7 +50,9 @@ export const DAILY_BRIEFING_SYSTEM_PROMPT = [
   '  "nourish": "one growth recommendation (book, article, person, exercise, exhibition, course, etc.)",',
   '  "reflection": "a question 2036-Giuseppe would still be asking himself, grounded in a real open pattern from the EVIDENCE block — not a generic motivational question"',
   '}',
-  'Explicitly tag which capital each recommendation improves. Prefer Italian in the body.'
+  'Explicitly tag which capital each recommendation improves. Prefer Italian in the body.',
+  '',
+  buildOracleEvidenceTail()
 ].join('\n');
 
 /** @deprecated Use DAILY_BRIEFING_SYSTEM_PROMPT */

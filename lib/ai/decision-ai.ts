@@ -2,7 +2,7 @@ import { runDecisionEngine } from '../../engine/decisionEngine';
 import { buildGiuseppeSystemPrompt } from './app-context';
 import { runWithAICallMeta } from './callContext';
 import { isAIMockMode } from './mode';
-import { completeWithProviderChain } from './provider';
+import { completeJsonWithProviderChain } from './jsonProviderChain';
 import { assembleDecisionAIResult } from '../brain/decisions/assemble';
 import type { DecisionAIResult, DecisionResponseSource } from '../brain/decisions/types';
 import { compileDecisionContext } from '../brain/decisions/intake';
@@ -188,12 +188,12 @@ export async function generateDecisionAI(input: DecisionAIInput): Promise<Decisi
     const completion = await runWithAICallMeta(
       { page: 'decisions', reason: 'decision-recommend' },
       () =>
-        completeWithProviderChain(
+        completeJsonWithProviderChain(
           {
             system,
             messages: [{ role: 'user', content: userPrompt }],
             maxTokens: 1400,
-            temperature: 0.35
+            expectJson: true
           },
           { route: 'decision-ai', page: 'decisions', reason: 'decision-recommend' }
         )
