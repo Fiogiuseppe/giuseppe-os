@@ -2,6 +2,7 @@ import type { PersonalRelevanceReport } from '../relevance/types';
 import type { RealityReport } from '../reality/types';
 import type { TrajectoryReport } from '../trajectory/types';
 import type { OracleEvidence } from '../oracle/types';
+import type { TodayActionKind } from '../today-action/types';
 
 export interface DailyBriefingSections {
   greeting: string;
@@ -11,6 +12,10 @@ export interface DailyBriefingSections {
   ignore: string;
   nourish: string;
   reflection: string;
+  /** How the home "Do it" button should execute today's move. */
+  actionKind?: TodayActionKind;
+  /** Topic passed to content generation when actionKind is write_*. */
+  actionTopic?: string;
 }
 
 export type DailyBriefingSource = 'groq' | 'requesty' | 'gemini' | 'fallback' | 'mock';

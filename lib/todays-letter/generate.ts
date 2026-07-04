@@ -27,6 +27,7 @@ import { getPlatformCachedLetter } from './platformCache';
 import { assembleBriefing, countWords, limitWords, parseBriefingSections } from './parse';
 import { DAILY_BRIEFING_SYSTEM_PROMPT, MAX_BRIEFING_WORDS, MAX_TODAY_ONE_BIG_MOVE_WORDS } from './prompt';
 import { validateOracleClaims } from '../oracle/validate';
+import { inferTodayActionKind } from '../today-action/infer';
 
 export type GenerateDailyBriefingOptions = {
   regenerate?: boolean;
@@ -55,14 +56,20 @@ function normalizeSections(
   partial: Partial<DailyBriefingSections>,
   fallback: DailyBriefingSections
 ): DailyBriefingSections {
+  const oneBigMove = partial.oneBigMove?.trim() || fallback.oneBigMove;
+  const actionKind = partial.actionKind ?? fallback.actionKind ?? inferTodayActionKind(oneBigMove);
+  const actionTopic = partial.actionTopic?.trim() || fallback.actionTopic || oneBigMove;
+
   return clampOneBigMove({
     greeting: partial.greeting?.trim() || fallback.greeting,
-    oneBigMove: partial.oneBigMove?.trim() || fallback.oneBigMove,
+    oneBigMove,
     reality: partial.reality?.trim() || fallback.reality,
     opportunity: partial.opportunity?.trim() || fallback.opportunity,
     ignore: partial.ignore?.trim() || fallback.ignore,
     nourish: partial.nourish?.trim() || fallback.nourish,
-    reflection: partial.reflection?.trim() || fallback.reflection
+    reflection: partial.reflection?.trim() || fallback.reflection,
+    actionKind,
+    actionTopic
   });
 }
 

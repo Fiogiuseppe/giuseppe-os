@@ -25,7 +25,7 @@ test.describe('Giuseppe OS PWA', () => {
     }
   });
 
-  test('mobile Today shows compact daily ritual brief', async ({ page }) => {
+  test('mobile Today shows AI-generated experience cards', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
 
@@ -34,7 +34,8 @@ test.describe('Giuseppe OS PWA', () => {
 
     await expectTodayActionVisible(page);
 
-    await expect(page.getByTestId('today-ritual-insight')).toBeVisible();
-    await expect(page.getByTestId('today-ritual-reflection')).toBeVisible();
+    await expect(page.getByTestId('today-greeting')).toBeVisible();
+    await expect(page.getByTestId('today-card-focus')).toBeVisible();
+    await expect(page.getByTestId('today-closing')).toBeVisible();
   });
 });

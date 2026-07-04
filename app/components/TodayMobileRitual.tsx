@@ -2,9 +2,9 @@
 
 import type { DailyBriefingResponse } from '../../lib/briefing/types';
 import { limitWords } from '../../lib/todays-letter/parse';
-import { MAX_TODAY_ONE_BIG_MOVE_WORDS } from '../../lib/todays-letter/prompt';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 import TodayAvatarNav, { type AvatarNavView } from './TodayAvatarNav';
+import { TodayRecommendation } from './TodayRecommendation';
 
 const MAX_RITUAL_INSIGHT_WORDS = 22;
 const MAX_RITUAL_REFLECTION_WORDS = 24;
@@ -14,13 +14,15 @@ type TodayMobileRitualProps = {
   letterError: string | null;
   todaysLetter: DailyBriefingResponse | null;
   onNavigate: (view: AvatarNavView) => void;
+  onOpenDecisions?: () => void;
 };
 
 export default function TodayMobileRitual({
   letterLoading,
   letterError,
   todaysLetter,
-  onNavigate
+  onNavigate,
+  onOpenDecisions
 }: TodayMobileRitualProps) {
   const { t } = useLanguage();
 
@@ -50,10 +52,11 @@ export default function TodayMobileRitual({
               {limitWords(todaysLetter.sections.reality, MAX_RITUAL_INSIGHT_WORDS)}
             </p>
 
-            <p className="today-ritual-kicker">{t('today.ritual.action')}</p>
-            <p className="today-ritual-line today-ritual-action" data-testid="today-ritual-action">
-              {limitWords(todaysLetter.sections.oneBigMove, MAX_TODAY_ONE_BIG_MOVE_WORDS)}
-            </p>
+            <TodayRecommendation
+              sections={todaysLetter.sections}
+              onOpenDecisions={onOpenDecisions}
+              variant="mobile"
+            />
 
             <p className="today-ritual-kicker">{t('today.ritual.reflection')}</p>
             <p

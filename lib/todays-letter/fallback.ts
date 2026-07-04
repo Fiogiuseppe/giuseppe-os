@@ -2,6 +2,8 @@ import type { DailyBriefingContext, DailyBriefingSections } from '../briefing/ty
 import { pickLocale, type AppLocale } from '../i18n/locale';
 import { limitWords } from './parse';
 import { MAX_TODAY_ONE_BIG_MOVE_WORDS } from './prompt';
+import type { TodayActionKind } from '../today-action/types';
+import { inferTodayActionKind } from '../today-action/infer';
 
 function greetingForDayPart(dayPart: DailyBriefingContext['dayPart'], locale: AppLocale): string {
   switch (dayPart) {
@@ -28,14 +30,29 @@ export function buildFallbackBriefing(context: DailyBriefingContext, locale: App
   const dispersionPattern = context.patterns.find(pattern => /dispersione|troppi progetti/i.test(pattern));
   const reading = context.learningGoals[0];
 
+  const oneBigMove = limitWords(
+    pickLocale(
+      locale,
+      leadProject
+        ? `Pubblica oggi un post su LinkedIn su ${leadProject.name} — un insight concreto, non perfetto.`
+        : topPriority
+          ? `Blocca 45 minuti e fai solo questo: ${topPriority}.`
+          : `Scrivi e pubblica un pensiero breve su ciò che stai costruendo verso il 2036.`,
+      leadProject
+        ? `Publish a LinkedIn post today about ${leadProject.name} — one concrete insight, not perfect.`
+        : topPriority
+          ? `Block 45 minutes and do only this: ${topPriority}.`
+          : `Write and publish a short thought on what you are building toward 2036.`
+    ),
+    MAX_TODAY_ONE_BIG_MOVE_WORDS
+  );
+  const actionKind: TodayActionKind = inferTodayActionKind(oneBigMove);
+
   return {
     greeting: greetingForDayPart(context.dayPart, locale),
-    oneBigMove: limitWords(
-      topPriority ??
-        topRelevance?.headline ??
-        missingNote(pickLocale(locale, 'mossa principale', 'main move'), locale),
-      MAX_TODAY_ONE_BIG_MOVE_WORDS
-    ),
+    oneBigMove,
+    actionKind,
+    actionTopic: topPriority ?? leadProject?.name ?? topRelevance?.headline,
     reality: topRelevance
       ? `${topRelevance.headline} — ${topRelevance.whyForGiuseppe}`
       : context.reality.externalFeedsActive === 0

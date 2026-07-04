@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { RegenerateAiButton } from './RegenerateAiButton';
 
 type DevAiControlsProps = {
-  letterLoading: boolean;
+  todayLoading: boolean;
   onRegenerate: () => void;
 };
 
-export function DevAiControls({ letterLoading, onRegenerate }: DevAiControlsProps) {
+export function DevAiControls({ todayLoading, onRegenerate }: DevAiControlsProps) {
   const [liveEnabled, setLiveEnabled] = useState(false);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export function DevAiControls({ letterLoading, onRegenerate }: DevAiControlsProp
 
   return (
     <div className="dev-ai-controls" data-testid="dev-ai-controls">
-      <RegenerateAiButton loading={letterLoading} onRegenerate={onRegenerate} />
+      <RegenerateAiButton loading={todayLoading} onRegenerate={onRegenerate} />
     </div>
   );
 }

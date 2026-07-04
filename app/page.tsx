@@ -10,14 +10,12 @@ import {
 import type { DecisionAIResult } from '../lib/brain/decisions/types';
 import type { AwarenessInsight } from '../engine/awarenessEngine';
 import type { PotentialBrief } from '../engine/potentialEngine';
-import type { DailyBriefingResponse } from '../lib/briefing/types';
-import { limitWords } from '../lib/todays-letter/parse';
-import { MAX_TODAY_ONE_BIG_MOVE_WORDS } from '../lib/todays-letter/prompt';
+import type { TodayResponse } from '../lib/today/types';
 import { decideViaBrain } from './lib/decideViaBrain';
 import { fetchDecisionIntake } from './lib/decisionIntake';
 import { fetchCreateViaBrain } from './lib/fetchCreateViaBrain';
 import { fetchInsightsViaBrain } from './lib/fetchInsightsViaBrain';
-import { fetchTodaysLetter } from './lib/fetchTodaysLetter';
+import { fetchToday } from './lib/fetchToday';
 import { fetchWeeklyBoard } from './lib/fetchWeeklyBoard';
 import { formatConfidenceDisplay, formatProgressDisplay } from './lib/formatConfidence';
 import { MemoryManifesto } from './components/MemoryManifesto';
@@ -36,8 +34,9 @@ import {
 } from './components/WeeklyBoardCard';
 import type { WeeklyBoardResponse } from '../lib/weekly-board/types';
 import { weeklyBoardWeekKey } from '../lib/weekly-board/cache';
-import TodayMobileRitual from './components/TodayMobileRitual';
+import TodayMobileShell from './components/TodayMobileShell';
 import { TodayDraggablePresence } from './components/TodayDraggablePresence';
+import { TodayExperience } from './components/TodayExperience';
 import { AiOutputCard } from './components/AiOutputCard';
 import { AppTopbar } from './components/AppTopbar';
 import { DevAiControls } from './components/DevAiControls';
@@ -148,12 +147,6 @@ export default function Home() {
     body: string;
     nextAction: string;
   } | null>(null);
-  const [todayInsightCard, setTodayInsightCard] = useState<{
-    title: string;
-    body: string;
-    nextAction: string;
-  } | null>(null);
-  const [todayInsightLoading, setTodayInsightLoading] = useState(false);
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [insightsError, setInsightsError] = useState<string | null>(null);
   const [potential, setPotential] = useState<PotentialBrief | null>(null);
@@ -278,9 +271,9 @@ export default function Home() {
     'why' | 'patterns' | 'evidence' | 'reflect' | 'action' | null
   >(null);
 
-  const [todaysLetter, setTodaysLetter] = useState<DailyBriefingResponse | null>(null);
-  const [letterLoading, setLetterLoading] = useState(true);
-  const [letterError, setLetterError] = useState<string | null>(null);
+  const [todayExperience, setTodayExperience] = useState<TodayResponse | null>(null);
+  const [todayLoading, setTodayLoading] = useState(true);
+  const [todayError, setTodayError] = useState<string | null>(null);
   const [dueReview, setDueReview] = useState<DueReviewPayload | null>(null);
   const [reviewCheckDone, setReviewCheckDone] = useState(false);
   const [reviewGateCleared, setReviewGateCleared] = useState(false);
@@ -344,42 +337,6 @@ export default function Home() {
   }, [view, locale]);
 
   useEffect(() => {
-    if (view !== 'today' || !reviewCheckDone || (dueReview && !reviewGateCleared)) {
-      return;
-    }
-
-    let cancelled = false;
-
-    async function loadTodayInsight() {
-      setTodayInsightLoading(true);
-      const response = await fetchInsightsViaBrain(locale);
-      if (cancelled) {
-        return;
-      }
-
-      setTodayInsightLoading(false);
-
-      if (!response.ok) {
-        return;
-      }
-
-      setTodayInsightCard(
-        response.card ?? {
-          title: response.awareness.headline,
-          body: response.awareness.insight,
-          nextAction: response.awareness.recommendedAction
-        }
-      );
-    }
-
-    void loadTodayInsight();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [view, locale, reviewCheckDone, dueReview, reviewGateCleared]);
-
-  useEffect(() => {
     if (view !== 'today') {
       setReviewCheckDone(false);
       return;
@@ -431,30 +388,30 @@ export default function Home() {
   useEffect(() => {
     let cancelled = false;
 
-    async function loadLetter(regenerate = false) {
+    async function loadToday(regenerate = false) {
       if (view !== 'today' || !reviewCheckDone || (dueReview && !reviewGateCleared)) {
         return;
       }
 
-      setLetterLoading(true);
-      setLetterError(null);
+      setTodayLoading(true);
+      setTodayError(null);
 
-      const response = await fetchTodaysLetter(locale, { regenerate });
+      const response = await fetchToday(locale, { regenerate });
       if (cancelled) {
         return;
       }
 
-      setLetterLoading(false);
+      setTodayLoading(false);
 
       if (!response.ok) {
-        setLetterError(response.message);
+        setTodayError(response.message);
         return;
       }
 
-      setTodaysLetter(response.letter);
+      setTodayExperience(response.today);
     }
 
-    void loadLetter(false);
+    void loadToday(false);
 
     return () => {
       cancelled = true;
@@ -497,19 +454,19 @@ export default function Home() {
     };
   }, [locale, view, reviewCheckDone, dueReview, reviewGateCleared]);
 
-  async function handleRegenerateBriefing() {
-    setLetterLoading(true);
-    setLetterError(null);
+  async function handleRegenerateToday() {
+    setTodayLoading(true);
+    setTodayError(null);
 
-    const response = await fetchTodaysLetter(locale, { regenerate: true });
-    setLetterLoading(false);
+    const response = await fetchToday(locale, { regenerate: true });
+    setTodayLoading(false);
 
     if (!response.ok) {
-      setLetterError(response.message);
+      setTodayError(response.message);
       return;
     }
 
-    setTodaysLetter(response.letter);
+    setTodayExperience(response.today);
   }
 
   const [createFocus, setCreateFocus] = useState<'projects' | 'potential' | 'why' | null>(null);
@@ -578,46 +535,27 @@ export default function Home() {
                         }}
                       />
                     )}
-                    <div className="today-ai-cards">
-                      {!letterLoading && !letterError && todaysLetter && (
-                        <AiOutputCard
-                          kicker={t('aiCards.todayRecommendation')}
-                          title={limitWords(todaysLetter.sections.oneBigMove, MAX_TODAY_ONE_BIG_MOVE_WORDS)}
-                          body={limitWords(todaysLetter.sections.reality, 28)}
-                          testId="today-recommendation-card"
-                        />
-                      )}
-                      {todayInsightLoading && (
-                        <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>
-                      )}
-                      {!todayInsightLoading && todayInsightCard && (
-                        <AiOutputCard
-                          kicker={t('aiCards.onlineInsight')}
-                          title={todayInsightCard.title}
-                          body={todayInsightCard.body}
-                          nextAction={todayInsightCard.nextAction}
-                          testId="today-insight-card"
-                        />
-                      )}
-                    </div>
                     <TodayDraggablePresence onNavigate={setView}>
-                      {letterLoading && (
+                      {todayLoading && (
                         <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>
                       )}
-                      {!letterLoading && letterError && (
-                        <p className="today-action-text today-action-text--error">{letterError}</p>
+                      {!todayLoading && todayError && (
+                        <p className="today-action-text today-action-text--error">{todayError}</p>
                       )}
-                      {!letterLoading && !letterError && todaysLetter && (
-                        <p className="today-action-text">
-                          {limitWords(todaysLetter.sections.oneBigMove, MAX_TODAY_ONE_BIG_MOVE_WORDS)}
-                        </p>
+                      {!todayLoading && !todayError && todayExperience && (
+                        <TodayExperience
+                          today={todayExperience}
+                          onOpenDecisions={() => setView('decisions')}
+                          variant="desktop"
+                        />
                       )}
                     </TodayDraggablePresence>
-                    <TodayMobileRitual
-                      letterLoading={letterLoading}
-                      letterError={letterError}
-                      todaysLetter={todaysLetter}
+                    <TodayMobileShell
+                      todayLoading={todayLoading}
+                      todayError={todayError}
+                      today={todayExperience}
                       onNavigate={setView}
+                      onOpenDecisions={() => setView('decisions')}
                     />
                   </>
                 )}
@@ -727,7 +665,7 @@ export default function Home() {
 
         <footer className="footer">
           <div className="footer-start">
-            <DevAiControls letterLoading={letterLoading} onRegenerate={() => void handleRegenerateBriefing()} />
+            <DevAiControls todayLoading={todayLoading} onRegenerate={() => void handleRegenerateToday()} />
             <Link href="/about" className="footer-link">
               {t('footer.about')}
             </Link>

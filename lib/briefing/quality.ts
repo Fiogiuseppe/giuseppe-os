@@ -194,6 +194,7 @@ export function buildQualitySilenceBriefing(context: DailyBriefingContext): Dail
   return {
     greeting: greetingForDayPart(context.dayPart),
     oneBigMove: BRIEFING_SILENCE_MESSAGE,
+    actionKind: 'none',
     reality:
       context.reality.externalFeedsActive === 0
         ? 'Nessun feed esterno attivo e segnali interni insufficienti per raccomandazioni ad alta leva.'

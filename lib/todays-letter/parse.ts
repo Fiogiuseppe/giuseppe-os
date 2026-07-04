@@ -1,4 +1,5 @@
 import type { DailyBriefingSections } from '../briefing/types';
+import { parseTodayActionKind } from '../today-action/infer';
 
 function stripCodeFence(text: string): string {
   const trimmed = text.trim();
@@ -16,7 +17,9 @@ function mapLegacyFields(
     opportunity: parsed.opportunity,
     ignore: parsed.ignore ?? parsed.thingToIgnore,
     nourish: parsed.nourish ?? parsed.creativeSuggestion,
-    reflection: parsed.reflection ?? parsed.reflectionQuestion
+    reflection: parsed.reflection ?? parsed.reflectionQuestion,
+    actionKind: parseTodayActionKind(parsed.actionKind),
+    actionTopic: parsed.actionTopic
   };
 }
 

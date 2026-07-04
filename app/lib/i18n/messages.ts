@@ -91,15 +91,31 @@ export const messages = {
     kickers: shared.kickers,
     today: {
       loading: 'Giuseppe OS sta pensando…',
+      fallbackNotice: 'Briefing locale — l\'AI non era disponibile o il contesto era insufficiente.',
       understand: 'Capisci questo',
       trajectoryImpact: 'Impatto traiettoria',
       possibleActions: 'Azioni possibili',
-      briefingNote: 'Il Daily Brief è giudizio, non informazione.',
-      avatarHint: 'Il tuo avatar è interattivo.',
+      cards: {
+        mindfulReflection: 'RIFLESSIONE',
+        todayFocus: 'FOCUS DI OGGI',
+        nextAction: 'PROSSIMA AZIONE',
+        risk: 'DISTRAZIONE DA EVITARE',
+        insight: 'INSIGHT PERSONALE'
+      },
       ritual: {
         insight: 'Segnale',
         action: 'Mossa',
         reflection: 'Domanda'
+      },
+      execute: {
+        writeMedium: 'Scrivilo su Medium',
+        writeLinkedin: 'Scrivilo su LinkedIn',
+        writeInstagram: 'Prepara la Story',
+        openDecisions: 'Apri la decisione',
+        prepare: 'Aiutami a farlo',
+        loading: 'Sto preparando…',
+        error: 'Non sono riuscito a preparare il contenuto.',
+        notExecutable: 'Questa azione richiede un passo manuale oggi.'
       }
     },
     memory: {
@@ -340,15 +356,31 @@ export const messages = {
     kickers: shared.kickers,
     today: {
       loading: 'Giuseppe OS is thinking…',
+      fallbackNotice: 'Local briefing — AI was unavailable or context was too thin.',
       understand: 'Understand this',
       trajectoryImpact: 'Trajectory impact',
       possibleActions: 'Possible actions',
-      briefingNote: 'The Daily Brief is judgement, not information.',
-      avatarHint: 'Your avatar is interactive.',
+      cards: {
+        mindfulReflection: 'REFLECTION',
+        todayFocus: "TODAY'S FOCUS",
+        nextAction: 'NEXT ACTION',
+        risk: 'DISTRACTION TO AVOID',
+        insight: 'PERSONAL INSIGHT'
+      },
       ritual: {
         insight: 'Signal',
         action: 'Move',
         reflection: 'Question'
+      },
+      execute: {
+        writeMedium: 'Write it on Medium',
+        writeLinkedin: 'Write it on LinkedIn',
+        writeInstagram: 'Prepare the Story',
+        openDecisions: 'Open the decision',
+        prepare: 'Help me do it',
+        loading: 'Preparing…',
+        error: 'Could not prepare the content.',
+        notExecutable: 'This action needs a manual step today.'
       }
     },
     memory: {
