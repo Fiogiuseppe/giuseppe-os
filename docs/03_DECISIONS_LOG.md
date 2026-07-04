@@ -178,6 +178,26 @@ Each entry includes:
 
 ---
 
+### 2026-07 — Personal Decision Intelligence System (v2 pivot)
+
+**Decision:** Giuseppe OS is no longer a Personal Intelligence Operating System. It becomes a **Personal Decision Intelligence System**. Mission: continuously improve decision quality and long-term trajectory over decades — not answer questions, not optimize today's productivity.
+
+**Rationale:** The product must evolve toward one question: *Knowing everything Giuseppe has lived, everything happening in the world, and everything he wants to become — what decision has the highest probability of improving his future?* New architectural layers: Digital Twin (probabilistic model), Identity Layer (meaning above memory), Goal Validation Engine (challenge wrong goals), Decision Simulator, Prediction Engine. Pattern detection principle: surface what Giuseppe cannot easily see — not know him better than he knows himself.
+
+**Implications:** Foundation-only implementation in this pivot — types and docs, not full engines. `lib/architecture/pipeline.ts` is canonical v2 order. `lib/identity/`, `lib/digital-twin/`, `lib/goal-validation/`, `lib/decision-simulator/`, `lib/prediction/` are type contracts. `lib/philosophy/core.ts` rewritten. Quality Engine adds personalization. Constitutions, `ARCHITECTURE_V2.md`, `DECISION_INTELLIGENCE_PIVOT.md` updated. No Supabase, simulator UI, or notifications in this phase.
+
+---
+
+### 2026-07 — Decision Partner vision (Three Selves, Golden Rule, new engines)
+
+**Decision:** Giuseppe OS ultimate purpose is to become **the decision partner Giuseppe trusts the most** — not the smartest AI. Success measured by better life decisions over time, not usage. Daily Brief reframed as **judgement** (*"If the wisest Giuseppe had five minutes with Present Giuseppe — what would he say?"*). **Golden Rule** gates all recommendations: Future Giuseppe thanking Present Giuseppe in ten years — or silence. **Three Selves** (Past, Present, Future) frame every important decision.
+
+**Rationale:** The system must improve Giuseppe's judgement without replacing him. Patterns are more valuable than memories. Voice DNA ensures suggestions sound like Giuseppe. Living Timeline feeds the evolving Digital Twin.
+
+**Implications:** New type contracts: `lib/pattern/`, `lib/voice-dna/`, `lib/timeline/`. Expanded `lib/digital-twin/types.ts`. `lib/architecture/pipeline.ts` adds engines and Golden Rule constants. Philosophy, Daily Brief prompt, and thinking chain updated. Docs updated. No runtime implementation in this phase.
+
+---
+
 ## Template for New Entries
 
 ```markdown

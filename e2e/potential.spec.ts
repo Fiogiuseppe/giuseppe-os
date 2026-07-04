@@ -1,20 +1,21 @@
 import { test, expect } from '@playwright/test';
+import { gotoView } from './helpers';
 
 async function expandPotential(page: import('@playwright/test').Page) {
-  await page.getByRole('button', { name: 'Explore opportunities' }).click();
+  await page.getByRole('button', { name: /Explore opportunities|Esplora opportunità/i }).click();
 }
 
 test.describe('Giuseppe OS potential engine', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('navigation').getByRole('button', { name: 'Create' }).click();
+    await gotoView(page, 'create');
     await expandPotential(page);
   });
 
   test('opens the Potential page', async ({ page }) => {
     await expect(page.getByText("TODAY'S OPPORTUNITY")).toBeVisible();
     await expect(page.getByText('OPPORTUNITY HISTORY')).toBeVisible();
-    await expect(page.getByRole('navigation').getByRole('button', { name: 'Create' })).toHaveClass(/active/);
+    await expect(page.getByTestId('nav-create')).toHaveClass(/active/);
   });
 
   test('shows today opportunity with confidence score', async ({ page }) => {
@@ -23,8 +24,8 @@ test.describe('Giuseppe OS potential engine', () => {
     const score = Number(scoreText?.trim());
     expect(score).toBeGreaterThanOrEqual(0);
     expect(score).toBeLessThanOrEqual(100);
-    await expect(page.getByText(/Prima azione:/)).toBeVisible();
-    await expect(page.getByText(/Perché conta:/)).toBeVisible();
+    await expect(page.getByText(/Prima azione:|First action:/)).toBeVisible();
+    await expect(page.getByText(/Perché conta:|Why it matters:/)).toBeVisible();
   });
 
   test('shows potential intelligence sections', async ({ page }) => {
@@ -45,13 +46,13 @@ test.describe('Giuseppe OS potential engine', () => {
   });
 
   test('navigation still works from Potential page', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Today' }).click();
+    await gotoView(page, 'today');
     await expect(page.locator('.companion-greeting')).toContainText(
       /Good (morning|afternoon|evening|night),?\s*Giuseppe/i,
       { timeout: 15_000 }
     );
 
-    await page.getByRole('navigation').getByRole('button', { name: 'Create' }).click();
+    await gotoView(page, 'create');
     await expandPotential(page);
     await expect(page.getByText("TODAY'S OPPORTUNITY")).toBeVisible();
   });

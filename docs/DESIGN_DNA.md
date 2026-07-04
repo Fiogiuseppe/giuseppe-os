@@ -9,6 +9,8 @@
 
 Giuseppe OS is inspired by **[fiogiuseppe.com](https://fiogiuseppe.com)**.
 
+The product is a **Personal Decision Intelligence System**. The interface is a **conversation**, not a dashboard.
+
 The aesthetic is:
 
 - **Calm** — no visual noise, no urgency theater
@@ -101,13 +103,13 @@ Navigation represents **Giuseppe's daily journey** — not software modules.
 
 | Nav | Role | Primary question |
 |-----|------|------------------|
-| **TODAY** | Landing page — daily companion | What is the best thing I can do today to become who I chose to become? |
+| **TODAY** | Landing page — daily conversation | If the wisest Giuseppe had five minutes with Present Giuseppe — what would he say? |
 | **PROJECTS** | Creative energy allocation | Where should my creative energy go right now? |
 | **FINANCE** | Freedom cockpit | Am I building freedom or buying status? |
 | **AWARENESS** | Quiet discovery | What pattern am I missing? |
 | **BECOMING** | Identity and memory | Who am I choosing to become? |
 
-**Today is the landing page.** The user opens Giuseppe OS and immediately sees the best step for today — not a grid of widgets.
+**Today is the landing page.** The user opens Giuseppe OS and immediately sees the highest-leverage **decision** for today — not a grid of widgets. One Big Move is the hero; everything else is progressive disclosure.
 
 The top navigation must feel similar to Apple's desktop apps: **minimal, calm, elegant, always visible**. Giuseppe brand mark on the left. No sidebar.
 
@@ -123,7 +125,7 @@ Each navigation area has a distinct mental role and layout rhythm (v1.2+). Do no
 
 | Space | Feeling |
 |-------|---------|
-| Today | Warm companion — focus, clarity, one step |
+| Today | Warm conversation — one decision, clarity, silence when uncertain |
 | Projects | Creative workshop — energy and ecosystem |
 | Finance | Cockpit — freedom metrics, privacy by default |
 | Awareness | Quiet discovery — insight without alarm |
@@ -151,7 +153,7 @@ Before any UI change, ask:
 2. Does this answer one primary question?
 3. Does this reveal depth only when requested?
 4. Does this feel calm, editorial, and timeless?
-5. Does this help Giuseppe become who he chose to become?
+5. Does this help Giuseppe make a better long-term decision?
 
 If any answer is no, rethink the design.
 
@@ -159,6 +161,7 @@ If any answer is no, rethink the design.
 
 ## Related Documents
 
+- [`docs/DECISION_INTELLIGENCE_PIVOT.md`](DECISION_INTELLIGENCE_PIVOT.md) — product philosophy migration
 - [`docs/PRODUCT_CONSTITUTION.md`](PRODUCT_CONSTITUTION.md) — product philosophy
 - [`docs/01_CURRENT_STATUS.md`](01_CURRENT_STATUS.md) — current UI state
 - [`docs/reviews/README.md`](reviews/README.md) — design review PDFs per release

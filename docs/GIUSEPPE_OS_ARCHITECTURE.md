@@ -1,9 +1,11 @@
 # Giuseppe OS — System Architecture
 
-**Version:** 1.0 (Intelligence Foundation)  
-**Status:** Single Source of Truth  
+**Version:** 2.0 (Decision Intelligence — foundations)  
+**Status:** Single Source of Truth (v1 detail below; v2 target in companion docs)  
 **Last updated:** July 2026  
 **Owner:** Giuseppe  
+
+> **v2 pivot (July 2026):** Giuseppe OS is now a **Personal Decision Intelligence System** — not a Personal Intelligence Operating System. Mission: improve decision quality and long-term trajectory over decades. See [`DECISION_INTELLIGENCE_PIVOT.md`](DECISION_INTELLIGENCE_PIVOT.md) and [`ARCHITECTURE_V2.md`](ARCHITECTURE_V2.md) for the target architecture. Engine registry: `lib/architecture/pipeline.ts`. This document retains v1 implementation detail; where v1 and v2 conflict on philosophy, v2 wins.
 
 This document defines the intelligence, memory, engines, board, flows, and permanent rules of Giuseppe OS. It is the authoritative reference for all future design and implementation. No feature should be built unless it can be traced back to a section of this document.
 
@@ -15,13 +17,14 @@ Implementation may lag behind this architecture. When code and architecture disa
 
 ## 1.1 What Giuseppe OS Is
 
-Giuseppe OS is a **personal operating system** — a thinking environment that helps Giuseppe live his spiritual purpose inside practical reality. It is not software that tells Giuseppe what to do. It is software that **remembers who Giuseppe chose to become** and helps him decide, act, review, and learn in alignment with that choice.
+Giuseppe OS is a **Personal Decision Intelligence System** — a thinking environment that helps Giuseppe make better decisions over decades. It is not software that tells Giuseppe what to do. It is software that **builds a living Digital Twin**, reinterprets experience through an **Identity Layer**, and filters every recommendation through **trajectory**, **goal validation**, and **truth**.
 
-At its core, Giuseppe OS is three things at once:
+At its core, Giuseppe OS is four things at once:
 
-1. **A memory system** that holds identity, values, projects, finances, patterns, decisions, and lessons across time.
-2. **A decision system** that transforms vague intentions into classified, examined, rewritten, actionable choices.
-3. **A board of counsellors** — six distinct intelligences that debate every important move from different angles before Giuseppe acts.
+1. **A memory system** that holds facts — identity records, projects, finances, patterns, decisions, and lessons across time.
+2. **An identity system** (above memory) that stores meaning — continuous reinterpretation of what facts imply about who Giuseppe is becoming.
+3. **A decision system** that transforms vague intentions into classified, examined, trajectory-aligned choices — and eventually simulates futures before important moves.
+4. **A board of counsellors** — six distinct intelligences that debate every important move from different angles before Giuseppe acts.
 
 The North Star is fixed:
 

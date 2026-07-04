@@ -1,14 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView } from './helpers';
 
 const NORTH_STAR = 'PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.';
-const FOOTER_MANIFESTO = "It's not software that tells you what to do. It's software that remembers who you chose to become.";
 
 const MAIN_SECTIONS = [
-  { label: 'Today', heading: /IL MIGLIOR PASSO DI OGGI/ },
-  { label: 'Decisions', heading: /PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA/ },
-  { label: 'Discover', heading: /I NOTICED SOMETHING/ },
-  { label: 'Create', heading: /IL SISTEMA GIUSEPPE/ },
-  { label: 'Memory', heading: /CHI HO SCELTO DI DIVENTARE/ }
+  { id: 'today' as const, heading: VIEW_HEADING_PATTERNS.today },
+  { id: 'decisions' as const, heading: VIEW_HEADING_PATTERNS.decisions },
+  { id: 'discover' as const, heading: VIEW_HEADING_PATTERNS.discover },
+  { id: 'create' as const, heading: VIEW_HEADING_PATTERNS.create },
+  { id: 'memory' as const, heading: VIEW_HEADING_PATTERNS.memory }
 ] as const;
 
 const BANNED_GENERIC_COPY = [
@@ -20,8 +20,7 @@ const BANNED_GENERIC_COPY = [
 ];
 
 async function expectFooterManifesto(page: import('@playwright/test').Page) {
-  const footer = page.locator('footer.footer');
-  await expect(footer.getByText(FOOTER_MANIFESTO)).toBeVisible();
+  await expect(page.locator('footer.footer')).toContainText(FOOTER_PATTERN);
 }
 
 async function expectPrimaryHeading(page: import('@playwright/test').Page) {
@@ -40,8 +39,8 @@ test.describe('Giuseppe OS quality loop', () => {
   test('all main sections are reachable', async ({ page }) => {
     const nav = page.getByRole('navigation');
 
-    for (const { label, heading } of MAIN_SECTIONS) {
-      await nav.getByRole('button', { name: label, exact: true }).click();
+    for (const { id, heading } of MAIN_SECTIONS) {
+      await nav.getByTestId(`nav-${id}`).click();
       await expect(page.getByRole('main')).toBeVisible();
       await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
     }
@@ -50,8 +49,8 @@ test.describe('Giuseppe OS quality loop', () => {
   test('no main heading is missing on any section', async ({ page }) => {
     const nav = page.getByRole('navigation');
 
-    for (const { label } of MAIN_SECTIONS) {
-      await nav.getByRole('button', { name: label }).click();
+    for (const { id } of MAIN_SECTIONS) {
+      await nav.getByTestId(`nav-${id}`).click();
       await expectPrimaryHeading(page);
     }
   });
@@ -62,32 +61,29 @@ test.describe('Giuseppe OS quality loop', () => {
 
     await expectFooterManifesto(page);
 
-    for (const { label } of MAIN_SECTIONS) {
-      await nav.getByRole('button', { name: label }).click();
+    for (const { id } of MAIN_SECTIONS) {
+      await nav.getByTestId(`nav-${id}`).click();
       await expectFooterManifesto(page);
     }
   });
 
   test('decision form works end to end', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Decisions' }).click();
+    await gotoView(page, 'decisions');
 
-    await page.getByPlaceholder('Es. comprare casa, pubblicare un post, investire...').fill('investire in ETF');
-    await page.getByPlaceholder('Motivo vero.').fill('Voglio comprare libertà futura.');
-    await page.getByRole('button', { name: 'Chiedi al Board' }).click();
+    await page.getByPlaceholder(/comprare casa|buy a house/i).fill('investire in ETF');
+    await page.getByPlaceholder(/Motivo vero|The real reason/i).fill('Voglio comprare libertà futura.');
+    await page.getByRole('button', { name: /Chiedi al Board|Ask the Board/i }).click();
 
-    await expect(page.locator('.result')).toBeVisible();
-    await expect(page.getByText('Prossimo passo')).toBeVisible();
+    await expect(page.locator('.result')).toBeVisible({ timeout: 25_000 });
+    await expect(page.getByText(/Prossimo passo|NEXT STEP/i)).toBeVisible();
     await expectFooterManifesto(page);
   });
 
   test('awareness section works when present', async ({ page }) => {
-    const discoverButton = page.getByRole('navigation').getByRole('button', { name: 'Discover' });
-    await expect(discoverButton).toBeVisible();
-
-    await discoverButton.click();
-    await expect(page.getByRole('main').locator('.view-title')).toHaveText('I NOTICED SOMETHING.');
+    await gotoView(page, 'discover');
+    await expect(page.getByRole('main').locator('.view-title')).toContainText(VIEW_HEADING_PATTERNS.discover);
     await expect(page.getByRole('heading', { name: /Stai portando|Hai liquidità|Il lavoro sacro|Vuoi visibilità|LEGO è il motore/ })).toBeVisible();
-    await page.getByRole('button', { name: 'Suggested action' }).click();
+    await page.getByRole('button', { name: /Suggested action|Azione suggerita/i }).click();
     await expect(page.getByText('RECOMMENDED ACTION')).toBeVisible();
     await expect(page.locator('.potential-score')).toBeVisible();
   });
@@ -97,8 +93,8 @@ test.describe('Giuseppe OS quality loop', () => {
     page.on('pageerror', error => errors.push(error.message));
 
     const nav = page.getByRole('navigation');
-    for (const { label } of MAIN_SECTIONS) {
-      await nav.getByRole('button', { name: label }).click();
+    for (const { id } of MAIN_SECTIONS) {
+      await nav.getByTestId(`nav-${id}`).click();
       await expect(page.getByRole('main')).toBeVisible();
     }
 
@@ -109,14 +105,14 @@ test.describe('Giuseppe OS quality loop', () => {
     await expect(page.getByRole('navigation')).toBeVisible();
     await expect(page.getByRole('main')).toBeVisible();
     await expect(page.locator('footer.footer')).toBeVisible();
-    await expect(page.getByRole('navigation').getByRole('button', { name: 'Decisions', exact: true })).toBeVisible();
+    await expect(page.getByTestId('nav-decisions')).toBeVisible();
   });
 
   test('visual hierarchy uses kickers before headlines', async ({ page }) => {
     const nav = page.getByRole('navigation');
 
-    for (const { label } of MAIN_SECTIONS) {
-      await nav.getByRole('button', { name: label }).click();
+    for (const { id } of MAIN_SECTIONS) {
+      await nav.getByTestId(`nav-${id}`).click();
       await expect(page.getByRole('main').locator('.kicker').first()).toBeVisible();
     }
   });
@@ -124,27 +120,29 @@ test.describe('Giuseppe OS quality loop', () => {
   test('only one navigation item is active at a time', async ({ page }) => {
     const nav = page.getByRole('navigation');
 
-    for (const { label } of MAIN_SECTIONS) {
-      await nav.getByRole('button', { name: label }).click();
+    for (const { id } of MAIN_SECTIONS) {
+      await nav.getByTestId(`nav-${id}`).click();
       await expect(nav.locator('button.active')).toHaveCount(1);
     }
   });
 
   test('north star page headline appears only on Decisions view', async ({ page }) => {
-    const headline = page.locator('.view-title').filter({ hasText: NORTH_STAR });
-    await expect(headline).toHaveCount(0);
+    const decisionsHeadline = page.locator('.view-title').filter({
+      hasText: VIEW_HEADING_PATTERNS.decisions
+    });
+    await expect(decisionsHeadline).toHaveCount(0);
 
     const nav = page.getByRole('navigation');
-    await nav.getByRole('button', { name: 'Decisions', exact: true }).click();
-    await expect(headline).toBeVisible();
+    await nav.getByTestId('nav-decisions').click();
+    await expect(decisionsHeadline).toBeVisible();
 
-    for (const { label } of MAIN_SECTIONS) {
-      if (label === 'Decisions') continue;
-      await nav.getByRole('button', { name: label, exact: true }).click();
-      await expect(headline).toHaveCount(0);
+    for (const { id } of MAIN_SECTIONS) {
+      if (id === 'decisions') continue;
+      await nav.getByTestId(`nav-${id}`).click();
+      await expect(decisionsHeadline).toHaveCount(0);
     }
 
-    await nav.getByRole('button', { name: 'Memory', exact: true }).click();
+    await nav.getByTestId('nav-memory').click();
     await expect(page.getByRole('heading', { name: 'NORTH STAR' })).toBeVisible();
   });
 
@@ -160,20 +158,21 @@ test.describe('Giuseppe OS quality loop', () => {
     const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     expect(bodyBg).toBe('rgb(247, 245, 232)');
 
-    await expect(page.getByRole('button', { name: 'Giuseppe OS home' })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Giuseppe OS home/i })).toBeVisible();
     await expect(page.locator('.companion-panel').first()).toBeVisible();
     await expect(page.locator('.topbar')).toBeVisible();
   });
 
   test('architecture-aligned north star appears on Decisions', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Decisions', exact: true }).click();
+    await gotoView(page, 'decisions');
+    await page.getByRole('button', { name: /Explore purpose|Esplora il proposito/i }).click();
     await expect(page.getByRole('main').getByText(NORTH_STAR).first()).toBeVisible();
   });
 
   test('finance view hides sensitive personal numbers', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Discover', exact: true }).click();
-    await page.getByRole('button', { name: 'Freedom & finance' }).click();
-    await page.getByRole('button', { name: 'Financial details' }).click();
+    await gotoView(page, 'discover');
+    await page.getByRole('button', { name: /Freedom & finance|Libertà e finanza/i }).click();
+    await page.getByRole('button', { name: /Financial details|Dettagli finanziari/i }).click();
 
     const main = page.getByRole('main');
     await expect(main.getByText('CASH RESERVE')).toBeVisible();
@@ -191,10 +190,10 @@ test.describe('Giuseppe OS quality loop — responsiveness', () => {
     await page.goto('/');
 
     const nav = page.getByRole('navigation');
-    await expect(nav.getByRole('button', { name: 'Today' })).toBeVisible();
+    await expect(nav.getByTestId('nav-today')).toBeVisible();
 
-    for (const { label, heading } of MAIN_SECTIONS) {
-      await nav.getByRole('button', { name: label, exact: true }).click();
+    for (const { id, heading } of MAIN_SECTIONS) {
+      await nav.getByTestId(`nav-${id}`).click();
       await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
     }
   });

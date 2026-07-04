@@ -41,6 +41,7 @@ function pipelineMeta(context: DailyBriefingContext, quality: BriefingQualityRep
     trajectoryNote: context.trajectory.trajectoryNote,
     qualityPassed: quality.shouldPublish,
     qualityConfidence: quality.confidence,
+    qualityPersonalization: quality.personalization,
     qualityNote: quality.qualityNote
   };
 }

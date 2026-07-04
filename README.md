@@ -1,12 +1,14 @@
-# Giuseppe OS v1.3
+# Giuseppe OS v2.0
 
-A Personal Intelligence Operating System — not a chatbot — for building a life aligned with purpose, freedom, reputation, creativity, and financial independence.
+A Personal Decision Intelligence System — Giuseppe's trusted decision partner for improving the quality of life decisions over decades.
 
 ## Core idea
 
-A thinking system that remembers who Giuseppe chose to become and helps him decide, act, review, and learn in alignment with that choice.
+Not the smartest AI — the decision partner Giuseppe trusts the most. Success is measured by better life decisions over time, not usage.
 
 **North Star:** PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.
+
+**Primary question:** Knowing everything Giuseppe has lived, everything happening in the world, and everything he wants to become — what decision has the highest probability of improving his future?
 
 ## Run locally
 
@@ -30,6 +32,14 @@ Runs typecheck, Playwright e2e tests (40), and production build.
 - `/app` — Next.js frontend and `/api/brain` endpoint
 - `/engine` — decision, awareness, potential engines
 - `/lib/brain` — Executive Brain, context builder, AI providers, memory
+- `/lib/architecture` — v2 pipeline registry and primary questions
+- `/lib/identity` — Identity Layer types (meaning above memory)
+- `/lib/digital-twin` — Digital Twin types (probabilistic model)
+- `/lib/goal-validation` — Goal Validation types
+- `/lib/decision-simulator` — Decision Simulator types
+- `/lib/pattern` — Pattern Engine types (latent pattern discovery)
+- `/lib/voice-dna` — Voice DNA types (Giuseppe's writing/speaking voice)
+- `/lib/timeline` — Living Timeline types (life event observation)
 - `/lib/reality` — Reality layer stubs (future live connectors)
 - `/memory` — Giuseppe Brain, working memory, long-term memory
 - `/agents` — six counsellor personas
@@ -63,7 +73,9 @@ Read these before touching code:
 
 **Quality loop (no shortcuts):** Read Constitution → Understand Current State → Implement → Run Tests → Fix → Design Review PDF (if UI release) → Commit → Push.
 
-**Mission gate:** Before any implementation, ask: *Does this help Giuseppe become the person he chose to become?* If no, rethink.
+**Mission gate:** Before any implementation, ask: *Does this improve the quality of Giuseppe's decisions or his long-term trajectory?* If no, rethink.
+
+**Pivot docs:** [`docs/DECISION_INTELLIGENCE_PIVOT.md`](docs/DECISION_INTELLIGENCE_PIVOT.md) · [`docs/ARCHITECTURE_V2.md`](docs/ARCHITECTURE_V2.md)
 
 Also see [`docs/04_CURSOR_WORKFLOW.md`](docs/04_CURSOR_WORKFLOW.md) for detailed workflow and [`docs/03_DECISIONS_LOG.md`](docs/03_DECISIONS_LOG.md) for architecture decisions.
 

@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView } from './helpers';
 
 const NAV_VIEWS = [
-  { label: 'Today', heading: /IL MIGLIOR PASSO DI OGGI/ },
-  { label: 'Decisions', heading: /PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA/ },
-  { label: 'Discover', heading: /I NOTICED SOMETHING/ },
-  { label: 'Create', heading: /IL SISTEMA GIUSEPPE/ },
-  { label: 'Memory', heading: /CHI HO SCELTO DI DIVENTARE/ }
+  { id: 'today' as const, heading: VIEW_HEADING_PATTERNS.today },
+  { id: 'decisions' as const, heading: VIEW_HEADING_PATTERNS.decisions },
+  { id: 'discover' as const, heading: VIEW_HEADING_PATTERNS.discover },
+  { id: 'create' as const, heading: VIEW_HEADING_PATTERNS.create },
+  { id: 'memory' as const, heading: VIEW_HEADING_PATTERNS.memory }
 ] as const;
 
 async function expectNoPageScroll(page: import('@playwright/test').Page) {
@@ -35,39 +36,39 @@ test.describe('Giuseppe OS navigation', () => {
       { timeout: 15_000 }
     );
     await expect(page.getByRole('button', { name: 'Giuseppe OS home' })).toBeVisible();
-    await expect(page.locator('footer.footer').getByText("It's not software that tells you what to do. It's software that remembers who you chose to become.")).toBeVisible();
+    await expect(page.locator('footer.footer')).toContainText(FOOTER_PATTERN);
   });
 
   test('shows all navigation buttons', async ({ page }) => {
     const nav = page.getByRole('navigation');
 
-    for (const { label } of NAV_VIEWS) {
-      await expect(nav.getByRole('button', { name: label })).toBeVisible();
+    for (const { id } of NAV_VIEWS) {
+      await expect(nav.getByTestId(`nav-${id}`)).toBeVisible();
     }
   });
 
   test('switches visible content when navigation buttons are clicked', async ({ page }) => {
     const nav = page.getByRole('navigation');
 
-    for (const { label, heading } of NAV_VIEWS) {
-      await nav.getByRole('button', { name: label, exact: true }).click();
+    for (const { id, heading } of NAV_VIEWS) {
+      await nav.getByTestId(`nav-${id}`).click();
       await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
-      await expect(nav.getByRole('button', { name: label, exact: true })).toHaveClass(/active/);
+      await expect(nav.getByTestId(`nav-${id}`)).toHaveClass(/active/);
     }
   });
 
   test('accepts text in the decision form on Decisions view', async ({ page }) => {
-    await page.getByRole('navigation').getByRole('button', { name: 'Decisions' }).click();
+    await gotoView(page, 'decisions');
 
-    const decisionInput = page.getByPlaceholder('Es. comprare casa, pubblicare un post, investire...');
-    const reasonInput = page.getByPlaceholder('Motivo vero.');
+    const decisionInput = page.getByPlaceholder(/comprare casa|buy a house/i);
+    const reasonInput = page.getByPlaceholder(/Motivo vero|The real reason/i);
 
     await decisionInput.fill('comprare casa a Copenaghen');
     await reasonInput.fill('Voglio più stabilità per la famiglia.');
 
     await expect(decisionInput).toHaveValue('comprare casa a Copenaghen');
     await expect(reasonInput).toHaveValue('Voglio più stabilità per la famiglia.');
-    await expect(page.getByRole('button', { name: 'Chiedi al Board' })).toBeEnabled();
+    await expect(page.getByRole('button', { name: /Chiedi al Board|Ask the Board/i })).toBeEnabled();
   });
 
   test('desktop viewport has no page scroll on any main section', async ({ page }) => {
@@ -76,8 +77,8 @@ test.describe('Giuseppe OS navigation', () => {
 
     const nav = page.getByRole('navigation');
 
-    for (const { label } of NAV_VIEWS) {
-      await nav.getByRole('button', { name: label, exact: true }).click();
+    for (const { id } of NAV_VIEWS) {
+      await nav.getByTestId(`nav-${id}`).click();
       await expect(page.getByRole('main')).toBeVisible();
       await expectNoPageScroll(page);
     }
@@ -87,17 +88,17 @@ test.describe('Giuseppe OS navigation', () => {
 test.describe('Giuseppe OS decision board', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('navigation').getByRole('button', { name: 'Decisions' }).click();
+    await gotoView(page, 'decisions');
   });
 
   async function askBoard(page: import('@playwright/test').Page, decision: string, reason: string) {
-    await page.getByPlaceholder('Es. comprare casa, pubblicare un post, investire...').fill(decision);
-    await page.getByPlaceholder('Motivo vero.').fill(reason);
-    await page.getByRole('button', { name: 'Chiedi al Board' }).click();
-    await expect(page.locator('.result')).toBeVisible();
-    await page.locator('.result').getByRole('button', { name: 'Perché?' }).click();
-    await page.locator('.result').getByRole('button', { name: 'Mostra il Board' }).click();
-    await page.locator('.result').getByRole('button', { name: 'Versione migliore' }).click();
+    await page.getByPlaceholder(/comprare casa|buy a house/i).fill(decision);
+    await page.getByPlaceholder(/Motivo vero|The real reason/i).fill(reason);
+    await page.getByRole('button', { name: /Chiedi al Board|Ask the Board/i }).click();
+    await expect(page.locator('.result')).toBeVisible({ timeout: 25_000 });
+    await page.locator('.result').getByRole('button', { name: /Perché|Why/i }).click();
+    await page.locator('.result').getByRole('button', { name: /Mostra il Board|Show the Board/i }).click();
+    await page.locator('.result').getByRole('button', { name: /Versione migliore|Better version/i }).click();
   }
 
   test('submits the decision form and shows board output', async ({ page }) => {

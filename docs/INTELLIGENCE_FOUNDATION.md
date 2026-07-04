@@ -1,14 +1,16 @@
 # Giuseppe OS v1.0 — Intelligence Foundation
 
-**Version:** 1.0  
-**Status:** Foundation release  
+**Version:** 1.0 (superseded in philosophy by v2 Decision Intelligence)  
+**Status:** Foundation release — Executive Brain detail remains valid  
 **Last updated:** July 2026  
 
-Giuseppe OS is **not a chatbot**. It is a **Personal Intelligence Operating System**. The AI is one component. The **Executive Brain** is the real system.
+> **v2 pivot:** Giuseppe OS is now a **Personal Decision Intelligence System**. This document describes the v1 Executive Brain foundation. For the new mission and engine layers, read [`DECISION_INTELLIGENCE_PIVOT.md`](DECISION_INTELLIGENCE_PIVOT.md) and [`ARCHITECTURE_V2.md`](ARCHITECTURE_V2.md).
+
+Giuseppe OS is **not a chatbot**. It is a **Personal Decision Intelligence System**. The AI is one component. The **Executive Brain** is one orchestrator; the **decision intelligence pipeline** is the product.
 
 Before any response is generated, the system asks:
 
-> *Will this response help Giuseppe become the person he chose to become?*
+> *Does this improve the quality of Giuseppe's decisions or his long-term trajectory?*
 
 If the answer is no, the response is reconsidered.
 

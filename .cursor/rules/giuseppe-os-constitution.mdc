@@ -7,23 +7,36 @@ alwaysApply: true
 
 The **repository is the source of truth**. The conversation is temporary.
 
+Giuseppe OS is a **Personal Decision Intelligence System** — not a Personal Intelligence OS, not a dashboard, not a chatbot.
+
 ## Before implementing anything
 
 Read in order:
 1. `docs/CURSOR_STARTUP.md`
-2. `docs/PRODUCT_CONSTITUTION.md`
-3. `docs/ENGINEERING_CONSTITUTION.md`
-4. `docs/DESIGN_DNA.md`
-5. `docs/01_CURRENT_STATUS.md`
-6. `docs/02_NEXT_STEPS.md`
+2. `docs/DECISION_INTELLIGENCE_PIVOT.md`
+3. `docs/PRODUCT_CONSTITUTION.md`
+4. `docs/ENGINEERING_CONSTITUTION.md`
+5. `docs/DESIGN_DNA.md`
+6. `docs/01_CURRENT_STATUS.md`
+7. `docs/02_NEXT_STEPS.md`
 
 If conversation contradicts the Constitution, **ask Giuseppe before violating it**.
 
 ## Mission gate
 
-> Does this help Giuseppe become the person he chose to become?
+> Does this improve the quality of Giuseppe's decisions or his long-term trajectory?
 
 If no — rethink.
+
+## Ultimate purpose
+
+Giuseppe OS is the **decision partner Giuseppe trusts the most** — not the smartest AI. Success = better life decisions over time, not usage.
+
+## Architecture foundations
+
+- Memory stores **facts**; Identity stores **meaning**; Digital Twin is a **probabilistic model**
+- Pipeline registry: `lib/architecture/pipeline.ts`
+- Do not implement engines ahead of their documented contract without logging a decision
 
 ## Quality loop (no shortcuts)
 
@@ -31,8 +44,10 @@ Implement → `npm run quality:check` → fix → commit (never broken code)
 
 ## Non-negotiables
 
-- Giuseppe OS is a companion, not a dashboard
+- Giuseppe OS is a conversation companion, not a dashboard
+- Better decisions over decades — not faster decisions today
 - Progressive disclosure — system knows more than it shows
 - Executive Brain orchestrates — never call AI from UI directly
+- Silence over weak advice
 - Never expose secrets or sensitive personal data
 - Documentation-only tasks must not touch `app/` code

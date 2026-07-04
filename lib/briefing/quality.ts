@@ -11,6 +11,7 @@ export interface BriefingQualityReport {
   novelty: number;
   trajectoryImpact: number;
   evidence: number;
+  personalization: number;
   issues: string[];
   qualityNote: string;
   silenceRecommended: boolean;
@@ -100,6 +101,7 @@ export function evaluateBriefingQuality(
   let novelty = 0;
   let trajectoryImpact = 0;
   let evidence = 0;
+  let personalization = 0;
 
   sectionTexts.forEach(text => {
     const result = scoreSection(text);
@@ -131,6 +133,19 @@ export function evaluateBriefingQuality(
     trajectoryImpact += 1;
   }
 
+  if (context.relevance.items.length > 0 && context.trajectory.approvedCount > 0) {
+    personalization += 2;
+  }
+
+  if (context.learningGoals.length > 0) {
+    personalization += 1;
+  }
+
+  if (context.relevance.items.length === 0) {
+    issues.push('low personalization — no Giuseppe-specific relevance signals');
+    personalization -= 2;
+  }
+
   const hasGeneric = sectionTexts.some(includesGenericCopy);
   const hasMissing = sectionTexts.some(includesMissingEvidence);
   const moveScore = scoreSection(sections.oneBigMove);
@@ -142,9 +157,9 @@ export function evaluateBriefingQuality(
     sections.reflection.trim().length >= 12;
 
   const confidence: BriefingQualityConfidence =
-    passed && relevance >= 8 && evidence >= 1 && trajectoryImpact >= 2
+    passed && relevance >= 8 && evidence >= 1 && trajectoryImpact >= 2 && personalization >= 2
       ? 'high'
-      : passed && relevance >= 4
+      : passed && relevance >= 4 && personalization >= 0
         ? 'medium'
         : 'low';
 
@@ -167,6 +182,7 @@ export function evaluateBriefingQuality(
     novelty,
     trajectoryImpact,
     evidence,
+    personalization,
     issues: Array.from(new Set(issues)),
     qualityNote,
     silenceRecommended

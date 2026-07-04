@@ -1,5 +1,52 @@
 {
-  "sessions": [],
+  "sessions": [
+    {
+      "id": "session_1783157709314",
+      "timestamp": "2026-07-04T09:35:09.314Z",
+      "intent": "query",
+      "summary": "Il tuo North Star è questo:",
+      "query": "What is my North Star?"
+    },
+    {
+      "id": "session_1783157755513",
+      "timestamp": "2026-07-04T09:35:55.513Z",
+      "intent": "learn",
+      "summary": "Learning report",
+      "query": "Analyze my patterns and lessons."
+    },
+    {
+      "id": "session_1783158005301",
+      "timestamp": "2026-07-04T09:40:05.301Z",
+      "intent": "learn",
+      "summary": "Learning report",
+      "query": "Analyze my patterns and lessons."
+    }
+  ],
   "notes": [],
-  "records": []
+  "records": [
+    {
+      "id": "record_1783157709314",
+      "type": "lesson",
+      "content": "Il tuo North Star è questo:",
+      "createdAt": "2026-07-04T09:35:09.314Z",
+      "confidence": 0.75,
+      "source": "interaction"
+    },
+    {
+      "id": "record_1783157755513",
+      "type": "lesson",
+      "content": "Learning report",
+      "createdAt": "2026-07-04T09:35:55.513Z",
+      "confidence": 0.75,
+      "source": "interaction"
+    },
+    {
+      "id": "record_1783158005301",
+      "type": "lesson",
+      "content": "Learning report",
+      "createdAt": "2026-07-04T09:40:05.301Z",
+      "confidence": 0.75,
+      "source": "interaction"
+    }
+  ]
 }

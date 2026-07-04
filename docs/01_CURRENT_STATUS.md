@@ -1,9 +1,11 @@
 # Giuseppe OS — Current Status
 
 **Last updated:** July 2026  
-**Version:** 1.4.0  
+**Version:** 2.0.0 (Decision Intelligence foundations)  
 **Branch:** `main`  
 **Production:** https://giuseppe-os.vercel.app  
+
+> **Direction:** Personal Decision Intelligence System. See [`DECISION_INTELLIGENCE_PIVOT.md`](DECISION_INTELLIGENCE_PIVOT.md). Shipped engines unchanged; new layers are type foundations only.
 
 ---
 

@@ -1,6 +1,6 @@
 # Giuseppe OS — Project State
 
-**Version:** 1.7 (Personal Intelligence OS — Daily Brief)  
+**Version:** 2.0 (Personal Decision Intelligence System — foundations)  
 **Last updated:** July 2026  
 **Repository:** Private — source of truth for all project knowledge  
 
@@ -8,32 +8,37 @@
 
 ## What Giuseppe OS Is
 
-Giuseppe OS is a **Personal Intelligence Operating System** — not a productivity app, not a dashboard, not an AI assistant.
+Giuseppe OS is a **Personal Decision Intelligence System** — the **decision partner Giuseppe trusts the most**.
 
-Its purpose is simple: **increase the probability that Giuseppe lives an extraordinary life.**
+Its purpose: **continuously improve the quality of Giuseppe's decisions** and increase the probability he builds the life he truly wants — over **decades**, not today.
 
-It protects Giuseppe's **trajectory** — not his inbox, calendar, tasks, or productivity. The AI is one component. The intelligence pipeline is the product.
+Success is measured by **better life decisions over time** — not usage.
 
-Before anything is shown, the system asks:
+### Golden Rule
 
-> *Will Giuseppe thank himself in ten years for following this recommendation?*
+> *If Giuseppe follows this advice, will Future Giuseppe most likely thank Present Giuseppe ten years from now?*
 
-If not, silence is better than noise.
+If not — silence.
+
+### Daily Brief (judgement, not information)
+
+> *If the wisest version of Giuseppe had five minutes with Present Giuseppe this morning — what would he say?*
 
 ---
 
 ## Vision
 
-Close the gap between **who Giuseppe chose to become** and **what he does each day**.
+Close the gap between **who Giuseppe chose to become** and **the decisions he makes each day**.
 
 Giuseppe OS exists to:
 
 1. **Filter reality** — not summarize the news; answer why it matters for Giuseppe.
-2. **Reduce noise** — max three recommendations per Daily Brief.
-3. **Protect attention** — ignore is as valuable as opportunity.
-4. **Optimize trajectory** — freedom, compounding, ownership, deep work, meaning.
-5. **Compound learning** — understand Giuseppe better every week.
-6. **Build freedom by 2036** — money is fuel, not the destination.
+2. **Build a Digital Twin** — probabilistic model that evolves (foundations only today).
+3. **Interpret through Identity** — meaning above facts (foundations only today).
+4. **Challenge wrong goals** — truth over blind optimization (philosophy encoded; engine stubbed).
+5. **Protect trajectory** — ten-year filter on every recommendation.
+6. **Compound learning** — every interaction improves the model over time.
+7. **Build freedom by 2036** — money is fuel, not the destination.
 
 ---
 
@@ -47,43 +52,60 @@ Giuseppe OS exists to:
 
 ---
 
-## Architecture (v1.7)
+## Architecture (v2 foundations)
 
 ```
-Today (Home)
-     ↓
-Daily Brief Generator                    ← lib/todays-letter/
+Today (Conversation)
      ↓
 Quality Engine                           ← lib/briefing/quality.ts
      ↓
+Daily Brief Generator                    ← lib/todays-letter/
+     ↓
 Trajectory Engine                        ← lib/trajectory/
+     ↓
+Goal Validation Engine (stub)              ← lib/goal-validation/
+     ↓
+Digital Twin (stub)                      ← lib/digital-twin/
+     ↓
+Identity Layer (stub)                    ← lib/identity/
      ↓
 Personal Relevance Engine (max 3)        ← lib/relevance/
      ↓
 Reality Engine                           ← lib/reality/
      ↓
-Giuseppe Brain + Constitution            ← memory/giuseppe_brain.json
+Memory (facts) + Constitution            ← memory/
+     ↑
+Learning Engine (feedback loop)          ← lib/learning/
 ```
 
+**Pipeline registry:** `lib/architecture/pipeline.ts`  
 **Today API:** `POST /api/todays-letter`  
 **Brain API:** `POST /api/brain` (Decisions, Awareness, Potential, Learning)
 
 Philosophy and capitals: `lib/philosophy/core.ts`  
-Full product constitution: [`docs/PRODUCT_CONSTITUTION.md`](PRODUCT_CONSTITUTION.md)
+Full pivot narrative: [`docs/DECISION_INTELLIGENCE_PIVOT.md`](DECISION_INTELLIGENCE_PIVOT.md)  
+Target architecture: [`docs/ARCHITECTURE_V2.md`](ARCHITECTURE_V2.md)
 
 ---
 
 ## Main Engines
 
-| Engine | Location | Role |
-|--------|----------|------|
-| **Reality Engine** | `lib/reality/engine.ts` | Collect and filter world signals |
-| **Personal Relevance Engine** | `lib/relevance/engine.ts` | Filter to Giuseppe-specific, max 3 signals |
-| **Trajectory Engine** | `lib/trajectory/engine.ts` | Ten-year decision filter |
-| **Quality Engine** | `lib/briefing/quality.ts` | Gate Daily Brief before publish |
-| **Daily Brief Generator** | `lib/todays-letter/generate.ts` | Today page intelligence |
-| **Executive Brain** | `lib/brain/executiveBrain.ts` | Orchestrator for `/api/brain` |
-| **Learning Engine** | `lib/brain/engines/learningEngine.ts` | Pattern analysis (briefing feedback planned) |
+| Engine | Location | Status |
+|--------|----------|--------|
+| **Reality Engine** | `lib/reality/engine.ts` | Partial |
+| **Personal Relevance Engine** | `lib/relevance/engine.ts` | Shipped |
+| **Identity Layer** | `lib/identity/` | Types only |
+| **Digital Twin** | `lib/digital-twin/` | Types only |
+| **Goal Validation Engine** | `lib/goal-validation/` | Types only |
+| **Trajectory Engine** | `lib/trajectory/engine.ts` | Shipped |
+| **Decision Simulator** | `lib/decision-simulator/` | Types only |
+| **Pattern Engine** | `lib/pattern/` | Types only |
+| **Voice DNA** | `lib/voice-dna/` | Types only |
+| **Living Timeline** | `lib/timeline/` | Types only |
+| **Quality Engine** | `lib/briefing/quality.ts` | Shipped |
+| **Daily Brief Generator** | `lib/todays-letter/generate.ts` | Shipped |
+| **Executive Brain** | `lib/brain/executiveBrain.ts` | Shipped |
+| **Learning Engine** | `lib/learning/`, `lib/brain/engines/` | Partial |
 
 ---
 
@@ -106,13 +128,14 @@ Every recommendation must improve at least one:
 
 | Phase | Status |
 |-------|--------|
-| 1 — Supabase Persistence | Planned |
-| 2 — Trajectory Engine | **Shipped** |
-| 3 — Reality Engine | Partial (1 active connector) |
-| 4 — Personal Relevance Engine | **Shipped** |
-| 5 — Daily Brief | **Shipped** |
-| 6 — Learning Engine (briefing feedback) | Scaffolded |
-| 7 — Notification Engine | **Deferred** |
+| 1 — Decision Intelligence foundations (docs + types) | **Shipped** |
+| 2 — Identity Layer + Digital Twin runtime | Planned |
+| 3 — Goal Validation in pipeline | Planned |
+| 4 — Decision Simulator (important decisions) | Planned |
+| 5 — Prediction + calibration | Planned |
+| 6 — Learning loop → Twin update | Scaffolded |
+| 7 — Supabase persistence | Planned |
+| 8 — Notification Engine | **Deferred** |
 
 ---
 
@@ -120,6 +143,8 @@ Every recommendation must improve at least one:
 
 | Document | Purpose |
 |----------|---------|
+| [`DECISION_INTELLIGENCE_PIVOT.md`](DECISION_INTELLIGENCE_PIVOT.md) | Philosophy migration — how every section changes |
+| [`ARCHITECTURE_V2.md`](ARCHITECTURE_V2.md) | Target architecture |
 | [`PRODUCT_CONSTITUTION.md`](PRODUCT_CONSTITUTION.md) | Non-negotiable product principles |
 | [`03_DECISIONS_LOG.md`](03_DECISIONS_LOG.md) | Running architecture decisions |
 | [`DESIGN_DNA.md`](DESIGN_DNA.md) | Visual and UX principles |
