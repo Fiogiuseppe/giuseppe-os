@@ -12,12 +12,19 @@ OPEN_PATH = ROOT / "public/avatar/avatar-eyes-open.png"
 CLOSED_PATH = ROOT / "public/images/jewel-face_closed.png"
 OUT_DIR = ROOT / "public/avatar"
 
-# Eye region on 1024x1024 portrait (both eyes + eyelids + brow shadow)
-EYE_BOX = (238, 352, 786, 508)
+# Tight eye-only regions on 1024x1024 portrait (cx, cy, rx, ry per eye)
+EYE_ELLIPSES = (
+    (386, 428, 62, 30),
+    (638, 428, 62, 30),
+)
+
+# Crop box for mid-frame blend — eyes only, no brow or cheeks
+EYE_BOX = (312, 398, 712, 458)
 
 DIFF_THRESHOLD = 18
-MASK_BLUR = 1.2
-MASK_EXPAND = 3
+MASK_BLUR = 7.0
+MASK_EXPAND = 1
+REGION_MASK_BLUR = 5.5
 
 
 def load_rgba(path: Path) -> Image.Image:
@@ -58,26 +65,12 @@ def remove_background_flood(image: Image.Image, threshold: int = 40) -> Image.Im
     return rgba
 
 
-def build_eye_region_mask(size: tuple[int, int], box: tuple[int, int, int, int]) -> Image.Image:
+def build_eye_region_mask(size: tuple[int, int]) -> Image.Image:
     mask = Image.new("L", size, 0)
     draw = ImageDraw.Draw(mask)
-    x0, y0, x1, y1 = box
-    width = x1 - x0
-    height = y1 - y0
-    left_center = (x0 + int(width * 0.27), y0 + int(height * 0.58))
-    right_center = (x0 + int(width * 0.73), y0 + int(height * 0.58))
-    rx = int(width * 0.22)
-    ry = int(height * 0.62)
-    draw.ellipse(
-        (left_center[0] - rx, left_center[1] - ry, left_center[0] + rx, left_center[1] + ry),
-        fill=255,
-    )
-    draw.ellipse(
-        (right_center[0] - rx, right_center[1] - ry, right_center[0] + rx, right_center[1] + ry),
-        fill=255,
-    )
-    draw.rectangle(box, fill=255)
-    return mask.filter(ImageFilter.GaussianBlur(1.4))
+    for cx, cy, rx, ry in EYE_ELLIPSES:
+        draw.ellipse((cx - rx, cy - ry, cx + rx, cy + ry), fill=255)
+    return mask.filter(ImageFilter.GaussianBlur(REGION_MASK_BLUR))
 
 
 def build_change_mask(open_img: Image.Image, compare_img: Image.Image) -> Image.Image:
@@ -85,7 +78,7 @@ def build_change_mask(open_img: Image.Image, compare_img: Image.Image) -> Image.
     diff_gray = diff.convert("L")
     diff_mask = diff_gray.point(lambda value: 255 if value > DIFF_THRESHOLD else 0)
 
-    region_mask = build_eye_region_mask(open_img.size, EYE_BOX)
+    region_mask = build_eye_region_mask(open_img.size)
     mask = ImageChops.lighter(diff_mask, region_mask)
 
     if MASK_EXPAND > 0:
@@ -117,8 +110,9 @@ def blend_in_box(
     return blended
 
 
-def restrict_mask_to_box(mask: Image.Image, box: tuple[int, int, int, int]) -> Image.Image:
-    return mask
+def restrict_mask_to_eyes(mask: Image.Image, size: tuple[int, int]) -> Image.Image:
+    eye_mask = build_eye_region_mask(size)
+    return ImageChops.multiply(mask, eye_mask)
 
 
 def main() -> None:
@@ -134,13 +128,13 @@ def main() -> None:
     transparent_open.save(OPEN_PATH, optimize=True)
 
     # Full closed overlay — only pixels that differ from open
-    closed_mask = restrict_mask_to_box(build_change_mask(open_img, closed_img), EYE_BOX)
+    closed_mask = restrict_mask_to_eyes(build_change_mask(open_img, closed_img), open_img.size)
     overlay_closed = apply_mask_to_overlay(closed_img, closed_mask)
     overlay_closed.save(OUT_DIR / "avatar-eyes-overlay-closed.png", optimize=True)
 
     # Mid overlay — 55% toward closed in eye box
     mid_img = blend_in_box(open_img, closed_img, 0.62, EYE_BOX)
-    mid_mask = restrict_mask_to_box(build_change_mask(open_img, mid_img), EYE_BOX)
+    mid_mask = restrict_mask_to_eyes(build_change_mask(open_img, mid_img), open_img.size)
     overlay_mid = apply_mask_to_overlay(mid_img, mid_mask)
     overlay_mid.save(OUT_DIR / "avatar-eyes-overlay-mid.png", optimize=True)
 
