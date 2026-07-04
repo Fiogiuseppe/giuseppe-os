@@ -133,6 +133,16 @@ export const messages = {
         unsure: 'Non so'
       }
     },
+    weeklyBoard: {
+      kicker: 'Settimana',
+      title: 'Weekly Board',
+      priorities: 'Priorità',
+      doNotDo: 'Non fare',
+      trajectory: 'Controllo traiettoria',
+      dismiss: 'Chiudi',
+      loading: 'Preparo il board settimanale…',
+      error: 'Non ho potuto preparare il Weekly Board.'
+    },
     insights: {
       patternsTitle: 'PATTERN OSSERVATI',
       blindSpotsTitle: 'PUNTI CIECI',
@@ -147,7 +157,8 @@ export const messages = {
       strategistHeadline: 'Dove va la tua energia creativa adesso?',
       strategistSubline: 'Ogni progetto deve rafforzare la traiettoria — non disperdere attenzione.',
       focusLabel: 'FOCUS SUGGERITO',
-      energyNote: 'Energia creativa — un progetto alla volta.'
+      energyNote: 'Energia creativa — un progetto alla volta.',
+      ecosystemLabel: 'Ecosistema creativo'
     },
     disclosure: {
       why: 'Perché?',
@@ -339,6 +350,16 @@ export const messages = {
         unsure: 'Unsure'
       }
     },
+    weeklyBoard: {
+      kicker: 'Week',
+      title: 'Weekly Board',
+      priorities: 'Priorities',
+      doNotDo: 'Do not do',
+      trajectory: 'Trajectory check',
+      dismiss: 'Dismiss',
+      loading: 'Preparing the weekly board…',
+      error: 'Could not prepare the Weekly Board.'
+    },
     insights: {
       patternsTitle: 'OBSERVED PATTERNS',
       blindSpotsTitle: 'BLIND SPOTS',
@@ -353,7 +374,8 @@ export const messages = {
       strategistHeadline: 'Where should your creative energy go right now?',
       strategistSubline: 'Every project must strengthen trajectory — not scatter attention.',
       focusLabel: 'SUGGESTED FOCUS',
-      energyNote: 'Creative energy — one project at a time.'
+      energyNote: 'Creative energy — one project at a time.',
+      ecosystemLabel: 'Creative ecosystem'
     },
     disclosure: {
       why: 'Why?',

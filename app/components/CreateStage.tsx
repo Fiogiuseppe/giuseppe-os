@@ -1,7 +1,13 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import brain from '../../memory/giuseppe_brain.json';
 import type { PotentialBrief } from '../../engine/potentialEngine';
+import {
+  CREATE_FEATURED_PROJECTS,
+  getProjectVisual,
+  type ProjectVisual
+} from '../lib/createProjectVisuals';
 import { formatConfidenceDisplay, formatProgressDisplay } from '../lib/formatConfidence';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 
@@ -25,6 +31,55 @@ const FOCUS_ACTIONS = [
   { id: 'projects', labelKey: 'openProjects' },
   { id: 'potential', labelKey: 'exploreOpportunities' }
 ] as const;
+
+function ProjectVisualMark({
+  visual,
+  className = ''
+}: {
+  visual: ProjectVisual;
+  className?: string;
+}) {
+  return (
+    <img
+      src={visual.src}
+      alt=""
+      className={`create-project-mark${className ? ` ${className}` : ''}`}
+      draggable={false}
+    />
+  );
+}
+
+function ProjectVisualTile({
+  name,
+  status,
+  selected,
+  onSelect
+}: {
+  name: string;
+  status: string;
+  selected?: boolean;
+  onSelect: () => void;
+}) {
+  const visual = getProjectVisual(name);
+
+  return (
+    <button
+      type="button"
+      className={`create-project-tile${selected ? ' create-project-tile--active' : ''}`}
+      onClick={onSelect}
+      aria-pressed={selected}
+      aria-label={name}
+    >
+      <div className="create-project-tile-visual">
+        <ProjectVisualMark visual={visual} />
+      </div>
+      <div className="create-project-tile-copy">
+        <span className="create-project-tile-name">{name}</span>
+        <span className="create-project-tile-status">{status}</span>
+      </div>
+    </button>
+  );
+}
 
 function PotentialFocusPanel({ potential }: { potential: PotentialBrief }) {
   const { t } = useLanguage();
@@ -90,6 +145,22 @@ export function CreateStage({
   onRequestPotential
 }: CreateStageProps) {
   const { t } = useLanguage();
+  const [heroProject, setHeroProject] = useState(projectName);
+
+  useEffect(() => {
+    setHeroProject(projectName);
+  }, [projectName]);
+
+  const heroVisual = getProjectVisual(heroProject);
+  const heroRole =
+    brain.projects[heroProject as keyof typeof brain.projects]?.role ?? projectRole;
+  const heroStatus =
+    brain.projects[heroProject as keyof typeof brain.projects]?.status.toUpperCase() ?? 'ACTIVE';
+
+  function selectProject(name: string) {
+    setHeroProject(name);
+    onSelectProject(name);
+  }
 
   if (focus !== null) {
     return (
@@ -108,27 +179,32 @@ export function CreateStage({
 
         {focus === 'projects' && (
           <>
-            <div className="create-projects-list" role="group" aria-label={t('disclosure.openProjects')}>
+            <div className="create-project-grid" role="group" aria-label={t('disclosure.openProjects')}>
               {Object.entries(brain.projects).map(([name, project]) => (
-                <button
+                <ProjectVisualTile
                   key={name}
-                  type="button"
-                  className={`insights-action-chip${selectedProject === name ? ' insights-action-chip--active' : ''}`}
-                  onClick={() => onSelectProject(name)}
-                >
-                  {name}
-                  <span aria-hidden="true">→</span>
-                </button>
+                  name={name}
+                  status={project.status}
+                  selected={selectedProject === name}
+                  onSelect={() => selectProject(name)}
+                />
               ))}
             </div>
             {selectedProject && (
-              <div className="insights-focus-panel">
-                <div className="kicker">{brain.projects[selectedProject as keyof typeof brain.projects].status.toUpperCase()}</div>
-                <h2>{selectedProject}</h2>
-                <p>{brain.projects[selectedProject as keyof typeof brain.projects].role}</p>
-                <p>
-                  {t('disclosure.progress')}: {formatProgressDisplay(t)}
-                </p>
+              <div className="insights-focus-panel create-project-detail">
+                <div className="create-project-detail-visual">
+                  <ProjectVisualMark visual={getProjectVisual(selectedProject)} />
+                </div>
+                <div className="create-project-detail-copy">
+                  <div className="kicker">
+                    {brain.projects[selectedProject as keyof typeof brain.projects].status.toUpperCase()}
+                  </div>
+                  <h2>{selectedProject}</h2>
+                  <p>{brain.projects[selectedProject as keyof typeof brain.projects].role}</p>
+                  <p>
+                    {t('disclosure.progress')}: {formatProgressDisplay(t)}
+                  </p>
+                </div>
               </div>
             )}
           </>
@@ -154,11 +230,36 @@ export function CreateStage({
       <h1 className="create-stage-title view-title">{t('viewHeadings.create')}</h1>
       <p className="create-stage-headline">{t('create.strategistSubline')}</p>
 
-      <section className="insights-hero-card">
-        <div className="kicker">{t('create.focusLabel')}</div>
-        <h2 className="insights-hero-text">{projectName}</h2>
-        <p className="create-hero-role">{projectRole}</p>
+      <section className="create-hero-card">
+        <div className="create-hero-visual">
+          <ProjectVisualMark visual={heroVisual} className="create-hero-mark" />
+        </div>
+        <div className="create-hero-copy">
+          <div className="kicker">{t('create.focusLabel')}</div>
+          <h2 className="create-hero-title">{heroProject}</h2>
+          <p className="create-hero-status">{heroStatus}</p>
+          <p className="create-hero-role">{heroRole}</p>
+        </div>
       </section>
+
+      <div className="create-ecosystem" role="list" aria-label={t('create.ecosystemLabel')}>
+        {CREATE_FEATURED_PROJECTS.map(name => {
+          const project = brain.projects[name as keyof typeof brain.projects];
+          if (!project) {
+            return null;
+          }
+
+          return (
+            <ProjectVisualTile
+              key={name}
+              name={name}
+              status={project.status}
+              selected={heroProject === name}
+              onSelect={() => selectProject(name)}
+            />
+          );
+        })}
+      </div>
 
       <div className="insights-action-grid" role="group" aria-label={t('nav.create')}>
         {FOCUS_ACTIONS.map(action => (
