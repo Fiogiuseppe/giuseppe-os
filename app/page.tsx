@@ -38,6 +38,7 @@ import type { WeeklyBoardResponse } from '../lib/weekly-board/types';
 import { weeklyBoardWeekKey } from '../lib/weekly-board/cache';
 import TodayMobileRitual from './components/TodayMobileRitual';
 import { TodayDraggablePresence } from './components/TodayDraggablePresence';
+import { AiOutputCard } from './components/AiOutputCard';
 import { AppTopbar } from './components/AppTopbar';
 import { DevAiControls } from './components/DevAiControls';
 import { AiStatusIndicator } from './components/AiStatusIndicator';
@@ -52,73 +53,88 @@ function recommendedProject() {
 
 function DecisionResultDisclosure({ result }: { result: DecisionAIResult }) {
   const { t } = useLanguage();
-  const [openSection, setOpenSection] = useState<'why' | 'board' | 'capitals' | 'better' | null>(null);
+  const [openSection, setOpenSection] = useState<'why' | 'board' | 'capitals' | 'better' | 'risks' | null>(null);
 
-  return (
-    <div className="result progressive-result space-today-result">
-      {openSection === null ? (
-        <>
-          <div className="kicker">{t('kickers.recommendation')}</div>
-          <h3>{result.recommendation}</h3>
+  if (openSection === null) {
+    return (
+      <div className="result decision-result-stage">
+        <AiOutputCard
+          kicker={t('aiCards.decisionRecommendation')}
+          title={result.recommendation}
+          body={result.whyItMatters}
+          nextAction={result.nextAction}
+          nextActionKicker={t('decisionResult.nextStep')}
+          testId="decision-ai-card"
+        >
           <p>{t('decisionResult.category')}: {result.categoryLabel}</p>
           <div className="potential-score">
             {formatConfidenceDisplay(t, result.confidenceScore, result.confidenceLabel)}
           </div>
-          <div className="kicker">{t('decisionResult.nextStep')}</div>
-          <p>{result.nextAction}</p>
+          {result.alignment ? (
+            <>
+              <div className="kicker">{t('aiCards.alignment')}</div>
+              <p>{result.alignment}</p>
+            </>
+          ) : null}
+          {result.risks?.length ? (
+            <>
+              <div className="kicker">{t('aiCards.risks')}</div>
+              <ul>{result.risks.map(risk => <li key={risk}>{risk}</li>)}</ul>
+            </>
+          ) : null}
+          {result.emotionalBiasCheck ? (
+            <>
+              <div className="kicker">{t('aiCards.emotionalBias')}</div>
+              <p>{result.emotionalBiasCheck}</p>
+            </>
+          ) : null}
+          {result.missingInformation?.length ? (
+            <>
+              <div className="kicker">{t('aiCards.missingInfo')}</div>
+              <ul>{result.missingInformation.map(item => <li key={item}>{item}</li>)}</ul>
+            </>
+          ) : null}
           <div className="discovery-trail">
             <DisclosureTrigger label={t('disclosure.why')} onClick={() => setOpenSection('why')} />
             <DisclosureTrigger label={t('disclosure.showBoard')} onClick={() => setOpenSection('board')} />
             <DisclosureTrigger label={t('disclosure.capitals')} onClick={() => setOpenSection('capitals')} />
             <DisclosureTrigger label={t('disclosure.betterVersion')} onClick={() => setOpenSection('better')} />
           </div>
-        </>
-      ) : (
-        <>
-          <button type="button" className="reading-expand-close" onClick={() => setOpenSection(null)}>
-            <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-          </button>
-          <DisclosurePanel open={openSection === 'why'}>
-            <div className="kicker">{t('decisionResult.whyMatters')}</div>
-            <p>{result.whyItMatters}</p>
-            <div className="kicker">{t('decisionResult.hiddenNeed')}</div>
-            <p><b>{t('decisionResult.hiddenNeedLabel')}:</b> {result.hiddenNeed}</p>
-            <p><b>{t('decisionResult.biasLabel')}:</b> {result.bias}</p>
-          </DisclosurePanel>
-          <DisclosurePanel open={openSection === 'board'}>
-            <div className="kicker">{t('kickers.board')}</div>
-            {Object.entries(result.counsellors).map(([key, text]) => (
-              <p key={key}><b>{COUNSELLOR_LABELS[key as keyof typeof result.counsellors]}:</b> {text}</p>
-            ))}
-          </DisclosurePanel>
-          <DisclosurePanel open={openSection === 'capitals'}>
-            <h3>{t('decisionResult.capitalsTitle')}</h3>
-            {Object.entries(result.capitals).map(([key, value]) => (
-              <p key={key}>
-                <b>{getCapitalLabel(key as keyof typeof result.capitals)} ({value.score}):</b> {value.note}
-              </p>
-            ))}
-          </DisclosurePanel>
-          <DisclosurePanel open={openSection === 'better'}>
-            <h3>{t('decisionResult.betterTitle')}</h3>
-            <p>{result.betterVersion}</p>
-          </DisclosurePanel>
-          <div className="discovery-trail">
-            {openSection !== 'why' && (
-              <DisclosureTrigger label={t('disclosure.why')} onClick={() => setOpenSection('why')} />
-            )}
-            {openSection !== 'board' && (
-              <DisclosureTrigger label={t('disclosure.showBoard')} onClick={() => setOpenSection('board')} />
-            )}
-            {openSection !== 'capitals' && (
-              <DisclosureTrigger label={t('disclosure.capitals')} onClick={() => setOpenSection('capitals')} />
-            )}
-            {openSection !== 'better' && (
-              <DisclosureTrigger label={t('disclosure.betterVersion')} onClick={() => setOpenSection('better')} />
-            )}
-          </div>
-        </>
-      )}
+        </AiOutputCard>
+      </div>
+    );
+  }
+
+  return (
+    <div className="result progressive-result space-today-result">
+      <button type="button" className="reading-expand-close" onClick={() => setOpenSection(null)}>
+        <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
+      </button>
+      <DisclosurePanel open={openSection === 'why'}>
+        <div className="kicker">{t('decisionResult.whyMatters')}</div>
+        <p>{result.whyItMatters}</p>
+        <div className="kicker">{t('decisionResult.hiddenNeed')}</div>
+        <p><b>{t('decisionResult.hiddenNeedLabel')}:</b> {result.hiddenNeed}</p>
+        <p><b>{t('decisionResult.biasLabel')}:</b> {result.bias}</p>
+      </DisclosurePanel>
+      <DisclosurePanel open={openSection === 'board'}>
+        <div className="kicker">{t('kickers.board')}</div>
+        {Object.entries(result.counsellors).map(([key, text]) => (
+          <p key={key}><b>{COUNSELLOR_LABELS[key as keyof typeof result.counsellors]}:</b> {text}</p>
+        ))}
+      </DisclosurePanel>
+      <DisclosurePanel open={openSection === 'capitals'}>
+        <h3>{t('decisionResult.capitalsTitle')}</h3>
+        {Object.entries(result.capitals).map(([key, value]) => (
+          <p key={key}>
+            <b>{getCapitalLabel(key as keyof typeof result.capitals)} ({value.score}):</b> {value.note}
+          </p>
+        ))}
+      </DisclosurePanel>
+      <DisclosurePanel open={openSection === 'better'}>
+        <h3>{t('decisionResult.betterTitle')}</h3>
+        <p>{result.betterVersion}</p>
+      </DisclosurePanel>
     </div>
   );
 }
@@ -127,6 +143,17 @@ export default function Home() {
   const { t, locale } = useLanguage();
   const [view, setView] = useState<AppView>('today');
   const [awareness, setAwareness] = useState<AwarenessInsight | null>(null);
+  const [insightCard, setInsightCard] = useState<{
+    title: string;
+    body: string;
+    nextAction: string;
+  } | null>(null);
+  const [todayInsightCard, setTodayInsightCard] = useState<{
+    title: string;
+    body: string;
+    nextAction: string;
+  } | null>(null);
+  const [todayInsightLoading, setTodayInsightLoading] = useState(false);
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [insightsError, setInsightsError] = useState<string | null>(null);
   const [potential, setPotential] = useState<PotentialBrief | null>(null);
@@ -298,6 +325,15 @@ export default function Home() {
       }
 
       setAwareness(response.awareness);
+      if (response.card) {
+        setInsightCard(response.card);
+      } else {
+        setInsightCard({
+          title: response.awareness.headline,
+          body: response.awareness.insight,
+          nextAction: response.awareness.recommendedAction
+        });
+      }
     }
 
     void loadInsights();
@@ -306,6 +342,42 @@ export default function Home() {
       cancelled = true;
     };
   }, [view, locale]);
+
+  useEffect(() => {
+    if (view !== 'today' || !reviewCheckDone || (dueReview && !reviewGateCleared)) {
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadTodayInsight() {
+      setTodayInsightLoading(true);
+      const response = await fetchInsightsViaBrain(locale);
+      if (cancelled) {
+        return;
+      }
+
+      setTodayInsightLoading(false);
+
+      if (!response.ok) {
+        return;
+      }
+
+      setTodayInsightCard(
+        response.card ?? {
+          title: response.awareness.headline,
+          body: response.awareness.insight,
+          nextAction: response.awareness.recommendedAction
+        }
+      );
+    }
+
+    void loadTodayInsight();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [view, locale, reviewCheckDone, dueReview, reviewGateCleared]);
 
   useEffect(() => {
     if (view !== 'today') {
@@ -506,6 +578,28 @@ export default function Home() {
                         }}
                       />
                     )}
+                    <div className="today-ai-cards">
+                      {!letterLoading && !letterError && todaysLetter && (
+                        <AiOutputCard
+                          kicker={t('aiCards.todayRecommendation')}
+                          title={limitWords(todaysLetter.sections.oneBigMove, MAX_TODAY_ONE_BIG_MOVE_WORDS)}
+                          body={limitWords(todaysLetter.sections.reality, 28)}
+                          testId="today-recommendation-card"
+                        />
+                      )}
+                      {todayInsightLoading && (
+                        <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>
+                      )}
+                      {!todayInsightLoading && todayInsightCard && (
+                        <AiOutputCard
+                          kicker={t('aiCards.onlineInsight')}
+                          title={todayInsightCard.title}
+                          body={todayInsightCard.body}
+                          nextAction={todayInsightCard.nextAction}
+                          testId="today-insight-card"
+                        />
+                      )}
+                    </div>
                     <TodayDraggablePresence onNavigate={setView}>
                       {letterLoading && (
                         <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>
@@ -566,7 +660,7 @@ export default function Home() {
                     )}
 
                     {decisionResult && (
-                      <div className="decision-result-stage">
+                      <>
                         <DecisionResultDisclosure
                           key={`${decisionResult.categoryLabel}-${decisionResult.nextAction}-${decisionResult.confidenceScore}`}
                           result={decisionResult}
@@ -575,7 +669,7 @@ export default function Home() {
                           label={t('decisions.newDecision')}
                           onClick={resetDecisionFlow}
                         />
-                      </div>
+                      </>
                     )}
 
                     <DisclosureTrigger
@@ -594,6 +688,7 @@ export default function Home() {
                   loading={insightsLoading}
                   error={insightsError}
                   awareness={awareness}
+                  insightCard={insightCard}
                   focus={insightsFocus}
                   patterns={brain.patterns}
                   onFocusChange={setInsightsFocus}

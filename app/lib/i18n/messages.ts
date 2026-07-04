@@ -64,6 +64,16 @@ export const messages = {
       label: 'AI',
       offTooltip: 'Modalità locale. Nessuna richiesta AI.'
     },
+    aiCards: {
+      todayRecommendation: 'RACCOMANDAZIONE DI OGGI',
+      decisionRecommendation: 'RACCOMANDAZIONE DECISIONALE',
+      onlineInsight: 'INSIGHT ONLINE',
+      nextAction: 'PROSSIMA AZIONE',
+      alignment: 'ALLINEAMENTO',
+      risks: 'RISCHI',
+      emotionalBias: 'BIAS EMOTIVO',
+      missingInfo: 'INFORMAZIONI MANCANTI'
+    },
     viewHeadings: {
       today: 'COSA HA MASSIMA LEVA OGGI?',
       decisions: 'QUAL È LA MIGLIORE DECISIONE CHE POSSO PRENDERE?',
@@ -302,6 +312,16 @@ export const messages = {
     ai: {
       label: 'AI',
       offTooltip: 'Local mode. No AI requests.'
+    },
+    aiCards: {
+      todayRecommendation: "TODAY'S RECOMMENDATION",
+      decisionRecommendation: 'DECISION RECOMMENDATION',
+      onlineInsight: 'ONLINE INSIGHT',
+      nextAction: 'NEXT ACTION',
+      alignment: 'ALIGNMENT',
+      risks: 'RISKS',
+      emotionalBias: 'EMOTIONAL BIAS',
+      missingInfo: 'MISSING INFORMATION'
     },
     viewHeadings: {
       today: 'WHAT HAS THE HIGHEST LEVERAGE TODAY?',

@@ -4350,3 +4350,33 @@ label {
   background: rgba(255, 255, 255, 0.35);
   color: var(--fg);
 }
+
+.ai-output-card {
+  margin-bottom: 14px;
+}
+
+.ai-output-card-title {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.ai-output-card-body {
+  margin: 0 0 10px;
+}
+
+.ai-output-card-next-kicker {
+  margin-top: 8px;
+}
+
+.ai-output-card-next {
+  margin: 0;
+  font-weight: 500;
+}
+
+.today-ai-cards {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+  max-width: 640px;
+}

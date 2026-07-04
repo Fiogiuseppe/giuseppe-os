@@ -9,4 +9,9 @@ export interface DecisionAIResult extends DecisionResult {
   confidenceScore: number | null;
   confidenceLabel: 'learning' | 'notEnoughData' | 'score';
   source: DecisionResponseSource;
+  risks?: string[];
+  emotionalBiasCheck?: string;
+  alignment?: string;
+  missingInformation?: string[];
+  provider?: string;
 }

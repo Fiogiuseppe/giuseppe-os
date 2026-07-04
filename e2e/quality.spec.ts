@@ -78,9 +78,8 @@ test.describe('Giuseppe OS quality loop', () => {
   test('insights section surfaces patterns on demand', async ({ page }) => {
     await gotoView(page, 'insights');
     await expect(page.locator('.insights-stage-title.view-title')).toContainText(VIEW_HEADING_PATTERNS.insights);
-    await expect(page.getByRole('main').locator('.discovery-insight .kicker')).toContainText('INSIGHT', {
-      timeout: 15_000
-    });
+    await expect(page.getByTestId('insight-ai-card')).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByTestId('insight-ai-card').locator('.kicker').first()).toContainText(/INSIGHT/i);
     await expect(page.getByRole('heading', { name: /Stai portando|Hai liquidità|Il lavoro sacro|Vuoi visibilità|LEGO è il motore/ })).toBeVisible();
     await page.getByRole('button', { name: /Suggested action|Azione suggerita/i }).click();
     await expect(page.getByText('RECOMMENDED ACTION')).toBeVisible();
@@ -126,7 +125,7 @@ test.describe('Giuseppe OS quality loop', () => {
         await expect(page.getByTestId('memory-constitution').locator('.memory-constitution-why')).toBeVisible();
         continue;
       }
-      await expect(page.locator('.insights-hero-card .kicker, .create-stage .kicker').first()).toBeVisible();
+      await expect(page.getByTestId('insight-ai-card').locator('.kicker').first()).toBeVisible();
     }
   });
 
@@ -185,9 +184,8 @@ test.describe('Giuseppe OS quality loop', () => {
 
   test('insights patterns disclosure works', async ({ page }) => {
     await gotoView(page, 'insights');
-    await expect(page.getByRole('main').locator('.discovery-insight .kicker')).toContainText('INSIGHT', {
-      timeout: 15_000
-    });
+    await expect(page.getByTestId('insight-ai-card')).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByTestId('insight-ai-card').locator('.kicker').first()).toContainText(/INSIGHT/i);
     await page.getByRole('button', { name: /Patterns|Pattern/i }).click();
     await expect(page.getByText(/PATTERN OSSERVATI|OBSERVED PATTERNS/i)).toBeVisible();
     await expect(page.getByRole('main').getByText(/dispersione|dispersion/i).first()).toBeVisible();

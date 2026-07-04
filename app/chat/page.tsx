@@ -117,13 +117,17 @@ export default function ChatPage() {
       <AppTopbar mode="link" />
       <main className={styles.page}>
         <header className={styles.header}>
-          <h1 className={styles.title}>Chat</h1>
-          <p className={styles.subtitle}>{subtitle}</p>
+          <h1 className={styles.title}>Chat (debug)</h1>
+          <p className={styles.subtitle}>
+            Private test page — not part of the product experience. {subtitle}
+          </p>
         </header>
 
         <div ref={transcriptRef} className={styles.transcript} aria-live="polite">
           {messages.length === 0 ? (
-            <p className={styles.empty}>Ask Giuseppe OS something. Online chat uses Groq in production.</p>
+            <p className={styles.empty}>
+              Debug-only chat for provider testing. Product AI runs in the background on Today, Decisions, and Insights.
+            </p>
           ) : (
             messages.map(entry => (
               <article

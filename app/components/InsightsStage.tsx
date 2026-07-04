@@ -4,6 +4,7 @@ import type { AwarenessInsight } from '../../engine/awarenessEngine';
 import { formatConfidenceDisplay } from '../lib/formatConfidence';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 import { DisclosurePanel } from './Disclosure';
+import { AiOutputCard } from './AiOutputCard';
 import { ContentGeneratorPanel } from './ContentGeneratorPanel';
 
 export type InsightsFocus = 'why' | 'patterns' | 'evidence' | 'reflect' | 'action' | null;
@@ -12,6 +13,11 @@ type InsightsStageProps = {
   loading: boolean;
   error: string | null;
   awareness: AwarenessInsight | null;
+  insightCard?: {
+    title: string;
+    body: string;
+    nextAction: string;
+  } | null;
   focus: InsightsFocus;
   patterns: string[];
   onFocusChange: (focus: InsightsFocus) => void;
@@ -29,6 +35,7 @@ export function InsightsStage({
   loading,
   error,
   awareness,
+  insightCard,
   focus,
   patterns,
   onFocusChange
@@ -112,12 +119,15 @@ export function InsightsStage({
   return (
     <div className="insights-stage" data-testid="insights-stage">
       <h1 className="insights-stage-title view-title">{t('viewHeadings.insights')}</h1>
-      <p className="insights-stage-headline">{awareness.headline}</p>
 
-      <section className="insights-hero-card discovery-insight">
-        <div className="kicker">{t('kickers.insight')}</div>
-        <h2 className="insights-hero-text">{awareness.insight}</h2>
-      </section>
+      <AiOutputCard
+        kicker={t('aiCards.onlineInsight')}
+        title={insightCard?.title ?? awareness.headline}
+        body={insightCard?.body ?? awareness.insight}
+        nextAction={insightCard?.nextAction ?? awareness.recommendedAction}
+        nextActionKicker={t('kickers.recommendedAction')}
+        testId="insight-ai-card"
+      />
 
       <div className="insights-action-grid" role="group" aria-label={t('nav.insights')}>
         {FOCUS_ACTIONS.map(action => (

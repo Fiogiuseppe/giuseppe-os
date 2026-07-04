@@ -90,12 +90,16 @@ export async function completeDecisionConversation(
   await clickDecisionContinueWhenReady(page);
 
   for (let attempt = 0; attempt < 15; attempt += 1) {
+    if (await page.getByTestId('decision-ai-card').isVisible()) {
+      return;
+    }
+
     if (await page.locator('.result').isVisible()) {
       return;
     }
 
     if (await page.getByText(/Sto ragionando|Reasoning/i).isVisible()) {
-      await expect(page.locator('.result')).toBeVisible({ timeout: 30_000 });
+      await expect(page.getByTestId('decision-ai-card')).toBeVisible({ timeout: 30_000 });
       return;
     }
 
@@ -111,7 +115,7 @@ export async function completeDecisionConversation(
     await page.waitForTimeout(300);
   }
 
-  await expect(page.locator('.result')).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByTestId('decision-ai-card')).toBeVisible({ timeout: 30_000 });
 }
 
 export const DECISION_CONTINUE_PATTERN = /Continua|Continue/i;

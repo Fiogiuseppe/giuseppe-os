@@ -1,7 +1,14 @@
 import type { AwarenessInsight } from '../../engine/awarenessEngine';
+import type { InsightCard } from '../../lib/ai/insight-engine';
 
 export type FetchInsightsResult =
-  | { ok: true; awareness: AwarenessInsight; source?: 'local' | 'live'; cached?: boolean }
+  | {
+      ok: true;
+      awareness: AwarenessInsight;
+      card?: InsightCard;
+      source?: 'local' | 'live';
+      cached?: boolean;
+    }
   | { ok: false; message: string; status: number };
 
 export type FetchInsightsOptions = {
@@ -45,6 +52,7 @@ export async function fetchInsightsViaBrain(
   return {
     ok: true,
     awareness: body.insight as AwarenessInsight,
+    card: body.card as InsightCard | undefined,
     source: body.source,
     cached: body.cached
   };
