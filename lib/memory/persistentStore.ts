@@ -1,11 +1,11 @@
 import type { GiuseppeBrain, LongTermMemory, WorkingMemory } from '../brain/types';
+import { loadBrainConstitution } from './brainConstitution';
 import {
-  loadBrainFromJson,
-  loadLongTermMemoryFromJson,
-  loadWorkingMemoryFromJson,
-  saveLongTermMemoryToJson,
-  saveWorkingMemoryToJson
-} from './jsonStore';
+  loadLongTermMemoryFromMemory,
+  loadWorkingMemoryFromMemory,
+  saveLongTermMemoryToMemory,
+  saveWorkingMemoryToMemory
+} from './inMemoryStore';
 import { isSupabaseConfigured } from './supabase/client';
 import {
   loadLongTermMemoryFromSupabase,
@@ -14,43 +14,45 @@ import {
   saveWorkingMemoryToSupabase
 } from './supabase/store';
 
-export type MemoryBackend = 'json' | 'supabase';
+export type MemoryBackend = 'supabase' | 'memory';
 
 export function resolveMemoryBackend(): MemoryBackend {
-  if (process.env.MEMORY_BACKEND === 'supabase' && isSupabaseConfigured()) {
+  if (isSupabaseConfigured()) {
     return 'supabase';
   }
-  return 'json';
+  return 'memory';
 }
 
 export async function loadBrain(): Promise<GiuseppeBrain> {
-  return loadBrainFromJson();
+  return loadBrainConstitution();
 }
 
 export async function loadWorkingMemory(): Promise<WorkingMemory> {
   if (resolveMemoryBackend() === 'supabase') {
     return loadWorkingMemoryFromSupabase();
   }
-  return loadWorkingMemoryFromJson();
+  return loadWorkingMemoryFromMemory();
 }
 
 export async function saveWorkingMemory(memory: WorkingMemory): Promise<void> {
-  await saveWorkingMemoryToJson(memory);
   if (resolveMemoryBackend() === 'supabase') {
     await saveWorkingMemoryToSupabase(memory);
+    return;
   }
+  saveWorkingMemoryToMemory(memory);
 }
 
 export async function loadLongTermMemory(): Promise<LongTermMemory> {
   if (resolveMemoryBackend() === 'supabase') {
     return loadLongTermMemoryFromSupabase();
   }
-  return loadLongTermMemoryFromJson();
+  return loadLongTermMemoryFromMemory();
 }
 
 export async function saveLongTermMemory(memory: LongTermMemory): Promise<void> {
-  await saveLongTermMemoryToJson(memory);
   if (resolveMemoryBackend() === 'supabase') {
     await saveLongTermMemoryToSupabase(memory);
+    return;
   }
+  saveLongTermMemoryToMemory(memory);
 }
