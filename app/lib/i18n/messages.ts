@@ -103,6 +103,31 @@ export const messages = {
       mission2036: 'Missione 2036',
       decisionLabel: 'Decisione'
     },
+    decisionReview: {
+      kicker: 'Prima di continuare…',
+      beforeWeContinue: 'Prima di continuare…',
+      daysAgo: '{days} giorni fa hai deciso:',
+      howDidItGo: 'Com\'è andata?',
+      start: 'Rivedi',
+      didYouDoIt: 'L\'hai fatto davvero?',
+      howSatisfied: 'Quanto sei soddisfatto?',
+      sameDecision: 'Ripeteresti la stessa scelta?',
+      whatLearned: 'Cosa hai imparato?',
+      lessonPlaceholder: 'Una frase bastano…',
+      skipLesson: 'Salta',
+      saving: 'Salvo la lezione…',
+      error: 'Non sono riuscito a salvare la revisione.',
+      didIt: {
+        yes: 'Sì',
+        partial: 'In parte',
+        no: 'No'
+      },
+      same: {
+        yes: 'Sì',
+        no: 'No',
+        unsure: 'Non so'
+      }
+    },
     insights: {
       patternsTitle: 'PATTERN OSSERVATI',
       blindSpotsTitle: 'PUNTI CIECI',
@@ -277,6 +302,31 @@ export const messages = {
       simulating: 'Simulating scenarios…',
       mission2036: '2036 Mission',
       decisionLabel: 'Decision'
+    },
+    decisionReview: {
+      kicker: 'Before we continue…',
+      beforeWeContinue: 'Before we continue…',
+      daysAgo: '{days} days ago you decided:',
+      howDidItGo: 'How did it go?',
+      start: 'Review',
+      didYouDoIt: 'Did you actually do it?',
+      howSatisfied: 'How satisfied are you?',
+      sameDecision: 'Would you make the same decision?',
+      whatLearned: 'What did you learn?',
+      lessonPlaceholder: 'One sentence is enough…',
+      skipLesson: 'Skip',
+      saving: 'Saving the lesson…',
+      error: 'Could not save the review.',
+      didIt: {
+        yes: 'Yes',
+        partial: 'Partly',
+        no: 'No'
+      },
+      same: {
+        yes: 'Yes',
+        no: 'No',
+        unsure: 'Unsure'
+      }
     },
     insights: {
       patternsTitle: 'OBSERVED PATTERNS',

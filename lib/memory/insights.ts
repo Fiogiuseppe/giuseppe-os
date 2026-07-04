@@ -1,5 +1,6 @@
 import type { AwarenessInsight, DecisionRecord } from '../../engine/awarenessEngine';
 import type { LongTermMemory, WorkingMemory } from '../brain/types';
+import { getReviewedDecisions } from '../decision-learning/learning';
 import { saveLongTermMemory, loadLongTermMemory } from '../memory/persistentStore';
 
 export async function recordInsightObservation(
@@ -30,7 +31,10 @@ export async function recordInsightObservation(
 }
 
 export function buildDecisionHistory(longTerm: LongTermMemory): DecisionRecord[] {
-  return longTerm.decisions.map(row => ({
+  const reviewed = getReviewedDecisions(longTerm.decisions);
+  const source = reviewed.length > 0 ? reviewed : longTerm.decisions;
+
+  return source.map(row => ({
     decision: row.decision,
     reason: row.reason,
     category: row.category
@@ -38,11 +42,14 @@ export function buildDecisionHistory(longTerm: LongTermMemory): DecisionRecord[]
 }
 
 export function buildEvidenceSnapshot(longTerm: LongTermMemory, working: WorkingMemory) {
+  const reviewedOutcomeCount = getReviewedDecisions(longTerm.decisions).length;
+
   return {
     decisionCount: longTerm.decisions.length,
     lessonCount: longTerm.lessons.length,
     sessionCount: working.sessions.length,
     patternCount: longTerm.patterns_detected.length,
-    insightHistoryCount: longTerm.insight_history?.length ?? 0
+    insightHistoryCount: longTerm.insight_history?.length ?? 0,
+    reviewedOutcomeCount
   };
 }

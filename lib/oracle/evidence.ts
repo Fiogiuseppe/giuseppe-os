@@ -74,6 +74,7 @@ function mapDecisionRecords(decisions: LongTermMemory['decisions']): OracleDecis
       timestamp: row.timestamp,
       outcome: row.outcome,
       outcomeRating: row.outcomeRating ?? null,
+      reviewed: Boolean(row.reviewCompletedAt) || row.status === 'reviewed' || row.status === 'closed',
       weakensTrajectory: textWeakensTrajectory(combined),
       strengthensTrajectory: textStrengthensTrajectory(combined)
     };
@@ -82,7 +83,7 @@ function mapDecisionRecords(decisions: LongTermMemory['decisions']): OracleDecis
 
 function mapOutcomeRecords(decisions: OracleDecisionRecord[]): OracleOutcomeRecord[] {
   return decisions
-    .filter(row => Boolean(row.outcome?.trim()))
+    .filter(row => Boolean(row.outcome?.trim()) && row.reviewed)
     .map(row => ({
       decisionId: row.id,
       decision: row.decision,

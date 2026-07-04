@@ -6,6 +6,7 @@ export type EvidenceSnapshot = {
   sessionCount: number;
   patternCount: number;
   insightHistoryCount: number;
+  reviewedOutcomeCount: number;
 };
 
 export type EvidenceAssessment = {
@@ -24,6 +25,7 @@ const MIN_RANKING_SCORE = 4;
 export function assessEvidence(snapshot: EvidenceSnapshot): EvidenceAssessment {
   const score =
     snapshot.decisionCount * 2 +
+    snapshot.reviewedOutcomeCount * 4 +
     Math.min(snapshot.lessonCount, 8) +
     Math.min(snapshot.sessionCount, 12) +
     snapshot.patternCount * 2 +

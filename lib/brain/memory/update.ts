@@ -144,22 +144,6 @@ export async function applyMemoryUpdate(params: {
 
   await saveWorkingMemory(nextMemory);
 
-  if (request.intent === 'decide' && request.decision) {
-    const longTerm = await loadLongTermMemory();
-    await saveLongTermMemory({
-      ...longTerm,
-      decisions: [
-        ...longTerm.decisions,
-        {
-          id: `decision_${Date.now()}`,
-          decision: request.decision,
-          reason: request.reason ?? '',
-          timestamp: new Date().toISOString()
-        }
-      ].slice(-50)
-    });
-  }
-
   if (decision.type === 'lesson') {
     const longTerm = await loadLongTermMemory();
     await saveLongTermMemory({

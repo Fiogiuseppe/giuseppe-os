@@ -12,6 +12,7 @@ import { ProviderConfigurationError, ProviderRequestError } from './providers/ty
 import { runWithAICallMeta, intentToPage } from '../ai/callContext';
 import { fetchRealityContext } from '../reality';
 import { assessEvidence } from '../memory/evidence';
+import { recordDecisionRecommendation } from '../decision-learning/learning';
 import { buildEvidenceSnapshot } from '../memory/insights';
 import type { BrainRequest, BrainResponse } from './types';
 
@@ -199,6 +200,18 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
         })
       : undefined;
 
+  let decisionRecordId: string | undefined;
+
+  if (resolvedIntent === 'decide' && decision && normalizedRequest.decision && persist) {
+    const recorded = await recordDecisionRecommendation({
+      decision: normalizedRequest.decision,
+      reason: normalizedRequest.reason ?? '',
+      result: decision,
+      confidenceBefore: confidence
+    });
+    decisionRecordId = recorded.id;
+  }
+
   return {
     intent: resolvedIntent,
     answer,
@@ -228,7 +241,8 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
     awareness: outputs.awareness,
     opportunity: outputs.opportunity,
     potentialBrief: outputs.potentialBrief,
-    learning: outputs.learning
+    learning: outputs.learning,
+    decisionRecordId
   };
 }
 

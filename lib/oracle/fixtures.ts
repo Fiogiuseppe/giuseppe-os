@@ -93,7 +93,8 @@ export const SAMPLE_ORACLE_EVIDENCE: OracleEvidence = {
         outcome: 'Due mesi persi, nessun revenue, energia divisa',
         outcomeRating: 2,
         weakensTrajectory: true,
-        strengthensTrajectory: false
+        strengthensTrajectory: false,
+        reviewed: true
       },
       {
         id: 'dec-2',
@@ -104,7 +105,8 @@ export const SAMPLE_ORACLE_EVIDENCE: OracleEvidence = {
         outcome: 'Tre post pubblicati, due conversazioni ad alto valore',
         outcomeRating: 8,
         weakensTrajectory: false,
-        strengthensTrajectory: true
+        strengthensTrajectory: true,
+        reviewed: true
       },
       {
         id: 'dec-3',
@@ -115,7 +117,8 @@ export const SAMPLE_ORACLE_EVIDENCE: OracleEvidence = {
         outcome: 'Runway intatto, più spazio per creare',
         outcomeRating: 9,
         weakensTrajectory: false,
-        strengthensTrajectory: true
+        strengthensTrajectory: true,
+        reviewed: true
       },
       {
         id: 'dec-4',
@@ -126,7 +129,8 @@ export const SAMPLE_ORACLE_EVIDENCE: OracleEvidence = {
         outcome: 'Mattina successiva lenta, decisione rimandata',
         outcomeRating: 3,
         weakensTrajectory: true,
-        strengthensTrajectory: false
+        strengthensTrajectory: false,
+        reviewed: true
       }
     ]
   },

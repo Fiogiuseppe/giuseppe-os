@@ -11,6 +11,7 @@ export interface OracleDecisionRecord {
   timestamp: string;
   outcome?: string;
   outcomeRating?: number | null;
+  reviewed: boolean;
   weakensTrajectory: boolean;
   strengthensTrajectory: boolean;
 }

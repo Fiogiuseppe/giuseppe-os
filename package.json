@@ -8,6 +8,7 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
+    "test:decision-learning": "npx tsx lib/decision-learning/runTests.ts",
     "test:e2e:ui": "playwright test --ui",
     "quality:check": "npm run typecheck && npm run test:e2e && npm run build",
     "design:review": "node scripts/generate-design-review.mjs",

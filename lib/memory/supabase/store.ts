@@ -1,4 +1,5 @@
 import type { LongTermMemory, MemoryRecord, WorkingMemory, WorkingMemorySession } from '../../brain/types';
+import type { DecisionStatus, TrajectoryEffect } from '../../decision-learning/types';
 import { getSupabaseClient } from './client';
 
 type DbSession = {
@@ -24,8 +25,18 @@ type DbDecision = {
   decision: string;
   reason: string | null;
   category: string | null;
+  status?: string | null;
+  recommendation?: string | null;
+  next_action?: string | null;
+  taken_at?: string | null;
+  review_after?: string | null;
+  review_completed_at?: string | null;
   outcome?: string | null;
   outcome_rating?: number | null;
+  lesson?: string | null;
+  trajectory_effect?: string | null;
+  confidence_before?: number | null;
+  confidence_after?: number | null;
   created_at: string;
 };
 
@@ -117,9 +128,19 @@ export async function loadLongTermMemoryFromSupabase(): Promise<LongTermMemory> 
       decision: row.decision,
       reason: row.reason ?? '',
       category: row.category ?? undefined,
+      timestamp: row.created_at,
+      status: (row.status as DecisionStatus | null | undefined) ?? undefined,
+      recommendation: row.recommendation ?? undefined,
+      nextAction: row.next_action ?? undefined,
+      takenAt: row.taken_at ?? undefined,
+      reviewAfter: row.review_after ?? undefined,
+      reviewCompletedAt: row.review_completed_at ?? undefined,
       outcome: row.outcome ?? undefined,
       outcomeRating: row.outcome_rating ?? null,
-      timestamp: row.created_at
+      lesson: row.lesson ?? undefined,
+      trajectoryEffect: (row.trajectory_effect as TrajectoryEffect | null | undefined) ?? undefined,
+      confidenceBefore: row.confidence_before ?? null,
+      confidenceAfter: row.confidence_after ?? null
     })),
     lessons: (lessons ?? []).map((row: DbLesson) => ({
       id: row.id,
@@ -147,8 +168,18 @@ export async function saveLongTermMemoryToSupabase(memory: LongTermMemory): Prom
     decision: row.decision,
     reason: row.reason,
     category: row.category ?? null,
+    status: row.status ?? null,
+    recommendation: row.recommendation ?? null,
+    next_action: row.nextAction ?? null,
+    taken_at: row.takenAt ?? null,
+    review_after: row.reviewAfter ?? null,
+    review_completed_at: row.reviewCompletedAt ?? null,
     outcome: row.outcome ?? null,
     outcome_rating: row.outcomeRating ?? null,
+    lesson: row.lesson ?? null,
+    trajectory_effect: row.trajectoryEffect ?? null,
+    confidence_before: row.confidenceBefore ?? null,
+    confidence_after: row.confidenceAfter ?? null,
     created_at: row.timestamp
   }));
 

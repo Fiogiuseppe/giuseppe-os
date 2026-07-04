@@ -234,6 +234,40 @@ export function scanProductSimplicity(): GuardianFinding[] {
   return findings;
 }
 
+export function scanDecisionLearning(): GuardianFinding[] {
+  const findings: GuardianFinding[] = [];
+  const learning = read('lib/decision-learning/learning.ts');
+  const oracle = read('lib/oracle/evidence.ts');
+
+  if (!learning.includes('reviewCompletedAt')) {
+    findings.push({
+      id: 'decision-learning:missing-review-timestamp',
+      category: 'trust',
+      severity: 'high',
+      title: 'Decision reviews may not be timestamped',
+      detail: 'applyDecisionReview should set reviewCompletedAt before outcomes become Oracle evidence.',
+      why: 'Without a review timestamp, Giuseppe OS cannot distinguish measured outcomes from assumptions.',
+      recommendation: 'Ensure every reviewed decision writes reviewCompletedAt and status reviewed.',
+      file: 'lib/decision-learning/learning.ts'
+    });
+  }
+
+  if (!oracle.includes('row.reviewed')) {
+    findings.push({
+      id: 'decision-learning:oracle-unreviewed-outcomes',
+      category: 'ai-consistency',
+      severity: 'high',
+      title: 'Oracle may surface unreviewed outcomes',
+      detail: 'gatherOracleEvidence should only treat reviewed outcomes as memory.',
+      why: 'Future Giuseppe must not say it remembers something that was never measured.',
+      recommendation: 'Filter Oracle outcomes to reviewed decisions only.',
+      file: 'lib/oracle/evidence.ts'
+    });
+  }
+
+  return findings;
+}
+
 export function runAllScans(): GuardianFinding[] {
   return dedupeFindings([
     ...scanGuardianPresence(),
@@ -242,6 +276,7 @@ export function runAllScans(): GuardianFinding[] {
     ...scanMemoryPersistence(),
     ...scanDeadCode(),
     ...scanAiConsistency(),
-    ...scanProductSimplicity()
+    ...scanProductSimplicity(),
+    ...scanDecisionLearning()
   ]);
 }

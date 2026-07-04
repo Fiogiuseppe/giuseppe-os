@@ -26,6 +26,7 @@ import {
 } from './components/Disclosure';
 import { InsightsStage } from './components/InsightsStage';
 import { DecisionIntakePanel } from './components/DecisionIntakePanel';
+import { DecisionReviewGate, type DueReviewPayload } from './components/DecisionReviewGate';
 import TodayMobileRitual from './components/TodayMobileRitual';
 import { TodayDraggablePresence } from './components/TodayDraggablePresence';
 import { AppTopbar } from './components/AppTopbar';
@@ -366,6 +367,9 @@ export default function Home() {
   const [todaysLetter, setTodaysLetter] = useState<DailyBriefingResponse | null>(null);
   const [letterLoading, setLetterLoading] = useState(true);
   const [letterError, setLetterError] = useState<string | null>(null);
+  const [dueReview, setDueReview] = useState<DueReviewPayload | null>(null);
+  const [reviewCheckDone, setReviewCheckDone] = useState(false);
+  const [reviewGateCleared, setReviewGateCleared] = useState(false);
 
   useEffect(() => {
     const syncFromHash = () => {
@@ -413,6 +417,40 @@ export default function Home() {
     };
   }, [view, locale]);
 
+  useEffect(() => {
+    if (view !== 'today') {
+      setReviewCheckDone(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadDueReview() {
+      const response = await fetch('/api/decisions/reviews/due');
+      const body = await response.json().catch(() => ({}));
+
+      if (cancelled) {
+        return;
+      }
+
+      if (body.due) {
+        setDueReview(body.due as DueReviewPayload);
+        setReviewGateCleared(false);
+      } else {
+        setDueReview(null);
+        setReviewGateCleared(true);
+      }
+
+      setReviewCheckDone(true);
+    }
+
+    void loadDueReview();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [view]);
+
   async function loadCreateBrief(analyze = false) {
     setCreateLoading(true);
     setCreateError(null);
@@ -432,6 +470,10 @@ export default function Home() {
     let cancelled = false;
 
     async function loadLetter(regenerate = false) {
+      if (view !== 'today' || !reviewCheckDone || (dueReview && !reviewGateCleared)) {
+        return;
+      }
+
       setLetterLoading(true);
       setLetterError(null);
 
@@ -455,7 +497,7 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [locale]);
+  }, [locale, view, reviewCheckDone, dueReview, reviewGateCleared]);
 
   async function handleRegenerateBriefing() {
     setLetterLoading(true);
@@ -524,25 +566,39 @@ export default function Home() {
           <div className={`view-body progressive-body mental-space mental-space-${view}`}>
             {view === 'today' && (
               <>
-                <TodayDraggablePresence onNavigate={setView}>
-                  {letterLoading && (
-                    <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>
-                  )}
-                  {!letterLoading && letterError && (
-                    <p className="today-action-text today-action-text--error">{letterError}</p>
-                  )}
-                  {!letterLoading && !letterError && todaysLetter && (
-                    <p className="today-action-text">
-                      {limitWords(todaysLetter.sections.oneBigMove, MAX_TODAY_ONE_BIG_MOVE_WORDS)}
-                    </p>
-                  )}
-                </TodayDraggablePresence>
-                <TodayMobileRitual
-                  letterLoading={letterLoading}
-                  letterError={letterError}
-                  todaysLetter={todaysLetter}
-                  onNavigate={setView}
-                />
+                {reviewCheckDone && dueReview && !reviewGateCleared ? (
+                  <div className="today-review-stage">
+                    <DecisionReviewGate
+                      review={dueReview}
+                      onComplete={() => {
+                        setReviewGateCleared(true);
+                        setDueReview(null);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <TodayDraggablePresence onNavigate={setView}>
+                      {letterLoading && (
+                        <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>
+                      )}
+                      {!letterLoading && letterError && (
+                        <p className="today-action-text today-action-text--error">{letterError}</p>
+                      )}
+                      {!letterLoading && !letterError && todaysLetter && (
+                        <p className="today-action-text">
+                          {limitWords(todaysLetter.sections.oneBigMove, MAX_TODAY_ONE_BIG_MOVE_WORDS)}
+                        </p>
+                      )}
+                    </TodayDraggablePresence>
+                    <TodayMobileRitual
+                      letterLoading={letterLoading}
+                      letterError={letterError}
+                      todaysLetter={todaysLetter}
+                      onNavigate={setView}
+                    />
+                  </>
+                )}
               </>
             )}
 

@@ -108,8 +108,18 @@ export interface LongTermMemory {
     reason: string;
     category?: string;
     timestamp: string;
+    status?: import('../decision-learning/types').DecisionStatus;
+    recommendation?: string;
+    nextAction?: string;
+    reviewAfter?: string;
+    reviewCompletedAt?: string;
+    takenAt?: string;
     outcome?: string;
     outcomeRating?: number | null;
+    lesson?: string;
+    trajectoryEffect?: import('../decision-learning/types').TrajectoryEffect;
+    confidenceBefore?: number | null;
+    confidenceAfter?: number | null;
   }>;
   lessons: Array<{
     id: string;
@@ -218,6 +228,7 @@ export interface BrainResponse {
   opportunity?: import('../../engine/potentialEngine').Opportunity;
   potentialBrief?: import('../../engine/potentialEngine').PotentialBrief;
   learning?: LearningReport;
+  decisionRecordId?: string;
 }
 
 export interface MemoryUpdateResult {

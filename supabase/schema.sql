@@ -24,8 +24,18 @@ create table if not exists memory_decisions (
   decision text not null,
   reason text,
   category text,
+  status text,
+  recommendation text,
+  next_action text,
+  taken_at timestamptz,
+  review_after timestamptz,
+  review_completed_at timestamptz,
   outcome text,
   outcome_rating integer,
+  lesson text,
+  trajectory_effect text,
+  confidence_before numeric(5, 4),
+  confidence_after numeric(5, 4),
   created_at timestamptz not null default now()
 );
 
@@ -53,4 +63,6 @@ create table if not exists memory_insights (
 
 create index if not exists memory_sessions_created_at_idx on memory_sessions (created_at desc);
 create index if not exists memory_decisions_created_at_idx on memory_decisions (created_at desc);
+create index if not exists memory_decisions_review_after_idx on memory_decisions (review_after);
+create index if not exists memory_decisions_status_idx on memory_decisions (status);
 create index if not exists memory_insights_created_at_idx on memory_insights (created_at desc);
