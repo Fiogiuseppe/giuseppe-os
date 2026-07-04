@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible, type AppView } from './helpers';
+import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible, completeDecisionConversation, richDecision, type AppView } from './helpers';
 
 const NORTH_STAR = 'PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.';
 
@@ -76,14 +76,14 @@ test.describe('Giuseppe OS quality loop', () => {
     }
   });
 
-  test('decision form works end to end', async ({ page }) => {
+  test('decision conversation works end to end', async ({ page }) => {
     await gotoView(page, 'decisions');
 
-    await page.getByPlaceholder(/comprare casa|buy a house/i).fill('investire in ETF');
-    await page.getByPlaceholder(/Motivo vero|The real reason/i).fill('Voglio comprare libertà futura.');
-    await page.getByRole('button', { name: DECISION_SUBMIT_PATTERN }).click();
-
-    await expect(page.locator('.result')).toBeVisible({ timeout: 25_000 });
+    await completeDecisionConversation(
+      page,
+      richDecision('investire in ETF', 'Voglio comprare libertà futura.'),
+      'Voglio comprare libertà futura.'
+    );
     await expect(page.getByText(/Prossimo passo|NEXT STEP/i)).toBeVisible();
     await expectFooterManifesto(page);
   });

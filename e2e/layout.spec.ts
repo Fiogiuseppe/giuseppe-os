@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible } from './helpers';
+import { gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible, completeDecisionConversation, richDecision } from './helpers';
 
 async function expectInViewport(page: import('@playwright/test').Page, locator: import('@playwright/test').Locator) {
   await expect(locator).toBeInViewport({ ratio: 0.2 });
@@ -56,9 +56,11 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await page.goto('/');
     await gotoView(page, 'decisions');
 
-    await page.getByPlaceholder(/comprare casa|buy a house/i).fill('investire in ETF');
-    await page.getByPlaceholder(/Motivo vero|The real reason/i).fill('Voglio comprare libertà futura.');
-    await page.getByRole('button', { name: DECISION_SUBMIT_PATTERN }).click();
+    await completeDecisionConversation(
+      page,
+      richDecision('investire in ETF', 'Voglio comprare libertà futura.'),
+      'Voglio comprare libertà futura.'
+    );
 
     const betterVersion = page.locator('.result').getByRole('button', { name: /Versione migliore|Better version/i });
     await expect(betterVersion).toBeVisible({ timeout: 25_000 });
@@ -67,20 +69,19 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await expectNoPageScroll(page);
   });
 
-  test('mobile decisions form and submit button stay accessible', async ({ page }) => {
+  test('mobile decisions conversation stays accessible', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     await gotoView(page, 'decisions');
 
-    const textarea = page.getByPlaceholder(/Motivo vero|The real reason/i);
-    const submit = page.getByRole('button', { name: DECISION_SUBMIT_PATTERN });
+    const opening = page.getByTestId('decision-open-input');
+    const submit = page.getByTestId('decision-continue');
 
-    await expect(textarea).toBeEditable();
-    await expectInViewport(page, textarea);
+    await expect(opening).toBeEditable();
+    await expectInViewport(page, opening);
     await expectInViewport(page, submit);
 
-    await textarea.fill('Voglio più chiarezza.');
-    await page.getByPlaceholder(/comprare casa|buy a house/i).fill('pubblicare un post');
+    await opening.fill('pubblicare un post su LinkedIn. Voglio mostrare come penso.');
     await submit.click();
     await expect(page.locator('.result').getByText(/Categoria:|Category:/)).toBeVisible({ timeout: 25_000 });
     await expectNoPageScroll(page);

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible } from './helpers';
+import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible, completeDecisionConversation, richDecision } from './helpers';
 
 const NAV_VIEWS = [
   { id: 'today' as const },
@@ -58,18 +58,14 @@ test.describe('Giuseppe OS navigation', () => {
     }
   });
 
-  test('accepts text in the decision form on Decisions view', async ({ page }) => {
+  test('accepts text in the decision conversation on Decisions view', async ({ page }) => {
     await gotoView(page, 'decisions');
 
-    const decisionInput = page.getByPlaceholder(/comprare casa|buy a house/i);
-    const reasonInput = page.getByPlaceholder(/Motivo vero|The real reason/i);
-
+    const decisionInput = page.getByTestId('decision-open-input');
     await decisionInput.fill('comprare casa a Copenaghen');
-    await reasonInput.fill('Voglio più stabilità per la famiglia.');
 
     await expect(decisionInput).toHaveValue('comprare casa a Copenaghen');
-    await expect(reasonInput).toHaveValue('Voglio più stabilità per la famiglia.');
-    await expect(page.getByRole('button', { name: DECISION_SUBMIT_PATTERN })).toBeEnabled();
+    await expect(page.getByTestId('decision-continue')).toBeEnabled();
   });
 
   test('desktop viewport has no page scroll on any main section', async ({ page }) => {
@@ -95,10 +91,7 @@ test.describe('Giuseppe OS decision board', () => {
   });
 
   async function askBoard(page: import('@playwright/test').Page, decision: string, reason: string) {
-    await page.getByPlaceholder(/comprare casa|buy a house/i).fill(decision);
-    await page.getByPlaceholder(/Motivo vero|The real reason/i).fill(reason);
-    await page.getByRole('button', { name: DECISION_SUBMIT_PATTERN }).click();
-    await expect(page.locator('.result')).toBeVisible({ timeout: 25_000 });
+    await completeDecisionConversation(page, richDecision(decision, reason), reason);
     await page.locator('.result').getByRole('button', { name: /Mostra il Board|Show the Board/i }).click();
     await page.locator('.result').getByRole('button', { name: /Versione migliore|Better version/i }).click();
     await page.locator('.result').getByRole('button', { name: /Close|Chiudi/i }).click();
@@ -127,10 +120,11 @@ test.describe('Giuseppe OS decision board', () => {
   });
 
   test('board output contains at least four counsellors', async ({ page }) => {
-    await page.getByPlaceholder(/comprare casa|buy a house/i).fill('investire in ETF');
-    await page.getByPlaceholder(/Motivo vero|The real reason/i).fill('Voglio comprare libertà futura.');
-    await page.getByRole('button', { name: DECISION_SUBMIT_PATTERN }).click();
-    await expect(page.locator('.result')).toBeVisible({ timeout: 25_000 });
+    await completeDecisionConversation(
+      page,
+      richDecision('investire in ETF', 'Voglio comprare libertà futura.'),
+      'Voglio comprare libertà futura.'
+    );
     await page.locator('.result').getByRole('button', { name: /Mostra il Board|Show the Board/i }).click();
 
     const counsellors = ['CEO 2036', 'CFO', 'Strategist', 'Creative Director', 'Psychologist', 'Mentor'];

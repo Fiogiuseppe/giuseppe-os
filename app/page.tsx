@@ -12,6 +12,7 @@ import type { AwarenessInsight } from '../engine/awarenessEngine';
 import type { PotentialBrief } from '../engine/potentialEngine';
 import type { DailyBriefingResponse } from '../lib/briefing/types';
 import { decideViaBrain } from './lib/decideViaBrain';
+import { fetchDecisionIntake } from './lib/decisionIntake';
 import { fetchCreateViaBrain } from './lib/fetchCreateViaBrain';
 import { fetchInsightsViaBrain } from './lib/fetchInsightsViaBrain';
 import { fetchTodaysLetter } from './lib/fetchTodaysLetter';
@@ -19,8 +20,7 @@ import { formatConfidenceDisplay, formatProgressDisplay } from './lib/formatConf
 import { buildMemoryPalaceCards } from './lib/memoryPalaceCards';
 import {
   DisclosurePanel,
-  DisclosureTrigger,
-  RitualStep
+  DisclosureTrigger
 } from './components/Disclosure';
 import LivingAvatar from './components/LivingAvatar';
 import { LanguageSwitch } from './components/LanguageSwitch';
@@ -230,7 +230,7 @@ function ProjectsListFocus({
 }
 
 export default function Home() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [view, setView] = useState<View>('today');
   const [awareness, setAwareness] = useState<AwarenessInsight | null>(null);
   const [insightsLoading, setInsightsLoading] = useState(false);
@@ -241,30 +241,116 @@ export default function Home() {
   const [projectName] = recommendedProject();
 
   const [decision, setDecision] = useState('');
-  const [reason, setReason] = useState('');
+  const [intakeAnswers, setIntakeAnswers] = useState<Record<string, string>>({});
+  const [currentAnswer, setCurrentAnswer] = useState('');
+  const [intakeQuestion, setIntakeQuestion] = useState<string | null>(null);
+  const [currentQuestionId, setCurrentQuestionId] = useState<string | null>(null);
+  const [intakePhase, setIntakePhase] = useState<'opening' | 'listening' | 'reasoning'>('opening');
   const [decisionResult, setDecisionResult] = useState<DecisionAIResult | null>(null);
   const [decisionLoading, setDecisionLoading] = useState(false);
   const [decisionError, setDecisionError] = useState<string | null>(null);
 
-  async function handleAskBoard() {
-    if (!decision.trim()) {
-      return;
-    }
-
+  async function runDecisionRecommendation(
+    decisionText: string,
+    answers: Record<string, string>
+  ): Promise<void> {
+    setIntakePhase('reasoning');
     setDecisionLoading(true);
     setDecisionError(null);
     setDecisionResult(null);
 
-    const response = await decideViaBrain(decision, reason);
+    const response = await decideViaBrain(decisionText, answers);
 
     setDecisionLoading(false);
 
     if (!response.ok) {
       setDecisionError(response.message);
+      setIntakePhase('listening');
       return;
     }
 
     setDecisionResult(response.decision);
+    setIntakePhase('opening');
+  }
+
+  async function handleDecisionContinue() {
+    const draft = intakePhase === 'opening' ? decision.trim() : currentAnswer.trim();
+    if (!draft) {
+      return;
+    }
+
+    setDecisionError(null);
+    setDecisionLoading(true);
+
+    if (intakePhase === 'opening') {
+      const intake = await fetchDecisionIntake({
+        decision: draft,
+        answers: {},
+        locale
+      });
+
+      setDecisionLoading(false);
+
+      if (!intake.ok) {
+        setDecisionError(intake.message);
+        return;
+      }
+
+      if (intake.intake.status === 'ready') {
+        await runDecisionRecommendation(draft, {});
+        return;
+      }
+
+      setDecision(draft);
+      setIntakePhase('listening');
+      setIntakeQuestion(intake.intake.question?.text ?? null);
+      setCurrentQuestionId(intake.intake.question?.id ?? null);
+      setCurrentAnswer('');
+      return;
+    }
+
+    const nextAnswers = currentQuestionId
+      ? { ...intakeAnswers, [currentQuestionId]: draft }
+      : intakeAnswers;
+
+    const intake = await fetchDecisionIntake({
+      decision,
+      answers: nextAnswers,
+      locale
+    });
+
+    if (!intake.ok) {
+      setDecisionLoading(false);
+      setDecisionError(intake.message);
+      return;
+    }
+
+    if (intake.intake.status === 'ready') {
+      setIntakeAnswers(nextAnswers);
+      setIntakeQuestion(null);
+      setCurrentQuestionId(null);
+      setCurrentAnswer('');
+      await runDecisionRecommendation(decision, nextAnswers);
+      return;
+    }
+
+    setIntakeAnswers(nextAnswers);
+    setIntakeQuestion(intake.intake.question?.text ?? null);
+    setCurrentQuestionId(intake.intake.question?.id ?? null);
+    setCurrentAnswer('');
+    setDecisionLoading(false);
+  }
+
+  function resetDecisionFlow() {
+    setDecision('');
+    setIntakeAnswers({});
+    setCurrentAnswer('');
+    setIntakeQuestion(null);
+    setCurrentQuestionId(null);
+    setIntakePhase('opening');
+    setDecisionResult(null);
+    setDecisionError(null);
+    setDecisionLoading(false);
   }
 
   const [memoryExpanded, setMemoryExpanded] = useState(false);
@@ -383,7 +469,15 @@ export default function Home() {
     setDecisionsFocus('form');
     setCreateFocus(null);
     setSelectedProject(null);
+    setDecision('');
+    setIntakeAnswers({});
+    setCurrentAnswer('');
+    setIntakeQuestion(null);
+    setCurrentQuestionId(null);
+    setIntakePhase('opening');
     setDecisionResult(null);
+    setDecisionError(null);
+    setDecisionLoading(false);
   }, [view]);
 
   return (
@@ -470,50 +564,81 @@ export default function Home() {
                   </div>
                 ) : (
                   <>
-                    <p className="section-question">{t('sectionQuestions.decisions')}</p>
-
                     {!decisionResult && (
-                      <div className="ritual-flow decisions-form-flow">
-                        <RitualStep step={1} label={t('kickers.decisionEngine')} isLast>
-                          <h2>{t('decisions.headline')}</h2>
-                          <p>{t('decisions.subline')}</p>
-                          <label>{t('decisions.decisionLabel')}</label>
-                          <input
-                            className="input"
-                            value={decision}
-                            onChange={e => setDecision(e.target.value)}
-                            placeholder={t('decisions.decisionPlaceholder')}
-                          />
-                          <label>{t('decisions.reasonLabel')}</label>
-                          <textarea
-                            className="textarea textarea--compact"
-                            value={reason}
-                            onChange={e => setReason(e.target.value)}
-                            placeholder={t('decisions.reasonPlaceholder')}
-                          />
+                      <div className="decision-conversation">
+                        {intakePhase === 'opening' && (
+                          <>
+                            <p className="decision-opening-prompt">{t('decisions.openingPrompt')}</p>
+                            <input
+                              className="input decision-open-input"
+                              data-testid="decision-open-input"
+                              value={decision}
+                              onChange={e => setDecision(e.target.value)}
+                              placeholder={t('decisions.openingPlaceholder')}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter') {
+                                  void handleDecisionContinue();
+                                }
+                              }}
+                            />
+                          </>
+                        )}
+
+                        {intakePhase === 'listening' && (
+                          <>
+                            <p className="decision-context-line">{decision}</p>
+                            {intakeQuestion && (
+                              <p className="decision-followup-question" data-testid="decision-followup">
+                                {intakeQuestion}
+                              </p>
+                            )}
+                            <input
+                              className="input decision-followup-input"
+                              data-testid="decision-followup-input"
+                              value={currentAnswer}
+                              onChange={e => setCurrentAnswer(e.target.value)}
+                              placeholder={t('decisions.followupPlaceholder')}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter') {
+                                  void handleDecisionContinue();
+                                }
+                              }}
+                            />
+                          </>
+                        )}
+
+                        {intakePhase === 'reasoning' && (
+                          <p className="decision-reasoning">{t('decisions.reasoning')}</p>
+                        )}
+
+                        {intakePhase !== 'reasoning' && (
                           <button
-                            className="primary"
+                            className="primary decision-continue"
                             type="button"
-                            disabled={decisionLoading || !decision.trim()}
-                            onClick={() => void handleAskBoard()}
+                            data-testid="decision-continue"
+                            disabled={
+                              decisionLoading ||
+                              (intakePhase === 'opening' ? !decision.trim() : !currentAnswer.trim())
+                            }
+                            onClick={() => void handleDecisionContinue()}
                           >
-                            {decisionLoading ? t('decisions.submitting') : t('decisions.submit')}
+                            {decisionLoading ? t('decisions.simulating') : t('decisions.continue')}
                           </button>
-                          {decisionLoading && <p className="decision-simulating">{t('decisions.simulating')}</p>}
-                          {decisionError && <p className="decision-error">{decisionError}</p>}
-                        </RitualStep>
+                        )}
+
+                        {decisionError && <p className="decision-error">{decisionError}</p>}
                       </div>
                     )}
 
                     {decisionResult && (
-                      <div className="ritual-flow decisions-form-flow">
+                      <div className="decision-conversation">
                         <DecisionResultDisclosure
                           key={`${decisionResult.categoryLabel}-${decisionResult.nextAction}-${decisionResult.confidenceScore}`}
                           result={decisionResult}
                         />
                         <DisclosureTrigger
-                          label={t('decisions.decisionLabel')}
-                          onClick={() => setDecisionResult(null)}
+                          label={t('decisions.newDecision')}
+                          onClick={resetDecisionFlow}
                         />
                       </div>
                     )}

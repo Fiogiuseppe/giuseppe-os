@@ -1280,6 +1280,48 @@ html.about-route body {
   letter-spacing: -0.05em;
 }
 
+.decision-conversation {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2.2vh, 22px);
+  max-width: min(680px, 100%);
+}
+
+.decision-opening-prompt,
+.decision-followup-question {
+  margin: 0;
+  font-size: clamp(22px, 3.6vh, 36px);
+  font-weight: 500;
+  line-height: 1.32;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+}
+
+.decision-context-line {
+  margin: 0;
+  font-size: clamp(15px, 2vh, 20px);
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.decision-open-input,
+.decision-followup-input {
+  font-size: clamp(17px, 2.2vh, 22px);
+  line-height: 1.45;
+  padding: 14px 16px;
+}
+
+.decision-reasoning {
+  margin: 0;
+  font-size: clamp(18px, 2.4vh, 24px);
+  color: var(--muted);
+  font-style: italic;
+}
+
+.decision-continue {
+  align-self: flex-start;
+}
+
 .space-board .disclosure-trigger {
   font-size: 13px;
 }

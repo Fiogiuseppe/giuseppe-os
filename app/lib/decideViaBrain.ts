@@ -1,10 +1,15 @@
 import type { DecisionAIResult } from '../../lib/brain/decisions/types';
+import { compileDecisionContext } from '../../lib/brain/decisions/intake';
 
 export type DecideViaBrainResult =
   | { ok: true; decision: DecisionAIResult; missionAligned: boolean }
   | { ok: false; message: string; status: number };
 
-export async function decideViaBrain(decision: string, reason: string): Promise<DecideViaBrainResult> {
+export async function decideViaBrain(
+  decision: string,
+  answers: Record<string, string> = {}
+): Promise<DecideViaBrainResult> {
+  const reason = compileDecisionContext(decision, answers);
   const response = await fetch('/api/brain', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
