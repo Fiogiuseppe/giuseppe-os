@@ -1275,6 +1275,110 @@ html.about-route body {
   -webkit-overflow-scrolling: touch;
 }
 
+@media (min-width: 1024px) {
+  .memory-space {
+    max-width: min(1120px, 100%);
+    padding-top: clamp(4px, 1vh, 12px);
+  }
+
+  .memory-manifesto {
+    display: grid;
+    grid-template-columns: minmax(260px, 1.05fr) minmax(220px, 0.95fr);
+    grid-template-areas:
+      'header preamble'
+      'articles articles'
+      'continue continue';
+    column-gap: clamp(36px, 5vw, 80px);
+    row-gap: clamp(16px, 2.2vh, 24px);
+    align-items: end;
+  }
+
+  .manifesto-header {
+    grid-area: header;
+    align-self: end;
+  }
+
+  .manifesto-title {
+    max-width: none;
+    font-size: clamp(26px, 3.2vw, 40px);
+  }
+
+  .manifesto-preamble {
+    grid-area: preamble;
+    align-self: end;
+    padding: 0;
+    border-bottom: none;
+    text-align: right;
+  }
+
+  .manifesto-preamble-text {
+    margin-left: auto;
+    max-width: 22em;
+    font-size: clamp(11px, 1.1vw, 13px);
+  }
+
+  .manifesto-articles {
+    grid-area: articles;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(14px, 2vw, 28px) clamp(18px, 2.5vw, 36px);
+    padding-top: clamp(12px, 1.6vh, 18px);
+    border-top: 1px solid var(--border-soft);
+  }
+
+  .manifesto-article {
+    grid-template-columns: 1fr;
+    gap: clamp(6px, 0.8vh, 10px);
+    padding: 0;
+    border-top: none;
+  }
+
+  .manifesto-article:not(:nth-child(3n + 1)) {
+    padding-left: clamp(14px, 2vw, 28px);
+    border-left: 1px solid var(--border-soft);
+  }
+
+  .manifesto-article-label {
+    font-size: 9px;
+  }
+
+  .manifesto-line {
+    font-size: 10px;
+    line-height: 1.38;
+  }
+
+  .manifesto-article:has(.manifesto-article-label--accent) .manifesto-line {
+    font-size: clamp(11px, 1.2vw, 14px);
+  }
+
+  .manifesto-continue {
+    grid-area: continue;
+  }
+
+  .memory-manifesto--depth {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'header'
+      'articles'
+      'continue';
+    align-items: start;
+  }
+
+  .memory-manifesto--depth .manifesto-header {
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .memory-manifesto--depth .manifesto-articles {
+    padding-top: 10px;
+    border-top: none;
+  }
+
+  .memory-manifesto--depth .manifesto-article:not(:nth-child(3n + 1)) {
+    padding-left: clamp(10px, 1.5vw, 20px);
+  }
+}
+
 .memory-manifesto {
   display: flex;
   flex-direction: column;
