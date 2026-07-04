@@ -250,8 +250,8 @@ html.about-route body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: min(480px, 42vw, calc(100dvh - 152px));
-  height: min(480px, 42vw, calc(100dvh - 152px));
+  width: min(560px, 50vw, calc(100dvh - 120px));
+  height: min(560px, 50vw, calc(100dvh - 120px));
   max-width: 100%;
   max-height: 100%;
   aspect-ratio: 1 / 1;
@@ -2418,8 +2418,8 @@ label {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: min(52vw, calc(100dvh - 152px), 360px);
-    height: min(52vw, calc(100dvh - 152px), 360px);
+    width: min(58vw, calc(100dvh - 120px), 400px);
+    height: min(58vw, calc(100dvh - 120px), 400px);
   }
 
   .today-presence [data-testid='today-avatar-nav'] {
@@ -2602,8 +2602,8 @@ label {
   }
 
   .today-ritual-presence {
-    width: min(56vw, 240px);
-    height: min(56vw, 240px);
+    width: min(68vw, 300px);
+    height: min(68vw, 300px);
     flex-shrink: 0;
     position: relative;
   }
@@ -2695,8 +2695,8 @@ label {
 
 @media (max-width: 768px) and (max-height: 700px) {
   .today-ritual-presence {
-    width: min(48vw, 200px);
-    height: min(48vw, 200px);
+    width: min(60vw, 260px);
+    height: min(60vw, 260px);
   }
 
   .today-ritual-action {
