@@ -11,6 +11,7 @@
   --accent: #001fff;
   --surface: rgba(0, 0, 0, 0.03);
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --app-gutter: clamp(32px, 4vw, 56px);
 }
 
 html,
@@ -91,7 +92,7 @@ html.about-route body {
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 24px;
-  padding: 0 clamp(32px, 4vw, 56px);
+  padding: 0 var(--app-gutter);
   height: 56px;
   flex-shrink: 0;
   border-bottom: 1px solid var(--border-soft);
@@ -189,7 +190,7 @@ html.about-route body {
 
 .main-home {
   gap: 0;
-  padding: 0 clamp(20px, 2.5vw, 36px) 2px;
+  padding: 0 var(--app-gutter) 2px;
 }
 
 .main-home .view-body {
@@ -210,7 +211,7 @@ html.about-route body {
   min-height: 0;
   width: 100%;
   height: 100%;
-  padding: clamp(12px, 2vh, 24px) clamp(24px, 6vw, 72px);
+  padding: clamp(12px, 2vh, 24px) 0;
   overflow: hidden;
 }
 
@@ -224,7 +225,7 @@ html.about-route body {
 
 .today-action-text {
   margin: 0;
-  font-size: clamp(22px, 3.6vh, 40px);
+  font-size: clamp(26px, 4.2vh, 46px);
   font-weight: 500;
   line-height: 1.34;
   letter-spacing: -0.035em;
@@ -2330,12 +2331,16 @@ label {
 }
 
 @media (max-width: 1100px) {
+  :root {
+    --app-gutter: 10px;
+  }
+
   .topbar {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     height: 40px;
-    padding: 0 10px;
+    padding: 0 var(--app-gutter);
     gap: 6px;
     flex-shrink: 0;
     z-index: 20;
@@ -2458,7 +2463,7 @@ label {
   }
 
   .today-calm {
-    padding: clamp(10px, 2vh, 20px) clamp(16px, 5vw, 28px);
+    padding: clamp(10px, 2vh, 20px) 0;
   }
 
   .today-action {
@@ -2466,7 +2471,7 @@ label {
   }
 
   .today-action-text {
-    font-size: clamp(18px, 4.8vw, 28px);
+    font-size: clamp(20px, 5vw, 32px);
     line-height: 1.36;
   }
 
@@ -2630,6 +2635,10 @@ label {
 }
 
 @media (max-width: 768px) {
+  :root {
+    --app-gutter: clamp(12px, 4vw, 20px);
+  }
+
   .today-calm--desktop {
     display: none !important;
   }
@@ -2642,9 +2651,10 @@ label {
     flex: 1;
     min-height: 0;
     width: 100%;
-    padding: clamp(8px, 2vh, 16px) clamp(20px, 6vw, 28px) clamp(6px, 1.5vh, 12px);
+    padding: clamp(8px, 2vh, 16px) 0 clamp(6px, 1.5vh, 12px);
     overflow: hidden;
-    text-align: center;
+    text-align: left;
+    align-items: stretch;
     gap: clamp(10px, 2vh, 18px);
   }
 
@@ -2662,12 +2672,13 @@ label {
     height: min(68vw, 300px);
     flex-shrink: 0;
     position: relative;
+    align-self: center;
   }
 
   .today-ritual-brief {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: clamp(6px, 1.2vh, 10px);
     width: 100%;
     max-width: 340px;
@@ -2705,7 +2716,7 @@ label {
 
   .today-ritual-action {
     font-family: var(--font-serif), Georgia, serif;
-    font-size: clamp(20px, 5.6vw, 26px);
+    font-size: clamp(22px, 6vw, 30px);
     font-weight: 500;
     line-height: 1.32;
     color: var(--fg);
@@ -2731,10 +2742,6 @@ label {
 
   .today-ritual-line--loading {
     animation: companion-letter-pulse 1.6s ease-in-out infinite;
-  }
-
-  .main-home {
-    padding: 0 clamp(12px, 4vw, 20px) 0;
   }
 
   .main-home .view-body {
