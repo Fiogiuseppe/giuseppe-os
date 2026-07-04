@@ -10,8 +10,6 @@ import {
 } from '../lib/createProjectVisuals';
 import { formatConfidenceDisplay, formatProgressDisplay } from '../lib/formatConfidence';
 import { useLanguage } from '../lib/i18n/LanguageContext';
-import { ContentGeneratorPanel } from './ContentGeneratorPanel';
-
 export type CreateFocus = 'why' | 'projects' | 'potential' | null;
 
 type CreateStageProps = {
@@ -285,8 +283,6 @@ export function CreateStage({
       {error && <p className="insights-stage-error">{error}</p>}
 
       <p className="insights-built-over-time">{t('create.energyNote')}</p>
-
-      <ContentGeneratorPanel sourceType="freeform" />
     </div>
   );
 }

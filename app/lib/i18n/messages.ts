@@ -130,6 +130,8 @@ export const messages = {
     },
     content: {
       open: 'Genera contenuti',
+      studioTitle: 'COSA VOGLIO SCRIVERE?',
+      studioLead: 'Scrivi il tema. Sotto compaiono i contenuti pronti da pubblicare.',
       generate: 'Genera',
       loading: 'Sto scrivendo…',
       error: 'Non sono riuscito a generare i contenuti.',
@@ -395,6 +397,8 @@ export const messages = {
     },
     content: {
       open: 'Generate content',
+      studioTitle: 'WHAT DO I WANT TO WRITE?',
+      studioLead: 'Write your topic. Ready-to-publish content appears below.',
       generate: 'Generate',
       loading: 'Writing…',
       error: 'Could not generate content.',

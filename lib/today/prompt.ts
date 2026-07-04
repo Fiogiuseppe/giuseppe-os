@@ -10,7 +10,7 @@ export const TODAY_SYSTEM_PROMPT = [
   '  "greeting": "one warm sentence that acknowledges today",',
   '  "mindful_reflection": "one grounded pause — what matters beneath the noise (max 28 words)",',
   '  "today_focus": "the single priority that best serves the long-term trajectory today (max 22 words)",',
-  '  "next_action": "one concrete imperative action Giuseppe can do today (max 30 words)",',
+  '  "next_action": "the ONLY line Giuseppe will see today — one concrete imperative (max 30 words)",',
   '  "risk_or_distraction": "what to ignore or watch today (max 22 words)",',
   '  "personal_insight": "one honest insight from patterns, memory, or projects (max 28 words)",',
   '  "closing_line": "one short send-off — calm, human, forward-looking (max 16 words)"',

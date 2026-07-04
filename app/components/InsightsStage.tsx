@@ -5,8 +5,6 @@ import { formatConfidenceDisplay } from '../lib/formatConfidence';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 import { DisclosurePanel } from './Disclosure';
 import { AiOutputCard } from './AiOutputCard';
-import { ContentGeneratorPanel } from './ContentGeneratorPanel';
-
 export type InsightsFocus = 'why' | 'patterns' | 'evidence' | 'reflect' | 'action' | null;
 
 type InsightsStageProps = {
@@ -144,8 +142,6 @@ export function InsightsStage({
       </div>
 
       <p className="insights-built-over-time">{t('insights.builtOverTime')}</p>
-
-      <ContentGeneratorPanel sourceType="insight" topic={awareness.insight} />
     </div>
   );
 }

@@ -38,15 +38,15 @@ export async function expectTodayActionVisible(page: Page) {
   const ritual = page.getByTestId('today-ritual');
   if (await ritual.isVisible()) {
     await expect(page.getByTestId('today-experience')).toBeVisible();
-    await expect(page.getByTestId('today-card-action')).toBeVisible();
-    await expect(page.getByTestId('today-card-action')).not.toBeEmpty({ timeout: 15_000 });
+    await expect(page.getByTestId('today-move')).toBeVisible();
+    await expect(page.getByTestId('today-move')).not.toBeEmpty({ timeout: 15_000 });
     return;
   }
 
   const action = page.getByTestId('today-action');
   await expect(action).toBeVisible();
   await expect(page.getByTestId('today-experience')).toBeVisible();
-  await expect(page.getByTestId('today-greeting')).not.toBeEmpty({ timeout: 15_000 });
+  await expect(page.getByTestId('today-move')).not.toBeEmpty({ timeout: 15_000 });
 }
 
 export async function clickDecisionContinueWhenReady(page: Page) {
