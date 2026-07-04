@@ -196,6 +196,10 @@ html.about-route body {
   display: none;
 }
 
+.page-header-memory {
+  display: none;
+}
+
 .main-home {
   gap: 0;
   padding: 0 var(--app-gutter) 2px;
@@ -1244,6 +1248,192 @@ html.about-route body {
   flex: 1;
   min-height: 0;
   overflow: hidden;
+}
+
+.main-memory {
+  gap: 0;
+}
+
+.main-memory .view-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.memory-space {
+  width: 100%;
+  max-width: min(680px, 100%);
+  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: clamp(2px, 0.5vh, 8px) 0 clamp(4px, 1vh, 12px);
+  -webkit-overflow-scrolling: touch;
+}
+
+.memory-manifesto {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.6vh, 18px);
+}
+
+.manifesto-header {
+  text-align: left;
+}
+
+.manifesto-epigraph {
+  margin: 0 0 6px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.manifesto-title {
+  margin: 0;
+  font-size: clamp(22px, 3.8vw, 44px);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  max-width: 10em;
+  color: var(--fg);
+}
+
+.manifesto-preamble {
+  padding-bottom: clamp(6px, 1vh, 12px);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.manifesto-preamble-text {
+  margin: 0;
+  font-size: clamp(11px, 1.3vw, 13px);
+  line-height: 1.45;
+  color: var(--muted);
+  font-weight: 400;
+  max-width: 36em;
+}
+
+.manifesto-articles {
+  display: flex;
+  flex-direction: column;
+}
+
+.manifesto-article {
+  display: grid;
+  grid-template-columns: minmax(6.2em, 8em) 1fr;
+  gap: clamp(10px, 2vw, 24px);
+  align-items: start;
+  padding: clamp(5px, 0.8vh, 8px) 0;
+  border-top: 1px solid var(--border-soft);
+}
+
+.manifesto-article-label {
+  margin: 0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  color: var(--muted);
+}
+
+.manifesto-article-label--accent {
+  color: var(--fg);
+}
+
+.manifesto-article-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.manifesto-line {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+}
+
+.manifesto-article:has(.manifesto-article-label--accent) .manifesto-line {
+  font-size: clamp(12px, 1.6vw, 15px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.manifesto-continue {
+  align-self: flex-start;
+  margin: 2px 0 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.manifesto-continue:hover,
+.manifesto-continue:focus-visible {
+  color: var(--fg);
+}
+
+.manifesto-continue--close {
+  text-decoration: none;
+  letter-spacing: 0.06em;
+}
+
+.manifesto-depth {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.manifesto-articles--depth .manifesto-article:first-child {
+  border-top: none;
+}
+
+.memory-manifesto--depth {
+  gap: clamp(6px, 1vh, 10px);
+}
+
+.memory-manifesto--depth .manifesto-header {
+  padding-bottom: 2px;
+}
+
+.memory-manifesto--depth .manifesto-title {
+  font-size: clamp(16px, 2.4vw, 22px);
+  max-width: none;
+}
+
+.memory-manifesto--depth .manifesto-article {
+  padding: 3px 0;
+  gap: clamp(8px, 1.5vw, 16px);
+}
+
+.memory-manifesto--depth .manifesto-line {
+  font-size: 9px;
+  line-height: 1.28;
+}
+
+.memory-manifesto--depth .manifesto-article:has(.manifesto-article-label--accent) .manifesto-line {
+  font-size: 10px;
+  line-height: 1.25;
 }
 
 .progressive-header {
@@ -3140,16 +3330,23 @@ label {
     align-items: center;
   }
 
-  .memory-palace-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+  .manifesto-article {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 8px 0;
   }
 
-  .memory-card {
-    min-height: 100px;
+  .manifesto-title {
+    font-size: clamp(20px, 7vw, 32px);
+    max-width: none;
   }
 
-  .memory-palace {
+  .manifesto-line {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .memory-space {
     padding-bottom: 8px;
   }
 

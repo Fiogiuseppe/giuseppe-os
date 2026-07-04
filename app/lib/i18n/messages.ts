@@ -92,6 +92,9 @@ export const messages = {
         reflection: 'Domanda'
       }
     },
+    memory: {
+      depthTitle: 'GLI STRATI PROFONDI'
+    },
     decisions: {
       openingPrompt: 'Cosa stai decidendo?',
       openingPlaceholder: 'Es. comprare casa, pubblicare un post, cambiare lavoro…',
@@ -167,7 +170,7 @@ export const messages = {
       goals: 'Obiettivi',
       progress: 'Progresso',
       readFullBrief: 'Leggi il briefing completo',
-      exploreMemory: 'Esplora memoria completa',
+      exploreMemory: 'Continua a leggere',
       readAbout: 'Leggi di più',
       readProducts: 'Le cinque aree',
       closeReading: 'Chiudi'
@@ -292,6 +295,9 @@ export const messages = {
         reflection: 'Question'
       }
     },
+    memory: {
+      depthTitle: 'THE DEEPER LAYERS'
+    },
     decisions: {
       openingPrompt: 'What are you deciding?',
       openingPlaceholder: 'E.g. buy a house, publish a post, change jobs…',
@@ -367,7 +373,7 @@ export const messages = {
       goals: 'Goals',
       progress: 'Progress',
       readFullBrief: 'Read the full briefing',
-      exploreMemory: 'Explore full memory',
+      exploreMemory: 'Continue reading',
       readAbout: 'Read more',
       readProducts: 'The five areas',
       closeReading: 'Close'

@@ -35,7 +35,7 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await gotoView(page, 'memory');
 
     await expect(page.getByRole('heading', { name: 'PRIORITIES' })).toBeVisible();
-    await page.getByRole('button', { name: /Esplora memoria completa|Explore full memory/i }).click();
+    await page.getByRole('button', { name: /Continua a leggere|Continue reading/i }).click();
 
     const blindSpots = page.getByRole('heading', { name: 'BLIND SPOTS' });
     await expectInViewport(page, blindSpots);

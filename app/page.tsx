@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import brain from '../memory/giuseppe_brain.json';
 import {
   getCapitalLabel,
@@ -19,7 +19,7 @@ import { fetchCreateViaBrain } from './lib/fetchCreateViaBrain';
 import { fetchInsightsViaBrain } from './lib/fetchInsightsViaBrain';
 import { fetchTodaysLetter } from './lib/fetchTodaysLetter';
 import { formatConfidenceDisplay, formatProgressDisplay } from './lib/formatConfidence';
-import { buildMemoryPalaceCards } from './lib/memoryPalaceCards';
+import { MemoryManifesto } from './components/MemoryManifesto';
 import {
   DisclosurePanel,
   DisclosureTrigger
@@ -35,16 +35,6 @@ import { AiStatusIndicator } from './components/AiStatusIndicator';
 import { FooterCredit } from './components/FooterCredit';
 import { useLanguage } from './lib/i18n/LanguageContext';
 import { isAppView, type AppView } from './lib/views';
-
-const MEMORY_PRIMARY_LABELS = new Set([
-  'MISSION',
-  'NORTH STAR',
-  'VALUES',
-  'PRINCIPLES',
-  'PROJECTS',
-  'PRIORITIES'
-]);
-
 
 function recommendedProject() {
   const active = Object.entries(brain.projects).filter(([, p]) => p.status === 'active');
@@ -359,7 +349,6 @@ export default function Home() {
     setDecisionLoading(false);
   }
 
-  const [memoryExpanded, setMemoryExpanded] = useState(false);
   const [insightsFocus, setInsightsFocus] = useState<
     'why' | 'patterns' | 'evidence' | 'reflect' | 'action' | null
   >(null);
@@ -518,18 +507,7 @@ export default function Home() {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [decisionsFocus, setDecisionsFocus] = useState<'form' | 'purpose' | null>('form');
 
-  const memoryCards = useMemo(() => buildMemoryPalaceCards(brain), []);
-  const memoryPrimaryCards = useMemo(
-    () => memoryCards.filter(card => MEMORY_PRIMARY_LABELS.has(card.label)),
-    [memoryCards]
-  );
-  const memoryExtraCards = useMemo(
-    () => memoryCards.filter(card => !MEMORY_PRIMARY_LABELS.has(card.label)),
-    [memoryCards]
-  );
-
   useEffect(() => {
-    setMemoryExpanded(false);
     setInsightsFocus(null);
     setDecisionsFocus('form');
     setCreateFocus(null);
@@ -550,8 +528,8 @@ export default function Home() {
       <AppTopbar mode="spa" activeView={view} onNavigate={setView} />
 
       <div className="app-body">
-        <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}${view === 'decisions' ? ' main-decisions' : ''}${view === 'insights' ? ' main-insights' : ''}`} role="main">
-          <header className={`page-header progressive-header space-header-${view}${view === 'today' ? ' page-header-today' : ''}${view === 'decisions' ? ' page-header-decisions' : ''}${view === 'insights' ? ' page-header-insights' : ''}`}>
+        <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}${view === 'decisions' ? ' main-decisions' : ''}${view === 'insights' ? ' main-insights' : ''}${view === 'memory' ? ' main-memory' : ''}`} role="main">
+          <header className={`page-header progressive-header space-header-${view}${view === 'today' ? ' page-header-today' : ''}${view === 'decisions' ? ' page-header-decisions' : ''}${view === 'insights' ? ' page-header-insights' : ''}${view === 'memory' ? ' page-header-memory' : ''}`}>
             {view !== 'today' && (
               <>
                 <div className="space-meta">
@@ -730,58 +708,8 @@ export default function Home() {
             )}
 
             {view === 'memory' && (
-              <div className={`memory-palace${memoryExpanded ? ' mental-space--reading' : ''}`}>
-                {memoryExpanded ? (
-                  <div className="reading-focus-view">
-                    <button type="button" className="reading-expand-close" onClick={() => setMemoryExpanded(false)}>
-                      <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-                    </button>
-                    <div className="memory-palace-grid memory-palace-grid--expanded" role="list">
-                      {memoryExtraCards.map(card => (
-                        <article
-                          key={card.label}
-                          className="memory-card memory-card--compact"
-                          role="listitem"
-                          aria-labelledby={`memory-${card.label}`}
-                        >
-                          <h3
-                            id={`memory-${card.label}`}
-                            className={`memory-card-label${card.accent ? ' memory-card-label--accent' : ''}`}
-                          >
-                            {card.label}
-                          </h3>
-                          <p className="memory-card-text">{card.text}</p>
-                        </article>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <p className="section-question">{t('sectionQuestions.memory')}</p>
-                    <div className="memory-palace-grid" role="list">
-                      {memoryPrimaryCards.map(card => (
-                        <article
-                          key={card.label}
-                          className="memory-card"
-                          role="listitem"
-                          aria-labelledby={`memory-${card.label}`}
-                        >
-                          <h3
-                            id={`memory-${card.label}`}
-                            className={`memory-card-label${card.accent ? ' memory-card-label--accent' : ''}`}
-                          >
-                            {card.label}
-                          </h3>
-                          <p className="memory-card-text">{card.text}</p>
-                        </article>
-                      ))}
-                    </div>
-                    <DisclosureTrigger
-                      label={t('disclosure.exploreMemory')}
-                      onClick={() => setMemoryExpanded(true)}
-                    />
-                  </>
-                )}
+              <div className="memory-space">
+                <MemoryManifesto />
               </div>
             )}
           </div>
