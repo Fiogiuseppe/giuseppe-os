@@ -138,7 +138,7 @@ async function generateDailyBriefingFresh(): Promise<DailyBriefingResponse> {
     response = buildResponse(gated.sections, 'anthropic', context, gated.quality, false);
   }
 
-  await writeCachedLetter(context.dateKey, response);
+  writeCachedLetter(context.dateKey, response);
   return response;
 }
 

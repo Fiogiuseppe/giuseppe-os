@@ -1,23 +1,8 @@
-import { readFile, writeFile, mkdir } from 'fs/promises';
-import os from 'os';
-import path from 'path';
 import type { DailyBriefingResponse } from '../briefing/types';
 
-export const CACHE_SCHEMA = 'daily-briefing-v3';
+export const CACHE_SCHEMA = 'daily-briefing-v4';
 
-function isServerless(): boolean {
-  return process.env.VERCEL === '1' || Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME);
-}
-
-function cachePath(): string {
-  if (process.env.TODAYS_LETTER_CACHE_PATH) {
-    return path.resolve(process.env.TODAYS_LETTER_CACHE_PATH);
-  }
-  if (isServerless()) {
-    return path.join(os.tmpdir(), 'giuseppe-todays-letter-cache.json');
-  }
-  return path.join(process.cwd(), 'memory', 'todays_letter_cache.json');
-}
+const memoryCache = new Map<string, DailyBriefingResponse>();
 
 export function letterDateKey(now = new Date()): string {
   return new Intl.DateTimeFormat('en-CA', {
@@ -28,51 +13,31 @@ export function letterDateKey(now = new Date()): string {
   }).format(now);
 }
 
-interface LetterCacheFile {
-  dateKey: string;
-  schemaVersion: string;
-  letter: DailyBriefingResponse;
-}
-
-function isValidCachedLetter(parsed: LetterCacheFile, dateKey: string): boolean {
-  return (
-    parsed.dateKey === dateKey &&
-    parsed.schemaVersion === CACHE_SCHEMA &&
-    Boolean(parsed.letter?.briefing) &&
-    Boolean(parsed.letter.sections?.oneBigMove)
-  );
-}
-
-export async function readCachedLetter(dateKey: string): Promise<DailyBriefingResponse | null> {
-  try {
-    const raw = await readFile(cachePath(), 'utf8');
-    const parsed = JSON.parse(raw) as LetterCacheFile;
-    if (isValidCachedLetter(parsed, dateKey)) {
-      return { ...parsed.letter, cached: true };
-    }
-    return null;
-  } catch {
+export function readCachedLetter(dateKey: string): DailyBriefingResponse | null {
+  const cached = memoryCache.get(dateKey);
+  if (!cached) {
     return null;
   }
+
+  return {
+    ...cached,
+    cached: true
+  };
 }
 
-export async function writeCachedLetter(dateKey: string, letter: DailyBriefingResponse): Promise<boolean> {
-  try {
-    const target = cachePath();
-    await mkdir(path.dirname(target), { recursive: true });
-    const payload: LetterCacheFile = {
-      dateKey,
-      schemaVersion: CACHE_SCHEMA,
-      letter: { ...letter, cached: false, letter: letter.briefing }
-    };
-    await writeFile(target, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
-    return true;
-  } catch {
-    return false;
-  }
+export function writeCachedLetter(dateKey: string, letter: DailyBriefingResponse): void {
+  memoryCache.set(dateKey, {
+    ...letter,
+    cached: false,
+    letter: letter.briefing
+  });
 }
 
-/** Playwright and explicit file-cache runs should not use the platform data cache. */
+/** Production uses Next.js unstable_cache; dev uses in-process memory only. */
 export function usePlatformLetterCache(): boolean {
-  return !process.env.TODAYS_LETTER_CACHE_PATH;
+  return process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+}
+
+export function resetLetterCacheForTests(): void {
+  memoryCache.clear();
 }

@@ -128,23 +128,55 @@ export function scanFakeData(): GuardianFinding[] {
   return findings;
 }
 
+export function scanMemoryPersistence(): GuardianFinding[] {
+  const findings: GuardianFinding[] = [];
+  const productionPaths = [
+    'lib/memory/persistentStore.ts',
+    'lib/memory/insights.ts',
+    'lib/todays-letter/cache.ts',
+    'lib/todays-letter/loadConstitution.ts',
+    'lib/brain/memory/update.ts',
+    'lib/brain/engines/pipeline.ts'
+  ];
+
+  for (const relativePath of productionPaths) {
+    const content = read(relativePath);
+    if (!content) {
+      continue;
+    }
+
+    if (/long_term\.json|working_memory\.json/.test(content)) {
+      findings.push({
+        id: `memory:json-path:${relativePath}`,
+        category: 'trust',
+        severity: 'critical',
+        title: 'Local JSON memory path in production code',
+        detail: `${relativePath} still references long_term.json or working_memory.json.`,
+        why: 'Read-only serverless filesystems throw EROFS when Giuseppe OS writes local memory files.',
+        recommendation: 'Route memory through Supabase or the in-memory persistent store only.',
+        file: relativePath
+      });
+    }
+
+    if (/from 'fs\/promises'|from "fs\/promises"|readFile|writeFile/.test(content)) {
+      findings.push({
+        id: `memory:filesystem:${relativePath}`,
+        category: 'trust',
+        severity: 'critical',
+        title: 'Filesystem persistence in runtime memory path',
+        detail: `${relativePath} still uses filesystem reads or writes.`,
+        why: 'Production must not depend on local JSON files for memory or briefing cache.',
+        recommendation: 'Use Supabase, in-memory cache, or bundled static imports instead.',
+        file: relativePath
+      });
+    }
+  }
+
+  return findings;
+}
+
 export function scanDeadCode(): GuardianFinding[] {
   const findings: GuardianFinding[] = [];
-  const page = read('app/page.tsx');
-  const jewelFace = read('app/components/JewelFace.tsx');
-
-  if (jewelFace && !/JewelFace/.test(page)) {
-    findings.push({
-      id: 'dead-code:jewel-face',
-      category: 'unused-components',
-      severity: 'medium',
-      title: 'Unused JewelFace component',
-      detail: 'app/components/JewelFace.tsx exists but is not imported in the app shell.',
-      why: 'Unused components add maintenance cost and visual inconsistency risk.',
-      recommendation: 'Remove JewelFace or document why it is kept for a near-term migration.',
-      file: 'app/components/JewelFace.tsx'
-    });
-  }
 
   if (fileExists('public/avatar/avatar-eyes-debug-box.png')) {
     findings.push({
@@ -207,6 +239,7 @@ export function runAllScans(): GuardianFinding[] {
     ...scanGuardianPresence(),
     ...scanPhilosophy(),
     ...scanFakeData(),
+    ...scanMemoryPersistence(),
     ...scanDeadCode(),
     ...scanAiConsistency(),
     ...scanProductSimplicity()

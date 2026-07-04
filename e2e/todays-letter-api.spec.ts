@@ -1,19 +1,7 @@
 import { test, expect } from '@playwright/test';
-import fs from 'node:fs';
-import path from 'node:path';
-
-const CACHE_PATH = path.join(process.cwd(), 'memory', 'todays_letter.test.json');
 
 test.describe('Giuseppe OS Daily Briefing API', () => {
   test.describe.configure({ mode: 'serial' });
-
-  test.beforeEach(() => {
-    try {
-      fs.unlinkSync(CACHE_PATH);
-    } catch {
-      // Cache absent.
-    }
-  });
 
   test('GET /api/todays-letter exposes daily briefing metadata', async ({ request }) => {
     const response = await request.get('/api/todays-letter');

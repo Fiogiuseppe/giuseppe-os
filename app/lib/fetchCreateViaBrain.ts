@@ -11,7 +11,7 @@ export async function fetchCreateViaBrain(): Promise<FetchCreateResult> {
     body: JSON.stringify({
       intent: 'potential',
       message: 'What should I focus on today?',
-      persist: false
+      persist: true
     })
   });
 
