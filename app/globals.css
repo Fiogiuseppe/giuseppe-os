@@ -14,6 +14,15 @@
   --surface: rgba(0, 0, 0, 0.03);
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --app-gutter: clamp(32px, 4vw, 56px);
+  --font-display: 'Quartz Defio', Georgia, serif;
+}
+
+@font-face {
+  font-family: 'Quartz Defio';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/quartz-defio-regular.ttf') format('truetype');
 }
 
 html,
@@ -564,7 +573,19 @@ html.about-route body {
   width: 100%;
 }
 
-.insights-stage-title,
+.insights-stage-title {
+  margin: 0;
+  max-width: 10em;
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5.6vw, 68px);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--fg);
+}
+
 .create-stage-title {
   margin: 0;
   max-width: 10em;
@@ -1811,32 +1832,36 @@ html.about-route body {
   transition: transform 0.35s var(--ease);
 }
 
-.memory-tunnel-wall {
+.memory-tunnel-wall-svg {
   position: absolute;
   top: 50%;
-  font-family: 'Helvetica Neue Condensed Bold', 'Helvetica Condensed', 'Arial Narrow', Helvetica, Arial, sans-serif;
-  font-stretch: condensed;
-  font-size: clamp(88px, 18vw, 240px);
-  font-weight: 700;
-  line-height: 0.82;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
-  color: #000;
-  opacity: 0.16;
-  user-select: none;
-  white-space: nowrap;
+  width: min(44vw, 560px);
+  height: auto;
+  overflow: visible;
+  opacity: 0.18;
+  transform: translateY(-50%);
 }
 
-.memory-tunnel-wall--left {
-  left: -2%;
+.memory-tunnel-wall-svg--left {
+  left: -1%;
   transform: translateY(-50%) perspective(620px) rotateY(40deg) scaleX(1.08);
   transform-origin: right center;
 }
 
-.memory-tunnel-wall--right {
-  right: -2%;
+.memory-tunnel-wall-svg--right {
+  right: -1%;
   transform: translateY(-50%) perspective(620px) rotateY(-40deg) scaleX(1.08);
   transform-origin: left center;
+}
+
+.memory-tunnel-word {
+  font-family: 'Helvetica Neue Condensed Bold', 'Helvetica Condensed', 'Arial Narrow', Helvetica, Arial, sans-serif;
+  font-size: 64px;
+  font-weight: 700;
+  font-stretch: condensed;
+  letter-spacing: -0.04em;
+  fill: #000000;
+  stroke: none;
 }
 
 .memory-tunnel-lines {
