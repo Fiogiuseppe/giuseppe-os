@@ -55,6 +55,13 @@
       "intent": "learn",
       "summary": "Learning report",
       "query": "Analyze my patterns and lessons."
+    },
+    {
+      "id": "session_1783161194615",
+      "timestamp": "2026-07-04T10:33:14.615Z",
+      "intent": "learn",
+      "summary": "Learning report",
+      "query": "Analyze my patterns and lessons."
     }
   ],
   "notes": [],
@@ -120,6 +127,14 @@
       "type": "lesson",
       "content": "Learning report",
       "createdAt": "2026-07-04T09:58:36.153Z",
+      "confidence": 0.75,
+      "source": "interaction"
+    },
+    {
+      "id": "record_1783161194615",
+      "type": "lesson",
+      "content": "Learning report",
+      "createdAt": "2026-07-04T10:33:14.615Z",
       "confidence": 0.75,
       "source": "interaction"
     }

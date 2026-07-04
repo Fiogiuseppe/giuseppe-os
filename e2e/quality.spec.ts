@@ -55,7 +55,7 @@ test.describe('Giuseppe OS quality loop', () => {
     }
   });
 
-  test('footer manifesto stays visible across navigation', async ({ page }) => {
+  test('footer about link stays visible across navigation', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     const nav = page.getByRole('navigation');
 
@@ -99,6 +99,15 @@ test.describe('Giuseppe OS quality loop', () => {
     }
 
     expect(errors).toEqual([]);
+  });
+
+  test('about page is reachable from footer', async ({ page }) => {
+    await page.locator('footer.footer').getByRole('link', { name: 'About' }).click();
+    await expect(page).toHaveURL(/\/about$/);
+    await expect(page.getByRole('heading', { name: 'Giuseppe OS', level: 1 })).toBeVisible();
+    await expect(page.getByText(/Your Operating Self\.|Il tuo Sé operativo\./)).toBeVisible();
+    await expect(page.getByText('v0.1')).toBeVisible();
+    await expect(page.getByText(/A lifelong project\.|Un progetto per tutta la vita\./)).toBeVisible();
   });
 
   test('accessibility landmarks are present', async ({ page }) => {

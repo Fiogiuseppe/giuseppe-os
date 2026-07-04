@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import brain from '../memory/giuseppe_brain.json';
 import {
@@ -599,7 +600,9 @@ export default function Home() {
         </main>
 
         <footer className="footer">
-          <p>{t('footer')}</p>
+          <Link href="/about" className="footer-link">
+            {t('footer.about')}
+          </Link>
         </footer>
       </div>
     </div>

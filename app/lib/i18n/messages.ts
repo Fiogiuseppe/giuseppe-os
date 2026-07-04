@@ -162,8 +162,45 @@ export const messages = {
     finance: {
       goalsTitle: 'Obiettivi finanziari.'
     },
-    footer:
-      'Non è il software più intelligente. È il partner decisionale di cui ti fidi.',
+    footer: {
+      about: 'About'
+    },
+    about: {
+      back: 'Giuseppe OS',
+      title: 'Giuseppe OS',
+      subtitle: 'Il tuo Sé operativo.',
+      description: 'Aiutarti a diventare chi scegli di essere.',
+      aboutHeading: 'About',
+      aboutBody1:
+        'Giuseppe OS ti aiuta a prendere decisioni migliori, capire te stesso e crescere con intenzione.',
+      aboutBody2:
+        'Collega continuamente il tuo passato, il presente, le ambizioni e il mondo che cambia per rivelare pattern, opportunità e conseguenze difficili da vedere da soli.',
+      productHeading: 'Il prodotto',
+      products: {
+        today: {
+          name: 'Oggi',
+          desc: 'Guida quotidiana per la tua azione a massima leva.'
+        },
+        decisions: {
+          name: 'Decisioni',
+          desc: 'Uno spazio per pensare prima di scegliere.'
+        },
+        insights: {
+          name: 'Insight',
+          desc: 'Pattern e osservazioni che probabilmente non noteresti da solo.'
+        },
+        create: {
+          name: 'Crea',
+          desc: 'Focus e direzione per tutto ciò che stai costruendo.'
+        },
+        memory: {
+          name: 'Memoria',
+          desc: 'Un posto per ricordare chi sei e chi scegli di diventare.'
+        }
+      },
+      version: 'v0.1',
+      tagline: 'Un progetto per tutta la vita.'
+    },
     language: {
       italian: 'IT',
       english: 'EN',
@@ -291,8 +328,45 @@ export const messages = {
     finance: {
       goalsTitle: 'Financial goals.'
     },
-    footer:
-      'Not the smartest software. The decision partner you trust most.',
+    footer: {
+      about: 'About'
+    },
+    about: {
+      back: 'Giuseppe OS',
+      title: 'Giuseppe OS',
+      subtitle: 'Your Operating Self.',
+      description: 'Helping you become who you choose to be.',
+      aboutHeading: 'About',
+      aboutBody1:
+        'Giuseppe OS helps you make better decisions, understand yourself and grow with intention.',
+      aboutBody2:
+        'It continuously connects your past, your present, your ambitions and the changing world to reveal patterns, opportunities and consequences that are difficult to see alone.',
+      productHeading: 'The Product',
+      products: {
+        today: {
+          name: 'Today',
+          desc: 'Daily guidance for your highest leverage action.'
+        },
+        decisions: {
+          name: 'Decisions',
+          desc: 'A place to think before making important choices.'
+        },
+        insights: {
+          name: 'Insights',
+          desc: "Patterns and observations you probably wouldn't notice yourself."
+        },
+        create: {
+          name: 'Create',
+          desc: "Focus and direction for everything you're building."
+        },
+        memory: {
+          name: 'Memory',
+          desc: 'A place to remember who you are and who you choose to become.'
+        }
+      },
+      version: 'v0.1',
+      tagline: 'A lifelong project.'
+    },
     language: {
       italian: 'IT',
       english: 'EN',
