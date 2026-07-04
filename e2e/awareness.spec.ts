@@ -21,7 +21,7 @@ test.describe('Giuseppe OS insights engine', () => {
   });
 
   test('opens the Insights page', async ({ page }) => {
-    await expect(page.getByRole('main').locator('.view-title')).toContainText(VIEW_HEADING_PATTERNS.insights);
+    await expect(page.locator('.insights-stage-title.view-title')).toContainText(VIEW_HEADING_PATTERNS.insights);
     await expect(page.getByRole('main').locator('.discovery-insight .kicker')).toContainText('INSIGHT');
     await expect(page.getByTestId('nav-insights')).toHaveClass(/active/);
   });
@@ -65,6 +65,6 @@ test.describe('Giuseppe OS insights engine', () => {
     await page.getByRole('button', { name: /Close|Chiudi/i }).click();
 
     await gotoView(page, 'insights');
-    await expect(page.getByRole('main').locator('.view-title')).toContainText(VIEW_HEADING_PATTERNS.insights);
+    await expect(page.locator('.insights-stage-title.view-title')).toContainText(VIEW_HEADING_PATTERNS.insights);
   });
 });

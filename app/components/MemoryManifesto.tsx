@@ -1,150 +1,70 @@
 'use client';
 
-import { useState } from 'react';
-import brain from '../../memory/giuseppe_brain.json';
-import {
-  buildManifestoDepthSections,
-  buildManifestoPrimarySections,
-  type ManifestoSection
-} from '../lib/memoryManifestoSections';
+import { useEffect, useRef } from 'react';
 import { useLanguage } from '../lib/i18n/LanguageContext';
-import { MemoryTunnelBackground } from './MemoryTunnelBackground';
 
-function sectionTeaser(section: ManifestoSection): string {
-  const first = section.lines[0] ?? '';
-  if (first.length <= 72) {
-    return first;
-  }
-  return `${first.slice(0, 69)}…`;
-}
+const HOW_KEYS = ['memory.how1', 'memory.how2', 'memory.how3', 'memory.how4'] as const;
 
-function MemoryNode({
-  section,
-  onSelect
-}: {
-  section: ManifestoSection;
-  onSelect: (section: ManifestoSection) => void;
-}) {
-  return (
-    <button
-      type="button"
-      className={`memory-node${section.accent ? ' memory-node--accent' : ''}`}
-      onClick={() => onSelect(section)}
-      aria-labelledby={`manifesto-${section.id}`}
-    >
-      <h2
-        id={`manifesto-${section.id}`}
-        className={`memory-node-label${section.accent ? ' memory-node-label--accent' : ''}`}
-      >
-        {section.label}
-      </h2>
-      <p className="memory-node-teaser">{sectionTeaser(section)}</p>
-    </button>
-  );
-}
+function useConstitutionParallax<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
 
-function MemoryFocusPanel({
-  section,
-  onClose
-}: {
-  section: ManifestoSection;
-  onClose: () => void;
-}) {
-  const { t } = useLanguage();
+  useEffect(() => {
+    const root = ref.current;
+    if (!root) {
+      return undefined;
+    }
 
-  return (
-    <div className="insights-focus-stage reading-focus-view memory-focus-stage" data-testid="memory-focus-stage">
-      <button type="button" className="reading-expand-close" onClick={onClose}>
-        <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-      </button>
+    const onMove = (event: MouseEvent) => {
+      const rect = root.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      root.style.setProperty('--memory-parallax-x', `${x * 8}px`);
+      root.style.setProperty('--memory-parallax-y', `${y * 5}px`);
+    };
 
-      <div className={`insights-focus-panel memory-focus-panel${section.accent ? ' memory-focus-panel--accent' : ''}`}>
-        <div className="kicker">{section.label}</div>
-        <div className="memory-focus-body">
-          {section.lines.map(line => (
-            <p key={line} className="memory-focus-line">
-              {line}
-            </p>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+    root.addEventListener('mousemove', onMove);
+    return () => root.removeEventListener('mousemove', onMove);
+  }, []);
+
+  return ref;
 }
 
 export function MemoryManifesto() {
   const { t } = useLanguage();
-  const [layer, setLayer] = useState<'surface' | 'depth'>('surface');
-  const [activeSection, setActiveSection] = useState<ManifestoSection | null>(null);
-
-  const primarySections = buildManifestoPrimarySections(brain);
-  const depthSections = buildManifestoDepthSections(brain);
-  const northStar = primarySections.find(section => section.id === 'north-star');
-  const orbitSections = primarySections.filter(section => section.id !== 'north-star');
-
-  if (activeSection) {
-    return <MemoryFocusPanel section={activeSection} onClose={() => setActiveSection(null)} />;
-  }
-
-  if (layer === 'depth') {
-    return (
-      <article className="memory-stage memory-stage--depth" data-testid="memory-manifesto-depth">
-        <header className="memory-stage-intro">
-          <p className="memory-stage-epigraph">{t('navRole.memory')}</p>
-          <h1 className="memory-stage-title view-title">{t('memory.depthTitle')}</h1>
-        </header>
-
-        <div className="memory-constellation memory-constellation--depth" role="list">
-          {depthSections.map(section => (
-            <MemoryNode key={section.id} section={section} onSelect={setActiveSection} />
-          ))}
-        </div>
-
-        <button
-          type="button"
-          className="insights-action-chip memory-layer-back"
-          onClick={() => setLayer('surface')}
-        >
-          <span aria-hidden="true">←</span> {t('memory.backToManifesto')}
-        </button>
-      </article>
-    );
-  }
+  const constitutionRef = useConstitutionParallax<HTMLElement>();
+  const principles = HOW_KEYS.map(key => t(key));
 
   return (
-    <>
-      <MemoryTunnelBackground />
-      <article className="memory-stage memory-stage--tunnel" data-testid="memory-manifesto">
-        <div className="memory-tunnel-content">
-          <header className="memory-stage-intro">
-            <p className="memory-stage-epigraph">{t('navRole.memory')}</p>
-            <h1 className="memory-stage-title view-title">{t('viewHeadings.memory')}</h1>
-            <p className="memory-stage-headline">{brain.manifesto}</p>
-          </header>
+    <article
+      ref={constitutionRef}
+      className="memory-constitution"
+      data-testid="memory-constitution"
+    >
+      <p className="memory-constitution-epigraph">{t('memory.epigraph')}</p>
 
-          {northStar && (
-            <section className="memory-hero-card" aria-labelledby="manifesto-north-star">
-              <h2 id="manifesto-north-star" className="kicker memory-hero-kicker">
-                {northStar.label}
-              </h2>
-              <p className="memory-hero-text">{northStar.lines[0]}</p>
-            </section>
-          )}
+      <section className="memory-constitution-section memory-constitution-section--why" aria-labelledby="memory-why-label">
+        <h2 id="memory-why-label" className="memory-constitution-label">
+          {t('memory.whyLabel')}
+        </h2>
+        <p className="memory-constitution-why">{t('memory.whyText')}</p>
+      </section>
 
-          <div className="memory-constellation" role="list">
-            {orbitSections.map(section => (
-              <MemoryNode key={section.id} section={section} onSelect={setActiveSection} />
-            ))}
-          </div>
-
-          <button type="button" className="insights-action-chip" onClick={() => setLayer('depth')}>
-            {t('disclosure.exploreMemory')}
-            <span aria-hidden="true">→</span>
-          </button>
-
-          <p className="insights-built-over-time">{t('memory.constitutionNote')}</p>
-        </div>
-      </article>
-    </>
+      <section className="memory-constitution-section memory-constitution-section--how" aria-labelledby="memory-how-label">
+        <h2 id="memory-how-label" className="memory-constitution-label">
+          {t('memory.howLabel')}
+        </h2>
+        <ol className="memory-constitution-principles">
+          {principles.map((principle, index) => (
+            <li
+              key={principle}
+              className="memory-constitution-principle"
+              style={{ animationDelay: `${0.35 + index * 0.18}s` }}
+            >
+              {principle}
+            </li>
+          ))}
+        </ol>
+      </section>
+    </article>
   );
 }

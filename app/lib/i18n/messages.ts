@@ -93,11 +93,14 @@ export const messages = {
       }
     },
     memory: {
-      depthTitle: 'GLI STRATI PROFONDI',
-      backToManifesto: 'Torna al manifesto',
-      constitutionNote: 'Un manifesto personale — tocca ogni dominio.',
-      tunnelLeft: 'THINK',
-      tunnelRight: 'POSSIBLE'
+      epigraph: 'Costituzione personale',
+      whyLabel: 'Perché',
+      howLabel: 'Come',
+      whyText: 'Progettare una vita che mi renda libero di creare ciò che conta.',
+      how1: 'Compra tempo, non status.',
+      how2: 'Una cosa eccezionale vale più di dieci mediocri.',
+      how3: 'Ogni decisione deve aumentare almeno un capitale.',
+      how4: 'Scegli sempre verità e bellezza.'
     },
     decisions: {
       openingPrompt: 'Cosa stai decidendo?',
@@ -312,11 +315,14 @@ export const messages = {
       }
     },
     memory: {
-      depthTitle: 'THE DEEPER LAYERS',
-      backToManifesto: 'Back to manifesto',
-      constitutionNote: 'A personal manifesto — tap each domain.',
-      tunnelLeft: 'THINK',
-      tunnelRight: 'POSSIBLE'
+      epigraph: 'Personal constitution',
+      whyLabel: 'Why',
+      howLabel: 'How',
+      whyText: 'Design a life that gives me the freedom to create what truly matters.',
+      how1: 'Buy time, not status.',
+      how2: 'Build one extraordinary thing instead of many average ones.',
+      how3: 'Every decision should strengthen at least one form of capital.',
+      how4: 'Always choose truth and beauty.'
     },
     decisions: {
       openingPrompt: 'What are you deciding?',

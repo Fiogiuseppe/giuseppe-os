@@ -13,8 +13,26 @@ export const VIEW_HEADING_PATTERNS: Record<AppView, RegExp> = {
   decisions: /MIGLIORE DECISIONE|BEST DECISION I CAN MAKE/i,
   insights: /COSA NON STO VEDENDO|WHAT AM I NOT SEEING/i,
   create: /MERITA LA MIA ENERGIA|DESERVES MY ENERGY/i,
-  memory: /CONTINUARE A ESSERE|CONTINUE BEING/i
+  memory: /Perché|Why/i
 };
+
+export async function expectSectionHeading(page: Page, view: AppView) {
+  if (view === 'today') {
+    await expectTodayActionVisible(page);
+    return;
+  }
+
+  if (view === 'memory') {
+    await expect(page.getByTestId('memory-constitution')).toBeVisible();
+    await expect(page.getByRole('heading', { name: VIEW_HEADING_PATTERNS.memory })).toBeVisible();
+    return;
+  }
+
+  const stageTitle = page.locator(
+    '.decision-stage-title.view-title, .insights-stage-title.view-title, .create-stage-title.view-title'
+  );
+  await expect(stageTitle).toContainText(VIEW_HEADING_PATTERNS[view]);
+}
 
 export async function expectTodayActionVisible(page: Page) {
   const ritual = page.getByTestId('today-ritual');

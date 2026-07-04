@@ -56,10 +56,16 @@ export interface BrainProject {
   status: string;
 }
 
+export interface BrainConstitution {
+  why: string;
+  how: string[];
+}
+
 export interface GiuseppeBrain {
   north_star: string;
   mission_2036: string;
   manifesto: string;
+  constitution: BrainConstitution;
   values: string[];
   rules: string[];
   projects: Record<string, BrainProject>;

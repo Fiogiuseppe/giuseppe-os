@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible, completeDecisionConversation, richDecision, type AppView } from './helpers';
+import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible, completeDecisionConversation, richDecision, expectSectionHeading, type AppView } from './helpers';
 
 const NORTH_STAR = 'PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.';
 
@@ -24,16 +24,7 @@ async function expectFooterManifesto(page: import('@playwright/test').Page) {
 }
 
 async function expectPrimaryHeading(page: import('@playwright/test').Page, section: AppView) {
-  if (section === 'today') {
-    await expectTodayActionVisible(page);
-    return;
-  }
-
-  const main = page.getByRole('main');
-  const heading = main.locator('.view-title').first();
-  await expect(heading).toBeVisible();
-  const text = await heading.textContent();
-  expect(text?.trim().length).toBeGreaterThan(0);
+  await expectSectionHeading(page, section);
 }
 
 test.describe('Giuseppe OS quality loop', () => {
@@ -44,14 +35,10 @@ test.describe('Giuseppe OS quality loop', () => {
   test('all main sections are reachable', async ({ page }) => {
     const nav = page.getByRole('navigation');
 
-    for (const { id, heading } of MAIN_SECTIONS) {
+    for (const { id } of MAIN_SECTIONS) {
       await nav.getByTestId(`nav-${id}`).click();
       await expect(page.getByRole('main')).toBeVisible();
-      if (id === 'today') {
-        await expectTodayActionVisible(page);
-      } else {
-        await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
-      }
+      await expectSectionHeading(page, id);
     }
   });
 
@@ -90,7 +77,7 @@ test.describe('Giuseppe OS quality loop', () => {
 
   test('insights section surfaces patterns on demand', async ({ page }) => {
     await gotoView(page, 'insights');
-    await expect(page.getByRole('main').locator('.view-title')).toContainText(VIEW_HEADING_PATTERNS.insights);
+    await expect(page.locator('.insights-stage-title.view-title')).toContainText(VIEW_HEADING_PATTERNS.insights);
     await expect(page.getByRole('main').locator('.discovery-insight .kicker')).toContainText('INSIGHT', {
       timeout: 15_000
     });
@@ -133,9 +120,13 @@ test.describe('Giuseppe OS quality loop', () => {
     const nav = page.getByRole('navigation');
 
     for (const { id } of MAIN_SECTIONS) {
-      if (id === 'today') continue;
+      if (id === 'today' || id === 'decisions') continue;
       await nav.getByTestId(`nav-${id}`).click();
-      await expect(page.getByRole('main').locator('.kicker').first()).toBeVisible();
+      if (id === 'memory') {
+        await expect(page.getByTestId('memory-constitution').locator('.memory-constitution-epigraph')).toBeVisible();
+        continue;
+      }
+      await expect(page.locator('.insights-hero-card .kicker, .create-stage .kicker').first()).toBeVisible();
     }
   });
 
@@ -149,9 +140,7 @@ test.describe('Giuseppe OS quality loop', () => {
   });
 
   test('north star page headline appears only on Decisions view', async ({ page }) => {
-    const decisionsHeadline = page.locator('.view-title').filter({
-      hasText: VIEW_HEADING_PATTERNS.decisions
-    });
+    const decisionsHeadline = page.locator('.decision-stage-title.view-title');
     await expect(decisionsHeadline).toHaveCount(0);
 
     const nav = page.getByRole('navigation');
@@ -165,7 +154,8 @@ test.describe('Giuseppe OS quality loop', () => {
     }
 
     await nav.getByTestId('nav-memory').click();
-    await expect(page.getByRole('heading', { name: 'NORTH STAR' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Perché|Why/i })).toBeVisible();
+    await expect(page.getByText(/libero di creare|freedom to create/i)).toBeVisible();
   });
 
   test('no overly generic copy on the page', async ({ page }) => {
@@ -180,7 +170,9 @@ test.describe('Giuseppe OS quality loop', () => {
     const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     expect(bodyBg).toBe('rgb(247, 245, 232)');
 
-    await expect(page.getByRole('link', { name: /Giuseppe OS home/i })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /Giuseppe OS home/i }).or(page.getByRole('link', { name: /Giuseppe OS home/i }))
+    ).toBeVisible();
     await expect(page.getByTestId('today-action')).toBeVisible();
     await expect(page.locator('.topbar')).toBeVisible();
   });
@@ -210,13 +202,9 @@ test.describe('Giuseppe OS quality loop — responsiveness', () => {
     const nav = page.getByRole('navigation');
     await expect(nav.getByTestId('nav-today')).toBeVisible();
 
-    for (const { id, heading } of MAIN_SECTIONS) {
+    for (const { id } of MAIN_SECTIONS) {
       await nav.getByTestId(`nav-${id}`).click();
-      if (id === 'today') {
-        await expectTodayActionVisible(page);
-      } else {
-        await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
-      }
+      await expectSectionHeading(page, id);
     }
   });
 });

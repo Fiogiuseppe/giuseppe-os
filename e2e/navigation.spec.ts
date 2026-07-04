@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible, completeDecisionConversation, richDecision } from './helpers';
+import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible, completeDecisionConversation, richDecision, expectSectionHeading } from './helpers';
 
 const NAV_VIEWS = [
   { id: 'today' as const },
@@ -32,7 +32,9 @@ test.describe('Giuseppe OS navigation', () => {
 
   test('loads the home page', async ({ page }) => {
     await expectTodayActionVisible(page);
-    await expect(page.getByRole('link', { name: 'Giuseppe OS home' })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /Giuseppe OS home/i }).or(page.getByRole('link', { name: /Giuseppe OS home/i }))
+    ).toBeVisible();
     await expect(page.locator('footer.footer')).toContainText(FOOTER_PATTERN);
   });
 
@@ -49,11 +51,7 @@ test.describe('Giuseppe OS navigation', () => {
 
     for (const view of NAV_VIEWS) {
       await nav.getByTestId(`nav-${view.id}`).click();
-      if (view.id === 'today') {
-        await expectTodayActionVisible(page);
-      } else {
-        await expect(page.getByRole('main').locator('.view-title')).toContainText(view.heading);
-      }
+      await expectSectionHeading(page, view.id);
       await expect(nav.getByTestId(`nav-${view.id}`)).toHaveClass(/active/);
     }
   });

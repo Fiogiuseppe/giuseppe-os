@@ -2,6 +2,15 @@
   "north_star": "PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.",
   "mission_2036": "Costruire una persona che possa scegliere se lavorare oppure no.",
   "manifesto": "Un sistema pensante che mi aiuta a vivere il mio proposito spirituale nella realtà pratica.",
+  "constitution": {
+    "why": "Progettare una vita che mi renda libero di creare ciò che conta.",
+    "how": [
+      "Compra tempo, non status.",
+      "Una cosa eccezionale vale più di dieci mediocri.",
+      "Ogni decisione deve aumentare almeno un capitale.",
+      "Scegli sempre verità e bellezza."
+    ]
+  },
   "values": [
     "Libertà",
     "Verità",

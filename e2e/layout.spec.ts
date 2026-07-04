@@ -29,26 +29,32 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await expectNoPageScroll(page);
   });
 
-  test('desktop memory extra domains open via disclosure without page scroll', async ({ page }) => {
+  test('desktop memory constitution stays visible without page scroll', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto('/');
     await gotoView(page, 'memory');
 
-    await expect(page.getByRole('heading', { name: 'PRIORITIES' })).toBeVisible();
-    await page.getByRole('button', { name: /Continua a leggere|Continue reading/i }).click();
-
-    const blindSpots = page.getByRole('heading', { name: 'BLIND SPOTS' });
-    await expectInViewport(page, blindSpots);
+    await expect(page.getByTestId('memory-constitution')).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Perché|Why/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Come|How/i })).toBeVisible();
+    await expect(page.getByText(/libero di creare|freedom to create/i)).toBeVisible();
+    await expect(page.getByText(/Compra tempo|Buy time/i)).toBeVisible();
     await expectNoPageScroll(page);
   });
 
-  test('desktop memory grid shows rules without interaction', async ({ page }) => {
+  test('desktop memory shows all four principles without interaction', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto('/');
     await gotoView(page, 'memory');
 
-    const rulesItem = page.getByRole('heading', { name: 'PRINCIPLES' });
-    await expectInViewport(page, rulesItem);
+    for (const principle of [
+      /Compra tempo|Buy time/i,
+      /eccezionale|extraordinary thing/i,
+      /capitale|capital/i,
+      /verità e bellezza|truth and beauty/i
+    ]) {
+      await expect(page.getByText(principle)).toBeVisible();
+    }
   });
 
   test('desktop decisions expanded result remains reachable in content area', async ({ page }) => {
@@ -105,9 +111,10 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await page.goto('/');
     await gotoView(page, 'memory');
 
-    for (const domain of ['MISSION', 'NORTH STAR', 'VALUES', 'PRINCIPLES', 'PROJECTS', 'PRIORITIES']) {
-      await expect(page.getByRole('heading', { name: domain })).toBeVisible();
-    }
+    await expect(page.getByRole('heading', { name: /Perché|Why/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Come|How/i })).toBeVisible();
+    await expect(page.getByText(/libero di creare|freedom to create/i)).toBeInViewport();
+    await expect(page.getByText(/verità e bellezza|truth and beauty/i)).toBeInViewport();
 
     await expectNoPageScroll(page);
   });
