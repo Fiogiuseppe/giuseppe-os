@@ -76,3 +76,11 @@ export const assembleLetter = assembleBriefing;
 export function countWords(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
+
+export function limitWords(text: string, maxWords: number): string {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= maxWords) {
+    return text.trim();
+  }
+  return words.slice(0, maxWords).join(' ');
+}

@@ -11,6 +11,8 @@ import type { DecisionAIResult } from '../lib/brain/decisions/types';
 import type { AwarenessInsight } from '../engine/awarenessEngine';
 import type { PotentialBrief } from '../engine/potentialEngine';
 import type { DailyBriefingResponse } from '../lib/briefing/types';
+import { limitWords } from '../lib/todays-letter/parse';
+import { MAX_TODAY_ONE_BIG_MOVE_WORDS } from '../lib/todays-letter/prompt';
 import { decideViaBrain } from './lib/decideViaBrain';
 import { fetchDecisionIntake } from './lib/decisionIntake';
 import { fetchCreateViaBrain } from './lib/fetchCreateViaBrain';
@@ -534,7 +536,9 @@ export default function Home() {
                     <p className="today-action-text today-action-text--error">{letterError}</p>
                   )}
                   {!letterLoading && !letterError && todaysLetter && (
-                    <p className="today-action-text">{todaysLetter.sections.oneBigMove}</p>
+                    <p className="today-action-text">
+                      {limitWords(todaysLetter.sections.oneBigMove, MAX_TODAY_ONE_BIG_MOVE_WORDS)}
+                    </p>
                   )}
                 </div>
                 <div className="today-presence">

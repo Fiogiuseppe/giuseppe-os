@@ -13,14 +13,33 @@ import { buildDailyBriefingContext, formatContextForPrompt } from './buildContex
 import { readCachedLetter, letterDateKey, usePlatformLetterCache, writeCachedLetter } from './cache';
 import { buildFallbackBriefing } from './fallback';
 import { getPlatformCachedLetter } from './platformCache';
-import { assembleBriefing, countWords, parseBriefingSections } from './parse';
-import { DAILY_BRIEFING_SYSTEM_PROMPT, MAX_BRIEFING_WORDS } from './prompt';
+import { assembleBriefing, countWords, limitWords, parseBriefingSections } from './parse';
+import { DAILY_BRIEFING_SYSTEM_PROMPT, MAX_BRIEFING_WORDS, MAX_TODAY_ONE_BIG_MOVE_WORDS } from './prompt';
+
+function clampOneBigMove(sections: DailyBriefingSections): DailyBriefingSections {
+  return {
+    ...sections,
+    oneBigMove: limitWords(sections.oneBigMove, MAX_TODAY_ONE_BIG_MOVE_WORDS)
+  };
+}
+
+function applyTodayMoveLimit(response: DailyBriefingResponse): DailyBriefingResponse {
+  const sections = clampOneBigMove(response.sections);
+  const briefing = assembleBriefing(sections);
+  return {
+    ...response,
+    sections,
+    briefing,
+    letter: briefing,
+    wordCount: countWords(briefing)
+  };
+}
 
 function normalizeSections(
   partial: Partial<DailyBriefingSections>,
   fallback: DailyBriefingSections
 ): DailyBriefingSections {
-  return {
+  return clampOneBigMove({
     greeting: partial.greeting?.trim() || fallback.greeting,
     oneBigMove: partial.oneBigMove?.trim() || fallback.oneBigMove,
     reality: partial.reality?.trim() || fallback.reality,
@@ -28,7 +47,7 @@ function normalizeSections(
     ignore: partial.ignore?.trim() || fallback.ignore,
     nourish: partial.nourish?.trim() || fallback.nourish,
     reflection: partial.reflection?.trim() || fallback.reflection
-  };
+  });
 }
 
 function pipelineMeta(context: DailyBriefingContext, quality: BriefingQualityReport) {
@@ -77,11 +96,12 @@ function buildResponse(
   quality: BriefingQualityReport,
   cached: boolean
 ): DailyBriefingResponse {
-  const briefing = assembleBriefing(sections);
+  const limited = clampOneBigMove(sections);
+  const briefing = assembleBriefing(limited);
   return {
     briefing,
     letter: briefing,
-    sections,
+    sections: limited,
     wordCount: countWords(briefing),
     source,
     generatedAt: context.generatedAt,
@@ -157,7 +177,7 @@ export async function generateDailyBriefing(localeInput?: AppLocale): Promise<Da
   const dateKey = letterDateKey();
   const fileCached = await readCachedLetter(dateKey, locale);
   if (fileCached) {
-    return fileCached;
+    return applyTodayMoveLimit(fileCached);
   }
 
   if (usePlatformLetterCache()) {

@@ -127,7 +127,12 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
   try {
     completion = await provider.complete(completionRequest);
   } catch (error) {
-    if (resolvedIntent === 'decide' && outputs.decision && error instanceof ProviderConfigurationError) {
+    const canFallbackDecision =
+      resolvedIntent === 'decide' &&
+      outputs.decision &&
+      (error instanceof ProviderConfigurationError || error instanceof ProviderRequestError);
+
+    if (canFallbackDecision) {
       completion = await createRuleBasedProvider().complete(completionRequest);
       decisionSource = 'fallback';
     } else {
@@ -203,7 +208,18 @@ export function mapBrainError(error: unknown): { status: number; message: string
   }
 
   if (error instanceof ProviderRequestError) {
-    return { status: 502, message: error.message };
+    if (/credit balance|billing|purchase credits/i.test(error.message)) {
+      return {
+        status: 502,
+        message:
+          'Il servizio AI non è disponibile al momento. Giuseppe OS userà il motore decisionale locale quando possibile.'
+      };
+    }
+
+    return {
+      status: 502,
+      message: 'Giuseppe OS non ha potuto contattare il servizio AI. Riprova tra poco.'
+    };
   }
 
   if (error instanceof Error) {

@@ -1,5 +1,7 @@
 import type { DailyBriefingContext, DailyBriefingSections } from '../briefing/types';
 import { pickLocale, type AppLocale } from '../i18n/locale';
+import { limitWords } from './parse';
+import { MAX_TODAY_ONE_BIG_MOVE_WORDS } from './prompt';
 
 function greetingForDayPart(dayPart: DailyBriefingContext['dayPart'], locale: AppLocale): string {
   switch (dayPart) {
@@ -28,10 +30,12 @@ export function buildFallbackBriefing(context: DailyBriefingContext, locale: App
 
   return {
     greeting: greetingForDayPart(context.dayPart, locale),
-    oneBigMove:
+    oneBigMove: limitWords(
       topPriority ??
-      topRelevance?.headline ??
-      missingNote(pickLocale(locale, 'mossa principale', 'main move'), locale),
+        topRelevance?.headline ??
+        missingNote(pickLocale(locale, 'mossa principale', 'main move'), locale),
+      MAX_TODAY_ONE_BIG_MOVE_WORDS
+    ),
     reality: topRelevance
       ? `${topRelevance.headline} — ${topRelevance.whyForGiuseppe}`
       : context.reality.externalFeedsActive === 0

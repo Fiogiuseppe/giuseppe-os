@@ -41,7 +41,7 @@ export const DAILY_BRIEFING_SYSTEM_PROMPT = [
   'Return ONLY JSON:',
   '{',
   '  "greeting": "Good morning Giuseppe." (English only),',
-  '  "oneBigMove": "what the wisest Giuseppe would say — the single highest-leverage judgement for today",',
+  '  "oneBigMove": "what the wisest Giuseppe would say — the single highest-leverage judgement for today (maximum 30 words; this line appears on the Today home screen)",',
   '  "reality": "one world signal that changes Giuseppe\'s probabilities — or say it doesn\'t matter",',
   '  "opportunity": "one concrete opportunity worth exploring",',
   '  "ignore": "one thing to intentionally ignore today",',
@@ -55,6 +55,9 @@ export const DAILY_BRIEFING_SYSTEM_PROMPT = [
 export const TODAYS_LETTER_SYSTEM_PROMPT = DAILY_BRIEFING_SYSTEM_PROMPT;
 
 export const MAX_BRIEFING_WORDS = 280;
+
+/** Shown on the Today home — keep scannable at a glance. */
+export const MAX_TODAY_ONE_BIG_MOVE_WORDS = 30;
 
 /** @deprecated Use MAX_BRIEFING_WORDS */
 export const MAX_LETTER_WORDS = MAX_BRIEFING_WORDS;
