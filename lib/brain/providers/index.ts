@@ -1,4 +1,4 @@
-import { isAIMockMode } from '../../ai/mode';
+import { isAIMockMode, resolveConfiguredAiProvider } from '../../ai/mode';
 import { wrapProviderWithLogging } from '../../ai/loggedProvider';
 import type { AIProvider, AIProviderName } from './types';
 import { createRequestyProvider } from './requesty';
@@ -9,19 +9,7 @@ import { createRuleBasedProvider } from './ruleBased';
 import { createMockProvider } from './mock';
 
 function resolveProviderName(): AIProviderName {
-  const configured = process.env.BRAIN_AI_PROVIDER?.trim().toLowerCase();
-
-  if (
-    configured === 'requesty' ||
-    configured === 'openai' ||
-    configured === 'gemini' ||
-    configured === 'local' ||
-    configured === 'rule-based'
-  ) {
-    return configured;
-  }
-
-  return 'requesty';
+  return resolveConfiguredAiProvider();
 }
 
 function resolveLiveProvider(name: AIProviderName): AIProvider {
@@ -48,4 +36,4 @@ export function resolveAIProvider(): AIProvider {
   return resolveLiveProvider(resolveProviderName());
 }
 
-export { createRuleBasedProvider, createMockProvider, createRequestyProvider };
+export { createRuleBasedProvider, createMockProvider, createRequestyProvider, createGeminiProvider };

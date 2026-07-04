@@ -1,8 +1,9 @@
 import { isAIMockMode, isAILiveMode } from '../ai/mode';
 import { runWithAICallMeta } from '../ai/callContext';
 import { wrapProviderWithLogging } from '../ai/loggedProvider';
-import { createRequestyProvider } from '../brain/providers/requesty';
+import { resolveAIProvider } from '../brain/providers';
 import { ProviderConfigurationError, ProviderRequestError } from '../brain/providers/types';
+import { hasLiveAiCredentials } from '../ai/mode';
 import { resolveLocale, pickLocale, type AppLocale } from '../i18n/locale';
 import { WEEKLY_BOARD_SYSTEM_PROMPT } from '../oracle/weeklyPrompt';
 import { mapBriefingError } from '../todays-letter/generate';
@@ -22,8 +23,8 @@ export type GenerateWeeklyBoardOptions = {
   regenerate?: boolean;
 };
 
-function hasRequestyKey(): boolean {
-  return Boolean(process.env.REQUESTY_API_KEY?.trim());
+function hasLiveAiKey(): boolean {
+  return hasLiveAiCredentials();
 }
 
 function pipelineMeta(context: WeeklyBoardContext): WeeklyBoardPipelineMeta {
@@ -62,7 +63,7 @@ async function buildMockWeeklyBoard(context: WeeklyBoardContext): Promise<Weekly
 async function buildLiveWeeklyBoard(context: WeeklyBoardContext): Promise<WeeklyBoardResponse> {
   const fallback = buildFallbackWeeklyBoard(context, context.locale);
 
-  if (context.thinEvidence || !hasRequestyKey()) {
+  if (context.thinEvidence || !hasLiveAiKey()) {
     return buildResponse(fallback, 'fallback', context, false);
   }
 
@@ -83,7 +84,7 @@ async function buildLiveWeeklyBoard(context: WeeklyBoardContext): Promise<Weekly
       context.oracleEvidenceBlock
     ].join('\n\n');
 
-    const provider = wrapProviderWithLogging(createRequestyProvider(), 'weekly-board');
+    const provider = wrapProviderWithLogging(resolveAIProvider(), 'weekly-board');
     const completion = await provider.complete({
       system: WEEKLY_BOARD_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }],
@@ -92,7 +93,8 @@ async function buildLiveWeeklyBoard(context: WeeklyBoardContext): Promise<Weekly
     });
 
     const parsed = normalizeWeeklyBoardSections(parseWeeklyBoardResponse(completion.content), fallback);
-    return buildResponse(parsed, 'requesty', context, false);
+    const liveSource = provider.name === 'gemini' || provider.name === 'requesty' ? provider.name : 'fallback';
+    return buildResponse(parsed, liveSource, context, false);
   } catch (error) {
     if (!(error instanceof ProviderConfigurationError || error instanceof ProviderRequestError)) {
       throw error;

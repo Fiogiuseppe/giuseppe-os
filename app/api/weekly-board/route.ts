@@ -1,5 +1,5 @@
 import { generateWeeklyBoard, mapWeeklyBoardError } from '../../../lib/weekly-board/generate';
-import { isAILiveMode, resolveAIMode } from '../../../lib/ai/mode';
+import { isAILiveMode, resolveAIMode, resolveConfiguredAiProvider } from '../../../lib/ai/mode';
 
 function parseLocale(body: Record<string, unknown> | null): 'it' | 'en' {
   return body?.locale === 'en' ? 'en' : 'it';
@@ -32,7 +32,7 @@ export async function GET() {
     version: '1.0.0-weekly-board',
     method: 'POST',
     aiMode: resolveAIMode(),
-    provider: 'requesty',
+    provider: resolveConfiguredAiProvider(),
     cache: 'iso-week',
     pipeline: ['oracle-evidence', 'weekly-board-generator']
   });

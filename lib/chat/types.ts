@@ -3,7 +3,7 @@ export type ChatMessage = {
   content: string;
 };
 
-export type ChatProviderName = 'requesty' | 'ollama';
+export type ChatProviderName = 'requesty' | 'gemini' | 'ollama';
 
 export class ChatConfigurationError extends Error {
   constructor(message: string) {

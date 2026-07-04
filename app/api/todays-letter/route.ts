@@ -1,6 +1,6 @@
 import { MAX_BRIEFING_WORDS } from '../../../lib/todays-letter/prompt';
 import { generateDailyBriefing, mapBriefingError } from '../../../lib/todays-letter/generate';
-import { isAILiveMode, resolveAIMode } from '../../../lib/ai/mode';
+import { isAILiveMode, resolveAIMode, resolveConfiguredAiProvider } from '../../../lib/ai/mode';
 
 function parseLocale(body: Record<string, unknown> | null): 'it' | 'en' {
   return body?.locale === 'en' ? 'en' : 'it';
@@ -36,7 +36,7 @@ export async function GET() {
     method: 'POST',
     maxWords: MAX_BRIEFING_WORDS,
     aiMode: resolveAIMode(),
-    provider: 'requesty',
+    provider: resolveConfiguredAiProvider(),
     cache: 'daily',
     cacheLayers: ['file', 'platform-data-cache'],
     pipeline: [

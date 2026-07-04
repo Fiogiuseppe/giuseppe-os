@@ -1,5 +1,5 @@
 import type { AIProvider } from './types';
-import { ProviderConfigurationError } from './types';
+import { ProviderConfigurationError, ProviderRequestError } from './types';
 
 export function createGeminiProvider(): AIProvider {
   if (!process.env.GEMINI_API_KEY) {
@@ -26,14 +26,18 @@ export function createGeminiProvider(): AIProvider {
             contents: request.messages.map(message => ({
               role: message.role === 'assistant' ? 'model' : 'user',
               parts: [{ text: message.content }]
-            }))
+            })),
+            generationConfig: {
+              temperature: request.temperature ?? 0.4,
+              maxOutputTokens: request.maxTokens ?? 1200
+            }
           })
         }
       );
 
       if (!response.ok) {
         const errorBody = await response.text();
-        throw new ProviderConfigurationError(`Gemini provider failed (${response.status}): ${errorBody}`);
+        throw new ProviderRequestError(`Gemini provider failed (${response.status}): ${errorBody}`);
       }
 
       const payload = (await response.json()) as {
@@ -42,7 +46,7 @@ export function createGeminiProvider(): AIProvider {
 
       const content = payload.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
       if (!content) {
-        throw new ProviderConfigurationError('Gemini provider returned an empty response.');
+        throw new ProviderRequestError('Gemini provider returned an empty response.');
       }
 
       return { content, model };

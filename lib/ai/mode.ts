@@ -4,13 +4,37 @@ export function hasRequestyApiKey(): boolean {
   return Boolean(process.env.REQUESTY_API_KEY?.trim());
 }
 
+export function hasGeminiApiKey(): boolean {
+  return Boolean(process.env.GEMINI_API_KEY?.trim());
+}
+
+export function hasLiveAiCredentials(): boolean {
+  return hasRequestyApiKey() || hasGeminiApiKey();
+}
+
+export function resolveConfiguredAiProvider(): 'requesty' | 'gemini' | 'openai' | 'local' | 'rule-based' {
+  const configured = process.env.BRAIN_AI_PROVIDER?.trim().toLowerCase();
+
+  if (
+    configured === 'requesty' ||
+    configured === 'gemini' ||
+    configured === 'openai' ||
+    configured === 'local' ||
+    configured === 'rule-based'
+  ) {
+    return configured;
+  }
+
+  return 'gemini';
+}
+
 export function resolveAIMode(): AIMode {
   const configured = process.env.AI_MODE?.trim().toLowerCase();
   if (configured === 'mock') {
     return 'mock';
   }
 
-  if (configured === 'live' && hasRequestyApiKey()) {
+  if (configured === 'live' && hasLiveAiCredentials()) {
     return 'live';
   }
 

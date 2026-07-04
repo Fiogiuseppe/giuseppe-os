@@ -38,7 +38,7 @@ test.describe('Giuseppe OS Daily Briefing API', () => {
     expect(body.sections.nourish.length).toBeGreaterThan(0);
     expect(body.sections.reflection.length).toBeGreaterThan(0);
     expect(body.wordCount).toBeLessThanOrEqual(280);
-    expect(['requesty', 'fallback', 'mock']).toContain(body.source);
+    expect(['requesty', 'gemini', 'fallback', 'mock']).toContain(body.source);
     expect(body.generatedAt).toBeTruthy();
     expect(body.dateKey).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(typeof body.cached).toBe('boolean');

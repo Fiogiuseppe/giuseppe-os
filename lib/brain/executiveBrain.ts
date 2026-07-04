@@ -251,7 +251,7 @@ export function mapBrainError(error: unknown): { status: number; message: string
     return {
       status: 503,
       message:
-        'Giuseppe OS Brain non è configurato. Aggiungi REQUESTY_API_KEY in .env.local per attivare l’intelligenza AI.'
+        'Giuseppe OS Brain non è configurato. Aggiungi GEMINI_API_KEY o REQUESTY_API_KEY in .env.local per attivare l’intelligenza AI.'
     };
   }
 
