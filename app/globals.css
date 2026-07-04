@@ -277,7 +277,6 @@ html.about-route body {
   z-index: 1;
   padding: 4px;
   box-sizing: border-box;
-  touch-action: none;
   cursor: grab;
 }
 
@@ -290,6 +289,7 @@ html.about-route body {
 .today-presence--dragging {
   cursor: grabbing;
   transition: none;
+  touch-action: none;
 }
 
 .today-presence--dragging [data-testid='today-avatar-nav'] {
