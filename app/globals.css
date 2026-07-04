@@ -256,13 +256,13 @@ html.about-route body {
 }
 
 .today-action--left {
-  left: var(--app-gutter);
+  left: 0;
   right: auto;
   text-align: left;
 }
 
 .today-action--right {
-  right: var(--app-gutter);
+  right: 0;
   left: auto;
   text-align: right;
 }
@@ -1632,7 +1632,7 @@ html.about-route body {
 
 .memory-why-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: start;
   gap: clamp(20px, 4vw, 56px);
 }

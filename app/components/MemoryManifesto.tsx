@@ -45,10 +45,10 @@ export function MemoryManifesto() {
       data-testid="memory-constitution"
     >
       <section className="memory-why-row" aria-labelledby="memory-why-label">
-        <p className="memory-constitution-why">{t('memory.whyText')}</p>
         <h2 id="memory-why-label" className="memory-constitution-tag memory-constitution-tag--why">
           {t('memory.whyLabel')}
         </h2>
+        <p className="memory-constitution-why">{t('memory.whyText')}</p>
       </section>
 
       <section className="memory-how-row" aria-labelledby="memory-how-label">
