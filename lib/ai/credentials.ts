@@ -20,5 +20,14 @@ export function readRequestyApiKey(): string | undefined {
 }
 
 export function readGroqApiKey(): string | undefined {
-  return process.env.GROQ_API_KEY?.trim() || undefined;
+  const candidates = [process.env.GROQ_API_KEY, process.env.AIGROQ];
+
+  for (const candidate of candidates) {
+    const trimmed = candidate?.trim();
+    if (trimmed) {
+      return trimmed;
+    }
+  }
+
+  return undefined;
 }
