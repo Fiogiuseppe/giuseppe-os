@@ -2172,6 +2172,10 @@ html.about-route body {
   border-radius: 2px;
 }
 
+.footer-ai-status--locked {
+  cursor: default;
+}
+
 .footer-link {
   color: var(--muted);
   letter-spacing: 0.04em;

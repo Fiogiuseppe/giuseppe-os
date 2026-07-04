@@ -1,4 +1,4 @@
-import { hasAnthropicApiKey } from './mode';
+import { hasAnthropicApiKey, isClientAiToggleAllowed } from './mode';
 
 function parseBodyAiLive(body: Record<string, unknown> | null | undefined): boolean | null {
   if (body?.aiLive === true) {
@@ -21,19 +21,34 @@ function parseHeaderAiLive(request: Request): boolean | null {
   return null;
 }
 
+function parseClientAiLivePreference(
+  request: Request,
+  body?: Record<string, unknown> | null
+): boolean | null {
+  const fromBody = parseBodyAiLive(body);
+  if (fromBody !== null) {
+    return fromBody;
+  }
+
+  return parseHeaderAiLive(request);
+}
+
 export function resolveRequestAILive(
   request: Request,
   body?: Record<string, unknown> | null
 ): boolean {
-  const fromBody = parseBodyAiLive(body);
-  if (fromBody !== null) {
-    return fromBody && hasAnthropicApiKey();
+  if (!hasAnthropicApiKey()) {
+    return false;
   }
 
-  const fromHeader = parseHeaderAiLive(request);
-  if (fromHeader !== null) {
-    return fromHeader && hasAnthropicApiKey();
+  if (!isClientAiToggleAllowed()) {
+    return false;
   }
 
-  return false;
+  const preference = parseClientAiLivePreference(request, body);
+  if (preference === null) {
+    return false;
+  }
+
+  return preference;
 }

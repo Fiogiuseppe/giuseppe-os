@@ -8,6 +8,7 @@ test.describe('Giuseppe OS AI cost control', () => {
     const body = await response.json();
     expect(body).toHaveProperty('liveAvailable');
     expect(typeof body.liveAvailable).toBe('boolean');
+    expect(body.clientToggleEnabled).toBe(true);
   });
 
   test('todays-letter metadata reports aiMode', async ({ request }) => {

@@ -14,6 +14,7 @@ import { readAiLivePreference, writeAiLivePreference } from './aiLive';
 type AiLiveContextValue = {
   aiLive: boolean;
   liveAvailable: boolean;
+  clientToggleEnabled: boolean;
   ready: boolean;
   toggleAiLive: () => void;
 };
@@ -23,32 +24,36 @@ const AiLiveContext = createContext<AiLiveContextValue | null>(null);
 export function AiLiveProvider({ children }: { children: ReactNode }) {
   const [aiLive, setAiLive] = useState(false);
   const [liveAvailable, setLiveAvailable] = useState(false);
+  const [clientToggleEnabled, setClientToggleEnabled] = useState(false);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
     async function initialize() {
-      const stored = readAiLivePreference();
-
       const response = await fetch('/api/ai-status');
       const body = response.ok
-        ? ((await response.json()) as { liveAvailable?: boolean })
-        : { liveAvailable: false };
+        ? ((await response.json()) as {
+            liveAvailable?: boolean;
+            clientToggleEnabled?: boolean;
+          })
+        : { liveAvailable: false, clientToggleEnabled: false };
 
       if (cancelled) {
         return;
       }
 
+      const toggleEnabled = Boolean(body.clientToggleEnabled);
       const available = Boolean(body.liveAvailable);
-      const effective = stored && available;
+      const stored = toggleEnabled ? readAiLivePreference() : false;
 
-      if (stored && !available) {
+      if (!toggleEnabled || (stored && !available)) {
         writeAiLivePreference(false);
       }
 
+      setClientToggleEnabled(toggleEnabled);
       setLiveAvailable(available);
-      setAiLive(effective);
+      setAiLive(stored && available);
       setReady(true);
     }
 
@@ -60,6 +65,10 @@ export function AiLiveProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggleAiLive = useCallback(() => {
+    if (!clientToggleEnabled) {
+      return;
+    }
+
     setAiLive(current => {
       if (current) {
         writeAiLivePreference(false);
@@ -73,16 +82,17 @@ export function AiLiveProvider({ children }: { children: ReactNode }) {
       writeAiLivePreference(true);
       return true;
     });
-  }, [liveAvailable]);
+  }, [clientToggleEnabled, liveAvailable]);
 
   const value = useMemo(
     () => ({
       aiLive,
       liveAvailable,
+      clientToggleEnabled,
       ready,
       toggleAiLive
     }),
-    [aiLive, liveAvailable, ready, toggleAiLive]
+    [aiLive, liveAvailable, clientToggleEnabled, ready, toggleAiLive]
   );
 
   return <AiLiveContext.Provider value={value}>{children}</AiLiveContext.Provider>;
