@@ -1,24 +1,20 @@
-import {
-  chatWithOllama,
-  getOllamaConfig,
-  OllamaChatError,
-  OllamaUnavailableError,
-  type OllamaChatMessage
-} from '../../../lib/ollama/chat';
+import { chatWithGiuseppe, getChatServiceConfig } from '../../../lib/chat/client';
+import { ChatConfigurationError, ChatProviderError } from '../../../lib/chat/types';
+import type { ChatMessage } from '../../../lib/chat/types';
 
-function parseMessages(body: Record<string, unknown>): OllamaChatMessage[] | null {
+function parseMessages(body: Record<string, unknown>): ChatMessage[] | null {
   if (Array.isArray(body.messages)) {
     const messages = body.messages
       .filter(
-        (entry): entry is OllamaChatMessage =>
+        (entry): entry is ChatMessage =>
           typeof entry === 'object' &&
           entry !== null &&
-          (entry as OllamaChatMessage).role === 'user' &&
-          typeof (entry as OllamaChatMessage).content === 'string' &&
-          (entry as OllamaChatMessage).content.trim().length > 0
+          ((entry as ChatMessage).role === 'user' || (entry as ChatMessage).role === 'assistant') &&
+          typeof (entry as ChatMessage).content === 'string' &&
+          (entry as ChatMessage).content.trim().length > 0
       )
       .map(entry => ({
-        role: 'user' as const,
+        role: entry.role,
         content: entry.content.trim()
       }));
 
@@ -33,14 +29,16 @@ function parseMessages(body: Record<string, unknown>): OllamaChatMessage[] | nul
 }
 
 export async function GET() {
-  const config = getOllamaConfig();
+  const config = getChatServiceConfig();
 
   return Response.json({
     status: 'ok',
     service: 'giuseppe-chat',
-    provider: 'ollama',
+    provider: config.provider,
     model: config.model,
-    endpoint: `${config.baseUrl}/api/chat`,
+    endpoint: config.endpoint,
+    configured: config.configured,
+    fallback: config.fallback,
     stream: false
   });
 }
@@ -54,14 +52,14 @@ export async function POST(request: Request) {
       return Response.json({ error: 'A non-empty message is required.' }, { status: 400 });
     }
 
-    const reply = await chatWithOllama(messages);
-    return Response.json({ reply });
+    const result = await chatWithGiuseppe(messages);
+    return Response.json({ reply: result.reply });
   } catch (error) {
-    if (error instanceof OllamaUnavailableError) {
+    if (error instanceof ChatConfigurationError) {
       return Response.json({ error: error.message }, { status: 503 });
     }
 
-    if (error instanceof OllamaChatError) {
+    if (error instanceof ChatProviderError) {
       return Response.json({ error: error.message }, { status: 502 });
     }
 

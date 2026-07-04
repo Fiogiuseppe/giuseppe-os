@@ -10,16 +10,37 @@ type ChatMessage = {
   content: string;
 };
 
+type ChatServiceInfo = {
+  provider: string;
+  model: string;
+  configured: boolean;
+};
+
 export default function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
+  const [serviceInfo, setServiceInfo] = useState<ChatServiceInfo | null>(null);
   const transcriptRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.classList.add('chat-route');
     return () => document.documentElement.classList.remove('chat-route');
+  }, []);
+
+  useEffect(() => {
+    async function loadServiceInfo() {
+      const response = await fetch('/api/chat');
+      if (!response.ok) {
+        return;
+      }
+
+      const body = (await response.json()) as ChatServiceInfo;
+      setServiceInfo(body);
+    }
+
+    void loadServiceInfo();
   }, []);
 
   useEffect(() => {
@@ -62,7 +83,7 @@ export default function ChatPage() {
       }
 
       if (!body.reply?.trim()) {
-        throw new Error('Ollama returned an empty reply.');
+        throw new Error('Giuseppe OS returned an empty reply.');
       }
 
       const reply = body.reply.trim();
@@ -81,18 +102,24 @@ export default function ChatPage() {
     }
   }
 
+  const subtitle = serviceInfo
+    ? serviceInfo.configured
+      ? `Giuseppe OS via Requesty · ${serviceInfo.model}`
+      : `Local dev fallback · ${serviceInfo.provider} · ${serviceInfo.model}`
+    : 'Giuseppe OS chat';
+
   return (
     <div className="app app-topnav chat-app">
       <AppTopbar mode="link" />
       <main className={styles.page}>
         <header className={styles.header}>
-          <h1 className={styles.title}>Local chat</h1>
-          <p className={styles.subtitle}>Giuseppe OS via Ollama · qwen3:8b</p>
+          <h1 className={styles.title}>Chat</h1>
+          <p className={styles.subtitle}>{subtitle}</p>
         </header>
 
         <div ref={transcriptRef} className={styles.transcript} aria-live="polite">
           {messages.length === 0 ? (
-            <p className={styles.empty}>Send a message to test the local Ollama connection.</p>
+            <p className={styles.empty}>Ask Giuseppe OS something. Online chat uses Requesty in production.</p>
           ) : (
             messages.map(entry => (
               <article

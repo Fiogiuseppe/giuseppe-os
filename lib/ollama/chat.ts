@@ -1,14 +1,3 @@
-import fs from 'node:fs';
-import path from 'node:path';
-
-const IDENTITY_PATH = path.join(process.cwd(), 'brain', 'GIUSEPPE_OS_IDENTITY.md');
-
-function loadSystemPrompt(): string {
-  return fs.readFileSync(IDENTITY_PATH, 'utf8').trim();
-}
-
-const SYSTEM_PROMPT = loadSystemPrompt();
-
 const OLLAMA_BASE_URL = (process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434').replace(/\/$/, '');
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? 'qwen3:8b';
 
@@ -45,7 +34,10 @@ function isConnectionError(error: unknown): boolean {
   );
 }
 
-export async function chatWithOllama(messages: OllamaChatMessage[]): Promise<string> {
+export async function chatWithOllama(
+  messages: OllamaChatMessage[],
+  systemPrompt: string
+): Promise<string> {
   let response: Response;
 
   try {
@@ -54,7 +46,7 @@ export async function chatWithOllama(messages: OllamaChatMessage[]): Promise<str
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         model: OLLAMA_MODEL,
-        messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
+        messages: [{ role: 'system', content: systemPrompt }, ...messages],
         stream: false
       })
     });
