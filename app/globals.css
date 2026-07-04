@@ -277,23 +277,6 @@ html.about-route body {
   z-index: 1;
   padding: 4px;
   box-sizing: border-box;
-  cursor: grab;
-}
-
-.today-presence--ready {
-  transition:
-    left 0.4s var(--ease),
-    top 0.4s var(--ease);
-}
-
-.today-presence--dragging {
-  cursor: grabbing;
-  transition: none;
-  touch-action: none;
-}
-
-.today-presence--dragging [data-testid='today-avatar-nav'] {
-  pointer-events: none;
 }
 
 .today-presence [data-testid='today-avatar-nav'] {
