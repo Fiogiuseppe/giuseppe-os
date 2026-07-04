@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { gotoView } from './helpers';
+import { gotoView, expectTodayActionVisible } from './helpers';
 
 async function expandPotential(page: import('@playwright/test').Page) {
   await page.getByRole('button', { name: /Explore opportunities|Esplora opportunità/i }).click();
@@ -48,10 +48,7 @@ test.describe('Giuseppe OS potential engine', () => {
 
   test('navigation still works from Potential page', async ({ page }) => {
     await gotoView(page, 'today');
-    await expect(page.locator('.companion-greeting')).toContainText(
-      /Good (morning|afternoon|evening|night),?\s*Giuseppe/i,
-      { timeout: 15_000 }
-    );
+    await expectTodayActionVisible(page);
 
     await gotoView(page, 'create');
     await expandPotential(page);

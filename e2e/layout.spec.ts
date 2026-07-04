@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { gotoView, DECISION_SUBMIT_PATTERN } from './helpers';
+import { gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible } from './helpers';
 
 async function expectInViewport(page: import('@playwright/test').Page, locator: import('@playwright/test').Locator) {
   await expect(locator).toBeInViewport({ ratio: 0.2 });
@@ -23,12 +23,9 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto('/');
 
-    await expect(page.locator('.companion-panel-letter')).toBeVisible();
-    const oneBigMove = page.locator('.companion-panel-letter .companion-panel-text--sentence');
-    await expect(oneBigMove).toBeVisible({ timeout: 15_000 });
-
-    await page.getByRole('button', { name: /Leggi il briefing completo|Read the full briefing/i }).click();
-    await expect(page.locator('.companion-brief-grid')).toBeVisible();
+    await expectTodayActionVisible(page);
+    const actionText = page.getByTestId('today-action').locator('.today-action-text');
+    await expect(actionText).toBeVisible({ timeout: 15_000 });
     await expectNoPageScroll(page);
   });
 

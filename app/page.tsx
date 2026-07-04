@@ -267,7 +267,6 @@ export default function Home() {
     setDecisionResult(response.decision);
   }
 
-  const [todayFocus, setTodayFocus] = useState<'brief' | 'understand' | null>(null);
   const [memoryExpanded, setMemoryExpanded] = useState(false);
   const [insightsFocus, setInsightsFocus] = useState<
     'why' | 'patterns' | 'evidence' | 'reflect' | 'action' | null
@@ -379,7 +378,6 @@ export default function Home() {
   );
 
   useEffect(() => {
-    setTodayFocus(null);
     setMemoryExpanded(false);
     setInsightsFocus(null);
     setDecisionsFocus('form');
@@ -433,120 +431,21 @@ export default function Home() {
 
           <div className={`view-body progressive-body mental-space mental-space-${view}`}>
             {view === 'today' && (
-              <div className={`daily-companion editorial-today${todayFocus ? ' mental-space--reading' : ''}`}>
-                {todayFocus === 'brief' && (
-                  <div className="reading-focus-view">
-                    <button type="button" className="reading-expand-close" onClick={() => setTodayFocus(null)}>
-                      <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-                    </button>
-                    <section className="companion-panel">
-                      <div className="kicker">{t('kickers.reality')}</div>
-                      {letterLoading && <p className="companion-panel-text companion-letter-loading">…</p>}
-                      {!letterLoading && letterError && <p className="companion-panel-text companion-letter-error">—</p>}
-                      {!letterLoading && !letterError && todaysLetter && (
-                        <p className="companion-panel-text">{todaysLetter.sections.reality}</p>
-                      )}
-                    </section>
-                    {!letterLoading && !letterError && todaysLetter && (
-                      <div className="companion-brief-grid">
-                        {([
-                          ['opportunity', t('kickers.opportunity'), todaysLetter.sections.opportunity],
-                          ['ignore', t('kickers.ignore'), todaysLetter.sections.ignore],
-                          ['nourish', t('kickers.nourish'), todaysLetter.sections.nourish],
-                          ['reflection', t('kickers.reflection'), todaysLetter.sections.reflection]
-                        ] as const).map(([key, label, text]) => (
-                          <section className="companion-panel companion-panel--compact" key={key}>
-                            <div className="kicker">{label}</div>
-                            <p className="companion-panel-text companion-panel-text--sentence">{text}</p>
-                          </section>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {todayFocus === 'understand' && (
-                  <div className="reading-focus-view">
-                    <button type="button" className="reading-expand-close" onClick={() => setTodayFocus(null)}>
-                      <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-                    </button>
-                    <section className="companion-panel">
-                      <div className="kicker">{t('disclosure.why')}</div>
-                      <p className="companion-panel-text">{todaysLetter?.pipeline.trajectoryNote ?? t('today.briefingNote')}</p>
-                      <div className="kicker">{t('disclosure.evidence')}</div>
-                      <p className="companion-panel-text">{todaysLetter?.pipeline.confidenceNote ?? '—'}</p>
-                      <div className="kicker">{t('today.trajectoryImpact')}</div>
-                      <p className="companion-panel-text">
-                        {todaysLetter
-                          ? `${todaysLetter.pipeline.trajectoryApproved} approved · ${todaysLetter.pipeline.trajectoryFiltered} filtered`
-                          : '—'}
-                      </p>
-                      <div className="kicker">{t('disclosure.confidence')}</div>
-                      <p className="companion-panel-text">{todaysLetter?.pipeline.qualityConfidence ?? '—'}</p>
-                      <div className="kicker">{t('today.possibleActions')}</div>
-                      <p className="companion-panel-text">{todaysLetter?.sections.opportunity ?? '—'}</p>
-                    </section>
-                  </div>
-                )}
-
-                {todayFocus === null && (
-                  <>
-                    <div className="companion-editorial-left">
-                      <div className="space-meta">
-                        <div className="kicker">{t('kickers.today')}</div>
-                        <span className="space-role">{t('navRole.today')}</span>
-                      </div>
-                      <h1 className="view-title companion-headline">{t('viewHeadings.today')}</h1>
-
-                      <p className="companion-section-question">{t('sectionQuestions.today')}</p>
-
-                      <section className="companion-panel companion-panel-letter">
-                        <div className="kicker">{t('kickers.oneBigMove')}</div>
-                        {letterLoading && (
-                          <p className="companion-panel-text companion-panel-text--sentence companion-letter-loading">
-                            {t('today.loading')}
-                          </p>
-                        )}
-                        {!letterLoading && letterError && (
-                          <p className="companion-panel-text companion-panel-text--sentence companion-letter-error">
-                            {letterError}
-                          </p>
-                        )}
-                        {!letterLoading && !letterError && todaysLetter && (
-                          <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter.sections.oneBigMove}</p>
-                        )}
-                      </section>
-
-                      {!letterLoading && !letterError && todaysLetter && (
-                        <DisclosureTrigger
-                          label={t('disclosure.readFullBrief')}
-                          onClick={() => setTodayFocus('brief')}
-                        />
-                      )}
-
-                      {todaysLetter && (
-                        <DisclosureTrigger
-                          label={t('today.understand')}
-                          onClick={() => setTodayFocus('understand')}
-                        />
-                      )}
-                    </div>
-
-                    <div className="companion-presence">
-                      <LivingAvatar />
-                    </div>
-
-                    <div className="companion-editorial-right">
-                      <p className={`companion-greeting${letterLoading ? ' companion-greeting--loading' : ''}`}>
-                        {letterLoading
-                          ? '…'
-                          : letterError
-                            ? ''
-                            : todaysLetter?.sections.greeting ?? ''}
-                      </p>
-                    </div>
-                  </>
-                )}
+              <div className="today-calm">
+                <div className="today-presence" aria-hidden="true">
+                  <LivingAvatar />
+                </div>
+                <div className="today-action" data-testid="today-action">
+                  {letterLoading && (
+                    <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>
+                  )}
+                  {!letterLoading && letterError && (
+                    <p className="today-action-text today-action-text--error">{letterError}</p>
+                  )}
+                  {!letterLoading && !letterError && todaysLetter && (
+                    <p className="today-action-text">{todaysLetter.sections.oneBigMove}</p>
+                  )}
+                </div>
               </div>
             )}
 

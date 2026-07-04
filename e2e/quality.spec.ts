@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN } from './helpers';
+import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible, type AppView } from './helpers';
 
 const NORTH_STAR = 'PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.';
 
@@ -23,7 +23,12 @@ async function expectFooterManifesto(page: import('@playwright/test').Page) {
   await expect(page.locator('footer.footer')).toContainText(FOOTER_PATTERN);
 }
 
-async function expectPrimaryHeading(page: import('@playwright/test').Page) {
+async function expectPrimaryHeading(page: import('@playwright/test').Page, section: AppView) {
+  if (section === 'today') {
+    await expectTodayActionVisible(page);
+    return;
+  }
+
   const main = page.getByRole('main');
   const heading = main.locator('.view-title').first();
   await expect(heading).toBeVisible();
@@ -42,7 +47,11 @@ test.describe('Giuseppe OS quality loop', () => {
     for (const { id, heading } of MAIN_SECTIONS) {
       await nav.getByTestId(`nav-${id}`).click();
       await expect(page.getByRole('main')).toBeVisible();
-      await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
+      if (id === 'today') {
+        await expectTodayActionVisible(page);
+      } else {
+        await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
+      }
     }
   });
 
@@ -51,7 +60,7 @@ test.describe('Giuseppe OS quality loop', () => {
 
     for (const { id } of MAIN_SECTIONS) {
       await nav.getByTestId(`nav-${id}`).click();
-      await expectPrimaryHeading(page);
+      await expectPrimaryHeading(page, id);
     }
   });
 
@@ -121,6 +130,7 @@ test.describe('Giuseppe OS quality loop', () => {
     const nav = page.getByRole('navigation');
 
     for (const { id } of MAIN_SECTIONS) {
+      if (id === 'today') continue;
       await nav.getByTestId(`nav-${id}`).click();
       await expect(page.getByRole('main').locator('.kicker').first()).toBeVisible();
     }
@@ -168,7 +178,7 @@ test.describe('Giuseppe OS quality loop', () => {
     expect(bodyBg).toBe('rgb(247, 245, 232)');
 
     await expect(page.getByRole('button', { name: /Giuseppe OS home/i })).toBeVisible();
-    await expect(page.locator('.companion-panel').first()).toBeVisible();
+    await expect(page.getByTestId('today-action')).toBeVisible();
     await expect(page.locator('.topbar')).toBeVisible();
   });
 
@@ -196,7 +206,11 @@ test.describe('Giuseppe OS quality loop — responsiveness', () => {
 
     for (const { id, heading } of MAIN_SECTIONS) {
       await nav.getByTestId(`nav-${id}`).click();
-      await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
+      if (id === 'today') {
+        await expectTodayActionVisible(page);
+      } else {
+        await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
+      }
     }
   });
 });

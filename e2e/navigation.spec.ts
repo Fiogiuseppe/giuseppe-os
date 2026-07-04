@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN } from './helpers';
+import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN, expectTodayActionVisible } from './helpers';
 
 const NAV_VIEWS = [
-  { id: 'today' as const, heading: VIEW_HEADING_PATTERNS.today },
+  { id: 'today' as const },
   { id: 'decisions' as const, heading: VIEW_HEADING_PATTERNS.decisions },
   { id: 'insights' as const, heading: VIEW_HEADING_PATTERNS.insights },
   { id: 'create' as const, heading: VIEW_HEADING_PATTERNS.create },
@@ -31,10 +31,7 @@ test.describe('Giuseppe OS navigation', () => {
   });
 
   test('loads the home page', async ({ page }) => {
-    await expect(page.locator('.companion-greeting')).toContainText(
-      /Good (morning|afternoon|evening|night),?\s*Giuseppe/i,
-      { timeout: 15_000 }
-    );
+    await expectTodayActionVisible(page);
     await expect(page.getByRole('button', { name: 'Giuseppe OS home' })).toBeVisible();
     await expect(page.locator('footer.footer')).toContainText(FOOTER_PATTERN);
   });
@@ -50,10 +47,14 @@ test.describe('Giuseppe OS navigation', () => {
   test('switches visible content when navigation buttons are clicked', async ({ page }) => {
     const nav = page.getByRole('navigation');
 
-    for (const { id, heading } of NAV_VIEWS) {
-      await nav.getByTestId(`nav-${id}`).click();
-      await expect(page.getByRole('main').locator('.view-title')).toContainText(heading);
-      await expect(nav.getByTestId(`nav-${id}`)).toHaveClass(/active/);
+    for (const view of NAV_VIEWS) {
+      await nav.getByTestId(`nav-${view.id}`).click();
+      if (view.id === 'today') {
+        await expectTodayActionVisible(page);
+      } else {
+        await expect(page.getByRole('main').locator('.view-title')).toContainText(view.heading);
+      }
+      await expect(nav.getByTestId(`nav-${view.id}`)).toHaveClass(/active/);
     }
   });
 
