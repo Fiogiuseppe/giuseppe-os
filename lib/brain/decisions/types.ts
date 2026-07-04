@@ -6,6 +6,7 @@ export interface DecisionAIResult extends DecisionResult {
   recommendation: string;
   whyItMatters: string;
   boardPerspective: string;
-  confidenceScore: number;
+  confidenceScore: number | null;
+  confidenceLabel: 'learning' | 'notEnoughData' | 'score';
   source: DecisionResponseSource;
 }

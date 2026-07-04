@@ -183,10 +183,8 @@ html.about-route body {
 }
 
 .main-home .view-body {
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding-bottom: 4px;
+  overflow: hidden;
+  padding-bottom: 0;
 }
 
 .mental-space-today {
@@ -485,7 +483,7 @@ html.about-route body {
   gap: 4px;
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .sidebar-nav button {
@@ -791,15 +789,12 @@ html.about-route body {
 .view-body {
   flex: 1;
   min-height: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding-right: 2px;
-  padding-bottom: 12px;
-  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
 }
 
 .view-body > * {
@@ -919,7 +914,55 @@ html.about-route body {
 
 .disclosure-panel {
   flex-shrink: 0;
-  animation: content-enter 0.35s var(--ease);
+  animation: disclosure-reveal 0.35s var(--ease);
+}
+
+/* Single-screen reading — expand in place, no scroll */
+.reading-focus-view {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.reading-expand-close {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 0;
+  cursor: pointer;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+.reading-expand-close:hover {
+  opacity: 0.7;
+}
+
+.mental-space--reading {
+  overflow: hidden;
+}
+
+.memory-palace-grid--expanded {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.memory-card--compact {
+  min-height: clamp(88px, 14vh, 120px);
+  padding: 10px 12px;
+  gap: 6px;
+}
+
+.memory-card--compact .memory-card-text {
+  font-size: 10px;
+  line-height: 1.35;
 }
 
 .main-progressive {
@@ -1768,10 +1811,14 @@ html.about-route body {
 }
 
 .textarea {
-  height: 88px;
-  resize: vertical;
+  height: 56px;
+  resize: none;
   border: 1px solid var(--border-soft);
   padding: 10px 12px;
+}
+
+.textarea--compact {
+  height: 48px;
 }
 
 .textarea:focus {
@@ -2133,16 +2180,9 @@ label {
     gap: 1px;
     order: unset;
     grid-column: unset;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    overflow: hidden;
     padding-left: 2px;
     padding-right: 2px;
-  }
-
-  .topnav::-webkit-scrollbar {
-    display: none;
   }
 
   .topnav button {
@@ -2247,8 +2287,7 @@ label {
   }
 
   .main-home .view-body {
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    overflow: hidden;
   }
 
   .companion-editorial-extra {
@@ -2310,8 +2349,8 @@ label {
   }
 
   .textarea {
-    min-height: 100px;
-    height: auto;
+    min-height: 48px;
+    height: 48px;
   }
 
   .input,

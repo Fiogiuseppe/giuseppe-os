@@ -1,18 +1,16 @@
-import type { DecisionAIResult } from '../../lib/brain/decisions/types';
+import type { AwarenessInsight } from '../../engine/awarenessEngine';
 
-export type DecideViaBrainResult =
-  | { ok: true; decision: DecisionAIResult; missionAligned: boolean }
+export type FetchInsightsResult =
+  | { ok: true; awareness: AwarenessInsight; headline?: string }
   | { ok: false; message: string; status: number };
 
-export async function decideViaBrain(decision: string, reason: string): Promise<DecideViaBrainResult> {
+export async function fetchInsightsViaBrain(): Promise<FetchInsightsResult> {
   const response = await fetch('/api/brain', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      intent: 'decide',
-      decision,
-      reason,
-      message: decision,
+      intent: 'awareness',
+      message: 'Scan for patterns and risks.',
       persist: true
     })
   });
@@ -30,17 +28,17 @@ export async function decideViaBrain(decision: string, reason: string): Promise<
     };
   }
 
-  if (!body.decision) {
+  if (!body.awareness) {
     return {
       ok: false,
       status: 502,
-      message: 'Risposta decisionale incompleta dal Brain.'
+      message: 'Risposta insights incompleta dal Brain.'
     };
   }
 
   return {
     ok: true,
-    decision: body.decision as DecisionAIResult,
-    missionAligned: Boolean(body.missionAligned)
+    awareness: body.awareness as AwarenessInsight,
+    headline: typeof body.headline === 'string' ? body.headline : undefined
   };
 }

@@ -4,12 +4,14 @@ import type { DecisionResponseSource } from './decisions/types';
 import { detectIntent, detectTopics } from './intent/detectIntent';
 import { routeEngines } from './intent/routeEngines';
 import { runEnginePipeline } from './engines/pipeline';
-import { loadBrain, loadWorkingMemory } from './memory/store';
+import { loadBrain, loadLongTermMemory, loadWorkingMemory } from './memory/store';
 import { applyMemoryUpdate, estimateConfidence, extractResponseNextAction } from './memory/update';
 import { evaluateMissionAlignment } from './missionGate';
 import { resolveAIProvider, createRuleBasedProvider } from './providers';
 import { ProviderConfigurationError, ProviderRequestError } from './providers/types';
 import { fetchRealityContext } from '../reality';
+import { assessEvidence } from '../memory/evidence';
+import { buildEvidenceSnapshot } from '../memory/insights';
 import type { BrainRequest, BrainResponse } from './types';
 
 function validateRequest(request: BrainRequest): void {
@@ -52,13 +54,17 @@ function composeAnswer(intent: BrainRequest['intent'], providerAnswer: string, o
   }
 
   if (intent === 'potential' && outputs.opportunity) {
+    const confidence =
+      outputs.opportunity.confidenceScore !== null
+        ? String(outputs.opportunity.confidenceScore)
+        : outputs.opportunity.confidenceLabel;
     return [
       `Opportunity: ${outputs.opportunity.title}`,
       `Reason: ${outputs.opportunity.reason}`,
       `First action: ${outputs.opportunity.firstAction}`,
       `Impact: ${outputs.opportunity.estimatedImpact}`,
       `Mission alignment: ${outputs.opportunity.missionAlignment}`,
-      `Confidence: ${outputs.opportunity.confidenceScore}`,
+      `Confidence: ${confidence}`,
       '',
       providerAnswer
     ].join('\n');
@@ -85,6 +91,8 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
 
   const brain = await loadBrain();
   const workingMemory = await loadWorkingMemory();
+  const longTermMemory = await loadLongTermMemory();
+  const evidenceAssessment = assessEvidence(buildEvidenceSnapshot(longTermMemory, workingMemory));
   const topics = detectTopics(
     [normalizedRequest.message, normalizedRequest.decision, normalizedRequest.reason].filter(Boolean).join(' ')
   );
@@ -129,8 +137,8 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
 
   const answer = composeAnswer(resolvedIntent, completion.content, outputs);
   const missionAligned = evaluateMissionAlignment(normalizedRequest, answer);
-  const confidence = estimateConfidence(context);
-  const persist = normalizedRequest.persist ?? resolvedIntent !== 'decide';
+  const confidence = estimateConfidence(context, evidenceAssessment);
+  const persist = normalizedRequest.persist ?? true;
 
   const memoryResult = await applyMemoryUpdate({
     request: normalizedRequest,
@@ -146,6 +154,7 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
           engine: outputs.decision,
           answer,
           confidence,
+          evidenceAssessment,
           source: decisionSource
         })
       : undefined;
@@ -178,6 +187,7 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
     decision,
     awareness: outputs.awareness,
     opportunity: outputs.opportunity,
+    potentialBrief: outputs.potentialBrief,
     learning: outputs.learning
   };
 }

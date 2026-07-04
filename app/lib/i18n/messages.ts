@@ -111,6 +111,11 @@ export const messages = {
       blindSpotsTitle: 'PUNTI CIECI',
       builtOverTime: 'Costruito nel tempo — non aggiornato ogni giorno.'
     },
+    confidence: {
+      learning: 'In apprendimento…',
+      notEnoughData: 'Dati insufficienti.',
+      score: 'score'
+    },
     create: {
       strategistHeadline: 'Dove va la tua energia creativa adesso?',
       strategistSubline: 'Ogni progetto deve rafforzare la traiettoria — non disperdere attenzione.',
@@ -281,6 +286,11 @@ export const messages = {
       patternsTitle: 'OBSERVED PATTERNS',
       blindSpotsTitle: 'BLIND SPOTS',
       builtOverTime: 'Built over time — not updated every day.'
+    },
+    confidence: {
+      learning: 'Learning…',
+      notEnoughData: 'Not enough data yet.',
+      score: 'score'
     },
     create: {
       strategistHeadline: 'Where should your creative energy go right now?',

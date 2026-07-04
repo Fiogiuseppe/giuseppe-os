@@ -72,6 +72,36 @@
       "lesson": "Learning report",
       "source": "learn",
       "timestamp": "2026-07-04T10:33:14.617Z"
+    },
+    {
+      "id": "lesson_1783166526042",
+      "lesson": "La tua North Star è questa:",
+      "source": "query",
+      "timestamp": "2026-07-04T12:02:06.042Z"
+    },
+    {
+      "id": "lesson_1783166544750",
+      "lesson": "Learning report",
+      "source": "learn",
+      "timestamp": "2026-07-04T12:02:24.750Z"
+    },
+    {
+      "id": "lesson_1783166710285",
+      "lesson": "Learning report",
+      "source": "learn",
+      "timestamp": "2026-07-04T12:05:10.285Z"
+    },
+    {
+      "id": "lesson_1783166789116",
+      "lesson": "La tua North Star è questa:",
+      "source": "query",
+      "timestamp": "2026-07-04T12:06:29.116Z"
+    },
+    {
+      "id": "lesson_1783166792769",
+      "lesson": "Learning report",
+      "source": "learn",
+      "timestamp": "2026-07-04T12:06:32.769Z"
     }
   ],
   "patterns_detected": []

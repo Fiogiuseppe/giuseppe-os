@@ -14,16 +14,17 @@ test.describe('Giuseppe OS potential engine', () => {
 
   test('opens the Potential page', async ({ page }) => {
     await expect(page.getByText("TODAY'S OPPORTUNITY")).toBeVisible();
-    await expect(page.getByText('OPPORTUNITY HISTORY')).toBeVisible();
+    await expect(page.getByText('CREATIVE CHALLENGE')).toBeVisible();
     await expect(page.getByTestId('nav-create')).toHaveClass(/active/);
   });
 
-  test('shows today opportunity with confidence score', async ({ page }) => {
+  test('shows today opportunity with confidence or honest uncertainty', async ({ page }) => {
     await expect(page.locator('.potential-score').first()).toBeVisible();
     const scoreText = await page.locator('.potential-score').first().textContent();
-    const score = Number(scoreText?.trim());
-    expect(score).toBeGreaterThanOrEqual(0);
-    expect(score).toBeLessThanOrEqual(100);
+    const trimmed = scoreText?.trim() ?? '';
+    const asNumber = Number(trimmed);
+    const isHonestLabel = /Learning|In apprendimento|Not enough data|Dati insufficienti/i.test(trimmed);
+    expect(isHonestLabel || (asNumber >= 0 && asNumber <= 100)).toBeTruthy();
     await expect(page.getByText(/Prima azione:|First action:/)).toBeVisible();
     await expect(page.getByText(/Perché conta:|Why it matters:/)).toBeVisible();
   });

@@ -3,6 +3,9 @@ import { runPotentialEngine } from '../../../engine/potentialEngine';
 import { runDecisionEngine } from '../../../engine/decisionEngine';
 import type { BrainRequest, EngineOutputs, EngineRoutePlan, GiuseppeBrain } from '../types';
 import { runLearningEngine } from './learningEngine';
+import { loadLongTermMemory, loadWorkingMemory } from '../memory/store';
+import { buildEvidenceSnapshot, recordInsightObservation } from '../../memory/insights';
+import { assessEvidence } from '../../memory/evidence';
 
 function formatDecisionOutput(result: ReturnType<typeof runDecisionEngine>): string {
   return [
@@ -24,13 +27,15 @@ function formatAwarenessOutput(result: ReturnType<typeof runAwarenessEngine>): s
 }
 
 function formatPotentialOutput(result: ReturnType<typeof runPotentialEngine>['todaysOpportunity']): string {
+  const confidence =
+    result.confidenceScore !== null ? String(result.confidenceScore) : result.confidenceLabel;
   return [
     `Opportunity: ${result.title}`,
     `Reason: ${result.reason}`,
     `First action: ${result.firstAction}`,
     `Impact: ${result.estimatedImpact}`,
     `Mission alignment: ${result.missionAlignment}`,
-    `Confidence: ${result.confidenceScore}`
+    `Confidence: ${confidence}`
   ].join('\n');
 }
 
@@ -49,16 +54,25 @@ export async function runEnginePipeline(
 ): Promise<{ outputs: EngineOutputs; engineContext: string }> {
   const outputs: EngineOutputs = { enginesUsed: [] };
   const blocks: string[] = [];
+  const longTerm = await loadLongTermMemory();
+  const working = await loadWorkingMemory();
+  const persist = request.persist ?? true;
 
   if (plan.engines.includes('awareness')) {
-    outputs.awareness = runAwarenessEngine({ proactive: true });
+    outputs.awareness = runAwarenessEngine({ proactive: true, longTerm, working });
     outputs.enginesUsed.push('awareness');
     blocks.push(formatAwarenessOutput(outputs.awareness));
+
+    if (persist) {
+      const assessment = assessEvidence(buildEvidenceSnapshot(longTerm, working));
+      await recordInsightObservation(outputs.awareness, assessment.score);
+    }
   }
 
   if (plan.engines.includes('potential')) {
-    const potential = runPotentialEngine();
+    const potential = runPotentialEngine({ longTerm, working });
     outputs.opportunity = potential.todaysOpportunity;
+    outputs.potentialBrief = potential;
     outputs.enginesUsed.push('potential');
     blocks.push(formatPotentialOutput(outputs.opportunity));
   }

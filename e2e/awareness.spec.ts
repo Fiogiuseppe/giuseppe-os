@@ -3,6 +3,7 @@ import { VIEW_HEADING_PATTERNS, gotoView } from './helpers';
 
 async function expandAwareness(page: import('@playwright/test').Page) {
   await page.getByRole('button', { name: /Tell me more|Dimmi di più/i }).click();
+  await page.getByRole('button', { name: /Close|Chiudi/i }).click();
   await page.getByRole('button', { name: /Show evidence|Mostra evidenza/i }).click();
 }
 
@@ -26,9 +27,10 @@ test.describe('Giuseppe OS insights engine', () => {
     await expandAwareness(page);
     await expect(page.getByText('EVIDENCE FROM MEMORY')).toBeVisible();
     await expect(page.getByText('RISK IF IGNORED')).toBeVisible();
+    await page.getByRole('button', { name: /Close|Chiudi/i }).click();
     await page.getByRole('button', { name: /Reflect|Rifletti/i }).click();
     await expect(page.getByText('REFLECT')).toBeVisible();
-    await expect(page.getByRole('heading', { name: /Stai portando|Hai liquidità|Il lavoro sacro|Vuoi visibilità|LEGO è il motore/ })).toBeVisible();
+    await expect(page.locator('.reading-focus-view .discovery-panel p').first()).not.toBeEmpty();
   });
 
   test('shows observed patterns on demand', async ({ page }) => {
@@ -37,13 +39,14 @@ test.describe('Giuseppe OS insights engine', () => {
     await expect(page.getByRole('main').getByText(/entusiasta apre troppi progetti/i).first()).toBeVisible();
   });
 
-  test('shows confidence score', async ({ page }) => {
+  test('shows confidence or honest uncertainty', async ({ page }) => {
     await expandAwarenessAction(page);
     await expect(page.getByText('CONFIDENCE')).toBeVisible();
     const scoreText = await page.locator('.potential-score').textContent();
-    const score = Number(scoreText?.trim());
-    expect(score).toBeGreaterThanOrEqual(0);
-    expect(score).toBeLessThanOrEqual(100);
+    const trimmed = scoreText?.trim() ?? '';
+    const asNumber = Number(trimmed);
+    const isHonestLabel = /Learning|In apprendimento|Not enough data|Dati insufficienti/i.test(trimmed);
+    expect(isHonestLabel || (asNumber >= 0 && asNumber <= 100)).toBeTruthy();
   });
 
   test('shows recommended action', async ({ page }) => {
@@ -56,6 +59,7 @@ test.describe('Giuseppe OS insights engine', () => {
     await gotoView(page, 'decisions');
     await page.getByRole('button', { name: /Explore purpose|Esplora il proposito/i }).click();
     await expect(page.getByText('PURPOSE ENGINE')).toBeVisible();
+    await page.getByRole('button', { name: /Close|Chiudi/i }).click();
 
     await gotoView(page, 'insights');
     await expect(page.getByRole('main').locator('.view-title')).toContainText(VIEW_HEADING_PATTERNS.insights);

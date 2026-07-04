@@ -1,5 +1,13 @@
 import brain from '../memory/giuseppe_brain.json';
 import { liquidityPhrase, incomeLabel } from '../lib/publicFinance';
+import {
+  assessEvidence,
+  confidenceFromEvidence,
+  formatObservationHeadline,
+  type EvidenceLevel
+} from '../lib/memory/evidence';
+import type { LongTermMemory, WorkingMemory } from '../lib/brain/types';
+import { buildDecisionHistory, buildEvidenceSnapshot } from '../lib/memory/insights';
 
 export type DecisionRecord = {
   decision: string;
@@ -15,9 +23,13 @@ export type AwarenessInsight = {
   riskIfIgnored: string;
   reflectionQuestion: string;
   recommendedAction: string;
-  confidenceScore: number;
+  confidenceScore: number | null;
+  confidenceLabel: 'learning' | 'notEnoughData' | 'score';
+  hasEnoughData: boolean;
+  evidenceLevel: EvidenceLevel;
   signalType: 'pattern' | 'contradiction' | 'opportunity' | 'risk';
   proactive: boolean;
+  recurringPattern: boolean;
 };
 
 type BrainProject = {
@@ -51,7 +63,7 @@ const memory = brain as GiuseppeBrain;
 
 type InsightCandidate = {
   id: string;
-  signalType: 'pattern' | 'contradiction' | 'opportunity' | 'risk';
+  signalType: AwarenessInsight['signalType'];
   insight: string;
   whyItMatters: string;
   evidence: string[];
@@ -102,11 +114,28 @@ function decisionSignals(history: DecisionRecord[]): {
   return signals;
 }
 
-function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
+function recurringWeight(insightId: string, longTerm: LongTermMemory): number {
+  const repeats = (longTerm.insight_history ?? []).filter(entry => entry.insightId === insightId).length;
+  return repeats * 4;
+}
+
+function buildCandidates(history: DecisionRecord[], longTerm: LongTermMemory): InsightCandidate[] {
   const activeCount = countProjectsByStatus('active');
   const slowActive = slowActiveProjectNames();
   const activeNames = activeProjectNames();
   const signals = decisionSignals(history);
+
+  const memoryEvidence: string[] = [];
+  if (history.length > 0) {
+    memoryEvidence.push(
+      `${history.length} decision${history.length === 1 ? '' : 's'} recorded in memory`
+    );
+  }
+  if ((longTerm.insight_history ?? []).length > 0) {
+    memoryEvidence.push(
+      `${longTerm.insight_history!.length} prior insight observation${longTerm.insight_history!.length === 1 ? '' : 's'}`
+    );
+  }
 
   return [
     {
@@ -119,7 +148,8 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
         `Pattern: "${memory.patterns[1]}"`,
         `Priorità attuale: "${memory.priorities[2]}"`,
         `Fronti attivi: ${activeNames.join(', ')}`,
-        `Regola: "${memory.rules[3]}"`
+        `Regola: "${memory.rules[3]}"`,
+        ...memoryEvidence
       ],
       riskIfIgnored:
         'Ogni nuovo fronte rallenta LEGO, Brand Giuseppe e la pubblicazione — senza avvicinarti a libertà 2036.',
@@ -130,8 +160,9 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
       weight:
         activeCount * 3 +
         (memory.priorities.some(priority => /congel/i.test(priority)) ? 4 : 0) +
-        signals.dispersion,
-      confidenceSignals: 4 + (activeCount >= 4 ? 2 : 0)
+        signals.dispersion +
+        recurringWeight('dispersion', longTerm),
+      confidenceSignals: 2 + Math.min(history.length, 4) + (activeCount >= 4 ? 2 : 0)
     },
     {
       id: 'liquidity-discipline',
@@ -143,7 +174,8 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
         `Obiettivo finanziario: "${memory.finance.main_goals[0]}"`,
         `Priorità: "${memory.priorities[1]}"`,
         `Pattern: "${memory.patterns[2]}"`,
-        `Missione 2036: "${memory.mission_2036}"`
+        `Missione 2036: "${memory.mission_2036}"`,
+        ...memoryEvidence
       ],
       riskIfIgnored:
         'La liquidità diventa status o comfort immediato invece di mesi di libertà verso casa a Copenaghen.',
@@ -154,8 +186,9 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
       weight:
         (memory.finance.liquidity_tier === 'comfortable' ? 5 : 2) +
         (memory.priorities.some(priority => /automat/i.test(priority)) ? 4 : 0) +
-        signals.finance,
-      confidenceSignals: 5
+        signals.finance +
+        recurringWeight('liquidity-discipline', longTerm),
+      confidenceSignals: 2 + Math.min(signals.finance, 3)
     },
     {
       id: 'sacred-creative-stall',
@@ -167,7 +200,8 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
         `Progetti slow-active: ${slowActive.join(', ')}`,
         `Obiettivo creativo: "${memory.creative_goals[0]}"`,
         `Pattern: "${memory.patterns[0]}"`,
-        `Regola: "${memory.rules[4]}"`
+        `Regola: "${memory.rules[4]}"`,
+        ...memoryEvidence
       ],
       riskIfIgnored:
         'Visceral Poems e UREES restano intenzioni eccellenti senza diventare prove pubbliche della persona che vuoi essere.',
@@ -178,8 +212,9 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
       weight:
         slowActive.length * 4 +
         (memory.patterns[0].includes('troppi progetti') ? 3 : 0) +
-        signals.creative,
-      confidenceSignals: 3 + slowActive.length
+        signals.creative +
+        recurringWeight('sacred-creative-stall', longTerm),
+      confidenceSignals: 2 + Math.min(signals.creative, 3) + slowActive.length
     },
     {
       id: 'reputation-gap',
@@ -191,7 +226,8 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
         `Pattern: "${memory.patterns[4]}"`,
         `Priorità: "${memory.priorities[0]}"`,
         `Obiettivo carriera: "${memory.career_goals[1]}"`,
-        `Progetto: Medium/LinkedIn — ${memory.projects['Medium/LinkedIn']?.status}`
+        `Progetto: Medium/LinkedIn — ${memory.projects['Medium/LinkedIn']?.status}`,
+        ...memoryEvidence
       ],
       riskIfIgnored:
         'Il talento resta privato mentre altri costruiscono la reputazione che tu stai rimandando.',
@@ -202,8 +238,9 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
       weight:
         (memory.priorities[0].includes('pubblic') ? 5 : 2) +
         (memory.projects['Medium/LinkedIn']?.status === 'active' ? 2 : 0) +
-        signals.reputation,
-      confidenceSignals: 4
+        signals.reputation +
+        recurringWeight('reputation-gap', longTerm),
+      confidenceSignals: 2 + Math.min(signals.reputation, 3)
     },
     {
       id: 'lego-accelerator',
@@ -215,7 +252,8 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
         `Progetto LEGO: "${memory.projects.LEGO.role}"`,
         `Obiettivo carriera: "${memory.career_goals[0]}"`,
         `Entrate: ${incomeLabel()}`,
-        `Missione 2036: "${memory.mission_2036}"`
+        `Missione 2036: "${memory.mission_2036}"`,
+        ...memoryEvidence
       ],
       riskIfIgnored:
         'LEGO resta un buon lavoro invece di diventare il ponte misurabile verso la libertà di scegliere.',
@@ -224,33 +262,47 @@ function buildCandidates(history: DecisionRecord[]): InsightCandidate[] {
       recommendedAction:
         'Prepara tre esempi concreti di impatto e chiedi un incontro di 20 minuti con un leader LEGO chiave.',
       weight:
-        (memory.projects.LEGO?.status === 'active' ? 4 : 0) +
-        (memory.projects.LEGO?.status === 'active' ? 3 : 0),
-      confidenceSignals: 3
+        (memory.projects.LEGO?.status === 'active' ? 7 : 0) +
+        recurringWeight('lego-accelerator', longTerm),
+      confidenceSignals: 2 + (memory.projects.LEGO?.status === 'active' ? 2 : 0)
     }
   ];
 }
 
-function confidenceFromSignals(signals: number, weight: number): number {
-  const base = 50 + signals * 6 + Math.min(weight, 12);
-  return clamp(Math.round(base), 55, 92);
-}
+export type AwarenessEngineInput = {
+  decisionHistory?: DecisionRecord[];
+  proactive?: boolean;
+  longTerm?: LongTermMemory;
+  working?: WorkingMemory;
+  locale?: 'it' | 'en';
+};
 
-export function runAwarenessEngine(input: { decisionHistory?: DecisionRecord[]; proactive?: boolean } = {}): AwarenessInsight {
-  const history = input.decisionHistory ?? [];
-  const ranked = buildCandidates(history).sort((a, b) => b.weight - a.weight);
+export function runAwarenessEngine(input: AwarenessEngineInput = {}): AwarenessInsight {
+  const longTerm = input.longTerm ?? { decisions: [], lessons: [], patterns_detected: [], insight_history: [] };
+  const working = input.working ?? { sessions: [], notes: [], records: [] };
+  const history = input.decisionHistory ?? buildDecisionHistory(longTerm);
+  const evidenceSnapshot = buildEvidenceSnapshot(longTerm, working);
+  const assessment = assessEvidence(evidenceSnapshot);
+
+  const ranked = buildCandidates(history, longTerm).sort((a, b) => b.weight - a.weight);
   const top = ranked[0];
+  const recurringPattern = (longTerm.insight_history ?? []).some(entry => entry.insightId === top.id);
+  const confidence = confidenceFromEvidence(assessment, top.confidenceSignals);
 
   return {
-    headline: 'I noticed something.',
+    headline: formatObservationHeadline(assessment.observationWindow, input.locale ?? 'it'),
     insight: top.insight,
     whyItMatters: top.whyItMatters,
     evidence: top.evidence,
     riskIfIgnored: top.riskIfIgnored,
     reflectionQuestion: top.reflectionQuestion,
     recommendedAction: top.recommendedAction,
-    confidenceScore: confidenceFromSignals(top.confidenceSignals, top.weight),
+    confidenceScore: confidence.value,
+    confidenceLabel: confidence.labelKey,
+    hasEnoughData: assessment.hasEnoughForInsights,
+    evidenceLevel: assessment.level,
     signalType: top.signalType,
-    proactive: input.proactive ?? false
+    proactive: input.proactive ?? false,
+    recurringPattern
   };
 }

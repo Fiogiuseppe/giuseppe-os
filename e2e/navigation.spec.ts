@@ -98,18 +98,20 @@ test.describe('Giuseppe OS decision board', () => {
     await page.getByPlaceholder(/Motivo vero|The real reason/i).fill(reason);
     await page.getByRole('button', { name: DECISION_SUBMIT_PATTERN }).click();
     await expect(page.locator('.result')).toBeVisible({ timeout: 25_000 });
-    await page.locator('.result').getByRole('button', { name: /Perché|Why/i }).click();
     await page.locator('.result').getByRole('button', { name: /Mostra il Board|Show the Board/i }).click();
     await page.locator('.result').getByRole('button', { name: /Versione migliore|Better version/i }).click();
+    await page.locator('.result').getByRole('button', { name: /Close|Chiudi/i }).click();
   }
 
   test('submits the decision form and shows board output', async ({ page }) => {
     await askBoard(page, 'comprare casa a Copenaghen', 'Voglio più stabilità per la famiglia.');
 
     await expect(page.getByText('Categoria: Immobiliare')).toBeVisible();
-    await expect(page.getByText('Bisogno nascosto:')).toBeVisible();
-    await expect(page.getByText('Versione migliore')).toBeVisible();
     await expect(page.getByText('Prossimo passo')).toBeVisible();
+    await page.locator('.result').getByRole('button', { name: /Perché|Why/i }).click();
+    await expect(page.getByText('Bisogno nascosto:')).toBeVisible();
+    await page.locator('.result').getByRole('button', { name: /Versione migliore|Better version/i }).click();
+    await expect(page.getByText('Versione migliore')).toBeVisible();
   });
 
   test('different decisions produce different categories', async ({ page }) => {
@@ -124,7 +126,11 @@ test.describe('Giuseppe OS decision board', () => {
   });
 
   test('board output contains at least four counsellors', async ({ page }) => {
-    await askBoard(page, 'investire in ETF', 'Voglio comprare libertà futura.');
+    await page.getByPlaceholder(/comprare casa|buy a house/i).fill('investire in ETF');
+    await page.getByPlaceholder(/Motivo vero|The real reason/i).fill('Voglio comprare libertà futura.');
+    await page.getByRole('button', { name: DECISION_SUBMIT_PATTERN }).click();
+    await expect(page.locator('.result')).toBeVisible({ timeout: 25_000 });
+    await page.locator('.result').getByRole('button', { name: /Mostra il Board|Show the Board/i }).click();
 
     const counsellors = ['CEO 2036', 'CFO', 'Strategist', 'Creative Director', 'Psychologist', 'Mentor'];
     let visibleCount = 0;

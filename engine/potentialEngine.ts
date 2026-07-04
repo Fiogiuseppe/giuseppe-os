@@ -1,5 +1,12 @@
 import brain from '../memory/giuseppe_brain.json';
 import { liquidityPhrase } from '../lib/publicFinance';
+import {
+  assessEvidence,
+  confidenceFromEvidence,
+  type EvidenceLevel
+} from '../lib/memory/evidence';
+import type { LongTermMemory, WorkingMemory } from '../lib/brain/types';
+import { buildEvidenceSnapshot } from '../lib/memory/insights';
 
 export type OpportunityDimensions = {
   missionAlignment: number;
@@ -20,13 +27,16 @@ export type Opportunity = {
   description: string;
   whyThisMatters: string;
   firstAction: string;
-  estimatedImpact: 'low' | 'medium' | 'high' | 'transformative';
+  estimatedImpact: 'low' | 'medium' | 'high' | 'transformative' | 'unknown';
   missionAlignment: string;
   timeRequired: string;
   energyRequired: 'low' | 'medium' | 'high';
-  confidenceScore: number;
+  confidenceScore: number | null;
+  confidenceLabel: 'learning' | 'notEnoughData' | 'score';
+  hasEnoughData: boolean;
+  evidenceLevel: EvidenceLevel;
   dimensions: OpportunityDimensions;
-  totalScore: number;
+  totalScore: number | null;
   sourceProject?: string;
 };
 
@@ -98,10 +108,6 @@ function impactLabel(score: number): Opportunity['estimatedImpact'] {
   return 'low';
 }
 
-function confidenceFromSignals(signals: number): number {
-  return clamp(Math.round(55 + signals * 8), 0, 100);
-}
-
 function projectBoost(status: string): number {
   if (status === 'active') return 2;
   if (status === 'slow-active') return 1;
@@ -109,21 +115,19 @@ function projectBoost(status: string): number {
   return -1;
 }
 
-function buildCandidates(): Opportunity[] {
-  const projects = memory.projects;
-
-  const templates: Array<{
-    title: string;
-    description: string;
-    whyThisMatters: string;
-    firstAction: string;
-    missionAlignment: string;
-    timeRequired: string;
-    energyRequired: Opportunity['energyRequired'];
-    sourceProject?: string;
-    dimensions: OpportunityDimensions;
-    confidenceSignals: number;
-  }> = [
+function buildCandidates(): Array<{
+  title: string;
+  description: string;
+  whyThisMatters: string;
+  firstAction: string;
+  missionAlignment: string;
+  timeRequired: string;
+  energyRequired: Opportunity['energyRequired'];
+  sourceProject?: string;
+  dimensions: OpportunityDimensions;
+  confidenceSignals: number;
+}> {
+  const templates = [
     {
       title: 'Pubblica un pensiero vero su LinkedIn',
       description:
@@ -133,7 +137,7 @@ function buildCandidates(): Opportunity[] {
       firstAction: 'Scrivi in 30 minuti una bozza su un problema reale che hai risolto questa settimana.',
       missionAlignment: 'Aumenta capitale reputazionale senza sacrificare verità.',
       timeRequired: '45 min',
-      energyRequired: 'medium',
+      energyRequired: 'medium' as const,
       sourceProject: 'Medium/LinkedIn',
       dimensions: {
         missionAlignment: 9,
@@ -158,7 +162,7 @@ function buildCandidates(): Opportunity[] {
       firstAction: 'Apri la banca e imposta un trasferimento fisso mensile verso ETF o fondo emergenza.',
       missionAlignment: 'Converte liquidità in opzionalità futura.',
       timeRequired: '20 min',
-      energyRequired: 'low',
+      energyRequired: 'low' as const,
       sourceProject: 'Brand Giuseppe',
       dimensions: {
         missionAlignment: 8,
@@ -183,7 +187,7 @@ function buildCandidates(): Opportunity[] {
       firstAction: 'Scegli un solo poem, definisci "finito" in una frase, e lavoraci 90 minuti senza distrazioni.',
       missionAlignment: 'Protegge bellezza e verità creativa.',
       timeRequired: '90 min',
-      energyRequired: 'high',
+      energyRequired: 'high' as const,
       sourceProject: 'Visceral Poems',
       dimensions: {
         missionAlignment: 9,
@@ -208,7 +212,7 @@ function buildCandidates(): Opportunity[] {
       firstAction: 'Definisci materiali, dimensioni e vincolo di produzione per un solo pezzo prototipo.',
       missionAlignment: 'Rafforza identità creativa Giuseppe.',
       timeRequired: '2 ore',
-      energyRequired: 'high',
+      energyRequired: 'high' as const,
       sourceProject: 'UREES',
       dimensions: {
         missionAlignment: 8,
@@ -232,7 +236,7 @@ function buildCandidates(): Opportunity[] {
       firstAction: 'Prepara 3 esempi concreti di impatto e chiedi un incontro di 20 minuti con un leader chiave.',
       missionAlignment: 'Allinea carriera a libertà 2036.',
       timeRequired: '1 ora prep',
-      energyRequired: 'medium',
+      energyRequired: 'medium' as const,
       sourceProject: 'LEGO',
       dimensions: {
         missionAlignment: 8,
@@ -256,7 +260,7 @@ function buildCandidates(): Opportunity[] {
       firstAction: 'Scrivi 5 bullet: chi sei, per chi, cosa offri, prove, prossimo passo pubblico.',
       missionAlignment: 'Riduce dispersione e aumenta focus strategico.',
       timeRequired: '60 min',
-      energyRequired: 'medium',
+      energyRequired: 'medium' as const,
       sourceProject: 'Brand Giuseppe',
       dimensions: {
         missionAlignment: 9,
@@ -281,7 +285,7 @@ function buildCandidates(): Opportunity[] {
       firstAction: 'Crea un foglio con anticipo target, rate mensile, tasse e impatto su investimenti automatici.',
       missionAlignment: 'Protegge libertà finanziaria durante un obiettivo emotivo.',
       timeRequired: '45 min',
-      energyRequired: 'low',
+      energyRequired: 'low' as const,
       dimensions: {
         missionAlignment: 7,
         longTermImpact: 8,
@@ -304,7 +308,7 @@ function buildCandidates(): Opportunity[] {
       firstAction: 'Identifica un contatto e invia un messaggio personalizzato con un caso di impatto reale.',
       missionAlignment: 'Seconda fonte di reddito reputazionale.',
       timeRequired: '30 min',
-      energyRequired: 'medium',
+      energyRequired: 'medium' as const,
       sourceProject: 'Freelance',
       dimensions: {
         missionAlignment: 6,
@@ -328,7 +332,7 @@ function buildCandidates(): Opportunity[] {
       firstAction: 'Scrivi su carta: "Per 30 giorni non apro nuovi fronti" e torna alla priorità #1.',
       missionAlignment: 'Protegge concentrazione verso libertà 2036.',
       timeRequired: '10 min',
-      energyRequired: 'low',
+      energyRequired: 'low' as const,
       dimensions: {
         missionAlignment: 9,
         longTermImpact: 8,
@@ -345,42 +349,52 @@ function buildCandidates(): Opportunity[] {
     }
   ];
 
-  return templates.map(template => {
-    const statusBoost = template.sourceProject
-      ? projectBoost(projects[template.sourceProject]?.status ?? 'frozen')
-      : 0;
+  return templates;
+}
 
-    const adjusted: OpportunityDimensions = {
-      ...template.dimensions,
-      missionAlignment: clamp(template.dimensions.missionAlignment + (statusBoost > 0 ? 1 : 0)),
-      riskOfDistraction: clamp(
-        template.dimensions.riskOfDistraction + (statusBoost < 0 ? 2 : 0) + (template.sourceProject ? 0 : 0)
-      )
-    };
+function mapTemplateToOpportunity(
+  template: ReturnType<typeof buildCandidates>[number],
+  assessment: ReturnType<typeof assessEvidence>
+): Opportunity {
+  const projects = memory.projects;
+  const statusBoost = template.sourceProject
+    ? projectBoost(projects[template.sourceProject]?.status ?? 'frozen')
+    : 0;
 
-    if (projects[template.sourceProject ?? '']?.status === 'slow-active') {
-      adjusted.creativeGrowth = clamp(adjusted.creativeGrowth + 1);
-      adjusted.riskOfDistraction = clamp(adjusted.riskOfDistraction - 1);
-    }
+  const adjusted: OpportunityDimensions = {
+    ...template.dimensions,
+    missionAlignment: clamp(template.dimensions.missionAlignment + (statusBoost > 0 ? 1 : 0)),
+    riskOfDistraction: clamp(
+      template.dimensions.riskOfDistraction + (statusBoost < 0 ? 2 : 0)
+    )
+  };
 
-    const totalScore = scoreOpportunity(adjusted);
+  if (template.sourceProject && projects[template.sourceProject]?.status === 'slow-active') {
+    adjusted.creativeGrowth = clamp(adjusted.creativeGrowth + 1);
+    adjusted.riskOfDistraction = clamp(adjusted.riskOfDistraction - 1);
+  }
 
-    return {
-      title: template.title,
-      reason: template.whyThisMatters,
-      description: template.description,
-      whyThisMatters: template.whyThisMatters,
-      firstAction: template.firstAction,
-      estimatedImpact: impactLabel(totalScore),
-      missionAlignment: template.missionAlignment,
-      timeRequired: template.timeRequired,
-      energyRequired: template.energyRequired,
-      confidenceScore: confidenceFromSignals(template.confidenceSignals + statusBoost),
-      dimensions: adjusted,
-      totalScore,
-      sourceProject: template.sourceProject
-    };
-  });
+  const totalScore = assessment.hasEnoughForRanking ? scoreOpportunity(adjusted) : null;
+  const confidence = confidenceFromEvidence(assessment, template.confidenceSignals + statusBoost);
+
+  return {
+    title: template.title,
+    reason: template.whyThisMatters,
+    description: template.description,
+    whyThisMatters: template.whyThisMatters,
+    firstAction: template.firstAction,
+    estimatedImpact: totalScore !== null ? impactLabel(totalScore) : 'unknown',
+    missionAlignment: template.missionAlignment,
+    timeRequired: template.timeRequired,
+    energyRequired: template.energyRequired,
+    confidenceScore: confidence.value,
+    confidenceLabel: confidence.labelKey,
+    hasEnoughData: assessment.hasEnoughForRanking,
+    evidenceLevel: assessment.level,
+    dimensions: adjusted,
+    totalScore,
+    sourceProject: template.sourceProject
+  };
 }
 
 function pickWeeklyFocus(): string {
@@ -434,8 +448,20 @@ function pickQuestionOfTheDay(): string {
   return `Questa mossa aumenta ${value.toLowerCase()} — o solo sollievo immediato?`;
 }
 
-export function runPotentialEngine(): PotentialBrief {
-  const ranked = buildCandidates().sort((a, b) => b.totalScore - a.totalScore);
+export type PotentialEngineInput = {
+  longTerm?: LongTermMemory;
+  working?: WorkingMemory;
+};
+
+export function runPotentialEngine(input: PotentialEngineInput = {}): PotentialBrief {
+  const longTerm = input.longTerm ?? { decisions: [], lessons: [], patterns_detected: [], insight_history: [] };
+  const working = input.working ?? { sessions: [], notes: [], records: [] };
+  const assessment = assessEvidence(buildEvidenceSnapshot(longTerm, working));
+
+  const ranked = buildCandidates()
+    .map(template => mapTemplateToOpportunity(template, assessment))
+    .sort((a, b) => (b.totalScore ?? 0) - (a.totalScore ?? 0));
+
   const todaysOpportunity = ranked[0];
   const opportunityHistory = ranked.slice(1, 4);
 

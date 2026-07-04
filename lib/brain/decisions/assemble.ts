@@ -1,4 +1,6 @@
 import type { DecisionResult } from '../../../engine/decisionEngine';
+import type { EvidenceAssessment } from '../../memory/evidence';
+import { confidenceFromEvidence } from '../../memory/evidence';
 import type { DecisionAIResult, DecisionResponseSource } from './types';
 import { parseDecisionFieldsFromAnswer, summarizeBoard } from './parse';
 
@@ -13,10 +15,19 @@ export function assembleDecisionAIResult(params: {
   engine: DecisionResult;
   answer: string;
   confidence: number;
+  evidenceAssessment?: EvidenceAssessment;
   source: DecisionResponseSource;
 }): DecisionAIResult {
   const parsed = parseDecisionFieldsFromAnswer(params.answer);
   const boardPerspective = parsed.boardPerspective ?? summarizeBoard(params.engine);
+  const gated = params.evidenceAssessment
+    ? confidenceFromEvidence(params.evidenceAssessment, 3)
+    : null;
+
+  const confidenceScore =
+    gated && gated.labelKey !== 'score'
+      ? null
+      : gated?.value ?? clampConfidence(parsed.confidenceScore, params.confidence);
 
   return {
     ...params.engine,
@@ -30,7 +41,8 @@ export function assembleDecisionAIResult(params: {
       parsed.whyItMatters ??
       `Questa scelta tocca la North Star di Giuseppe: ${params.engine.betterVersion}`,
     boardPerspective,
-    confidenceScore: clampConfidence(parsed.confidenceScore, params.confidence),
+    confidenceScore,
+    confidenceLabel: gated?.labelKey ?? (confidenceScore !== null ? 'score' : 'notEnoughData'),
     source: params.source
   };
 }

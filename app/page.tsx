@@ -8,12 +8,15 @@ import {
   COUNSELLOR_LABELS
 } from '../engine/decisionEngine';
 import type { DecisionAIResult } from '../lib/brain/decisions/types';
-import { decideViaBrain } from './lib/decideViaBrain';
-import { fetchTodaysLetter } from './lib/fetchTodaysLetter';
+import type { AwarenessInsight } from '../engine/awarenessEngine';
+import type { PotentialBrief } from '../engine/potentialEngine';
 import type { DailyBriefingResponse } from '../lib/briefing/types';
+import { decideViaBrain } from './lib/decideViaBrain';
+import { fetchCreateViaBrain } from './lib/fetchCreateViaBrain';
+import { fetchInsightsViaBrain } from './lib/fetchInsightsViaBrain';
+import { fetchTodaysLetter } from './lib/fetchTodaysLetter';
+import { formatConfidenceDisplay, formatProgressDisplay } from './lib/formatConfidence';
 import { buildMemoryPalaceCards } from './lib/memoryPalaceCards';
-import { runPotentialEngine } from '../engine/potentialEngine';
-import { runAwarenessEngine } from '../engine/awarenessEngine';
 import {
   DisclosurePanel,
   DisclosureTrigger,
@@ -36,14 +39,6 @@ const MEMORY_PRIMARY_LABELS = new Set([
   'PRIORITIES'
 ]);
 
-const PROJECT_PROGRESS: Record<string, number> = {
-  LEGO: 87,
-  'Brand Giuseppe': 74,
-  'Medium/LinkedIn': 68,
-  'Visceral Poems': 75,
-  UREES: 82,
-  Freelance: 45
-};
 
 function recommendedProject() {
   const active = Object.entries(brain.projects).filter(([, p]) => p.status === 'active');
@@ -56,180 +51,193 @@ function DecisionResultDisclosure({ result }: { result: DecisionAIResult }) {
 
   return (
     <div className="result progressive-result space-today-result">
-      <div className="kicker">{t('kickers.recommendation')}</div>
-      <h3>{result.recommendation}</h3>
-      <p>{t('decisionResult.category')}: {result.categoryLabel}</p>
-      <div className="potential-score">{result.confidenceScore}</div>
-      <div className="kicker">{t('decisionResult.nextStep')}</div>
-      <p>{result.nextAction}</p>
-
-      {openSection !== null && (
-        <button type="button" className="reading-expand-close" onClick={() => setOpenSection(null)}>
-          <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-        </button>
+      {openSection === null ? (
+        <>
+          <div className="kicker">{t('kickers.recommendation')}</div>
+          <h3>{result.recommendation}</h3>
+          <p>{t('decisionResult.category')}: {result.categoryLabel}</p>
+          <div className="potential-score">
+            {formatConfidenceDisplay(t, result.confidenceScore, result.confidenceLabel)}
+          </div>
+          <div className="kicker">{t('decisionResult.nextStep')}</div>
+          <p>{result.nextAction}</p>
+          <div className="discovery-trail">
+            <DisclosureTrigger label={t('disclosure.why')} onClick={() => setOpenSection('why')} />
+            <DisclosureTrigger label={t('disclosure.showBoard')} onClick={() => setOpenSection('board')} />
+            <DisclosureTrigger label={t('disclosure.capitals')} onClick={() => setOpenSection('capitals')} />
+            <DisclosureTrigger label={t('disclosure.betterVersion')} onClick={() => setOpenSection('better')} />
+          </div>
+        </>
+      ) : (
+        <>
+          <button type="button" className="reading-expand-close" onClick={() => setOpenSection(null)}>
+            <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
+          </button>
+          <DisclosurePanel open={openSection === 'why'}>
+            <div className="kicker">{t('decisionResult.whyMatters')}</div>
+            <p>{result.whyItMatters}</p>
+            <div className="kicker">{t('decisionResult.hiddenNeed')}</div>
+            <p><b>{t('decisionResult.hiddenNeedLabel')}:</b> {result.hiddenNeed}</p>
+            <p><b>{t('decisionResult.biasLabel')}:</b> {result.bias}</p>
+          </DisclosurePanel>
+          <DisclosurePanel open={openSection === 'board'}>
+            <div className="kicker">{t('kickers.board')}</div>
+            {Object.entries(result.counsellors).map(([key, text]) => (
+              <p key={key}><b>{COUNSELLOR_LABELS[key as keyof typeof result.counsellors]}:</b> {text}</p>
+            ))}
+          </DisclosurePanel>
+          <DisclosurePanel open={openSection === 'capitals'}>
+            <h3>{t('decisionResult.capitalsTitle')}</h3>
+            {Object.entries(result.capitals).map(([key, value]) => (
+              <p key={key}>
+                <b>{getCapitalLabel(key as keyof typeof result.capitals)} ({value.score}):</b> {value.note}
+              </p>
+            ))}
+          </DisclosurePanel>
+          <DisclosurePanel open={openSection === 'better'}>
+            <h3>{t('decisionResult.betterTitle')}</h3>
+            <p>{result.betterVersion}</p>
+          </DisclosurePanel>
+          <div className="discovery-trail">
+            {openSection !== 'why' && (
+              <DisclosureTrigger label={t('disclosure.why')} onClick={() => setOpenSection('why')} />
+            )}
+            {openSection !== 'board' && (
+              <DisclosureTrigger label={t('disclosure.showBoard')} onClick={() => setOpenSection('board')} />
+            )}
+            {openSection !== 'capitals' && (
+              <DisclosureTrigger label={t('disclosure.capitals')} onClick={() => setOpenSection('capitals')} />
+            )}
+            {openSection !== 'better' && (
+              <DisclosureTrigger label={t('disclosure.betterVersion')} onClick={() => setOpenSection('better')} />
+            )}
+          </div>
+        </>
       )}
-
-      <DisclosurePanel open={openSection === 'why'}>
-        <div className="kicker">{t('decisionResult.whyMatters')}</div>
-        <p>{result.whyItMatters}</p>
-        <div className="kicker">{t('decisionResult.hiddenNeed')}</div>
-        <p><b>{t('decisionResult.hiddenNeedLabel')}:</b> {result.hiddenNeed}</p>
-        <p><b>{t('decisionResult.biasLabel')}:</b> {result.bias}</p>
-      </DisclosurePanel>
-
-      <DisclosurePanel open={openSection === 'board'}>
-        <div className="kicker">{t('kickers.board')}</div>
-        {Object.entries(result.counsellors).map(([key, text]) => (
-          <p key={key}><b>{COUNSELLOR_LABELS[key as keyof typeof result.counsellors]}:</b> {text}</p>
-        ))}
-      </DisclosurePanel>
-
-      <DisclosurePanel open={openSection === 'capitals'}>
-        <h3>{t('decisionResult.capitalsTitle')}</h3>
-        {Object.entries(result.capitals).map(([key, value]) => (
-          <p key={key}>
-            <b>{getCapitalLabel(key as keyof typeof result.capitals)} ({value.score}):</b> {value.note}
-          </p>
-        ))}
-      </DisclosurePanel>
-
-      <DisclosurePanel open={openSection === 'better'}>
-        <h3>{t('decisionResult.betterTitle')}</h3>
-        <p>{result.betterVersion}</p>
-      </DisclosurePanel>
-
-      <div className="discovery-trail">
-        {openSection !== 'why' && (
-          <DisclosureTrigger label={t('disclosure.why')} onClick={() => setOpenSection('why')} />
-        )}
-        {openSection !== 'board' && (
-          <DisclosureTrigger label={t('disclosure.showBoard')} onClick={() => setOpenSection('board')} />
-        )}
-        {openSection !== 'capitals' && (
-          <DisclosureTrigger label={t('disclosure.capitals')} onClick={() => setOpenSection('capitals')} />
-        )}
-        {openSection !== 'better' && (
-          <DisclosureTrigger label={t('disclosure.betterVersion')} onClick={() => setOpenSection('better')} />
-        )}
-      </div>
     </div>
   );
 }
 
-function PotentialPanelDisclosure({ onExpandedChange }: { onExpandedChange?: (open: boolean) => void }) {
+function PotentialPanelDisclosure({ onOpen }: { onOpen: () => void }) {
   const { t } = useLanguage();
-  const potential = useMemo(() => runPotentialEngine(), []);
+  return <DisclosureTrigger label={t('disclosure.exploreOpportunities')} onClick={onOpen} />;
+}
+
+function PotentialPanelFocus({
+  onClose,
+  potential
+}: {
+  onClose: () => void;
+  potential: PotentialBrief;
+}) {
+  const { t } = useLanguage();
   const today = potential.todaysOpportunity;
-  const [open, setOpen] = useState(false);
-
-  const setExpanded = (next: boolean) => {
-    setOpen(next);
-    onExpandedChange?.(next);
-  };
-
-  if (open) {
-    return (
-      <div className="reading-focus-view">
-        <button type="button" className="reading-expand-close" onClick={() => setExpanded(false)}>
-          <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-        </button>
-        <section className="hero">
-          <div className="potential-card potential-span2 card-glow">
-            <div className="kicker">{t('kickers.todaysOpportunity')}</div>
-            <div className="potential-h1">{today.title}</div>
-            <p>{today.description}</p>
-            <p><b>{t('potential.whyMatters')}:</b> {today.whyThisMatters}</p>
-            <p><b>{t('potential.firstAction')}:</b> {today.firstAction}</p>
-            <div className="potential-meta">
-              {t('potential.impact')} {today.estimatedImpact} · {today.timeRequired} · {t('potential.energy')} {today.energyRequired}
-            </div>
-          </div>
-          <div className="potential-card">
-            <div className="kicker">{t('kickers.confidence')}</div>
-            <div className="potential-score">{today.confidenceScore}</div>
-            <p>{t('potential.score')} {Math.round(today.totalScore)} · {today.sourceProject ?? t('potential.system')}</p>
-          </div>
-        </section>
-        <section className="potential-grid">
-          {[
-            [t('kickers.creativeChallenge'), potential.creativeChallenge],
-            [t('kickers.skillToLearn'), potential.skillToLearn],
-            [t('kickers.personToContact'), potential.personToContact],
-            [t('kickers.articleToRead'), potential.articleToRead],
-            [t('kickers.projectToFinish'), potential.projectToFinish],
-            [t('kickers.riskToAvoid'), potential.riskToAvoid],
-            [t('kickers.questionOfTheDay'), potential.questionOfTheDay],
-            [t('kickers.weeklyFocus'), potential.weeklyFocus]
-          ].map(([label, value]) => (
-            <div className="potential-card" key={label}>
-              <div className="kicker">{label}</div>
-              <p>{value}</p>
-            </div>
-          ))}
-        </section>
-      </div>
-    );
-  }
 
   return (
-    <div className="potential-panel">
-      <DisclosureTrigger label={t('disclosure.exploreOpportunities')} onClick={() => setExpanded(true)} />
+    <div className="reading-focus-view">
+      <button type="button" className="reading-expand-close" onClick={onClose}>
+        <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
+      </button>
+      <section className="hero">
+        <div className="potential-card potential-span2 card-glow">
+          <div className="kicker">{t('kickers.todaysOpportunity')}</div>
+          <div className="potential-h1">{today.title}</div>
+          <p>{today.description}</p>
+          <p><b>{t('potential.whyMatters')}:</b> {today.whyThisMatters}</p>
+          <p><b>{t('potential.firstAction')}:</b> {today.firstAction}</p>
+          <div className="potential-meta">
+            {t('potential.impact')} {today.estimatedImpact} · {today.timeRequired} · {t('potential.energy')} {today.energyRequired}
+          </div>
+        </div>
+        <div className="potential-card">
+          <div className="kicker">{t('kickers.confidence')}</div>
+          <div className="potential-score">
+            {formatConfidenceDisplay(t, today.confidenceScore, today.confidenceLabel)}
+          </div>
+          <p>
+            {today.hasEnoughData && today.totalScore !== null
+              ? `${t('potential.score')} ${Math.round(today.totalScore)} · ${today.sourceProject ?? t('potential.system')}`
+              : formatProgressDisplay(t)}
+          </p>
+        </div>
+      </section>
+      <section className="potential-grid">
+        {[
+          [t('kickers.creativeChallenge'), potential.creativeChallenge],
+          [t('kickers.skillToLearn'), potential.skillToLearn],
+          [t('kickers.personToContact'), potential.personToContact],
+          [t('kickers.articleToRead'), potential.articleToRead],
+          [t('kickers.projectToFinish'), potential.projectToFinish],
+          [t('kickers.riskToAvoid'), potential.riskToAvoid],
+          [t('kickers.questionOfTheDay'), potential.questionOfTheDay],
+          [t('kickers.weeklyFocus'), potential.weeklyFocus]
+        ].map(([label, value]) => (
+          <div className="potential-card" key={label}>
+            <div className="kicker">{label}</div>
+            <p>{value}</p>
+          </div>
+        ))}
+      </section>
     </div>
   );
 }
 
-function ProjectsListDisclosure({ onExpandedChange }: { onExpandedChange?: (open: boolean) => void }) {
+function ProjectsListDisclosure({ onOpen }: { onOpen: () => void }) {
   const { t } = useLanguage();
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<string | null>(null);
+  return <DisclosureTrigger label={t('disclosure.openProjects')} onClick={onOpen} />;
+}
 
-  const setExpanded = (next: boolean) => {
-    setOpen(next);
-    onExpandedChange?.(next);
-  };
-
-  if (open) {
-    return (
-      <div className="reading-focus-view">
-        <button type="button" className="reading-expand-close" onClick={() => setExpanded(false)}>
-          <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-        </button>
-        <section className="projects-grid project-map">
-          {Object.entries(brain.projects).map(([name, project]) => (
-            <button
-              type="button"
-              key={name}
-              className={`card project-select-card ${selected === name ? 'selected' : ''}`}
-              onClick={() => setSelected(name)}
-            >
-              <div className="kicker">{project.status.toUpperCase()}</div>
-              <h2>{name}</h2>
-              <p>{project.role}</p>
-            </button>
-          ))}
-        </section>
-        {selected && (
-          <div className="card project-detail-card">
-            <div className="kicker">{t('kickers.projectDetails')}</div>
-            <h2>{selected}</h2>
-            <p>{brain.projects[selected as keyof typeof brain.projects].role}</p>
-            <p>{t('disclosure.progress')}: {PROJECT_PROGRESS[selected] ?? 60}%</p>
-          </div>
-        )}
-      </div>
-    );
-  }
+function ProjectsListFocus({
+  onClose,
+  selected,
+  onSelect
+}: {
+  onClose: () => void;
+  selected: string | null;
+  onSelect: (name: string) => void;
+}) {
+  const { t } = useLanguage();
 
   return (
-    <DisclosureTrigger label={t('disclosure.openProjects')} onClick={() => setExpanded(true)} />
+    <div className="reading-focus-view">
+      <button type="button" className="reading-expand-close" onClick={onClose}>
+        <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
+      </button>
+      <section className="projects-grid project-map">
+        {Object.entries(brain.projects).map(([name, project]) => (
+          <button
+            type="button"
+            key={name}
+            className={`card project-select-card ${selected === name ? 'selected' : ''}`}
+            onClick={() => onSelect(name)}
+          >
+            <div className="kicker">{project.status.toUpperCase()}</div>
+            <h2>{name}</h2>
+            <p>{project.role}</p>
+          </button>
+        ))}
+      </section>
+      {selected && (
+        <div className="card project-detail-card">
+          <div className="kicker">{t('kickers.projectDetails')}</div>
+          <h2>{selected}</h2>
+          <p>{brain.projects[selected as keyof typeof brain.projects].role}</p>
+          <p>{t('disclosure.progress')}: {formatProgressDisplay(t)}</p>
+        </div>
+      )}
+    </div>
   );
 }
 
 export default function Home() {
   const { t } = useLanguage();
   const [view, setView] = useState<View>('today');
-  const potential = useMemo(() => runPotentialEngine(), []);
-  const awareness = useMemo(() => runAwarenessEngine(), []);
+  const [awareness, setAwareness] = useState<AwarenessInsight | null>(null);
+  const [insightsLoading, setInsightsLoading] = useState(false);
+  const [insightsError, setInsightsError] = useState<string | null>(null);
+  const [potential, setPotential] = useState<PotentialBrief | null>(null);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
   const [projectName] = recommendedProject();
 
   const [decision, setDecision] = useState('');
@@ -272,6 +280,64 @@ export default function Home() {
   useEffect(() => {
     let cancelled = false;
 
+    async function loadInsights() {
+      setInsightsLoading(true);
+      setInsightsError(null);
+
+      const response = await fetchInsightsViaBrain();
+      if (cancelled) {
+        return;
+      }
+
+      setInsightsLoading(false);
+
+      if (!response.ok) {
+        setInsightsError(response.message);
+        return;
+      }
+
+      setAwareness(response.awareness);
+    }
+
+    void loadInsights();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCreate() {
+      setCreateLoading(true);
+      setCreateError(null);
+
+      const response = await fetchCreateViaBrain();
+      if (cancelled) {
+        return;
+      }
+
+      setCreateLoading(false);
+
+      if (!response.ok) {
+        setCreateError(response.message);
+        return;
+      }
+
+      setPotential(response.potential);
+    }
+
+    void loadCreate();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
     async function loadLetter() {
       setLetterLoading(true);
       setLetterError(null);
@@ -298,8 +364,8 @@ export default function Home() {
     };
   }, []);
 
-  const [projectsWhy, setProjectsWhy] = useState(false);
-  const [createExpanded, setCreateExpanded] = useState(false);
+  const [createFocus, setCreateFocus] = useState<'projects' | 'potential' | 'why' | null>(null);
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [decisionsFocus, setDecisionsFocus] = useState<'form' | 'purpose' | null>('form');
 
   const memoryCards = useMemo(() => buildMemoryPalaceCards(brain), []);
@@ -317,8 +383,8 @@ export default function Home() {
     setMemoryExpanded(false);
     setInsightsFocus(null);
     setDecisionsFocus('form');
-    setProjectsWhy(false);
-    setCreateExpanded(false);
+    setCreateFocus(null);
+    setSelectedProject(null);
     setDecisionResult(null);
   }, [view]);
 
@@ -564,10 +630,13 @@ export default function Home() {
 
             {view === 'insights' && (
               <div className={`insights-space${insightsFocus ? ' mental-space--reading' : ''}`}>
-                {insightsFocus === null && (
+                {insightsLoading && <p className="companion-letter-loading">…</p>}
+                {insightsError && <p className="companion-letter-error">{insightsError}</p>}
+
+                {!insightsLoading && !insightsError && awareness && insightsFocus === null && (
                   <>
                     <p className="section-question">{t('sectionQuestions.insights')}</p>
-                    <p className="insights-built-over-time">{t('insights.builtOverTime')}</p>
+                    <p className="insights-built-over-time">{awareness.headline}</p>
 
                     <section className="discovery-insight card card-glow">
                       <div className="kicker">{t('kickers.insight')}</div>
@@ -584,7 +653,7 @@ export default function Home() {
                   </>
                 )}
 
-                {insightsFocus !== null && (
+                {!insightsLoading && !insightsError && awareness && insightsFocus !== null && (
                   <div className="reading-focus-view">
                     <button type="button" className="reading-expand-close" onClick={() => setInsightsFocus(null)}>
                       <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
@@ -626,7 +695,9 @@ export default function Home() {
                         <div className="kicker">{t('kickers.recommendedAction')}</div>
                         <p>{awareness.recommendedAction}</p>
                         <div className="kicker">{t('kickers.confidence')}</div>
-                        <div className="potential-score">{awareness.confidenceScore}</div>
+                        <div className="potential-score">
+                          {formatConfidenceDisplay(t, awareness.confidenceScore, awareness.confidenceLabel)}
+                        </div>
                       </div>
                     </DisclosurePanel>
                   </div>
@@ -635,8 +706,36 @@ export default function Home() {
             )}
 
             {view === 'create' && (
-              <div className={`energy-ecosystem${createExpanded ? ' mental-space--reading' : ''}`}>
-                {!createExpanded && (
+              <div className={`energy-ecosystem${createFocus ? ' mental-space--reading' : ''}`}>
+                {createFocus === 'potential' && potential && (
+                  <PotentialPanelFocus onClose={() => setCreateFocus(null)} potential={potential} />
+                )}
+
+                {createFocus === 'potential' && createLoading && <p className="companion-letter-loading">…</p>}
+                {createFocus === 'potential' && createError && <p className="companion-letter-error">{createError}</p>}
+
+                {createFocus === 'projects' && (
+                  <ProjectsListFocus
+                    onClose={() => setCreateFocus(null)}
+                    selected={selectedProject}
+                    onSelect={setSelectedProject}
+                  />
+                )}
+
+                {createFocus === 'why' && (
+                  <div className="reading-focus-view">
+                    <button type="button" className="reading-expand-close" onClick={() => setCreateFocus(null)}>
+                      <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
+                    </button>
+                    <section className="card">
+                      <div className="kicker">{t('kickers.strategist')}</div>
+                      <h2>{t('create.strategistHeadline')}</h2>
+                      <p>{t('create.strategistSubline')}</p>
+                    </section>
+                  </div>
+                )}
+
+                {createFocus === null && (
                   <>
                     <p className="section-question">{t('sectionQuestions.create')}</p>
                     <section className="ecosystem-focus card card-glow">
@@ -645,19 +744,15 @@ export default function Home() {
                       <p>{brain.projects[projectName as keyof typeof brain.projects].role}</p>
                     </section>
 
-                    {!projectsWhy && <DisclosureTrigger label={t('disclosure.why')} onClick={() => setProjectsWhy(true)} />}
-                    <DisclosurePanel open={projectsWhy}>
-                      <section className="card">
-                        <div className="kicker">{t('kickers.strategist')}</div>
-                        <h2>{t('create.strategistHeadline')}</h2>
-                        <p>{t('create.strategistSubline')}</p>
-                      </section>
-                    </DisclosurePanel>
+                    <DisclosureTrigger label={t('disclosure.why')} onClick={() => setCreateFocus('why')} />
+                    <ProjectsListDisclosure onOpen={() => setCreateFocus('projects')} />
+                    {!createLoading && !createError && potential && (
+                      <PotentialPanelDisclosure onOpen={() => setCreateFocus('potential')} />
+                    )}
+                    {createLoading && <p className="companion-letter-loading">…</p>}
+                    {createError && <p className="companion-letter-error">{createError}</p>}
                   </>
                 )}
-
-                <ProjectsListDisclosure onExpandedChange={setCreateExpanded} />
-                {!createExpanded && <PotentialPanelDisclosure onExpandedChange={setCreateExpanded} />}
               </div>
             )}
 

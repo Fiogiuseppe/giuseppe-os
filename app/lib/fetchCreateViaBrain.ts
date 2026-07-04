@@ -1,19 +1,17 @@
-import type { DecisionAIResult } from '../../lib/brain/decisions/types';
+import type { PotentialBrief } from '../../engine/potentialEngine';
 
-export type DecideViaBrainResult =
-  | { ok: true; decision: DecisionAIResult; missionAligned: boolean }
+export type FetchCreateResult =
+  | { ok: true; potential: PotentialBrief }
   | { ok: false; message: string; status: number };
 
-export async function decideViaBrain(decision: string, reason: string): Promise<DecideViaBrainResult> {
+export async function fetchCreateViaBrain(): Promise<FetchCreateResult> {
   const response = await fetch('/api/brain', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      intent: 'decide',
-      decision,
-      reason,
-      message: decision,
-      persist: true
+      intent: 'potential',
+      message: 'What should I focus on today?',
+      persist: false
     })
   });
 
@@ -30,17 +28,16 @@ export async function decideViaBrain(decision: string, reason: string): Promise<
     };
   }
 
-  if (!body.decision) {
+  if (!body.potentialBrief) {
     return {
       ok: false,
       status: 502,
-      message: 'Risposta decisionale incompleta dal Brain.'
+      message: 'Risposta Create incompleta dal Brain.'
     };
   }
 
   return {
     ok: true,
-    decision: body.decision as DecisionAIResult,
-    missionAligned: Boolean(body.missionAligned)
+    potential: body.potentialBrief as PotentialBrief
   };
 }

@@ -2,45 +2,47 @@ import { test, expect } from '@playwright/test';
 import { gotoView, DECISION_SUBMIT_PATTERN } from './helpers';
 
 async function expectInViewport(page: import('@playwright/test').Page, locator: import('@playwright/test').Locator) {
-  await locator.scrollIntoViewIfNeeded();
   await expect(locator).toBeInViewport({ ratio: 0.2 });
 }
 
+async function expectNoPageScroll(page: import('@playwright/test').Page) {
+  const pageMetrics = await page.evaluate(() => ({
+    bodyOverflowY: getComputedStyle(document.body).overflowY,
+    htmlOverflowY: getComputedStyle(document.documentElement).overflowY,
+    docScrollHeight: document.documentElement.scrollHeight,
+    docClientHeight: document.documentElement.clientHeight
+  }));
+
+  expect(pageMetrics.bodyOverflowY).toBe('hidden');
+  expect(pageMetrics.htmlOverflowY).toBe('hidden');
+  expect(pageMetrics.docScrollHeight).toBeLessThanOrEqual(pageMetrics.docClientHeight + 1);
+}
+
 test.describe('Giuseppe OS layout — no clipping', () => {
-  test('desktop today home panels stay readable without page scroll', async ({ page }) => {
+  test('desktop today home stays readable without page scroll', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto('/');
 
     await expect(page.locator('.companion-panel-letter')).toBeVisible();
-    await expect(page.locator('.companion-brief-grid')).toBeVisible({ timeout: 15_000 });
-
     const oneBigMove = page.locator('.companion-panel-letter .companion-panel-text--sentence');
-    await expect(oneBigMove).toBeVisible();
-    const box = await oneBigMove.boundingBox();
-    expect(box).not.toBeNull();
-    expect(box!.height).toBeGreaterThan(8);
+    await expect(oneBigMove).toBeVisible({ timeout: 15_000 });
 
-    const pageMetrics = await page.evaluate(() => ({
-      bodyOverflowY: getComputedStyle(document.body).overflowY,
-      docScrollHeight: document.documentElement.scrollHeight,
-      docClientHeight: document.documentElement.clientHeight
-    }));
-
-    expect(pageMetrics.bodyOverflowY).toBe('hidden');
-    expect(pageMetrics.docScrollHeight).toBeLessThanOrEqual(pageMetrics.docClientHeight + 1);
+    await page.getByRole('button', { name: /Leggi il briefing completo|Read the full briefing/i }).click();
+    await expect(page.locator('.companion-brief-grid')).toBeVisible();
+    await expectNoPageScroll(page);
   });
 
-  test('desktop memory grid bottom content stays reachable', async ({ page }) => {
+  test('desktop memory extra domains open via disclosure without page scroll', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto('/');
     await gotoView(page, 'memory');
 
-    const priorities = page.getByRole('heading', { name: 'PRIORITIES' });
-    await priorities.scrollIntoViewIfNeeded();
-    await expectInViewport(page, page.getByText(/Pubblicare un pensiero vero questa settimana/).first());
+    await expect(page.getByRole('heading', { name: 'PRIORITIES' })).toBeVisible();
+    await page.getByRole('button', { name: /Esplora memoria completa|Explore full memory/i }).click();
 
     const blindSpots = page.getByRole('heading', { name: 'BLIND SPOTS' });
     await expectInViewport(page, blindSpots);
+    await expectNoPageScroll(page);
   });
 
   test('desktop memory grid shows rules without interaction', async ({ page }) => {
@@ -62,9 +64,10 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await page.getByRole('button', { name: DECISION_SUBMIT_PATTERN }).click();
 
     const betterVersion = page.locator('.result').getByRole('button', { name: /Versione migliore|Better version/i });
-    await expectInViewport(page, betterVersion);
+    await expect(betterVersion).toBeVisible({ timeout: 25_000 });
     await betterVersion.click();
-    await expectInViewport(page, page.getByText(/Versione migliore|Better version/i).last());
+    await expect(page.locator('.result').getByRole('heading', { name: /Versione migliore|Better version/i })).toBeVisible();
+    await expectNoPageScroll(page);
   });
 
   test('mobile decisions form and submit button stay accessible', async ({ page }) => {
@@ -82,7 +85,8 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await textarea.fill('Voglio più chiarezza.');
     await page.getByPlaceholder(/comprare casa|buy a house/i).fill('pubblicare un post');
     await submit.click();
-    await expectInViewport(page, page.locator('.result').getByText(/Categoria:/));
+    await expect(page.locator('.result').getByText(/Categoria:|Category:/)).toBeVisible({ timeout: 25_000 });
+    await expectNoPageScroll(page);
   });
 
   test('mobile top navigation uses a single compact row', async ({ page }) => {
@@ -98,7 +102,7 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await expect(page.getByTestId('nav-memory')).toBeVisible();
   });
 
-  test('desktop memory content stays reachable without page overflow', async ({ page }) => {
+  test('desktop memory primary content stays visible without page overflow', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto('/');
     await gotoView(page, 'memory');
@@ -107,17 +111,6 @@ test.describe('Giuseppe OS layout — no clipping', () => {
       await expect(page.getByRole('heading', { name: domain })).toBeVisible();
     }
 
-    const priorities = page.getByRole('heading', { name: 'PRIORITIES' });
-    await priorities.scrollIntoViewIfNeeded();
-    await expectInViewport(page, priorities);
-
-    const pageMetrics = await page.evaluate(() => ({
-      bodyOverflowY: getComputedStyle(document.body).overflowY,
-      docScrollHeight: document.documentElement.scrollHeight,
-      docClientHeight: document.documentElement.clientHeight
-    }));
-
-    expect(pageMetrics.bodyOverflowY).toBe('hidden');
-    expect(pageMetrics.docScrollHeight).toBeLessThanOrEqual(pageMetrics.docClientHeight + 1);
+    await expectNoPageScroll(page);
   });
 });

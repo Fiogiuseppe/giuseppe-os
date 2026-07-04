@@ -6,6 +6,8 @@ import type {
   MemoryUpdateResult,
   WorkingMemory
 } from '../types';
+import type { EvidenceAssessment } from '../../memory/evidence';
+import { confidenceFromEvidence } from '../../memory/evidence';
 import { loadLongTermMemory, loadWorkingMemory, saveLongTermMemory, saveWorkingMemory } from './store';
 
 const MAX_SESSIONS = 40;
@@ -182,7 +184,15 @@ export async function applyMemoryUpdate(params: {
   };
 }
 
-export function estimateConfidence(context: ContextPacket): number {
+export function estimateConfidence(context: ContextPacket, assessment?: EvidenceAssessment): number {
+  if (assessment) {
+    const gated = confidenceFromEvidence(assessment, context.intent === 'decide' ? 3 : 2);
+    if (gated.value !== null) {
+      return gated.value / 100;
+    }
+    return assessment.level === 'learning' ? 0.35 : 0.25;
+  }
+
   if (context.lowContext) {
     return 0.45;
   }

@@ -116,6 +116,14 @@ export interface LongTermMemory {
     timestamp: string;
   }>;
   patterns_detected: string[];
+  insight_history?: Array<{
+    id: string;
+    insightId: string;
+    insight: string;
+    signalType: string;
+    evidenceScore: number;
+    timestamp: string;
+  }>;
 }
 
 export interface BrainRequest {
@@ -123,7 +131,7 @@ export interface BrainRequest {
   message: string;
   decision?: string;
   reason?: string;
-  /** When false, skip all memory persistence (default: false for decide, true otherwise). */
+  /** When false, skip durable memory persistence (default: true). */
   persist?: boolean;
 }
 
@@ -184,6 +192,7 @@ export interface EngineOutputs {
   decision?: import('../../engine/decisionEngine').DecisionResult;
   awareness?: import('../../engine/awarenessEngine').AwarenessInsight;
   opportunity?: import('../../engine/potentialEngine').Opportunity;
+  potentialBrief?: import('../../engine/potentialEngine').PotentialBrief;
   learning?: LearningReport;
 }
 
@@ -203,6 +212,7 @@ export interface BrainResponse {
   decision?: import('./decisions/types').DecisionAIResult;
   awareness?: import('../../engine/awarenessEngine').AwarenessInsight;
   opportunity?: import('../../engine/potentialEngine').Opportunity;
+  potentialBrief?: import('../../engine/potentialEngine').PotentialBrief;
   learning?: LearningReport;
 }
 
