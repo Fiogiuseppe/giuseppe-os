@@ -140,7 +140,7 @@ export function TodayExecuteAction({
     <div className={`today-execute${className ? ` ${className}` : ''}`} data-testid="today-execute">
       <button
         type="button"
-        className="today-execute-button"
+        className="insights-action-chip"
         data-testid="today-execute-button"
         disabled={loading}
         onClick={() => void handleExecute()}

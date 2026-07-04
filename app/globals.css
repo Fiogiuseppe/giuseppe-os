@@ -272,7 +272,7 @@ html.chat-route body {
 
 .today-action-text {
   margin: 0;
-  font-size: clamp(36px, 5.6vh, 58px);
+  font-size: clamp(41px, 5.6vh, 63px);
   font-weight: 700;
   line-height: 0.98;
   letter-spacing: -0.035em;
@@ -682,6 +682,12 @@ html.chat-route body {
 
 .insights-action-chip:active {
   transform: translateY(1px);
+}
+
+.insights-action-chip:disabled {
+  opacity: 0.55;
+  cursor: wait;
+  transform: none;
 }
 
 .insights-action-chip--active {
@@ -3784,7 +3790,7 @@ label {
   }
 
   .today-action-text {
-    font-size: clamp(25px, 5vw, 37px);
+    font-size: clamp(30px, 5vw, 42px);
     line-height: 1.02;
   }
 
@@ -4188,7 +4194,7 @@ label {
 
   .today-ritual-action {
     font-family: var(--font-serif), Georgia, serif;
-    font-size: clamp(27px, 6vw, 35px);
+    font-size: clamp(32px, 6vw, 40px);
     font-weight: 700;
     line-height: 1.18;
     color: var(--fg);
@@ -4237,7 +4243,7 @@ label {
   }
 
   .today-ritual-action {
-    font-size: clamp(23px, 5vw, 27px);
+    font-size: clamp(28px, 5vw, 32px);
   }
 
   .today-ritual-brief {
@@ -4621,33 +4627,6 @@ label {
   width: 100%;
 }
 
-.today-execute-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  align-self: flex-start;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--fg);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  padding: 10px 14px;
-  cursor: pointer;
-  transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
-}
-
-.today-execute-button:hover:not(:disabled) {
-  border-color: var(--fg);
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.today-execute-button:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
 .today-execute-error {
   margin: 0;
   font-size: 13px;
@@ -4669,7 +4648,7 @@ label {
 }
 
 @media (max-width: 768px) {
-  .today-execute-button {
+  .today-execute .insights-action-chip {
     width: 100%;
     justify-content: center;
   }
