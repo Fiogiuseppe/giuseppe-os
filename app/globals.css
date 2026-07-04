@@ -1671,13 +1671,17 @@ html.about-route body {
   letter-spacing: 0.06em;
 }
 
-.memory-stage--depth {
+.memory-stage--tunnel {
   position: relative;
   width: 100%;
   min-height: min(68vh, 560px);
 }
 
-.memory-depth-scene {
+.memory-stage--depth {
+  width: 100%;
+}
+
+.memory-tunnel-scene {
   position: relative;
   width: 100%;
   min-height: inherit;
@@ -1687,7 +1691,7 @@ html.about-route body {
   overflow: hidden;
 }
 
-.memory-depth-content {
+.memory-tunnel-content {
   position: relative;
   z-index: 2;
   display: flex;
@@ -1812,7 +1816,8 @@ html.about-route body {
   animation: none;
 }
 
-.memory-constellation--depth .memory-node {
+.memory-tunnel-scene .memory-node,
+.memory-tunnel-scene .memory-hero-card {
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(2px);
 }

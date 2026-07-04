@@ -89,62 +89,62 @@ export function MemoryManifesto() {
   if (layer === 'depth') {
     return (
       <article className="memory-stage memory-stage--depth" data-testid="memory-manifesto-depth">
-        <div className="memory-depth-scene">
-          <MemoryTunnelBackground />
-          <div className="memory-depth-content">
-            <header className="memory-stage-intro">
-              <p className="memory-stage-epigraph">{t('navRole.memory')}</p>
-              <h1 className="memory-stage-title view-title">{t('memory.depthTitle')}</h1>
-            </header>
+        <header className="memory-stage-intro">
+          <p className="memory-stage-epigraph">{t('navRole.memory')}</p>
+          <h1 className="memory-stage-title view-title">{t('memory.depthTitle')}</h1>
+        </header>
 
-            <div className="memory-constellation memory-constellation--depth" role="list">
-              {depthSections.map(section => (
-                <MemoryNode key={section.id} section={section} onSelect={setActiveSection} />
-              ))}
-            </div>
-
-            <button
-              type="button"
-              className="insights-action-chip memory-layer-back"
-              onClick={() => setLayer('surface')}
-            >
-              <span aria-hidden="true">←</span> {t('memory.backToManifesto')}
-            </button>
-          </div>
+        <div className="memory-constellation memory-constellation--depth" role="list">
+          {depthSections.map(section => (
+            <MemoryNode key={section.id} section={section} onSelect={setActiveSection} />
+          ))}
         </div>
+
+        <button
+          type="button"
+          className="insights-action-chip memory-layer-back"
+          onClick={() => setLayer('surface')}
+        >
+          <span aria-hidden="true">←</span> {t('memory.backToManifesto')}
+        </button>
       </article>
     );
   }
 
   return (
-    <article className="memory-stage" data-testid="memory-manifesto">
-      <header className="memory-stage-intro">
-        <p className="memory-stage-epigraph">{t('navRole.memory')}</p>
-        <h1 className="memory-stage-title view-title">{t('viewHeadings.memory')}</h1>
-        <p className="memory-stage-headline">{brain.manifesto}</p>
-      </header>
+    <article className="memory-stage memory-stage--tunnel" data-testid="memory-manifesto">
+      <div className="memory-tunnel-scene">
+        <MemoryTunnelBackground />
+        <div className="memory-tunnel-content">
+          <header className="memory-stage-intro">
+            <p className="memory-stage-epigraph">{t('navRole.memory')}</p>
+            <h1 className="memory-stage-title view-title">{t('viewHeadings.memory')}</h1>
+            <p className="memory-stage-headline">{brain.manifesto}</p>
+          </header>
 
-      {northStar && (
-        <section className="memory-hero-card" aria-labelledby="manifesto-north-star">
-          <h2 id="manifesto-north-star" className="kicker memory-hero-kicker">
-            {northStar.label}
-          </h2>
-          <p className="memory-hero-text">{northStar.lines[0]}</p>
-        </section>
-      )}
+          {northStar && (
+            <section className="memory-hero-card" aria-labelledby="manifesto-north-star">
+              <h2 id="manifesto-north-star" className="kicker memory-hero-kicker">
+                {northStar.label}
+              </h2>
+              <p className="memory-hero-text">{northStar.lines[0]}</p>
+            </section>
+          )}
 
-      <div className="memory-constellation" role="list">
-        {orbitSections.map(section => (
-          <MemoryNode key={section.id} section={section} onSelect={setActiveSection} />
-        ))}
+          <div className="memory-constellation" role="list">
+            {orbitSections.map(section => (
+              <MemoryNode key={section.id} section={section} onSelect={setActiveSection} />
+            ))}
+          </div>
+
+          <button type="button" className="insights-action-chip" onClick={() => setLayer('depth')}>
+            {t('disclosure.exploreMemory')}
+            <span aria-hidden="true">→</span>
+          </button>
+
+          <p className="insights-built-over-time">{t('memory.constitutionNote')}</p>
+        </div>
       </div>
-
-      <button type="button" className="insights-action-chip" onClick={() => setLayer('depth')}>
-        {t('disclosure.exploreMemory')}
-        <span aria-hidden="true">→</span>
-      </button>
-
-      <p className="insights-built-over-time">{t('memory.constitutionNote')}</p>
     </article>
   );
 }
