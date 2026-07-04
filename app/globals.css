@@ -52,7 +52,9 @@ a {
 }
 
 html.about-route,
-html.about-route body {
+html.about-route body,
+html.chat-route,
+html.chat-route body {
   overflow: hidden;
   height: 100%;
   min-height: 100%;
@@ -92,7 +94,8 @@ html.about-route body {
   grid-template-columns: unset;
 }
 
-.about-app > main {
+.about-app > main,
+.chat-app > main {
   flex: 1;
   min-height: 0;
   overflow: hidden;
