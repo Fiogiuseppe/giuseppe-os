@@ -119,9 +119,9 @@ html.about-route body {
 
 .brand-logo {
   display: block;
-  height: 30px;
+  height: 40px;
   width: auto;
-  max-width: 220px;
+  max-width: 280px;
   object-fit: contain;
   object-position: left center;
   pointer-events: none;
@@ -202,11 +202,9 @@ html.about-route body {
   min-height: 0;
 }
 
-/* Today — calm, action-first: intelligence left, avatar viewport-centered */
+/* Today — calm, action-first: intelligence adapts to avatar position */
 .today-calm {
   position: relative;
-  display: flex;
-  align-items: center;
   flex: 1;
   min-height: 0;
   width: 100%;
@@ -216,11 +214,28 @@ html.about-route body {
 }
 
 .today-action {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 2;
   max-width: min(440px, 34vw);
-  text-align: left;
   flex-shrink: 0;
+  transition:
+    left 0.4s var(--ease),
+    right 0.4s var(--ease),
+    text-align 0.4s var(--ease);
+}
+
+.today-action--left {
+  left: var(--app-gutter);
+  right: auto;
+  text-align: left;
+}
+
+.today-action--right {
+  right: var(--app-gutter);
+  left: auto;
+  text-align: right;
 }
 
 .today-action-text {
@@ -260,9 +275,25 @@ html.about-route body {
   aspect-ratio: 1 / 1;
   flex-shrink: 0;
   z-index: 1;
-  pointer-events: none;
   padding: 4px;
   box-sizing: border-box;
+  touch-action: none;
+  cursor: grab;
+}
+
+.today-presence--ready {
+  transition:
+    left 0.4s var(--ease),
+    top 0.4s var(--ease);
+}
+
+.today-presence--dragging {
+  cursor: grabbing;
+  transition: none;
+}
+
+.today-presence--dragging [data-testid='today-avatar-nav'] {
+  pointer-events: none;
 }
 
 .today-presence [data-testid='today-avatar-nav'] {
@@ -2399,8 +2430,8 @@ label {
   }
 
   .brand-logo {
-    height: 20px;
-    max-width: 110px;
+    height: 26px;
+    max-width: 150px;
   }
 
   .topnav {

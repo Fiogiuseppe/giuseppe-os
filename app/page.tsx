@@ -24,8 +24,8 @@ import {
   DisclosurePanel,
   DisclosureTrigger
 } from './components/Disclosure';
-import TodayAvatarNav from './components/TodayAvatarNav';
 import TodayMobileRitual from './components/TodayMobileRitual';
+import { TodayDraggablePresence } from './components/TodayDraggablePresence';
 import { AppTopbar } from './components/AppTopbar';
 import { DevAiControls } from './components/DevAiControls';
 import { AiStatusIndicator } from './components/AiStatusIndicator';
@@ -522,24 +522,19 @@ export default function Home() {
           <div className={`view-body progressive-body mental-space mental-space-${view}`}>
             {view === 'today' && (
               <>
-                <div className="today-calm today-calm--desktop">
-                  <div className="today-action" data-testid="today-action">
-                    {letterLoading && (
-                      <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>
-                    )}
-                    {!letterLoading && letterError && (
-                      <p className="today-action-text today-action-text--error">{letterError}</p>
-                    )}
-                    {!letterLoading && !letterError && todaysLetter && (
-                      <p className="today-action-text">
-                        {limitWords(todaysLetter.sections.oneBigMove, MAX_TODAY_ONE_BIG_MOVE_WORDS)}
-                      </p>
-                    )}
-                  </div>
-                  <div className="today-presence">
-                    <TodayAvatarNav onNavigate={setView} />
-                  </div>
-                </div>
+                <TodayDraggablePresence onNavigate={setView}>
+                  {letterLoading && (
+                    <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>
+                  )}
+                  {!letterLoading && letterError && (
+                    <p className="today-action-text today-action-text--error">{letterError}</p>
+                  )}
+                  {!letterLoading && !letterError && todaysLetter && (
+                    <p className="today-action-text">
+                      {limitWords(todaysLetter.sections.oneBigMove, MAX_TODAY_ONE_BIG_MOVE_WORDS)}
+                    </p>
+                  )}
+                </TodayDraggablePresence>
                 <TodayMobileRitual
                   letterLoading={letterLoading}
                   letterError={letterError}

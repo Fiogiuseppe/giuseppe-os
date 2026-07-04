@@ -86,6 +86,7 @@ export const messages = {
       possibleActions: 'Azioni possibili',
       briefingNote: 'Il Daily Brief è giudizio, non informazione.',
       avatarHint: 'Il tuo avatar è interattivo.',
+      avatarDragHint: 'Trascina per spostare. Doppio clic per centrare.',
       ritual: {
         insight: 'Segnale',
         action: 'Mossa',
@@ -261,6 +262,7 @@ export const messages = {
       possibleActions: 'Possible actions',
       briefingNote: 'The Daily Brief is judgement, not information.',
       avatarHint: 'Your avatar is interactive.',
+      avatarDragHint: 'Drag to move. Double-click to center.',
       ritual: {
         insight: 'Signal',
         action: 'Move',
