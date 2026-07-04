@@ -20,6 +20,7 @@ import {
   RitualStep
 } from './components/Disclosure';
 import LivingAvatar from './components/LivingAvatar';
+import { LanguageSwitch } from './components/LanguageSwitch';
 import { useLanguage } from './lib/i18n/LanguageContext';
 
 type View = 'today' | 'decisions' | 'insights' | 'create' | 'memory';
@@ -298,10 +299,7 @@ export default function Home() {
             </button>
           ))}
         </nav>
-        <div className="topbar-status">
-          <span className="status-dot" />
-          <span className="topbar-status-label">{t('status.online')}</span>
-        </div>
+        <LanguageSwitch className="language-switch-topbar" />
       </header>
 
       <div className="app-body">
@@ -603,6 +601,10 @@ export default function Home() {
           <Link href="/about" className="footer-link">
             {t('footer.about')}
           </Link>
+          <div className="footer-status">
+            <span className="status-dot" />
+            <span className="footer-status-label">{t('status.online')}</span>
+          </div>
         </footer>
       </div>
     </div>

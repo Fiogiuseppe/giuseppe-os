@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { LanguageSwitch } from '../components/LanguageSwitch';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 import styles from './about.module.css';
 
@@ -16,7 +17,11 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <main className={styles.page}>
+    <>
+      <div className="about-topbar">
+        <LanguageSwitch className="language-switch-topbar" />
+      </div>
+      <main className={styles.page}>
       <Link href="/" className={styles.back}>
         {t('about.back')}
       </Link>
@@ -56,5 +61,6 @@ export default function AboutPage() {
         <p>{t('about.tagline')}</p>
       </footer>
     </main>
+    </>
   );
 }

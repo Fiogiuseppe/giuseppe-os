@@ -1923,12 +1923,30 @@ html.about-route body {
 
 .footer {
   border-top: 1px solid var(--border-soft);
-  padding: 8px 40px;
+  padding: 8px 40px 10px;
   font-size: 11px;
   text-align: center;
   line-height: 1.4;
   color: var(--muted);
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.footer-status-label {
+  white-space: nowrap;
 }
 
 .footer-link {
@@ -1949,24 +1967,26 @@ html.about-route body {
   margin-top: 2px;
 }
 
-/* Language switch — macOS-style toggle, bottom-right */
+/* Language switch — topbar placement */
 .language-switch {
-  position: fixed;
-  right: 20px;
-  bottom: 18px;
-  z-index: 60;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+}
+
+.language-switch-topbar {
+  padding: 4px 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.04),
-    0 8px 24px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+}
+
+.about-topbar {
+  position: fixed;
+  top: 12px;
+  right: clamp(20px, 4vw, 56px);
+  z-index: 60;
 }
 
 .language-switch-label {
@@ -2023,10 +2043,32 @@ html.about-route body {
 }
 
 @media (max-width: 900px) {
-  .language-switch {
+  .language-switch-topbar {
+    padding: 3px 6px;
+    gap: 6px;
+  }
+
+  .language-switch-label {
+    font-size: 10px;
+  }
+
+  .language-switch-track {
+    width: 44px;
+    height: 26px;
+  }
+
+  .language-switch-knob {
+    width: 22px;
+    height: 22px;
+  }
+
+  .language-switch-track[data-locale='en'] .language-switch-knob {
+    transform: translateX(18px);
+  }
+
+  .about-topbar {
     right: 14px;
-    bottom: 14px;
-    padding: 7px 10px;
+    top: 10px;
   }
 }
 
@@ -2141,10 +2183,6 @@ label {
     padding: 5px 9px;
     font-size: 10px;
     flex-shrink: 0;
-  }
-
-  .topbar-status {
-    display: none;
   }
 
   .sidebar {
@@ -2361,6 +2399,7 @@ label {
   }
 
   .footer {
-    display: none;
+    padding: 6px 16px 8px;
+    gap: 4px;
   }
 }

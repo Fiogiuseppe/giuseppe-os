@@ -2,12 +2,16 @@
 
 import { useLanguage } from '../lib/i18n/LanguageContext';
 
-export function LanguageSwitch() {
+export function LanguageSwitch({ className }: { className?: string }) {
   const { locale, setLocale, t } = useLanguage();
   const isEnglish = locale === 'en';
 
   return (
-    <div className="language-switch" role="group" aria-label={t('language.switchLabel')}>
+    <div
+      className={['language-switch', className].filter(Boolean).join(' ')}
+      role="group"
+      aria-label={t('language.switchLabel')}
+    >
       <span className={`language-switch-label${isEnglish ? '' : ' language-switch-label--active'}`}>
         {t('language.italian')}
       </span>
