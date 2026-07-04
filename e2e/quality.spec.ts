@@ -123,7 +123,7 @@ test.describe('Giuseppe OS quality loop', () => {
       if (id === 'today' || id === 'decisions') continue;
       await nav.getByTestId(`nav-${id}`).click();
       if (id === 'memory') {
-        await expect(page.getByTestId('memory-constitution').locator('.memory-constitution-epigraph')).toBeVisible();
+        await expect(page.getByTestId('memory-constitution').locator('.memory-constitution-why')).toBeVisible();
         continue;
       }
       await expect(page.locator('.insights-hero-card .kicker, .create-stage .kicker').first()).toBeVisible();

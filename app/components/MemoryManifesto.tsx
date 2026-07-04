@@ -3,7 +3,12 @@
 import { useEffect, useRef } from 'react';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 
-const HOW_KEYS = ['memory.how1', 'memory.how2', 'memory.how3', 'memory.how4'] as const;
+const HOW_SLOTS = [
+  { key: 'memory.how1', slot: '1' },
+  { key: 'memory.how2', slot: '2' },
+  { key: 'memory.how3', slot: '3' },
+  { key: 'memory.how4', slot: '4' }
+] as const;
 
 function useConstitutionParallax<T extends HTMLElement>() {
   const ref = useRef<T>(null);
@@ -18,8 +23,8 @@ function useConstitutionParallax<T extends HTMLElement>() {
       const rect = root.getBoundingClientRect();
       const x = (event.clientX - rect.left) / rect.width - 0.5;
       const y = (event.clientY - rect.top) / rect.height - 0.5;
-      root.style.setProperty('--memory-parallax-x', `${x * 8}px`);
-      root.style.setProperty('--memory-parallax-y', `${y * 5}px`);
+      root.style.setProperty('--memory-parallax-x', `${x * 6}px`);
+      root.style.setProperty('--memory-parallax-y', `${y * 4}px`);
     };
 
     root.addEventListener('mousemove', onMove);
@@ -32,7 +37,6 @@ function useConstitutionParallax<T extends HTMLElement>() {
 export function MemoryManifesto() {
   const { t } = useLanguage();
   const constitutionRef = useConstitutionParallax<HTMLElement>();
-  const principles = HOW_KEYS.map(key => t(key));
 
   return (
     <article
@@ -40,27 +44,25 @@ export function MemoryManifesto() {
       className="memory-constitution"
       data-testid="memory-constitution"
     >
-      <p className="memory-constitution-epigraph">{t('memory.epigraph')}</p>
-
-      <section className="memory-constitution-section memory-constitution-section--why" aria-labelledby="memory-why-label">
-        <h2 id="memory-why-label" className="memory-constitution-label">
+      <section className="memory-why-row" aria-labelledby="memory-why-label">
+        <p className="memory-constitution-why">{t('memory.whyText')}</p>
+        <h2 id="memory-why-label" className="memory-constitution-tag memory-constitution-tag--why">
           {t('memory.whyLabel')}
         </h2>
-        <p className="memory-constitution-why">{t('memory.whyText')}</p>
       </section>
 
-      <section className="memory-constitution-section memory-constitution-section--how" aria-labelledby="memory-how-label">
-        <h2 id="memory-how-label" className="memory-constitution-label">
+      <section className="memory-how-row" aria-labelledby="memory-how-label">
+        <h2 id="memory-how-label" className="memory-constitution-tag memory-constitution-tag--how">
           {t('memory.howLabel')}
         </h2>
-        <ol className="memory-constitution-principles">
-          {principles.map((principle, index) => (
+        <ol className="memory-constitution-grid">
+          {HOW_SLOTS.map(({ key, slot }, index) => (
             <li
-              key={principle}
-              className="memory-constitution-principle"
-              style={{ animationDelay: `${0.35 + index * 0.18}s` }}
+              key={key}
+              className={`memory-constitution-principle memory-constitution-principle--${slot}`}
+              style={{ animationDelay: `${0.25 + index * 0.14}s` }}
             >
-              {principle}
+              {t(key)}
             </li>
           ))}
         </ol>
