@@ -60,3 +60,13 @@ git push origin main
 - Before sharing design with collaborators
 
 See [`docs/04_CURSOR_WORKFLOW.md`](../04_CURSOR_WORKFLOW.md) for the full release workflow.
+
+## Guardian reports
+
+Internal product health reviews from **The Guardian** (not user-facing):
+
+```bash
+npm run guardian:report
+```
+
+Outputs `docs/reviews/GUARDIAN_REPORT_<date>.md`. See [`docs/THE_GUARDIAN.md`](../THE_GUARDIAN.md).

@@ -10,7 +10,8 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "quality:check": "npm run typecheck && npm run test:e2e && npm run build",
-    "design:review": "node scripts/generate-design-review.mjs"
+    "design:review": "node scripts/generate-design-review.mjs",
+    "guardian:report": "npx tsx lib/guardian/run.ts"
   },
   "dependencies": {
     "@next/font": "latest",

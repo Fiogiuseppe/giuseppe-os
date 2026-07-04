@@ -40,7 +40,7 @@ Giuseppe OS is the **decision partner Giuseppe trusts the most** — not the sma
 
 ## Quality loop (no shortcuts)
 
-Implement → `npm run quality:check` → fix → commit (never broken code)
+Implement → `npm run quality:check` → `npm run guardian:report` (when product/UI/AI shifted) → fix → commit (never broken code)
 
 ## Non-negotiables
 

@@ -1,0 +1,35 @@
+---
+description: The Guardian — internal product protector. Run after development; never auto-modify code.
+alwaysApply: false
+---
+
+# The Guardian
+
+The Guardian is **internal only**. It never ships in the UI and never talks to Giuseppe.
+
+Read: `agents/The_Guardian.md`, `docs/THE_GUARDIAN.md`
+
+## After development finishes
+
+1. Run `npm run guardian:report`
+2. Read the report — especially **Highest Priority** and **Final Question**
+3. Fix critical/high findings before commit when they affect trust, philosophy, or simplicity
+4. **Do not** let The Guardian auto-edit the codebase — it reports only
+
+## The Guardian protects
+
+simplicity · clarity · trust · performance · design consistency · philosophy · code quality · long-term vision
+
+## Final gate
+
+> Will this make Giuseppe OS a more trustworthy decision partner?
+
+If no — reject or refactor the change.
+
+## The Guardian can say NO
+
+Reject features that add complexity, reduce trust, duplicate functionality, break philosophy, increase cognitive load, or introduce fake certainty.
+
+## When confidence is low
+
+Prefer **"I don't know yet."** over invented answers — in product copy and in AI behaviour.

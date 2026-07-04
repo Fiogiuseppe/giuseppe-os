@@ -30,6 +30,9 @@ export const IMPLEMENTED_PIPELINE_ENGINES: PipelineEngineId[] = [
   'daily-brief-generator'
 ];
 
+/** Internal dev-time protector — not part of user-facing pipeline. */
+export const INTERNAL_ENGINES = ['the-guardian'] as const;
+
 export const FOUNDATION_PIPELINE_ENGINES: PipelineEngineId[] = [
   'living-timeline',
   'identity-layer',
