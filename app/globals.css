@@ -1666,7 +1666,7 @@ html.chat-route body {
 .memory-tunnel-line {
   fill: none;
   stroke: var(--tunnel-line);
-  stroke-width: 0.35;
+  stroke-width: 0.18;
   stroke-linecap: round;
   opacity: 0;
   animation: memory-tunnel-line-pulse 2.4s ease-in-out infinite;
@@ -1675,29 +1675,6 @@ html.chat-route body {
 .memory-tunnel--static .memory-tunnel-line {
   opacity: 0.35;
   stroke: var(--accent);
-  animation: none;
-}
-
-.memory-tunnel-vanish {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: translate(var(--tunnel-x), var(--tunnel-y));
-  transition: transform 0.35s var(--ease);
-}
-
-.memory-tunnel-core {
-  width: clamp(48px, 8vw, 88px);
-  height: clamp(48px, 8vw, 88px);
-  border: 1.5px solid var(--accent-line);
-  border-radius: 50%;
-  opacity: 0.35;
-  animation: memory-tunnel-core-pulse 3.5s ease-in-out infinite;
-}
-
-.memory-tunnel--static .memory-tunnel-core {
   animation: none;
 }
 
@@ -1741,30 +1718,15 @@ html.chat-route body {
 @keyframes memory-tunnel-line-pulse {
   0%,
   100% {
-    opacity: 0.12;
+    opacity: 0.1;
     stroke: var(--accent-line);
-    stroke-width: 0.25;
+    stroke-width: 0.12;
   }
 
   45% {
-    opacity: 0.42;
+    opacity: 0.28;
     stroke: var(--accent);
-    stroke-width: 0.4;
-  }
-}
-
-@keyframes memory-tunnel-core-pulse {
-  0%,
-  100% {
-    transform: scale(0.92);
-    opacity: 0.22;
-    border-color: var(--accent-line);
-  }
-
-  50% {
-    transform: scale(1.08);
-    opacity: 0.48;
-    border-color: var(--accent);
+    stroke-width: 0.2;
   }
 }
 
@@ -1935,7 +1897,6 @@ html.chat-route body {
   }
 
   .memory-tunnel-lines,
-  .memory-tunnel-core,
   .memory-tunnel-grain,
   .memory-tunnel-line {
     animation: none !important;

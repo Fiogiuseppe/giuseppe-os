@@ -70,10 +70,6 @@ export function MemoryTunnelBackground() {
         ))}
       </svg>
 
-      <div className="memory-tunnel-vanish">
-        <span className="memory-tunnel-core" />
-      </div>
-
       <div className="memory-tunnel-grain" />
     </div>
   );

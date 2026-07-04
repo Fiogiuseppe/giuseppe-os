@@ -1,0 +1,28 @@
+---
+description: Every completed change must reach production on Vercel — no local-only work
+alwaysApply: true
+---
+
+# Always deploy online
+
+Giuseppe OS production is https://giuseppe-os.vercel.app/ — auto-deploys from `main` on GitHub.
+
+## Non-negotiable
+
+There is no “local only” finish state. When implementation work is complete:
+
+1. Run `npm run quality:check` (or the smallest relevant gate if scope is tiny).
+2. **Commit** with a clear message.
+3. **Push** to `origin/main` immediately.
+
+Do not leave completed UI, API, or config changes only on the machine. Giuseppe expects to see them on Vercel within minutes.
+
+## Exceptions (ask first)
+
+- User explicitly says “don’t push” or “local only”
+- Quality gate fails and cannot be fixed in-session — report blocker, do not push broken code
+- Secrets or `.env.local` — never commit
+
+## After push
+
+Tell Giuseppe the commit is on `main` and Vercel should update shortly. Mention hard refresh if he is checking the live site.
