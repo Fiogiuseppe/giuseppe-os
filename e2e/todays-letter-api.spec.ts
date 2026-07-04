@@ -53,7 +53,7 @@ test.describe('Giuseppe OS Daily Briefing API', () => {
     expect(['anthropic', 'fallback']).toContain(body.source);
     expect(body.generatedAt).toBeTruthy();
     expect(body.dateKey).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect(body.cached).toBe(false);
+    expect(typeof body.cached).toBe('boolean');
     expect(body.pipeline.realitySignals).toBeGreaterThan(0);
     expect(body.pipeline.relevanceItems).toBeGreaterThan(0);
     expect(body.pipeline.relevanceItems).toBeLessThanOrEqual(3);

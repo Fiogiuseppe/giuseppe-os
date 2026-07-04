@@ -198,6 +198,16 @@ Each entry includes:
 
 ---
 
+### 2026-07 — Five Questions product structure (v2.1)
+
+**Decision:** Giuseppe OS navigation and page responsibilities reorganized around five sections, each answering one life question: Today (highest leverage), Decisions (best decision), Insights (what am I not seeing), Create (what deserves energy), Memory (who to continue being). **Discover** renamed to **Insights**; finance cockpit removed from Insights.
+
+**Rationale:** Reduce cognitive load. No dashboards. One purpose per section. Today shows full Daily Brief with progressive disclosure for Why/Evidence/Trajectory/Confidence/Actions.
+
+**Implications:** `lib/architecture/sections.ts`, `docs/PRODUCT_EVOLUTION.md`. i18n, `app/page.tsx`, e2e, memory palace cards updated. Package v2.1.0.
+
+---
+
 ## Template for New Entries
 
 ```markdown

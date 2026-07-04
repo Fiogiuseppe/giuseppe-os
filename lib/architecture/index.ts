@@ -14,3 +14,12 @@ export {
   ULTIMATE_PURPOSE,
   type PipelineEngineId
 } from './pipeline';
+
+export {
+  GLOBAL_PRODUCT_PRINCIPLES,
+  PRODUCT_MISSION_STATEMENT,
+  PRODUCT_SECTIONS,
+  sectionById,
+  type ProductSection,
+  type ProductSectionId
+} from './sections';

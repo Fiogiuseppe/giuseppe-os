@@ -56,13 +56,17 @@ If a feature, screen, or interaction does not serve the North Star, it does not 
 
 ---
 
-## Primary Product Question
+## The Five Sections
 
-Not: *"What should Giuseppe do?"*
+Giuseppe OS is composed of five sections. Each answers one life question. See [`docs/PRODUCT_EVOLUTION.md`](PRODUCT_EVOLUTION.md).
 
-But:
-
-> *Knowing everything Giuseppe has lived, everything happening in the world, and everything he wants to become — what decision has the highest probability of improving his future?*
+| Section | Question |
+|---------|----------|
+| **Today** | What is the highest leverage thing I can do today? |
+| **Decisions** | What is the best decision I can make? |
+| **Insights** | What am I not seeing? |
+| **Create** | What deserves my energy? |
+| **Memory** | Who do I want to continue being? |
 
 ---
 
@@ -104,11 +108,11 @@ Examples:
 
 | Screen | Primary question |
 |--------|------------------|
-| **Today** | If the wisest version of Giuseppe had five minutes with Present Giuseppe this morning — what would he say? |
-| **Projects** | Where should my creative energy go right now? |
-| **Finance** | Am I building freedom or buying status? |
-| **Awareness** | What pattern am I missing? |
-| **Becoming** | Who am I choosing to become — and is my life aligned? |
+| **Today** | What is the highest leverage thing I can do today? |
+| **Decisions** | What is the best decision I can make? |
+| **Insights** | What am I not seeing? |
+| **Create** | What deserves my energy? |
+| **Memory** | Who do I want to continue being? |
 
 ### 8. Reduce cognitive load
 

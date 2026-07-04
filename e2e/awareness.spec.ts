@@ -10,16 +10,16 @@ async function expandAwarenessAction(page: import('@playwright/test').Page) {
   await page.getByRole('button', { name: /Suggested action|Azione suggerita/i }).click();
 }
 
-test.describe('Giuseppe OS awareness engine', () => {
+test.describe('Giuseppe OS insights engine', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await gotoView(page, 'discover');
+    await gotoView(page, 'insights');
   });
 
-  test('opens the Awareness page', async ({ page }) => {
-    await expect(page.getByRole('main').locator('.view-title')).toContainText(VIEW_HEADING_PATTERNS.discover);
-    await expect(page.getByText('INSIGHT')).toBeVisible();
-    await expect(page.getByTestId('nav-discover')).toHaveClass(/active/);
+  test('opens the Insights page', async ({ page }) => {
+    await expect(page.getByRole('main').locator('.view-title')).toContainText(VIEW_HEADING_PATTERNS.insights);
+    await expect(page.getByRole('main').locator('.discovery-insight .kicker')).toContainText('INSIGHT');
+    await expect(page.getByTestId('nav-insights')).toHaveClass(/active/);
   });
 
   test('shows awareness insight', async ({ page }) => {
@@ -29,6 +29,12 @@ test.describe('Giuseppe OS awareness engine', () => {
     await page.getByRole('button', { name: /Reflect|Rifletti/i }).click();
     await expect(page.getByText('REFLECT')).toBeVisible();
     await expect(page.getByRole('heading', { name: /Stai portando|Hai liquidità|Il lavoro sacro|Vuoi visibilità|LEGO è il motore/ })).toBeVisible();
+  });
+
+  test('shows observed patterns on demand', async ({ page }) => {
+    await page.getByRole('button', { name: /Patterns|Pattern/i }).click();
+    await expect(page.getByText(/PATTERN OSSERVATI|OBSERVED PATTERNS/i)).toBeVisible();
+    await expect(page.getByRole('main').getByText(/entusiasta apre troppi progetti/i).first()).toBeVisible();
   });
 
   test('shows confidence score', async ({ page }) => {
@@ -46,12 +52,12 @@ test.describe('Giuseppe OS awareness engine', () => {
     await expect(page.getByText(/Scrivi|Imposta|Blocca|Prepara/)).toBeVisible();
   });
 
-  test('navigation still works from Awareness page', async ({ page }) => {
+  test('navigation still works from Insights page', async ({ page }) => {
     await gotoView(page, 'decisions');
     await page.getByRole('button', { name: /Explore purpose|Esplora il proposito/i }).click();
     await expect(page.getByText('PURPOSE ENGINE')).toBeVisible();
 
-    await gotoView(page, 'discover');
-    await expect(page.getByRole('main').locator('.view-title')).toContainText(VIEW_HEADING_PATTERNS.discover);
+    await gotoView(page, 'insights');
+    await expect(page.getByRole('main').locator('.view-title')).toContainText(VIEW_HEADING_PATTERNS.insights);
   });
 });

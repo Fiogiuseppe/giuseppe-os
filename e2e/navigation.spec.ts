@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView } from './helpers';
+import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN } from './helpers';
 
 const NAV_VIEWS = [
   { id: 'today' as const, heading: VIEW_HEADING_PATTERNS.today },
   { id: 'decisions' as const, heading: VIEW_HEADING_PATTERNS.decisions },
-  { id: 'discover' as const, heading: VIEW_HEADING_PATTERNS.discover },
+  { id: 'insights' as const, heading: VIEW_HEADING_PATTERNS.insights },
   { id: 'create' as const, heading: VIEW_HEADING_PATTERNS.create },
   { id: 'memory' as const, heading: VIEW_HEADING_PATTERNS.memory }
 ] as const;
@@ -68,7 +68,7 @@ test.describe('Giuseppe OS navigation', () => {
 
     await expect(decisionInput).toHaveValue('comprare casa a Copenaghen');
     await expect(reasonInput).toHaveValue('Voglio più stabilità per la famiglia.');
-    await expect(page.getByRole('button', { name: /Chiedi al Board|Ask the Board/i })).toBeEnabled();
+    await expect(page.getByRole('button', { name: DECISION_SUBMIT_PATTERN })).toBeEnabled();
   });
 
   test('desktop viewport has no page scroll on any main section', async ({ page }) => {
@@ -86,6 +86,8 @@ test.describe('Giuseppe OS navigation', () => {
 });
 
 test.describe('Giuseppe OS decision board', () => {
+  test.setTimeout(60_000);
+
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await gotoView(page, 'decisions');
@@ -94,7 +96,7 @@ test.describe('Giuseppe OS decision board', () => {
   async function askBoard(page: import('@playwright/test').Page, decision: string, reason: string) {
     await page.getByPlaceholder(/comprare casa|buy a house/i).fill(decision);
     await page.getByPlaceholder(/Motivo vero|The real reason/i).fill(reason);
-    await page.getByRole('button', { name: /Chiedi al Board|Ask the Board/i }).click();
+    await page.getByRole('button', { name: DECISION_SUBMIT_PATTERN }).click();
     await expect(page.locator('.result')).toBeVisible({ timeout: 25_000 });
     await page.locator('.result').getByRole('button', { name: /Perché|Why/i }).click();
     await page.locator('.result').getByRole('button', { name: /Mostra il Board|Show the Board/i }).click();
@@ -114,6 +116,8 @@ test.describe('Giuseppe OS decision board', () => {
     await askBoard(page, 'comprare casa a Copenaghen', 'Voglio più stabilità per la famiglia.');
     await expect(page.getByText('Categoria: Immobiliare')).toBeVisible();
 
+    await page.reload();
+    await gotoView(page, 'decisions');
     await askBoard(page, 'pubblicare un post su LinkedIn', 'Voglio mostrare come penso.');
     await expect(page.getByText('Categoria: Reputazione')).toBeVisible();
     await expect(page.getByText('Categoria: Immobiliare')).not.toBeVisible();

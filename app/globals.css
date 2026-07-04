@@ -367,12 +367,50 @@ a {
   flex-shrink: 0;
 }
 
+.companion-section-question,
+.section-question {
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-muted, #444);
+  max-width: 42ch;
+}
+
+.companion-brief-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.companion-panel--compact .companion-panel-text {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.insights-space,
 .discover-space {
   display: flex;
   flex-direction: column;
   gap: 12px;
   flex: 1;
   min-height: 0;
+}
+
+.insights-built-over-time {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted, #555);
+}
+
+.decision-simulating {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text-muted, #555);
+}
+
+.decision-scenario-note {
+  margin-top: 8px;
 }
 
 .discover-finance {

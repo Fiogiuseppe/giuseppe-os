@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView } from './helpers';
+import { FOOTER_PATTERN, VIEW_HEADING_PATTERNS, gotoView, DECISION_SUBMIT_PATTERN } from './helpers';
 
 const NORTH_STAR = 'PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.';
 
 const MAIN_SECTIONS = [
   { id: 'today' as const, heading: VIEW_HEADING_PATTERNS.today },
   { id: 'decisions' as const, heading: VIEW_HEADING_PATTERNS.decisions },
-  { id: 'discover' as const, heading: VIEW_HEADING_PATTERNS.discover },
+  { id: 'insights' as const, heading: VIEW_HEADING_PATTERNS.insights },
   { id: 'create' as const, heading: VIEW_HEADING_PATTERNS.create },
   { id: 'memory' as const, heading: VIEW_HEADING_PATTERNS.memory }
 ] as const;
@@ -72,16 +72,16 @@ test.describe('Giuseppe OS quality loop', () => {
 
     await page.getByPlaceholder(/comprare casa|buy a house/i).fill('investire in ETF');
     await page.getByPlaceholder(/Motivo vero|The real reason/i).fill('Voglio comprare libertà futura.');
-    await page.getByRole('button', { name: /Chiedi al Board|Ask the Board/i }).click();
+    await page.getByRole('button', { name: DECISION_SUBMIT_PATTERN }).click();
 
     await expect(page.locator('.result')).toBeVisible({ timeout: 25_000 });
     await expect(page.getByText(/Prossimo passo|NEXT STEP/i)).toBeVisible();
     await expectFooterManifesto(page);
   });
 
-  test('awareness section works when present', async ({ page }) => {
-    await gotoView(page, 'discover');
-    await expect(page.getByRole('main').locator('.view-title')).toContainText(VIEW_HEADING_PATTERNS.discover);
+  test('insights section surfaces patterns on demand', async ({ page }) => {
+    await gotoView(page, 'insights');
+    await expect(page.getByRole('main').locator('.view-title')).toContainText(VIEW_HEADING_PATTERNS.insights);
     await expect(page.getByRole('heading', { name: /Stai portando|Hai liquidità|Il lavoro sacro|Vuoi visibilità|LEGO è il motore/ })).toBeVisible();
     await page.getByRole('button', { name: /Suggested action|Azione suggerita/i }).click();
     await expect(page.getByText('RECOMMENDED ACTION')).toBeVisible();
@@ -169,18 +169,11 @@ test.describe('Giuseppe OS quality loop', () => {
     await expect(page.getByRole('main').getByText(NORTH_STAR).first()).toBeVisible();
   });
 
-  test('finance view hides sensitive personal numbers', async ({ page }) => {
-    await gotoView(page, 'discover');
-    await page.getByRole('button', { name: /Freedom & finance|Libertà e finanza/i }).click();
-    await page.getByRole('button', { name: /Financial details|Dettagli finanziari/i }).click();
-
-    const main = page.getByRole('main');
-    await expect(main.getByText('CASH RESERVE')).toBeVisible();
-    await expect(main.getByText('Hidden')).toBeVisible();
-    await expect(main.locator('.privacy-blur').first()).toBeVisible();
-    await expect(page.getByText('200000')).not.toBeVisible();
-    await expect(page.getByText(/DKK/)).not.toBeVisible();
-    await expect(page.getByText('stanza affittata')).not.toBeVisible();
+  test('insights patterns disclosure works', async ({ page }) => {
+    await gotoView(page, 'insights');
+    await page.getByRole('button', { name: /Patterns|Pattern/i }).click();
+    await expect(page.getByText(/PATTERN OSSERVATI|OBSERVED PATTERNS/i)).toBeVisible();
+    await expect(page.getByRole('main').getByText(/dispersione|dispersion/i).first()).toBeVisible();
   });
 });
 

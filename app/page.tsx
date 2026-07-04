@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import brain from '../memory/giuseppe_brain.json';
-import { financeDisplay } from './financeDisplay';
 import {
   getCapitalLabel,
   COUNSELLOR_LABELS
@@ -22,9 +21,9 @@ import {
 import { JewelFace } from './components/JewelFace';
 import { useLanguage } from './lib/i18n/LanguageContext';
 
-type View = 'today' | 'decisions' | 'discover' | 'create' | 'memory';
+type View = 'today' | 'decisions' | 'insights' | 'create' | 'memory';
 
-const VIEWS: View[] = ['today', 'decisions', 'discover', 'create', 'memory'];
+const VIEWS: View[] = ['today', 'decisions', 'insights', 'create', 'memory'];
 
 const PROJECT_PROGRESS: Record<string, number> = {
   LEGO: 87,
@@ -154,36 +153,6 @@ function PotentialPanelDisclosure() {
   );
 }
 
-function FinanceDetailsDisclosure() {
-  const { t } = useLanguage();
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      {!open && <DisclosureTrigger label={t('disclosure.financialDetails')} onClick={() => setOpen(true)} />}
-      <DisclosurePanel open={open}>
-        <div className="grid finance-details-grid">
-          <div className="card card-glow privacy-overlay">
-            <div className="kicker">{t('kickers.cashReserve')}</div>
-            <h2 className="privacy-blur">{financeDisplay.cashReserve}</h2>
-            <p>{financeDisplay.cashCaption}</p>
-          </div>
-          <div className="card privacy-overlay">
-            <div className="kicker">{t('kickers.income')}</div>
-            <h2 className="privacy-blur">{financeDisplay.income}</h2>
-            <p>{financeDisplay.incomeCaption}</p>
-          </div>
-          <div className="card">
-            <div className="kicker">{t('kickers.goals')}</div>
-            <h2>{t('finance.goalsTitle')}</h2>
-            <ul>{financeDisplay.goals.map(goal => <li key={goal}>{goal}</li>)}</ul>
-          </div>
-        </div>
-      </DisclosurePanel>
-    </>
-  );
-}
-
 function ProjectsListDisclosure() {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
@@ -225,7 +194,6 @@ export default function Home() {
   const [view, setView] = useState<View>('today');
   const potential = useMemo(() => runPotentialEngine(), []);
   const awareness = useMemo(() => runAwarenessEngine(), []);
-  const todayOpp = potential.todaysOpportunity;
   const [projectName] = recommendedProject();
 
   const [decision, setDecision] = useState('');
@@ -255,10 +223,7 @@ export default function Home() {
     setDecisionResult(response.decision);
   }
 
-  const [todayIgnore, setTodayIgnore] = useState(false);
-  const [todayNourish, setTodayNourish] = useState(false);
-  const [todayReflect, setTodayReflect] = useState(false);
-  const [todayOpportunity, setTodayOpportunity] = useState(false);
+  const [todayUnderstand, setTodayUnderstand] = useState(false);
 
   const [todaysLetter, setTodaysLetter] = useState<DailyBriefingResponse | null>(null);
   const [letterLoading, setLetterLoading] = useState(true);
@@ -298,16 +263,11 @@ export default function Home() {
   const [awarenessReflect, setAwarenessReflect] = useState(false);
   const [awarenessAction, setAwarenessAction] = useState(false);
 
-  const [boardWhy, setBoardWhy] = useState(false);
-  const [boardDiscussion, setBoardDiscussion] = useState(false);
-  const [boardAdvisors, setBoardAdvisors] = useState(false);
-  const [boardEvidence, setBoardEvidence] = useState(false);
-  const [boardConfidence, setBoardConfidence] = useState(false);
   const [boardPurpose, setBoardPurpose] = useState(false);
 
   const [projectsWhy, setProjectsWhy] = useState(false);
-  const [financeGoals, setFinanceGoals] = useState(false);
-  const [discoverFinance, setDiscoverFinance] = useState(false);
+
+  const [insightsPatterns, setInsightsPatterns] = useState(false);
 
   const memoryCards = useMemo(() => buildMemoryPalaceCards(brain), []);
 
@@ -367,6 +327,8 @@ export default function Home() {
                   </div>
                   <h1 className="view-title companion-headline">{t('viewHeadings.today')}</h1>
 
+                  <p className="companion-section-question">{t('sectionQuestions.today')}</p>
+
                   <section className="companion-panel companion-panel-letter">
                     <div className="kicker">{t('kickers.oneBigMove')}</div>
                     {letterLoading && (
@@ -386,62 +348,50 @@ export default function Home() {
 
                   <section className="companion-panel">
                     <div className="kicker">{t('kickers.reality')}</div>
-                    {letterLoading && (
-                      <p className="companion-panel-text companion-panel-text--sentence companion-letter-loading">
-                        …
-                      </p>
-                    )}
-                    {!letterLoading && letterError && (
-                      <p className="companion-panel-text companion-panel-text--sentence companion-letter-error">
-                        —
-                      </p>
-                    )}
+                    {letterLoading && <p className="companion-panel-text companion-letter-loading">…</p>}
+                    {!letterLoading && letterError && <p className="companion-panel-text companion-letter-error">—</p>}
                     {!letterLoading && !letterError && todaysLetter && (
                       <p className="companion-panel-text">{todaysLetter.sections.reality}</p>
                     )}
                   </section>
 
-                  <div className="companion-editorial-extra">
-                  {!todayOpportunity && todaysLetter && (
-                    <DisclosureTrigger label={t('today.opportunity')} onClick={() => setTodayOpportunity(true)} />
+                  {!letterLoading && !letterError && todaysLetter && (
+                    <div className="companion-brief-grid">
+                      {([
+                        ['opportunity', t('kickers.opportunity'), todaysLetter.sections.opportunity],
+                        ['ignore', t('kickers.ignore'), todaysLetter.sections.ignore],
+                        ['nourish', t('kickers.nourish'), todaysLetter.sections.nourish],
+                        ['reflection', t('kickers.reflection'), todaysLetter.sections.reflection]
+                      ] as const).map(([key, label, text]) => (
+                        <section className="companion-panel companion-panel--compact" key={key}>
+                          <div className="kicker">{label}</div>
+                          <p className="companion-panel-text companion-panel-text--sentence">{text}</p>
+                        </section>
+                      ))}
+                    </div>
                   )}
-                  <DisclosurePanel open={todayOpportunity}>
-                    <section className="companion-panel">
-                      <div className="kicker">{t('kickers.opportunity')}</div>
-                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter?.sections.opportunity}</p>
-                    </section>
-                  </DisclosurePanel>
 
-                  {!todayIgnore && todaysLetter && (
-                    <DisclosureTrigger label={t('today.ignoreToday')} onClick={() => setTodayIgnore(true)} />
+                  {!todayUnderstand && todaysLetter && (
+                    <DisclosureTrigger label={t('today.understand')} onClick={() => setTodayUnderstand(true)} />
                   )}
-                  <DisclosurePanel open={todayIgnore}>
+                  <DisclosurePanel open={todayUnderstand}>
                     <section className="companion-panel">
-                      <div className="kicker">{t('kickers.ignore')}</div>
-                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter?.sections.ignore}</p>
+                      <div className="kicker">{t('disclosure.why')}</div>
+                      <p className="companion-panel-text">{todaysLetter?.pipeline.trajectoryNote ?? t('today.briefingNote')}</p>
+                      <div className="kicker">{t('disclosure.evidence')}</div>
+                      <p className="companion-panel-text">{todaysLetter?.pipeline.confidenceNote ?? '—'}</p>
+                      <div className="kicker">{t('today.trajectoryImpact')}</div>
+                      <p className="companion-panel-text">
+                        {todaysLetter
+                          ? `${todaysLetter.pipeline.trajectoryApproved} approved · ${todaysLetter.pipeline.trajectoryFiltered} filtered`
+                          : '—'}
+                      </p>
+                      <div className="kicker">{t('disclosure.confidence')}</div>
+                      <p className="companion-panel-text">{todaysLetter?.pipeline.qualityConfidence ?? '—'}</p>
+                      <div className="kicker">{t('today.possibleActions')}</div>
+                      <p className="companion-panel-text">{todaysLetter?.sections.opportunity ?? '—'}</p>
                     </section>
                   </DisclosurePanel>
-
-                  {!todayNourish && todaysLetter && (
-                    <DisclosureTrigger label={t('today.nourish')} onClick={() => setTodayNourish(true)} />
-                  )}
-                  <DisclosurePanel open={todayNourish}>
-                    <section className="companion-panel">
-                      <div className="kicker">{t('kickers.nourish')}</div>
-                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter?.sections.nourish}</p>
-                    </section>
-                  </DisclosurePanel>
-
-                  {!todayReflect && todaysLetter && (
-                    <DisclosureTrigger label={t('today.reflection')} onClick={() => setTodayReflect(true)} />
-                  )}
-                  <DisclosurePanel open={todayReflect}>
-                    <section className="companion-panel">
-                      <div className="kicker">{t('kickers.reflection')}</div>
-                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter?.sections.reflection}</p>
-                    </section>
-                  </DisclosurePanel>
-                  </div>
                 </div>
 
                 <div className="companion-presence">
@@ -462,83 +412,12 @@ export default function Home() {
 
             {view === 'decisions' && (
               <div className="decision-room">
-                <section className="decision-room-core card card-glow">
-                  <div className="kicker">{t('kickers.recommendation')}</div>
-                  <h2 className="decision-room-question">{t('decisions.headline')}</h2>
-                  <p>{t('decisions.subline')}</p>
-                </section>
-
-                {!boardWhy && <DisclosureTrigger label={t('disclosure.why')} onClick={() => setBoardWhy(true)} />}
-                <DisclosurePanel open={boardWhy}>
-                  <section className="card decision-room-why">
-                    <p>{t('decisions.whyBody')}</p>
-                  </section>
-                </DisclosurePanel>
-
-                {!boardDiscussion && boardWhy && (
-                  <DisclosureTrigger label={t('disclosure.boardDiscussion')} onClick={() => setBoardDiscussion(true)} />
-                )}
-                {!boardDiscussion && !boardWhy && (
-                  <DisclosureTrigger label={t('disclosure.boardDiscussion')} onClick={() => { setBoardWhy(true); setBoardDiscussion(true); }} />
-                )}
-                <DisclosurePanel open={boardDiscussion}>
-                  <section className="card">
-                    <div className="kicker">{t('kickers.boardDiscussion')}</div>
-                    <p>{t('decisions.boardBody')}</p>
-                  </section>
-                </DisclosurePanel>
-
-                {!boardAdvisors && boardDiscussion && (
-                  <DisclosureTrigger label={t('disclosure.advisors')} onClick={() => setBoardAdvisors(true)} />
-                )}
-                <DisclosurePanel open={boardAdvisors}>
-                  <section className="grid board-why-grid">
-                    <div className="card"><div className="kicker">{t('kickers.nextMove')}</div><h2>{t('decisions.cardNext')}</h2><p>{t('decisions.cardNextSub')}</p></div>
-                    <div className="card"><div className="kicker">{t('kickers.cfo')}</div><h2>{t('decisions.cardCfo')}</h2><p>{t('decisions.cardCfoSub')}</p></div>
-                    <div className="card"><div className="kicker">{t('kickers.strategist')}</div><h2>{t('decisions.cardStrategist')}</h2><p>{t('decisions.cardStrategistSub')}</p></div>
-                  </section>
-                </DisclosurePanel>
-
-                {!boardEvidence && boardAdvisors && (
-                  <DisclosureTrigger label={t('disclosure.evidence')} onClick={() => setBoardEvidence(true)} />
-                )}
-                <DisclosurePanel open={boardEvidence}>
-                  <section className="card">
-                    <div className="kicker">{t('kickers.evidence')}</div>
-                    <ul>{brain.patterns.slice(0, 3).map(item => <li key={item}>{item}</li>)}</ul>
-                  </section>
-                </DisclosurePanel>
-
-                {!boardConfidence && (
-                  <DisclosureTrigger label={t('disclosure.confidence')} onClick={() => setBoardConfidence(true)} />
-                )}
-                <DisclosurePanel open={boardConfidence}>
-                  <section className="card">
-                    <div className="kicker">{t('kickers.confidence')}</div>
-                    <div className="potential-score">{todayOpp.confidenceScore}</div>
-                  </section>
-                </DisclosurePanel>
-
-                {!boardPurpose && (
-                  <DisclosureTrigger label={t('disclosure.explorePurpose')} onClick={() => setBoardPurpose(true)} />
-                )}
-                <DisclosurePanel open={boardPurpose}>
-                  <section className="hero">
-                    <div className="card card-glow">
-                      <div className="kicker">{t('kickers.northStar')}</div>
-                      <h2>{brain.north_star}</h2>
-                    </div>
-                    <div className="card">
-                      <div className="kicker">{t('kickers.purposeEngine')}</div>
-                      <h2>{brain.manifesto}</h2>
-                      <p>{t('decisions.mission2036')}: {brain.mission_2036.toLowerCase()}</p>
-                    </div>
-                  </section>
-                </DisclosurePanel>
+                <p className="section-question">{t('sectionQuestions.decisions')}</p>
 
                 <div className="ritual-flow decisions-form-flow">
                   <RitualStep step={1} label={t('kickers.decisionEngine')} isLast>
-                    <h2>{t('decisions.askBoard')}</h2>
+                    <h2>{t('decisions.headline')}</h2>
+                    <p>{t('decisions.subline')}</p>
                     <label>{t('decisions.decisionLabel')}</label>
                     <input
                       className="input"
@@ -561,23 +440,50 @@ export default function Home() {
                     >
                       {decisionLoading ? t('decisions.submitting') : t('decisions.submit')}
                     </button>
+                    {decisionLoading && <p className="decision-simulating">{t('decisions.simulating')}</p>}
                     {decisionError && <p className="decision-error">{decisionError}</p>}
                   </RitualStep>
 
                   {decisionResult && (
-                    <DecisionResultDisclosure
-                      key={`${decisionResult.categoryLabel}-${decisionResult.nextAction}-${decisionResult.confidenceScore}`}
-                      result={decisionResult}
-                    />
+                    <>
+                      <section className="card decision-scenario-note">
+                        <div className="kicker">{t('decisions.scenarioTitle')}</div>
+                        <p>{t('decisions.scenarioNote')}</p>
+                      </section>
+                      <DecisionResultDisclosure
+                        key={`${decisionResult.categoryLabel}-${decisionResult.nextAction}-${decisionResult.confidenceScore}`}
+                        result={decisionResult}
+                      />
+                    </>
                   )}
                 </div>
+
+                {!boardPurpose && (
+                  <DisclosureTrigger label={t('disclosure.explorePurpose')} onClick={() => setBoardPurpose(true)} />
+                )}
+                <DisclosurePanel open={boardPurpose}>
+                  <section className="hero">
+                    <div className="card card-glow">
+                      <div className="kicker">{t('kickers.northStar')}</div>
+                      <h2>{brain.north_star}</h2>
+                    </div>
+                    <div className="card">
+                      <div className="kicker">{t('kickers.purposeEngine')}</div>
+                      <h2>{brain.manifesto}</h2>
+                      <p>{t('decisions.mission2036')}: {brain.mission_2036.toLowerCase()}</p>
+                    </div>
+                  </section>
+                </DisclosurePanel>
               </div>
             )}
 
-            {view === 'discover' && (
-              <div className="discover-space">
+            {view === 'insights' && (
+              <div className="insights-space">
+                <p className="section-question">{t('sectionQuestions.insights')}</p>
+                <p className="insights-built-over-time">{t('insights.builtOverTime')}</p>
+
                 <div className="quiet-discovery">
-                  <section className="discovery-insight card">
+                  <section className="discovery-insight card card-glow">
                     <div className="kicker">{t('kickers.insight')}</div>
                     <h2>{awareness.insight}</h2>
                   </section>
@@ -587,6 +493,18 @@ export default function Home() {
                     <DisclosurePanel open={awarenessWhy}>
                       <div className="card discovery-panel">
                         <p>{awareness.whyItMatters}</p>
+                      </div>
+                    </DisclosurePanel>
+
+                    {!insightsPatterns && (
+                      <DisclosureTrigger label={t('disclosure.patterns')} onClick={() => setInsightsPatterns(true)} />
+                    )}
+                    <DisclosurePanel open={insightsPatterns}>
+                      <div className="card discovery-panel">
+                        <div className="kicker">{t('insights.patternsTitle')}</div>
+                        <ul>{brain.patterns.map(item => <li key={item}>{item}</li>)}</ul>
+                        <div className="kicker">{t('insights.blindSpotsTitle')}</div>
+                        <p>{brain.patterns[0]}</p>
                       </div>
                     </DisclosurePanel>
 
@@ -628,44 +546,14 @@ export default function Home() {
                     </DisclosurePanel>
                   </div>
                 </div>
-
-                {!discoverFinance && (
-                  <DisclosureTrigger label={t('disclosure.freedomFinance')} onClick={() => setDiscoverFinance(true)} />
-                )}
-                <DisclosurePanel open={discoverFinance}>
-                <div className="freedom-cockpit discover-finance">
-                  <section className="cockpit-gauge card card-glow">
-                    <div className="kicker">{t('kickers.freedomScore')}</div>
-                    <div className="freedom-gauge-ring">
-                      <div className="potential-score">72</div>
-                    </div>
-                    <p>{t('discover.freedomSubline')}</p>
-                  </section>
-
-                  <section className="card cockpit-recommendation">
-                    <div className="kicker">{t('kickers.recommendation')}</div>
-                    <h2>{t('discover.recHeadline')}</h2>
-                    <p>{t('discover.recSubline')}</p>
-                  </section>
-
-                  {!financeGoals && <DisclosureTrigger label={t('disclosure.goals')} onClick={() => setFinanceGoals(true)} />}
-                  <DisclosurePanel open={financeGoals}>
-                    <div className="card">
-                      <div className="kicker">{t('kickers.goals')}</div>
-                      <ul>{financeDisplay.goals.map(goal => <li key={goal}>{goal}</li>)}</ul>
-                    </div>
-                  </DisclosurePanel>
-
-                  <FinanceDetailsDisclosure />
-                </div>
-                </DisclosurePanel>
               </div>
             )}
 
             {view === 'create' && (
               <div className="energy-ecosystem">
+                <p className="section-question">{t('sectionQuestions.create')}</p>
                 <section className="ecosystem-focus card card-glow">
-                  <div className="kicker">{t('kickers.todaysProjectRecommendation')}</div>
+                  <div className="kicker">{t('create.focusLabel')}</div>
                   <h2>{projectName}</h2>
                   <p>{brain.projects[projectName as keyof typeof brain.projects].role}</p>
                 </section>
@@ -686,6 +574,7 @@ export default function Home() {
 
             {view === 'memory' && (
               <div className="memory-palace">
+                <p className="section-question">{t('sectionQuestions.memory')}</p>
                 <div className="memory-palace-grid" role="list">
                   {memoryCards.map(card => (
                     <article

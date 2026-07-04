@@ -49,38 +49,48 @@ export const messages = {
     nav: {
       today: 'Oggi',
       decisions: 'Decisioni',
-      discover: 'Scopri',
+      insights: 'Insight',
       create: 'Crea',
       memory: 'Memoria'
     },
     navRole: {
-      today: 'Briefing quotidiano',
-      decisions: 'Sala decisioni',
-      discover: 'Scoperta silenziosa',
-      create: 'Allocazione energia',
-      memory: 'Palazzo della memoria'
+      today: 'Guida del mattino',
+      decisions: 'Partner decisionale',
+      insights: 'Osservazione nel tempo',
+      create: 'Energia creativa',
+      memory: 'Costituzione personale'
     },
     status: { online: 'ONLINE' },
     viewHeadings: {
-      today: 'IL MIGLIOR PASSO DI OGGI.',
-      decisions: 'PROGETTARE UNA VITA CHE MI RENDA LIBERO DI CREARE CIÒ CHE CONTA.',
-      discover: 'HO NOTATO QUALCOSA.',
-      create: 'IL SISTEMA GIUSEPPE.',
-      memory: 'CHI HO SCELTO DI DIVENTARE.'
+      today: 'COSA HA MASSIMA LEVA OGGI?',
+      decisions: 'QUAL È LA MIGLIORE DECISIONE CHE POSSO PRENDERE?',
+      insights: 'COSA NON STO VEDENDO?',
+      create: 'COSA MERITA LA MIA ENERGIA?',
+      memory: 'CHI VOGLIO CONTINUARE A ESSERE?'
+    },
+    sectionQuestions: {
+      today: 'Qual è la cosa a massima leva che posso fare oggi?',
+      decisions: 'Qual è la migliore decisione che posso prendere?',
+      insights: 'Cosa non sto vedendo?',
+      create: 'Cosa merita la mia energia?',
+      memory: 'Chi voglio continuare a essere?'
     },
     kickers: shared.kickers,
     today: {
       loading: 'Giuseppe OS sta pensando…',
-      opportunity: 'Opportunità',
-      ignoreToday: 'Ignora oggi',
-      nourish: 'Nutri',
-      reflection: 'Riflessione'
+      understand: 'Capisci questo',
+      trajectoryImpact: 'Impatto traiettoria',
+      possibleActions: 'Azioni possibili',
+      briefingNote: 'Il Daily Brief è giudizio, non informazione.'
     },
     decisions: {
-      headline: 'Pubblica un pensiero vero.',
-      subline: 'Reputazione prima di perfezione.',
-      whyBody: 'La reputazione stimata richiede prove pubbliche. Il perfezionismo è paura travestita da standard.',
-      boardBody: 'Il Board concorda: concentrati su un pensiero vero, non su dieci bozze perfette.',
+      headline: 'Porta una decisione. Il sistema simula prima di rispondere.',
+      subline: 'Non un ordine — una raccomandazione ragionata.',
+      simulating: 'Simulazione scenari in corso…',
+      scenarioTitle: 'SCENARI',
+      scenarioNote: 'Il Decision Simulator confronterà futuri possibili — mai certezze false.',
+      whyBody: 'Ogni decisione importante passa da Past, Present e Future Giuseppe.',
+      boardBody: 'Il Board esamina trade-off, rischi e allineamento con la traiettoria.',
       cardNext: 'Pubblica un pensiero vero.',
       cardNextSub: 'Reputazione prima di perfezione.',
       cardCfo: 'Automatizza investimenti.',
@@ -92,18 +102,19 @@ export const messages = {
       decisionPlaceholder: 'Es. comprare casa, pubblicare un post, investire...',
       reasonLabel: 'Perché la vuoi fare?',
       reasonPlaceholder: 'Motivo vero.',
-      submit: 'Chiedi al Board',
-      submitting: 'Il Board sta pensando…',
+      submit: 'Simula e raccomanda',
+      submitting: 'Simulazione in corso…',
       mission2036: 'Missione 2036'
     },
-    discover: {
-      freedomSubline: 'Stai comprando libertà, non status.',
-      recHeadline: 'Automatizza investimenti.',
-      recSubline: 'Misura mesi di libertà, non solo rendimento.'
+    insights: {
+      patternsTitle: 'PATTERN OSSERVATI',
+      blindSpotsTitle: 'PUNTI CIECI',
+      builtOverTime: 'Costruito nel tempo — non aggiornato ogni giorno.'
     },
     create: {
-      strategistHeadline: 'Non più idee: più concentrazione.',
-      strategistSubline: 'Ogni progetto deve rafforzare l\'ecosistema.'
+      strategistHeadline: 'Dove va la tua energia creativa adesso?',
+      strategistSubline: 'Ogni progetto deve rafforzare la traiettoria — non disperdere attenzione.',
+      focusLabel: 'FOCUS SUGGERITO'
     },
     disclosure: {
       why: 'Perché?',
@@ -118,6 +129,9 @@ export const messages = {
       evidence: 'Evidenza',
       confidence: 'Confidenza',
       explorePurpose: 'Esplora il proposito',
+      understand: 'Capisci questo',
+      patterns: 'Pattern',
+      blindSpots: 'Punti ciechi',
       tellMeMore: 'Dimmi di più',
       showEvidence: 'Mostra evidenza',
       reflect: 'Rifletti',
@@ -149,7 +163,7 @@ export const messages = {
       goalsTitle: 'Obiettivi finanziari.'
     },
     footer:
-      'Non è software che ti dice cosa fare. È software che ricorda chi hai scelto di diventare.',
+      'Non è il software più intelligente. È il partner decisionale di cui ti fidi.',
     language: {
       italian: 'IT',
       english: 'EN',
@@ -164,38 +178,48 @@ export const messages = {
     nav: {
       today: 'Today',
       decisions: 'Decisions',
-      discover: 'Discover',
+      insights: 'Insights',
       create: 'Create',
       memory: 'Memory'
     },
     navRole: {
-      today: 'Daily briefing',
-      decisions: 'Decision room',
-      discover: 'Quiet discovery',
-      create: 'Energy allocation',
-      memory: 'Memory palace'
+      today: 'Morning guide',
+      decisions: 'Decision partner',
+      insights: 'Observation over time',
+      create: 'Creative energy',
+      memory: 'Personal constitution'
     },
     status: { online: 'ONLINE' },
     viewHeadings: {
-      today: "TODAY'S BEST MOVE.",
-      decisions: 'DESIGN A LIFE THAT SETS ME FREE TO CREATE WHAT MATTERS.',
-      discover: 'I NOTICED SOMETHING.',
-      create: 'THE GIUSEPPE SYSTEM.',
-      memory: 'WHO I CHOSE TO BECOME.'
+      today: 'WHAT HAS THE HIGHEST LEVERAGE TODAY?',
+      decisions: 'WHAT IS THE BEST DECISION I CAN MAKE?',
+      insights: 'WHAT AM I NOT SEEING?',
+      create: 'WHAT DESERVES MY ENERGY?',
+      memory: 'WHO DO I WANT TO CONTINUE BEING?'
+    },
+    sectionQuestions: {
+      today: 'What is the highest leverage thing I can do today?',
+      decisions: 'What is the best decision I can make?',
+      insights: 'What am I not seeing?',
+      create: 'What deserves my energy?',
+      memory: 'Who do I want to continue being?'
     },
     kickers: shared.kickers,
     today: {
       loading: 'Giuseppe OS is thinking…',
-      opportunity: 'Opportunity',
-      ignoreToday: 'Ignore today',
-      nourish: 'Nourish',
-      reflection: 'Reflection'
+      understand: 'Understand this',
+      trajectoryImpact: 'Trajectory impact',
+      possibleActions: 'Possible actions',
+      briefingNote: 'The Daily Brief is judgement, not information.'
     },
     decisions: {
-      headline: 'Publish one true thought.',
-      subline: 'Reputation before perfection.',
-      whyBody: 'Estimated reputation requires public proof. Perfectionism is fear dressed as standards.',
-      boardBody: 'The Board agrees: focus on one true thought, not ten perfect drafts.',
+      headline: 'Bring a decision. The system simulates before answering.',
+      subline: 'Not an order — a reasoned recommendation.',
+      simulating: 'Simulating scenarios…',
+      scenarioTitle: 'SCENARIOS',
+      scenarioNote: 'The Decision Simulator will compare possible futures — never false certainty.',
+      whyBody: 'Every important decision passes through Past, Present, and Future Giuseppe.',
+      boardBody: 'The Board examines trade-offs, risks, and trajectory alignment.',
       cardNext: 'Publish one true thought.',
       cardNextSub: 'Reputation before perfection.',
       cardCfo: 'Automate investments.',
@@ -207,18 +231,19 @@ export const messages = {
       decisionPlaceholder: 'E.g. buy a house, publish a post, invest...',
       reasonLabel: 'Why do you want to do it?',
       reasonPlaceholder: 'The real reason.',
-      submit: 'Ask the Board',
-      submitting: 'The Board is thinking…',
+      submit: 'Simulate & recommend',
+      submitting: 'Simulating…',
       mission2036: '2036 Mission'
     },
-    discover: {
-      freedomSubline: 'You are buying freedom, not status.',
-      recHeadline: 'Automate investments.',
-      recSubline: 'Measure months of freedom, not just returns.'
+    insights: {
+      patternsTitle: 'OBSERVED PATTERNS',
+      blindSpotsTitle: 'BLIND SPOTS',
+      builtOverTime: 'Built over time — not updated every day.'
     },
     create: {
-      strategistHeadline: 'No more ideas: more focus.',
-      strategistSubline: 'Every project must strengthen the ecosystem.'
+      strategistHeadline: 'Where should your creative energy go right now?',
+      strategistSubline: 'Every project must strengthen trajectory — not scatter attention.',
+      focusLabel: 'SUGGESTED FOCUS'
     },
     disclosure: {
       why: 'Why?',
@@ -233,6 +258,9 @@ export const messages = {
       evidence: 'Evidence',
       confidence: 'Confidence',
       explorePurpose: 'Explore purpose',
+      understand: 'Understand this',
+      patterns: 'Patterns',
+      blindSpots: 'Blind spots',
       tellMeMore: 'Tell me more',
       showEvidence: 'Show evidence',
       reflect: 'Reflect',
@@ -264,7 +292,7 @@ export const messages = {
       goalsTitle: 'Financial goals.'
     },
     footer:
-      "It's not software that tells you what to do. It's software that remembers who you chose to become.",
+      'Not the smartest software. The decision partner you trust most.',
     language: {
       italian: 'IT',
       english: 'EN',

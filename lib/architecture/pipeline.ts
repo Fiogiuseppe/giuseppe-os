@@ -55,7 +55,7 @@ export const PRIMARY_PRODUCT_QUESTION =
   'Knowing everything Giuseppe has lived, everything happening in the world, and everything he wants to become — what decision has the highest probability of improving his future?';
 
 export const DAILY_BRIEF_QUESTION =
-  'If the wisest version of Giuseppe had five minutes with Present Giuseppe this morning — what would he say?';
+  'What is the highest leverage thing I can do today?';
 
 export const GOLDEN_RULE_QUESTION =
   'If Giuseppe follows this advice, will Future Giuseppe most likely thank Present Giuseppe ten years from now?';

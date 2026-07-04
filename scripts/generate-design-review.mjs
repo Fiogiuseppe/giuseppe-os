@@ -30,13 +30,13 @@ const DESKTOP = { width: 1280, height: 720, label: '1280 × 720 (Desktop)' };
 const MOBILE = { width: 390, height: 844, label: '390 × 844 (Mobile)' };
 
 const SCREENS = [
-  { name: 'Today', nav: 'Today', viewport: DESKTOP },
-  { name: 'Decisions', nav: 'Decisions', viewport: DESKTOP },
-  { name: 'Discover', nav: 'Discover', viewport: DESKTOP },
-  { name: 'Create', nav: 'Create', viewport: DESKTOP },
-  { name: 'Memory', nav: 'Memory', viewport: DESKTOP },
-  { name: 'Mobile Today', nav: 'Today', viewport: MOBILE },
-  { name: 'Mobile Decisions', nav: 'Decisions', viewport: MOBILE }
+  { name: 'Today', navId: 'today', viewport: DESKTOP },
+  { name: 'Decisions', navId: 'decisions', viewport: DESKTOP },
+  { name: 'Insights', navId: 'insights', viewport: DESKTOP },
+  { name: 'Create', navId: 'create', viewport: DESKTOP },
+  { name: 'Memory', navId: 'memory', viewport: DESKTOP },
+  { name: 'Mobile Today', navId: 'today', viewport: MOBILE },
+  { name: 'Mobile Decisions', navId: 'decisions', viewport: MOBILE }
 ];
 
 const PAGE_WIDTH = 792;
@@ -146,7 +146,7 @@ async function captureScreenshots(buildStatus, testStatus) {
       });
       const page = await context.newPage();
       await page.goto(SERVER_URL, { waitUntil: 'networkidle' });
-      await page.getByRole('navigation').getByRole('button', { name: screen.nav, exact: true }).click();
+      await page.getByTestId(`nav-${screen.navId}`).click();
       await page.waitForTimeout(400);
 
       const fileName = `${screen.name.toLowerCase().replace(/\s+/g, '-')}.png`;
@@ -224,7 +224,7 @@ async function drawCoverPage(pdf, meta) {
     y -= 22;
   }
 
-  page.drawText('Personal Intelligence Operating System', {
+  page.drawText('Personal Decision Intelligence System — Five Questions', {
     x: 60,
     y: 80,
     size: 10,

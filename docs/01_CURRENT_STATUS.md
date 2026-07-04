@@ -1,11 +1,11 @@
 # Giuseppe OS — Current Status
 
 **Last updated:** July 2026  
-**Version:** 2.0.0 (Decision Intelligence foundations)  
+**Version:** 2.1.0 (Five Questions Architecture)  
 **Branch:** `main`  
 **Production:** https://giuseppe-os.vercel.app  
 
-> **Direction:** Personal Decision Intelligence System. See [`DECISION_INTELLIGENCE_PIVOT.md`](DECISION_INTELLIGENCE_PIVOT.md). Shipped engines unchanged; new layers are type foundations only.
+> **Structure:** Today · Decisions · Insights · Create · Memory — one question per section. See [`PRODUCT_EVOLUTION.md`](PRODUCT_EVOLUTION.md).
 
 ---
 
@@ -14,7 +14,7 @@
 | Area | Status | Notes |
 |------|--------|-------|
 | **Dashboard shell** | Live | Single-page Next.js app at `app/page.tsx` |
-| **Navigation** | Live | Top bar: Today, Decisions, Discover, Create, Memory |
+| **Navigation** | Live | Top bar: Today, Decisions, Insights, Create, Memory |
 | **Today (Home)** | Live | Daily companion — focus, why, action; creative/reflect/opportunity behind disclosure |
 | **Decisions** | Live | AI v0.1 — form routes through `/api/brain`; structured recommendation + board output |
 | **Discover** | Live | Awareness insights + freedom/finance cockpit (progressive disclosure) |

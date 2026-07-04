@@ -15,15 +15,17 @@ export function buildMemoryPalaceCards(data: GiuseppeBrain): MemoryPalaceCard[] 
     .join(' ');
 
   return [
-    { label: 'IDENTITY', text: data.manifesto },
     { label: 'MISSION', text: data.mission_2036 },
-    { label: 'NORTH STAR', text: data.north_star },
+    { label: 'NORTH STAR', text: data.north_star, accent: true },
+    { label: 'LIFE VISION', text: data.manifesto },
     { label: 'VALUES', text: data.values.join(' · ') },
-    { label: 'RULES', text: data.rules.join(' ') },
+    { label: 'PRINCIPLES', text: data.rules.join(' ') },
+    { label: 'DECISION RULES', text: data.rules.filter(rule => rule.includes('decisione') || rule.includes('capitale')).join(' ') || data.rules[2] },
+    { label: 'FUTURE SELF', text: data.mission_2036 },
+    { label: 'CREATIVE DNA', text: data.creative_goals.join(' ') },
+    { label: 'LESSONS', text: data.patterns.slice(0, 2).join(' ') },
+    { label: 'BLIND SPOTS', text: data.patterns.slice(2).join(' '), accent: true },
     { label: 'PROJECTS', text: activeProjects },
-    { label: 'RELATIONSHIPS', text: data.contacts.join(' ') },
-    { label: 'PATTERNS', text: data.patterns.join(' '), accent: true },
-    { label: 'LEARNING', text: [...data.reading_queue, ...data.skills].join(' ') },
     { label: 'PRIORITIES', text: data.priorities.join(' ') }
   ];
 }

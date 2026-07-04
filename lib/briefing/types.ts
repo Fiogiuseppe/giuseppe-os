@@ -24,6 +24,7 @@ export interface DailyBriefingPipelineMeta {
   trajectoryNote: string;
   qualityPassed: boolean;
   qualityConfidence: 'high' | 'medium' | 'low';
+  qualityPersonalization?: number;
   qualityNote: string;
 }
 

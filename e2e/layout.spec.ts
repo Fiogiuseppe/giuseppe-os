@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { gotoView } from './helpers';
+import { gotoView, DECISION_SUBMIT_PATTERN } from './helpers';
 
 async function expectInViewport(page: import('@playwright/test').Page, locator: import('@playwright/test').Locator) {
   await locator.scrollIntoViewIfNeeded();
@@ -14,10 +14,10 @@ test.describe('Giuseppe OS layout — no clipping', () => {
 
     const priorities = page.getByRole('heading', { name: 'PRIORITIES' });
     await priorities.scrollIntoViewIfNeeded();
-    await expectInViewport(page, page.getByText(/Pubblicare un pensiero vero questa settimana/));
+    await expectInViewport(page, page.getByText(/Pubblicare un pensiero vero questa settimana/).first());
 
-    const patterns = page.getByRole('heading', { name: 'PATTERNS' });
-    await expectInViewport(page, patterns);
+    const blindSpots = page.getByRole('heading', { name: 'BLIND SPOTS' });
+    await expectInViewport(page, blindSpots);
   });
 
   test('desktop memory grid shows rules without interaction', async ({ page }) => {
@@ -25,7 +25,7 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await page.goto('/');
     await gotoView(page, 'memory');
 
-    const rulesItem = page.getByRole('main').getByText('Compra tempo, non status.');
+    const rulesItem = page.getByRole('heading', { name: 'PRINCIPLES' });
     await expectInViewport(page, rulesItem);
   });
 
@@ -36,7 +36,7 @@ test.describe('Giuseppe OS layout — no clipping', () => {
 
     await page.getByPlaceholder(/comprare casa|buy a house/i).fill('investire in ETF');
     await page.getByPlaceholder(/Motivo vero|The real reason/i).fill('Voglio comprare libertà futura.');
-    await page.getByRole('button', { name: /Chiedi al Board|Ask the Board/i }).click();
+    await page.getByRole('button', { name: DECISION_SUBMIT_PATTERN }).click();
 
     const betterVersion = page.locator('.result').getByRole('button', { name: /Versione migliore|Better version/i });
     await expectInViewport(page, betterVersion);
@@ -50,7 +50,7 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await gotoView(page, 'decisions');
 
     const textarea = page.getByPlaceholder(/Motivo vero|The real reason/i);
-    const submit = page.getByRole('button', { name: /Chiedi al Board|Ask the Board/i });
+    const submit = page.getByRole('button', { name: DECISION_SUBMIT_PATTERN });
 
     await expect(textarea).toBeEditable();
     await expectInViewport(page, textarea);
@@ -80,7 +80,7 @@ test.describe('Giuseppe OS layout — no clipping', () => {
     await page.goto('/');
     await gotoView(page, 'memory');
 
-    for (const domain of ['IDENTITY', 'MISSION', 'NORTH STAR', 'VALUES', 'RULES', 'PROJECTS', 'RELATIONSHIPS']) {
+    for (const domain of ['MISSION', 'NORTH STAR', 'VALUES', 'PRINCIPLES', 'PROJECTS', 'PRIORITIES']) {
       await expect(page.getByRole('heading', { name: domain })).toBeVisible();
     }
 

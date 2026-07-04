@@ -103,11 +103,11 @@ Navigation represents **Giuseppe's daily journey** — not software modules.
 
 | Nav | Role | Primary question |
 |-----|------|------------------|
-| **TODAY** | Landing page — daily conversation | If the wisest Giuseppe had five minutes with Present Giuseppe — what would he say? |
-| **PROJECTS** | Creative energy allocation | Where should my creative energy go right now? |
-| **FINANCE** | Freedom cockpit | Am I building freedom or buying status? |
-| **AWARENESS** | Quiet discovery | What pattern am I missing? |
-| **BECOMING** | Identity and memory | Who am I choosing to become? |
+| **TODAY** | Morning guide | What is the highest leverage thing I can do today? |
+| **DECISIONS** | Decision partner | What is the best decision I can make? |
+| **INSIGHTS** | Observation over time | What am I not seeing? |
+| **CREATE** | Creative energy | What deserves my energy? |
+| **MEMORY** | Personal constitution | Who do I want to continue being? |
 
 **Today is the landing page.** The user opens Giuseppe OS and immediately sees the highest-leverage **decision** for today — not a grid of widgets. One Big Move is the hero; everything else is progressive disclosure.
 
@@ -125,11 +125,11 @@ Each navigation area has a distinct mental role and layout rhythm (v1.2+). Do no
 
 | Space | Feeling |
 |-------|---------|
-| Today | Warm conversation — one decision, clarity, silence when uncertain |
-| Projects | Creative workshop — energy and ecosystem |
-| Finance | Cockpit — freedom metrics, privacy by default |
-| Awareness | Quiet discovery — insight without alarm |
-| Becoming | Memory palace — identity, patterns, north star |
+| Today | Calm morning judgement — readable in 20 seconds |
+| Decisions | Interactive partner — simulate before recommending |
+| Insights | Quiet pattern discovery — built over time |
+| Create | Creative workshop — energy rebalancing |
+| Memory | Identity constitution — who Giuseppe continues being |
 
 ---
 
@@ -161,7 +161,7 @@ If any answer is no, rethink the design.
 
 ## Related Documents
 
-- [`docs/DECISION_INTELLIGENCE_PIVOT.md`](DECISION_INTELLIGENCE_PIVOT.md) — product philosophy migration
+- [`docs/PRODUCT_EVOLUTION.md`](PRODUCT_EVOLUTION.md) — five sections architecture
 - [`docs/PRODUCT_CONSTITUTION.md`](PRODUCT_CONSTITUTION.md) — product philosophy
 - [`docs/01_CURRENT_STATUS.md`](01_CURRENT_STATUS.md) — current UI state
 - [`docs/reviews/README.md`](reviews/README.md) — design review PDFs per release
