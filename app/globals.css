@@ -192,6 +192,10 @@ html.about-route body {
   display: none;
 }
 
+.page-header-insights {
+  display: none;
+}
+
 .main-home {
   gap: 0;
   padding: 0 var(--app-gutter) 2px;
@@ -526,15 +530,139 @@ html.about-route body {
 .discover-space {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(18px, 3vh, 28px);
+  width: 100%;
+  max-width: min(920px, 100%);
+  margin: 0 auto;
+  padding: clamp(8px, 2vh, 20px) 0;
   flex: 1;
   min-height: 0;
+  text-align: center;
+}
+
+.insights-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(24px, 4vh, 44px);
+  width: 100%;
+}
+
+.insights-stage-title {
+  margin: 0;
+  max-width: 10em;
+  font-size: clamp(32px, 5.2vw, 64px);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--fg);
+}
+
+.insights-stage-headline {
+  margin: clamp(-12px, -1.5vh, -4px) 0 0;
+  max-width: min(560px, 92%);
+  font-size: clamp(14px, 1.7vw, 18px);
+  line-height: 1.35;
+  color: var(--muted);
+  text-align: center;
+}
+
+.insights-stage-loading,
+.insights-stage-error {
+  margin: 0;
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--muted);
+  font-style: italic;
+}
+
+.insights-hero-card {
+  width: min(760px, 100%);
+  padding: clamp(18px, 3vh, 28px) clamp(20px, 3vw, 32px);
+  border: 1.5px solid var(--fg);
+  border-radius: clamp(24px, 4vw, 40px);
+  background: transparent;
+  text-align: center;
+}
+
+.insights-hero-card .kicker {
+  margin-bottom: clamp(10px, 1.5vh, 14px);
+}
+
+.insights-hero-text {
+  margin: 0;
+  font-size: clamp(22px, 3.2vw, 36px) !important;
+  font-weight: 500 !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.04em;
+  color: var(--fg);
+}
+
+.insights-action-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: min(760px, 100%);
+}
+
+.insights-action-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border: 1.5px solid var(--fg);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fg);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.25s var(--ease),
+    color 0.25s var(--ease),
+    transform 0.25s var(--ease);
+}
+
+.insights-action-chip:hover,
+.insights-action-chip:focus-visible {
+  background: var(--fg);
+  color: #f7f5e8;
+  outline: none;
+}
+
+.insights-action-chip:active {
+  transform: translateY(1px);
 }
 
 .insights-built-over-time {
-  margin: 0;
-  font-size: 12px;
-  color: var(--text-muted, #555);
+  margin: clamp(-8px, -1vh, 0) 0 0;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.insights-focus-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: clamp(16px, 2.5vh, 24px);
+  width: 100%;
+  max-width: min(720px, 100%);
+  text-align: left;
+}
+
+.insights-focus-panel {
+  padding: clamp(20px, 3vh, 28px);
+  border: 1.5px solid var(--border-soft);
+  border-radius: clamp(18px, 3vw, 28px);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .decision-simulating {
@@ -1095,6 +1223,20 @@ html.about-route body {
 }
 
 .main-decisions .view-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.main-insights {
+  gap: 0;
+}
+
+.main-insights .view-body {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -2767,6 +2909,33 @@ label {
   .decision-command-submit {
     width: 44px;
     height: 44px;
+  }
+
+  .insights-stage {
+    gap: clamp(18px, 4vh, 28px);
+  }
+
+  .insights-stage-title {
+    max-width: 9em;
+    font-size: clamp(26px, 7.5vw, 40px);
+  }
+
+  .insights-hero-card {
+    padding: 16px 18px;
+    border-radius: 22px;
+  }
+
+  .insights-hero-text {
+    font-size: clamp(18px, 5.5vw, 26px) !important;
+  }
+
+  .insights-action-grid {
+    gap: 8px;
+  }
+
+  .insights-action-chip {
+    padding: 10px 14px;
+    font-size: 10px;
   }
 
   .decision-room-core {

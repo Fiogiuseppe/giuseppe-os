@@ -24,6 +24,7 @@ import {
   DisclosurePanel,
   DisclosureTrigger
 } from './components/Disclosure';
+import { InsightsStage } from './components/InsightsStage';
 import { DecisionIntakePanel } from './components/DecisionIntakePanel';
 import TodayMobileRitual from './components/TodayMobileRitual';
 import { TodayDraggablePresence } from './components/TodayDraggablePresence';
@@ -507,8 +508,8 @@ export default function Home() {
       <AppTopbar mode="spa" activeView={view} onNavigate={setView} />
 
       <div className="app-body">
-        <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}${view === 'decisions' ? ' main-decisions' : ''}`} role="main">
-          <header className={`page-header progressive-header space-header-${view}${view === 'today' ? ' page-header-today' : ''}${view === 'decisions' ? ' page-header-decisions' : ''}`}>
+        <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}${view === 'decisions' ? ' main-decisions' : ''}${view === 'insights' ? ' main-insights' : ''}`} role="main">
+          <header className={`page-header progressive-header space-header-${view}${view === 'today' ? ' page-header-today' : ''}${view === 'decisions' ? ' page-header-decisions' : ''}${view === 'insights' ? ' page-header-insights' : ''}`}>
             {view !== 'today' && (
               <>
                 <div className="space-meta">
@@ -605,78 +606,14 @@ export default function Home() {
 
             {view === 'insights' && (
               <div className={`insights-space${insightsFocus ? ' mental-space--reading' : ''}`}>
-                {insightsLoading && <p className="companion-letter-loading">…</p>}
-                {insightsError && <p className="companion-letter-error">{insightsError}</p>}
-
-                {!insightsLoading && !insightsError && awareness && insightsFocus === null && (
-                  <>
-                    <p className="section-question">{t('sectionQuestions.insights')}</p>
-                    <p className="insights-built-over-time">{awareness.headline}</p>
-
-                    <section className="discovery-insight card card-glow">
-                      <div className="kicker">{t('kickers.insight')}</div>
-                      <h2>{awareness.insight}</h2>
-                    </section>
-
-                    <div className="discovery-trail">
-                      <DisclosureTrigger label={t('disclosure.tellMeMore')} onClick={() => setInsightsFocus('why')} />
-                      <DisclosureTrigger label={t('disclosure.patterns')} onClick={() => setInsightsFocus('patterns')} />
-                      <DisclosureTrigger label={t('disclosure.showEvidence')} onClick={() => setInsightsFocus('evidence')} />
-                      <DisclosureTrigger label={t('disclosure.reflect')} onClick={() => setInsightsFocus('reflect')} />
-                      <DisclosureTrigger label={t('disclosure.suggestedAction')} onClick={() => setInsightsFocus('action')} />
-                    </div>
-                  </>
-                )}
-
-                {!insightsLoading && !insightsError && awareness && insightsFocus !== null && (
-                  <div className="reading-focus-view">
-                    <button type="button" className="reading-expand-close" onClick={() => setInsightsFocus(null)}>
-                      <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-                    </button>
-
-                    <DisclosurePanel open={insightsFocus === 'why'}>
-                      <div className="card discovery-panel">
-                        <p>{awareness.whyItMatters}</p>
-                      </div>
-                    </DisclosurePanel>
-
-                    <DisclosurePanel open={insightsFocus === 'patterns'}>
-                      <div className="card discovery-panel">
-                        <div className="kicker">{t('insights.patternsTitle')}</div>
-                        <ul>{brain.patterns.map(item => <li key={item}>{item}</li>)}</ul>
-                        <div className="kicker">{t('insights.blindSpotsTitle')}</div>
-                        <p>{brain.patterns[0]}</p>
-                      </div>
-                    </DisclosurePanel>
-
-                    <DisclosurePanel open={insightsFocus === 'evidence'}>
-                      <div className="card discovery-panel">
-                        <div className="kicker">{t('kickers.evidence')}</div>
-                        <ul>{awareness.evidence.map(item => <li key={item}>{item}</li>)}</ul>
-                        <div className="kicker">{t('kickers.riskIfIgnored')}</div>
-                        <p>{awareness.riskIfIgnored}</p>
-                      </div>
-                    </DisclosurePanel>
-
-                    <DisclosurePanel open={insightsFocus === 'reflect'}>
-                      <div className="card discovery-panel">
-                        <div className="kicker">{t('kickers.reflect')}</div>
-                        <p>{awareness.reflectionQuestion}</p>
-                      </div>
-                    </DisclosurePanel>
-
-                    <DisclosurePanel open={insightsFocus === 'action'}>
-                      <div className="card discovery-panel">
-                        <div className="kicker">{t('kickers.recommendedAction')}</div>
-                        <p>{awareness.recommendedAction}</p>
-                        <div className="kicker">{t('kickers.confidence')}</div>
-                        <div className="potential-score">
-                          {formatConfidenceDisplay(t, awareness.confidenceScore, awareness.confidenceLabel)}
-                        </div>
-                      </div>
-                    </DisclosurePanel>
-                  </div>
-                )}
+                <InsightsStage
+                  loading={insightsLoading}
+                  error={insightsError}
+                  awareness={awareness}
+                  focus={insightsFocus}
+                  patterns={brain.patterns}
+                  onFocusChange={setInsightsFocus}
+                />
               </div>
             )}
 
