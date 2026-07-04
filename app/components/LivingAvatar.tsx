@@ -6,17 +6,14 @@ import styles from './LivingAvatar.module.css';
 const BASE_FACE = '/avatar/avatar-eyes-open.png';
 
 const BLINK_FRAMES = [
-  '/avatar/avatar-eyes-mid.png',
-  '/avatar/avatar-eyes-mid2.png',
-  '/avatar/avatar-eyes-closed.png',
+  '/avatar/avatar-eyes-overlay-mid.png',
+  '/avatar/avatar-eyes-overlay-closed.png',
 ] as const;
 
 const BLINK_SEQUENCE = [
-  { frame: 0, duration: 42 },
-  { frame: 1, duration: 48 },
-  { frame: 2, duration: 72 },
-  { frame: 1, duration: 48 },
-  { frame: 0, duration: 42 },
+  { frame: 0, duration: 58 },
+  { frame: 1, duration: 110 },
+  { frame: 0, duration: 58 },
 ] as const;
 
 const BLINK_MIN_MS = 2200;
@@ -154,17 +151,16 @@ export default function LivingAvatar() {
                 draggable={false}
               />
               {blinkFrame !== null ? (
-                <div className={styles.eyeClip}>
-                  <img
-                    src={BLINK_FRAMES[blinkFrame]}
-                    alt=""
-                    className={`${styles.portraitLayer} ${styles.eyeFrame}`}
-                    width={1024}
-                    height={1024}
-                    draggable={false}
-                    aria-hidden="true"
-                  />
-                </div>
+                <img
+                  key={BLINK_FRAMES[blinkFrame]}
+                  src={BLINK_FRAMES[blinkFrame]}
+                  alt=""
+                  className={`${styles.portraitLayer} ${styles.eyeOverlay}`}
+                  width={1024}
+                  height={1024}
+                  draggable={false}
+                  aria-hidden="true"
+                />
               ) : null}
             </div>
           </div>

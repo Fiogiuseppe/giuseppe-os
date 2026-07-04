@@ -51,21 +51,25 @@
 }
 
 .portraitBase,
-.eyeFrame {
+.eyeOverlay {
   transform: scale(1.1);
   transform-origin: center center;
 }
 
-.eyeClip {
+.eyeOverlay {
   position: absolute;
   inset: 0;
-  clip-path: ellipse(27% 9.5% at 50% 39.2%);
-  pointer-events: none;
+  animation: livingAvatarBlinkIn 0.07s ease-out both;
 }
 
-.eyeFrame {
-  position: absolute;
-  inset: 0;
+@keyframes livingAvatarBlinkIn {
+  from {
+    opacity: 0.35;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes livingAvatarBreathe {
@@ -100,7 +104,7 @@
   }
 
   .portraitBase,
-  .eyeFrame {
+  .eyeOverlay {
     transform: scale(1.04);
   }
 
@@ -123,6 +127,10 @@
 
   .idle,
   .breath {
+    animation: none;
+  }
+
+  .eyeOverlay {
     animation: none;
   }
 }
