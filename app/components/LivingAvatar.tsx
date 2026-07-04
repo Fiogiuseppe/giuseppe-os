@@ -3,17 +3,31 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './LivingAvatar.module.css';
 
-const EYES_OPEN = '/avatar/avatar-eyes-open.png';
-const EYES_CLOSED = '/avatar/avatar-eyes-closed.png';
+const BASE_FACE = '/avatar/avatar-eyes-open.png';
+
+const BLINK_FRAMES = [
+  '/avatar/avatar-eyes-mid.png',
+  '/avatar/avatar-eyes-mid2.png',
+  '/avatar/avatar-eyes-closed.png',
+] as const;
+
+const BLINK_SEQUENCE = [
+  { frame: 0, duration: 42 },
+  { frame: 1, duration: 48 },
+  { frame: 2, duration: 72 },
+  { frame: 1, duration: 48 },
+  { frame: 0, duration: 42 },
+] as const;
 
 const BLINK_MIN_MS = 2200;
 const BLINK_MAX_MS = 4500;
-const BLINK_DURATION_MS = 280;
 const FIRST_BLINK_MS = 1200;
 
 const PARALLAX_X = 9;
 const PARALLAX_Y = 7;
 const PARALLAX_ROTATE = 0.65;
+
+const ALL_ASSETS = [BASE_FACE, ...BLINK_FRAMES];
 
 function randomBlinkDelay(): number {
   return BLINK_MIN_MS + Math.random() * (BLINK_MAX_MS - BLINK_MIN_MS);
@@ -23,38 +37,68 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
+function runBlinkSequence(
+  setBlinkFrame: (frame: number | null) => void,
+  timers: number[],
+  onComplete: () => void,
+): void {
+  let step = 0;
+
+  const advance = () => {
+    if (step >= BLINK_SEQUENCE.length) {
+      setBlinkFrame(null);
+      onComplete();
+      return;
+    }
+
+    const { frame, duration } = BLINK_SEQUENCE[step];
+    setBlinkFrame(frame);
+    step += 1;
+
+    const timer = window.setTimeout(advance, duration);
+    timers.push(timer);
+  };
+
+  advance();
+}
+
 export default function LivingAvatar() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [eyesClosed, setEyesClosed] = useState(false);
+  const [blinkFrame, setBlinkFrame] = useState<number | null>(null);
 
   useEffect(() => {
-    [EYES_OPEN, EYES_CLOSED].forEach(src => {
+    ALL_ASSETS.forEach(src => {
       const img = new Image();
       img.src = src;
     });
   }, []);
 
   useEffect(() => {
-    let blinkTimer: number | undefined;
-    let openTimer: number | undefined;
+    const timers: number[] = [];
+    let cancelled = false;
 
-    const blink = () => {
-      setEyesClosed(true);
-      openTimer = window.setTimeout(() => {
-        setEyesClosed(false);
-        blinkTimer = window.setTimeout(blink, randomBlinkDelay());
-      }, BLINK_DURATION_MS);
+    const scheduleBlink = () => {
+      if (cancelled) {
+        return;
+      }
+
+      runBlinkSequence(setBlinkFrame, timers, () => {
+        if (cancelled) {
+          return;
+        }
+
+        const timer = window.setTimeout(scheduleBlink, randomBlinkDelay());
+        timers.push(timer);
+      });
     };
 
-    blinkTimer = window.setTimeout(blink, FIRST_BLINK_MS);
+    const firstTimer = window.setTimeout(scheduleBlink, FIRST_BLINK_MS);
+    timers.push(firstTimer);
 
     return () => {
-      if (blinkTimer !== undefined) {
-        window.clearTimeout(blinkTimer);
-      }
-      if (openTimer !== undefined) {
-        window.clearTimeout(openTimer);
-      }
+      cancelled = true;
+      timers.forEach(timer => window.clearTimeout(timer));
+      setBlinkFrame(null);
     };
   }, []);
 
@@ -102,22 +146,26 @@ export default function LivingAvatar() {
           <div className={styles.breath}>
             <div className={styles.portraitStack}>
               <img
-                src={EYES_OPEN}
+                src={BASE_FACE}
                 alt=""
-                className={`${styles.portraitLayer} ${styles.portraitOpen}`}
+                className={`${styles.portraitLayer} ${styles.portraitBase}`}
                 width={1024}
                 height={1024}
                 draggable={false}
               />
-              <img
-                src={EYES_CLOSED}
-                alt=""
-                className={`${styles.portraitLayer} ${styles.portraitClosed}${eyesClosed ? ` ${styles.portraitClosedVisible}` : ''}`}
-                width={1024}
-                height={1024}
-                draggable={false}
-                aria-hidden="true"
-              />
+              {blinkFrame !== null ? (
+                <div className={styles.eyeClip}>
+                  <img
+                    src={BLINK_FRAMES[blinkFrame]}
+                    alt=""
+                    className={`${styles.portraitLayer} ${styles.eyeFrame}`}
+                    width={1024}
+                    height={1024}
+                    draggable={false}
+                    aria-hidden="true"
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

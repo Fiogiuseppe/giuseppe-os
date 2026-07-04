@@ -50,23 +50,22 @@
   -webkit-user-drag: none;
 }
 
-.portraitOpen {
+.portraitBase,
+.eyeFrame {
   transform: scale(1.1);
   transform-origin: center center;
 }
 
-.portraitClosed {
+.eyeClip {
   position: absolute;
   inset: 0;
-  transform: scale(1.1);
-  transform-origin: center center;
-  opacity: 0;
-  transition: opacity 0.14s ease-out;
+  clip-path: ellipse(27% 9.5% at 50% 39.2%);
+  pointer-events: none;
 }
 
-.portraitClosedVisible {
-  opacity: 1;
-  transition: opacity 0s linear;
+.eyeFrame {
+  position: absolute;
+  inset: 0;
 }
 
 @keyframes livingAvatarBreathe {
@@ -100,8 +99,8 @@
     max-width: min(92vw, 58vh, 640px);
   }
 
-  .portraitOpen,
-  .portraitClosed {
+  .portraitBase,
+  .eyeFrame {
     transform: scale(1.04);
   }
 
@@ -125,9 +124,5 @@
   .idle,
   .breath {
     animation: none;
-  }
-
-  .portraitClosed {
-    transition: none;
   }
 }
