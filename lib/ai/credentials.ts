@@ -18,3 +18,7 @@ export function readGeminiApiKey(): string | undefined {
 export function readRequestyApiKey(): string | undefined {
   return process.env.REQUESTY_API_KEY?.trim() || undefined;
 }
+
+export function readGroqApiKey(): string | undefined {
+  return process.env.GROQ_API_KEY?.trim() || undefined;
+}

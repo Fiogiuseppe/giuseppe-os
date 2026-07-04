@@ -1,6 +1,8 @@
-import { readGeminiApiKey, readRequestyApiKey } from './credentials';
+import { readGeminiApiKey, readGroqApiKey, readRequestyApiKey } from './credentials';
 
 export type AIMode = 'mock' | 'live';
+
+export type ConfiguredAiProvider = 'groq' | 'requesty' | 'gemini' | 'openai' | 'local' | 'rule-based';
 
 export function hasRequestyApiKey(): boolean {
   return Boolean(readRequestyApiKey());
@@ -10,14 +12,19 @@ export function hasGeminiApiKey(): boolean {
   return Boolean(readGeminiApiKey());
 }
 
-export function hasLiveAiCredentials(): boolean {
-  return hasRequestyApiKey() || hasGeminiApiKey();
+export function hasGroqApiKey(): boolean {
+  return Boolean(readGroqApiKey());
 }
 
-export function resolveConfiguredAiProvider(): 'requesty' | 'gemini' | 'openai' | 'local' | 'rule-based' {
+export function hasLiveAiCredentials(): boolean {
+  return hasGroqApiKey() || hasRequestyApiKey() || hasGeminiApiKey();
+}
+
+export function resolveConfiguredAiProvider(): ConfiguredAiProvider {
   const configured = process.env.BRAIN_AI_PROVIDER?.trim().toLowerCase();
 
   if (
+    configured === 'groq' ||
     configured === 'requesty' ||
     configured === 'gemini' ||
     configured === 'openai' ||
@@ -27,7 +34,7 @@ export function resolveConfiguredAiProvider(): 'requesty' | 'gemini' | 'openai' 
     return configured;
   }
 
-  return 'gemini';
+  return 'groq';
 }
 
 export function resolveAIMode(): AIMode {

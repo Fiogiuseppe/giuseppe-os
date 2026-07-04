@@ -93,7 +93,10 @@ async function buildLiveWeeklyBoard(context: WeeklyBoardContext): Promise<Weekly
     });
 
     const parsed = normalizeWeeklyBoardSections(parseWeeklyBoardResponse(completion.content), fallback);
-    const liveSource = provider.name === 'gemini' || provider.name === 'requesty' ? provider.name : 'fallback';
+    const liveSource =
+      provider.name === 'groq' || provider.name === 'gemini' || provider.name === 'requesty'
+        ? provider.name
+        : 'fallback';
     return buildResponse(parsed, liveSource, context, false);
   } catch (error) {
     if (!(error instanceof ProviderConfigurationError || error instanceof ProviderRequestError)) {

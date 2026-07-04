@@ -18,7 +18,7 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: 'ALLOW_TEST_ROUTES=1 AI_MODE=mock BRAIN_AI_PROVIDER=gemini npm run dev',
+    command: 'ALLOW_TEST_ROUTES=1 AI_MODE=mock BRAIN_AI_PROVIDER=groq npm run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000

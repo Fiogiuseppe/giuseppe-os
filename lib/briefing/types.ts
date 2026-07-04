@@ -13,7 +13,7 @@ export interface DailyBriefingSections {
   reflection: string;
 }
 
-export type DailyBriefingSource = 'requesty' | 'gemini' | 'fallback' | 'mock';
+export type DailyBriefingSource = 'groq' | 'requesty' | 'gemini' | 'fallback' | 'mock';
 
 export interface DailyBriefingPipelineMeta {
   realitySignals: number;

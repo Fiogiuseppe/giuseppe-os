@@ -180,7 +180,10 @@ async function buildLiveBriefing(
 
     const filtered = await filterSectionsThroughTrajectory(parsed, context);
     const gated = applyQualityGate(filtered, context);
-    const liveSource = provider.name === 'gemini' || provider.name === 'requesty' ? provider.name : 'fallback';
+    const liveSource =
+      provider.name === 'groq' || provider.name === 'gemini' || provider.name === 'requesty'
+        ? provider.name
+        : 'fallback';
     return buildResponse(gated.sections, liveSource, context, gated.quality, false);
   } catch (error) {
     if (!(error instanceof ProviderConfigurationError || error instanceof ProviderRequestError)) {
@@ -253,7 +256,7 @@ export function mapBriefingError(error: unknown): { status: number; message: str
     return {
       status: 503,
       message:
-        'Giuseppe OS non può preparare il briefing di oggi. Verifica GEMINI_API_KEY o REQUESTY_API_KEY sul server.'
+        'Giuseppe OS non può preparare il briefing di oggi. Verifica GROQ_API_KEY sul server.'
     };
   }
 

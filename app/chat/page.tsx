@@ -104,9 +104,11 @@ export default function ChatPage() {
 
   const subtitle = serviceInfo
     ? serviceInfo.configured
-      ? serviceInfo.provider === 'gemini'
-        ? `Giuseppe OS via Gemini · ${serviceInfo.model}`
-        : `Giuseppe OS via Requesty · ${serviceInfo.model}`
+      ? serviceInfo.provider === 'groq'
+        ? `Giuseppe OS via Groq · ${serviceInfo.model}`
+        : serviceInfo.provider === 'gemini'
+          ? `Giuseppe OS via Gemini · ${serviceInfo.model}`
+          : `Giuseppe OS via Requesty · ${serviceInfo.model}`
       : `Local dev fallback · ${serviceInfo.provider} · ${serviceInfo.model}`
     : 'Giuseppe OS chat';
 
@@ -121,7 +123,7 @@ export default function ChatPage() {
 
         <div ref={transcriptRef} className={styles.transcript} aria-live="polite">
           {messages.length === 0 ? (
-            <p className={styles.empty}>Ask Giuseppe OS something. Online chat uses Gemini or Requesty in production.</p>
+            <p className={styles.empty}>Ask Giuseppe OS something. Online chat uses Groq in production.</p>
           ) : (
             messages.map(entry => (
               <article

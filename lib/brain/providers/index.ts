@@ -1,6 +1,7 @@
 import { isAIMockMode, resolveConfiguredAiProvider } from '../../ai/mode';
 import { wrapProviderWithLogging } from '../../ai/loggedProvider';
 import type { AIProvider, AIProviderName } from './types';
+import { createGroqProvider } from './groq';
 import { createRequestyProvider } from './requesty';
 import { createOpenAIProvider } from './openai';
 import { createGeminiProvider } from './gemini';
@@ -23,8 +24,10 @@ function resolveLiveProvider(name: AIProviderName): AIProvider {
     case 'rule-based':
       return createRuleBasedProvider();
     case 'requesty':
-    default:
       return wrapProviderWithLogging(createRequestyProvider(), 'brain');
+    case 'groq':
+    default:
+      return wrapProviderWithLogging(createGroqProvider(), 'brain');
   }
 }
 
@@ -36,4 +39,4 @@ export function resolveAIProvider(): AIProvider {
   return resolveLiveProvider(resolveProviderName());
 }
 
-export { createRuleBasedProvider, createMockProvider, createRequestyProvider, createGeminiProvider };
+export { createRuleBasedProvider, createMockProvider, createGroqProvider, createRequestyProvider, createGeminiProvider };

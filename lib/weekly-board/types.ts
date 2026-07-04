@@ -5,7 +5,7 @@ export type WeeklyBoardSections = {
   trajectoryCheck: string;
 };
 
-export type WeeklyBoardSource = 'requesty' | 'gemini' | 'fallback' | 'mock';
+export type WeeklyBoardSource = 'groq' | 'requesty' | 'gemini' | 'fallback' | 'mock';
 
 export type WeeklyBoardPipelineMeta = {
   evidenceDecisions: number;

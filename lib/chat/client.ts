@@ -1,12 +1,14 @@
 import {
   hasGeminiApiKey,
-  hasLiveAiCredentials,
+  hasGroqApiKey,
   hasRequestyApiKey,
   isDevelopmentEnvironment,
   resolveConfiguredAiProvider
 } from '../ai/mode';
 import { createGeminiProvider } from '../brain/providers/gemini';
+import { createGroqProvider } from '../brain/providers/groq';
 import { createRequestyProvider } from '../brain/providers/requesty';
+import type { AIProviderName } from '../brain/providers/types';
 import { ProviderConfigurationError, ProviderRequestError } from '../brain/providers/types';
 import { chatWithOllama, getOllamaConfig, OllamaChatError, OllamaUnavailableError } from '../ollama/chat';
 import { buildChatSystemPrompt } from './identity';
@@ -18,9 +20,13 @@ import {
   type ChatResult
 } from './types';
 
+const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL = process.env.BRAIN_GROQ_MODEL ?? 'llama-3.3-70b-versatile';
 const REQUESTY_ENDPOINT = 'https://router.requesty.ai/v1/chat/completions';
 const REQUESTY_MODEL = process.env.BRAIN_AI_MODEL ?? 'openai/gpt-5-mini';
 const GEMINI_MODEL = process.env.BRAIN_GEMINI_MODEL ?? 'gemini-2.0-flash';
+
+const LIVE_CHAT_PROVIDERS: AIProviderName[] = ['groq', 'gemini', 'requesty'];
 
 function mapProviderError(error: unknown, providerLabel: string): never {
   if (error instanceof ProviderConfigurationError) {
@@ -36,13 +42,26 @@ function mapProviderError(error: unknown, providerLabel: string): never {
   throw error;
 }
 
+function createLiveProvider(name: AIProviderName) {
+  switch (name) {
+    case 'groq':
+      return createGroqProvider();
+    case 'gemini':
+      return createGeminiProvider();
+    case 'requesty':
+      return createRequestyProvider();
+    default:
+      return createGroqProvider();
+  }
+}
+
 async function chatWithConfiguredProvider(
-  providerName: 'gemini' | 'requesty',
+  providerName: 'groq' | 'gemini' | 'requesty',
   messages: ChatMessage[],
   system: string
 ): Promise<ChatResult> {
   try {
-    const provider = providerName === 'gemini' ? createGeminiProvider() : createRequestyProvider();
+    const provider = createLiveProvider(providerName);
     const completion = await provider.complete({
       system,
       messages,
@@ -56,7 +75,8 @@ async function chatWithConfiguredProvider(
       model: completion.model
     };
   } catch (error) {
-    mapProviderError(error, providerName === 'gemini' ? 'Gemini' : 'Requesty');
+    const labels = { groq: 'Groq', gemini: 'Gemini', requesty: 'Requesty' };
+    mapProviderError(error, labels[providerName]);
   }
 }
 
@@ -82,23 +102,30 @@ async function chatWithOllamaFallback(messages: ChatMessage[], system: string): 
   }
 }
 
+function providerHasKey(name: AIProviderName): boolean {
+  if (name === 'groq') {
+    return hasGroqApiKey();
+  }
+  if (name === 'gemini') {
+    return hasGeminiApiKey();
+  }
+  if (name === 'requesty') {
+    return hasRequestyApiKey();
+  }
+  return false;
+}
+
 function resolveChatProvider(): ChatProviderName | null {
   const configured = resolveConfiguredAiProvider();
 
-  if (configured === 'gemini' && hasGeminiApiKey()) {
-    return 'gemini';
+  if (LIVE_CHAT_PROVIDERS.includes(configured) && providerHasKey(configured)) {
+    return configured as ChatProviderName;
   }
 
-  if (configured === 'requesty' && hasRequestyApiKey()) {
-    return 'requesty';
-  }
-
-  if (hasGeminiApiKey()) {
-    return 'gemini';
-  }
-
-  if (hasRequestyApiKey()) {
-    return 'requesty';
+  for (const candidate of LIVE_CHAT_PROVIDERS) {
+    if (providerHasKey(candidate)) {
+      return candidate as ChatProviderName;
+    }
   }
 
   return null;
@@ -108,7 +135,7 @@ export async function chatWithGiuseppe(messages: ChatMessage[]): Promise<ChatRes
   const system = buildChatSystemPrompt();
   const provider = resolveChatProvider();
 
-  if (provider === 'gemini' || provider === 'requesty') {
+  if (provider === 'groq' || provider === 'gemini' || provider === 'requesty') {
     return chatWithConfiguredProvider(provider, messages, system);
   }
 
@@ -117,7 +144,7 @@ export async function chatWithGiuseppe(messages: ChatMessage[]): Promise<ChatRes
   }
 
   throw new ChatConfigurationError(
-    'No online AI provider is configured. Add GEMINI_API_KEY or REQUESTY_API_KEY on the server.'
+    'No online AI provider is configured. Add GROQ_API_KEY on the server.'
   );
 }
 
@@ -129,6 +156,16 @@ export function getChatServiceConfig(): {
   fallback: string | null;
 } {
   const provider = resolveChatProvider();
+
+  if (provider === 'groq') {
+    return {
+      provider: 'groq',
+      model: GROQ_MODEL,
+      endpoint: GROQ_ENDPOINT,
+      configured: true,
+      fallback: null
+    };
+  }
 
   if (provider === 'gemini') {
     return {
@@ -162,9 +199,9 @@ export function getChatServiceConfig(): {
   }
 
   return {
-    provider: 'gemini',
-    model: GEMINI_MODEL,
-    endpoint: 'https://generativelanguage.googleapis.com/v1beta/models',
+    provider: 'groq',
+    model: GROQ_MODEL,
+    endpoint: GROQ_ENDPOINT,
     configured: false,
     fallback: null
   };

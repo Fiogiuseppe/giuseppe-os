@@ -8,7 +8,7 @@ test.describe('Giuseppe OS Chat API', () => {
     const body = await response.json();
     expect(body.status).toBe('ok');
     expect(body.service).toBe('giuseppe-chat');
-    expect(['requesty', 'gemini', 'ollama']).toContain(body.provider);
+    expect(['groq', 'requesty', 'gemini', 'ollama']).toContain(body.provider);
     expect(typeof body.model).toBe('string');
     expect(typeof body.endpoint).toBe('string');
     expect(typeof body.configured).toBe('boolean');
@@ -39,6 +39,6 @@ test.describe('Giuseppe OS Chat API', () => {
 
     expect([502, 503]).toContain(response.status());
     const body = await response.json();
-    expect(body.error).toMatch(/requesty|ollama|gemini|GEMINI_API_KEY|REQUESTY_API_KEY/i);
+    expect(body.error).toMatch(/groq|ollama|gemini|requesty|GROQ_API_KEY/i);
   });
 });
