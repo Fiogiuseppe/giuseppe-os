@@ -1,17 +1,22 @@
+import { isAIRequestLiveEnabled } from './requestContext';
+
 export type AIMode = 'mock' | 'live';
+
+export function hasAnthropicApiKey(): boolean {
+  return Boolean(process.env.ANTHROPIC_API_KEY?.trim());
+}
 
 export function resolveAIMode(): AIMode {
   const configured = process.env.AI_MODE?.trim().toLowerCase();
-
-  if (configured === 'live' || configured === 'mock') {
-    return configured;
-  }
-
-  if (process.env.NODE_ENV === 'development') {
+  if (configured === 'mock') {
     return 'mock';
   }
 
-  return 'live';
+  if (isAIRequestLiveEnabled() && hasAnthropicApiKey()) {
+    return 'live';
+  }
+
+  return 'mock';
 }
 
 export function isAIMockMode(): boolean {

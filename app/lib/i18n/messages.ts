@@ -60,7 +60,11 @@ export const messages = {
       create: 'Energia creativa',
       memory: 'Costituzione personale'
     },
-    status: { online: 'ONLINE' },
+    ai: {
+      label: 'AI',
+      offTooltip: 'Modalità locale. Nessuna richiesta AI.',
+      onTooltip: 'AI live attiva.'
+    },
     viewHeadings: {
       today: 'COSA HA MASSIMA LEVA OGGI?',
       decisions: 'QUAL È LA MIGLIORE DECISIONE CHE POSSO PRENDERE?',
@@ -230,7 +234,11 @@ export const messages = {
       create: 'Creative energy',
       memory: 'Personal constitution'
     },
-    status: { online: 'ONLINE' },
+    ai: {
+      label: 'AI',
+      offTooltip: 'Local mode. No AI requests.',
+      onTooltip: 'Live AI enabled.'
+    },
     viewHeadings: {
       today: 'WHAT HAS THE HIGHEST LEVERAGE TODAY?',
       decisions: 'WHAT IS THE BEST DECISION I CAN MAKE?',

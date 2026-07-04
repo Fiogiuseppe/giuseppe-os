@@ -242,7 +242,7 @@ export function mapBriefingError(error: unknown): { status: number; message: str
     return {
       status: 503,
       message:
-        'Giuseppe OS non può preparare il briefing di oggi. Imposta AI_MODE=live e ANTHROPIC_API_KEY in .env.local.'
+        'Giuseppe OS non può preparare il briefing di oggi. Attiva AI live nel footer o verifica ANTHROPIC_API_KEY.'
     };
   }
 

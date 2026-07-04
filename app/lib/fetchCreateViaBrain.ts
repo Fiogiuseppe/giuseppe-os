@@ -1,4 +1,5 @@
 import type { PotentialBrief } from '../../engine/potentialEngine';
+import { buildAiLiveHeaders } from './aiLive';
 
 export type FetchCreateResult =
   | { ok: true; potential: PotentialBrief }
@@ -7,7 +8,10 @@ export type FetchCreateResult =
 export async function fetchCreateViaBrain(locale: 'it' | 'en' = 'it'): Promise<FetchCreateResult> {
   const response = await fetch('/api/brain', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...buildAiLiveHeaders()
+    },
     body: JSON.stringify({
       intent: 'potential',
       message: 'What should I focus on today?',
