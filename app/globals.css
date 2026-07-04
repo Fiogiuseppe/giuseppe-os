@@ -150,18 +150,18 @@ html.about-route body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: color 0.3s var(--ease), background 0.3s var(--ease);
+  transition: color 0.3s var(--ease);
   border-radius: 4px;
 }
 
 .topnav button:hover,
 .topnav a:hover {
-  color: var(--accent);
+  color: var(--fg);
 }
 
 .topnav button.active {
-  color: var(--accent);
-  background: var(--accent-soft);
+  color: var(--fg);
+  background: transparent;
   box-shadow: inset 0 -2px 0 var(--accent);
 }
 
@@ -1669,6 +1669,224 @@ html.about-route body {
 
 .memory-layer-back {
   letter-spacing: 0.06em;
+}
+
+.memory-stage--depth {
+  position: relative;
+  width: 100%;
+  min-height: min(68vh, 560px);
+}
+
+.memory-depth-scene {
+  position: relative;
+  width: 100%;
+  min-height: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.memory-depth-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(18px, 3vh, 28px);
+  width: 100%;
+}
+
+.memory-tunnel {
+  --tunnel-x: 0px;
+  --tunnel-y: 0px;
+  --tunnel-rotate: 0deg;
+  position: absolute;
+  inset: -12%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  animation: memory-tunnel-enter 1.1s var(--ease) both;
+}
+
+.memory-tunnel--static {
+  animation: none;
+}
+
+.memory-tunnel-perspective {
+  position: absolute;
+  inset: 0;
+  transform: translate(var(--tunnel-x), var(--tunnel-y)) rotate(var(--tunnel-rotate));
+  transition: transform 0.35s var(--ease);
+}
+
+.memory-tunnel-wall {
+  position: absolute;
+  top: 50%;
+  font-size: clamp(72px, 14vw, 180px);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.07;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.memory-tunnel-wall--left {
+  left: -4%;
+  transform: translateY(-50%) perspective(500px) rotateY(38deg) scaleX(1.1);
+  transform-origin: right center;
+}
+
+.memory-tunnel-wall--right {
+  right: -4%;
+  transform: translateY(-50%) perspective(500px) rotateY(-38deg) scaleX(1.1);
+  transform-origin: left center;
+}
+
+.memory-tunnel-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: translate(var(--tunnel-x), var(--tunnel-y)) scale(1.08);
+  transition: transform 0.35s var(--ease);
+  animation: memory-tunnel-drift 8s ease-in-out infinite;
+}
+
+.memory-tunnel--static .memory-tunnel-lines {
+  animation: none;
+  transform: none;
+}
+
+.memory-tunnel-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 0.35;
+  stroke-linecap: round;
+  opacity: 0;
+  animation: memory-tunnel-line-pulse 2.4s ease-in-out infinite;
+}
+
+.memory-tunnel--static .memory-tunnel-line {
+  opacity: 0.12;
+  animation: none;
+}
+
+.memory-tunnel-vanish {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(var(--tunnel-x), var(--tunnel-y));
+  transition: transform 0.35s var(--ease);
+}
+
+.memory-tunnel-core {
+  width: clamp(48px, 8vw, 88px);
+  height: clamp(48px, 8vw, 88px);
+  border: 1.5px solid var(--accent-line);
+  border-radius: 50%;
+  opacity: 0.35;
+  animation: memory-tunnel-core-pulse 3.5s ease-in-out infinite;
+}
+
+.memory-tunnel--static .memory-tunnel-core {
+  animation: none;
+}
+
+.memory-tunnel-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.28;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  animation: memory-tunnel-grain 0.5s steps(2) infinite;
+}
+
+.memory-tunnel--static .memory-tunnel-grain {
+  animation: none;
+}
+
+.memory-constellation--depth .memory-node {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+@keyframes memory-tunnel-enter {
+  from {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes memory-tunnel-drift {
+  0%,
+  100% {
+    transform: translate(var(--tunnel-x), var(--tunnel-y)) scale(1.04);
+  }
+
+  50% {
+    transform: translate(calc(var(--tunnel-x) * 0.5), calc(var(--tunnel-y) * 0.5)) scale(1.1);
+  }
+}
+
+@keyframes memory-tunnel-line-pulse {
+  0%,
+  100% {
+    opacity: 0.04;
+    stroke-width: 0.25;
+  }
+
+  45% {
+    opacity: 0.22;
+    stroke-width: 0.45;
+  }
+}
+
+@keyframes memory-tunnel-core-pulse {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.22;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 0.42;
+  }
+}
+
+@keyframes memory-tunnel-grain {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(-12px, 8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .memory-tunnel {
+    animation: none;
+  }
+
+  .memory-tunnel-lines,
+  .memory-tunnel-core,
+  .memory-tunnel-grain,
+  .memory-tunnel-line {
+    animation: none !important;
+  }
 }
 
 .memory-focus-stage {

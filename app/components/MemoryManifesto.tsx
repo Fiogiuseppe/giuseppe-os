@@ -8,6 +8,7 @@ import {
   type ManifestoSection
 } from '../lib/memoryManifestoSections';
 import { useLanguage } from '../lib/i18n/LanguageContext';
+import { MemoryTunnelBackground } from './MemoryTunnelBackground';
 
 function sectionTeaser(section: ManifestoSection): string {
   const first = section.lines[0] ?? '';
@@ -88,24 +89,29 @@ export function MemoryManifesto() {
   if (layer === 'depth') {
     return (
       <article className="memory-stage memory-stage--depth" data-testid="memory-manifesto-depth">
-        <header className="memory-stage-intro">
-          <p className="memory-stage-epigraph">{t('navRole.memory')}</p>
-          <h1 className="memory-stage-title view-title">{t('memory.depthTitle')}</h1>
-        </header>
+        <div className="memory-depth-scene">
+          <MemoryTunnelBackground />
+          <div className="memory-depth-content">
+            <header className="memory-stage-intro">
+              <p className="memory-stage-epigraph">{t('navRole.memory')}</p>
+              <h1 className="memory-stage-title view-title">{t('memory.depthTitle')}</h1>
+            </header>
 
-        <div className="memory-constellation memory-constellation--depth" role="list">
-          {depthSections.map(section => (
-            <MemoryNode key={section.id} section={section} onSelect={setActiveSection} />
-          ))}
+            <div className="memory-constellation memory-constellation--depth" role="list">
+              {depthSections.map(section => (
+                <MemoryNode key={section.id} section={section} onSelect={setActiveSection} />
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className="insights-action-chip memory-layer-back"
+              onClick={() => setLayer('surface')}
+            >
+              <span aria-hidden="true">←</span> {t('memory.backToManifesto')}
+            </button>
+          </div>
         </div>
-
-        <button
-          type="button"
-          className="insights-action-chip memory-layer-back"
-          onClick={() => setLayer('surface')}
-        >
-          <span aria-hidden="true">←</span> {t('memory.backToManifesto')}
-        </button>
       </article>
     );
   }
