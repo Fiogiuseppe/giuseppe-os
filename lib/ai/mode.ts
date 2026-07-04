@@ -1,11 +1,13 @@
+import { readGeminiApiKey, readRequestyApiKey } from './credentials';
+
 export type AIMode = 'mock' | 'live';
 
 export function hasRequestyApiKey(): boolean {
-  return Boolean(process.env.REQUESTY_API_KEY?.trim());
+  return Boolean(readRequestyApiKey());
 }
 
 export function hasGeminiApiKey(): boolean {
-  return Boolean(process.env.GEMINI_API_KEY?.trim());
+  return Boolean(readGeminiApiKey());
 }
 
 export function hasLiveAiCredentials(): boolean {
@@ -29,16 +31,11 @@ export function resolveConfiguredAiProvider(): 'requesty' | 'gemini' | 'openai' 
 }
 
 export function resolveAIMode(): AIMode {
-  const configured = process.env.AI_MODE?.trim().toLowerCase();
-  if (configured === 'mock') {
+  if (process.env.AI_MODE?.trim().toLowerCase() === 'mock') {
     return 'mock';
   }
 
-  if (configured === 'live' && hasLiveAiCredentials()) {
-    return 'live';
-  }
-
-  return 'mock';
+  return hasLiveAiCredentials() ? 'live' : 'mock';
 }
 
 export function isAIMockMode(): boolean {

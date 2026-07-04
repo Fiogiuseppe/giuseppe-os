@@ -1,11 +1,13 @@
 import type { AICompletionRequest, AICompletionResponse, AIProvider } from './types';
 import { ProviderConfigurationError, ProviderRequestError } from './types';
 
+import { readRequestyApiKey } from '../../ai/credentials';
+
 const REQUESTY_BASE_URL = 'https://router.requesty.ai/v1';
 const DEFAULT_MODEL = process.env.BRAIN_AI_MODEL ?? 'openai/gpt-5-mini';
 
 export function createRequestyProvider(): AIProvider {
-  const apiKey = process.env.REQUESTY_API_KEY;
+  const apiKey = readRequestyApiKey();
 
   return {
     name: 'requesty',

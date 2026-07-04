@@ -253,7 +253,7 @@ export function mapBriefingError(error: unknown): { status: number; message: str
     return {
       status: 503,
       message:
-        'Giuseppe OS non può preparare il briefing di oggi. Verifica GEMINI_API_KEY o REQUESTY_API_KEY e AI_MODE=live sul server.'
+        'Giuseppe OS non può preparare il briefing di oggi. Verifica GEMINI_API_KEY o REQUESTY_API_KEY sul server.'
     };
   }
 

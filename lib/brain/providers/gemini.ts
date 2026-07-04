@@ -1,12 +1,17 @@
 import type { AIProvider } from './types';
 import { ProviderConfigurationError, ProviderRequestError } from './types';
+import { readGeminiApiKey } from '../../ai/credentials';
 
 export function createGeminiProvider(): AIProvider {
-  if (!process.env.GEMINI_API_KEY) {
+  const apiKey = readGeminiApiKey();
+
+  if (!apiKey) {
     return {
       name: 'gemini',
       async complete() {
-        throw new ProviderConfigurationError('GEMINI_API_KEY is required before the gemini provider can be enabled.');
+        throw new ProviderConfigurationError(
+          'GEMINI_API_KEY (or GOOGLE_API_KEY) is required before the gemini provider can be enabled.'
+        );
       }
     };
   }
@@ -17,7 +22,7 @@ export function createGeminiProvider(): AIProvider {
     name: 'gemini',
     async complete(request) {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
         {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
