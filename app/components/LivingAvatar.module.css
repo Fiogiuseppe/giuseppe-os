@@ -3,7 +3,7 @@
   --parallax-y: 0px;
   --parallax-rotate: 0deg;
   width: 100%;
-  max-width: min(56vh, 760px);
+  max-width: min(64vh, 840px);
   aspect-ratio: 1 / 1;
   margin: 0 auto;
   background: transparent;
@@ -101,7 +101,7 @@
 
 @media (max-width: 900px) {
   .root {
-    max-width: min(92vw, 58vh, 640px);
+    max-width: min(92vw, 64vh, 700px);
   }
 
   .portraitBase,

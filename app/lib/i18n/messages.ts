@@ -81,7 +81,8 @@ export const messages = {
       understand: 'Capisci questo',
       trajectoryImpact: 'Impatto traiettoria',
       possibleActions: 'Azioni possibili',
-      briefingNote: 'Il Daily Brief è giudizio, non informazione.'
+      briefingNote: 'Il Daily Brief è giudizio, non informazione.',
+      avatarHint: 'Il tuo avatar è interattivo.'
     },
     decisions: {
       openingPrompt: 'Cosa stai decidendo?',
@@ -245,7 +246,8 @@ export const messages = {
       understand: 'Understand this',
       trajectoryImpact: 'Trajectory impact',
       possibleActions: 'Possible actions',
-      briefingNote: 'The Daily Brief is judgement, not information.'
+      briefingNote: 'The Daily Brief is judgement, not information.',
+      avatarHint: 'Your avatar is interactive.'
     },
     decisions: {
       openingPrompt: 'What are you deciding?',

@@ -213,6 +213,23 @@ html.about-route body {
   opacity: 0.28;
   pointer-events: none;
   z-index: 0;
+  transition: opacity 0.6s ease;
+}
+
+.today-presence:has([data-testid='today-avatar-nav'] button:hover),
+.today-presence:has([data-testid='today-avatar-nav'] button:focus-visible) {
+  opacity: 0.34;
+}
+
+.today-presence [data-testid='today-avatar-nav'] {
+  pointer-events: auto;
+  width: 100%;
+  max-width: min(64vh, 840px);
+  aspect-ratio: 1 / 1;
+}
+
+.today-presence > div {
+  max-width: min(64vh, 840px);
 }
 
 .today-presence .jewel-face {
@@ -2385,6 +2402,14 @@ label {
 
   .today-presence {
     opacity: 0.22;
+  }
+
+  .today-presence [data-testid='today-avatar-nav'] {
+    max-width: min(92vw, 64vh, 700px);
+  }
+
+  .today-presence > div {
+    max-width: min(92vw, 64vh, 700px);
   }
 
   .today-presence .jewel-face {

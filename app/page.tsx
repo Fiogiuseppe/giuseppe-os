@@ -22,7 +22,7 @@ import {
   DisclosurePanel,
   DisclosureTrigger
 } from './components/Disclosure';
-import LivingAvatar from './components/LivingAvatar';
+import TodayAvatarNav from './components/TodayAvatarNav';
 import { LanguageSwitch } from './components/LanguageSwitch';
 import { useLanguage } from './lib/i18n/LanguageContext';
 
@@ -526,8 +526,8 @@ export default function Home() {
           <div className={`view-body progressive-body mental-space mental-space-${view}`}>
             {view === 'today' && (
               <div className="today-calm">
-                <div className="today-presence" aria-hidden="true">
-                  <LivingAvatar />
+                <div className="today-presence">
+                  <TodayAvatarNav onNavigate={setView} />
                 </div>
                 <div className="today-action" data-testid="today-action">
                   {letterLoading && (
