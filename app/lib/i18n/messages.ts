@@ -138,7 +138,12 @@ export const messages = {
       suggestedAction: 'Azione suggerita',
       freedomFinance: 'Libertà e finanza',
       goals: 'Obiettivi',
-      progress: 'Progresso'
+      progress: 'Progresso',
+      readFullBrief: 'Leggi il briefing completo',
+      exploreMemory: 'Esplora memoria completa',
+      readAbout: 'Leggi di più',
+      readProducts: 'Le cinque aree',
+      closeReading: 'Chiudi'
     },
     decisionResult: {
       category: 'Categoria',
@@ -304,7 +309,12 @@ export const messages = {
       suggestedAction: 'Suggested action',
       freedomFinance: 'Freedom & finance',
       goals: 'Goals',
-      progress: 'Progress'
+      progress: 'Progress',
+      readFullBrief: 'Read the full briefing',
+      exploreMemory: 'Explore full memory',
+      readAbout: 'Read more',
+      readProducts: 'The five areas',
+      closeReading: 'Close'
     },
     decisionResult: {
       category: 'Category',

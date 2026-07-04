@@ -27,6 +27,15 @@ type View = 'today' | 'decisions' | 'insights' | 'create' | 'memory';
 
 const VIEWS: View[] = ['today', 'decisions', 'insights', 'create', 'memory'];
 
+const MEMORY_PRIMARY_LABELS = new Set([
+  'MISSION',
+  'NORTH STAR',
+  'VALUES',
+  'PRINCIPLES',
+  'PROJECTS',
+  'PRIORITIES'
+]);
+
 const PROJECT_PROGRESS: Record<string, number> = {
   LEGO: 87,
   'Brand Giuseppe': 74,
@@ -43,10 +52,7 @@ function recommendedProject() {
 
 function DecisionResultDisclosure({ result }: { result: DecisionAIResult }) {
   const { t } = useLanguage();
-  const [whyOpen, setWhyOpen] = useState(false);
-  const [boardOpen, setBoardOpen] = useState(false);
-  const [capitalsOpen, setCapitalsOpen] = useState(false);
-  const [betterOpen, setBetterOpen] = useState(false);
+  const [openSection, setOpenSection] = useState<'why' | 'board' | 'capitals' | 'better' | null>(null);
 
   return (
     <div className="result progressive-result space-today-result">
@@ -57,8 +63,13 @@ function DecisionResultDisclosure({ result }: { result: DecisionAIResult }) {
       <div className="kicker">{t('decisionResult.nextStep')}</div>
       <p>{result.nextAction}</p>
 
-      {!whyOpen && <DisclosureTrigger label={t('disclosure.why')} onClick={() => setWhyOpen(true)} />}
-      <DisclosurePanel open={whyOpen}>
+      {openSection !== null && (
+        <button type="button" className="reading-expand-close" onClick={() => setOpenSection(null)}>
+          <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
+        </button>
+      )}
+
+      <DisclosurePanel open={openSection === 'why'}>
         <div className="kicker">{t('decisionResult.whyMatters')}</div>
         <p>{result.whyItMatters}</p>
         <div className="kicker">{t('decisionResult.hiddenNeed')}</div>
@@ -66,19 +77,14 @@ function DecisionResultDisclosure({ result }: { result: DecisionAIResult }) {
         <p><b>{t('decisionResult.biasLabel')}:</b> {result.bias}</p>
       </DisclosurePanel>
 
-      {!boardOpen && whyOpen && <DisclosureTrigger label={t('disclosure.showBoard')} onClick={() => setBoardOpen(true)} />}
-      {!boardOpen && !whyOpen && (
-        <DisclosureTrigger label={t('disclosure.showBoard')} onClick={() => { setWhyOpen(true); setBoardOpen(true); }} />
-      )}
-      <DisclosurePanel open={boardOpen}>
+      <DisclosurePanel open={openSection === 'board'}>
         <div className="kicker">{t('kickers.board')}</div>
         {Object.entries(result.counsellors).map(([key, text]) => (
           <p key={key}><b>{COUNSELLOR_LABELS[key as keyof typeof result.counsellors]}:</b> {text}</p>
         ))}
       </DisclosurePanel>
 
-      {!capitalsOpen && boardOpen && <DisclosureTrigger label={t('disclosure.capitals')} onClick={() => setCapitalsOpen(true)} />}
-      <DisclosurePanel open={capitalsOpen}>
+      <DisclosurePanel open={openSection === 'capitals'}>
         <h3>{t('decisionResult.capitalsTitle')}</h3>
         {Object.entries(result.capitals).map(([key, value]) => (
           <p key={key}>
@@ -87,25 +93,46 @@ function DecisionResultDisclosure({ result }: { result: DecisionAIResult }) {
         ))}
       </DisclosurePanel>
 
-      {!betterOpen && <DisclosureTrigger label={t('disclosure.betterVersion')} onClick={() => setBetterOpen(true)} />}
-      <DisclosurePanel open={betterOpen}>
+      <DisclosurePanel open={openSection === 'better'}>
         <h3>{t('decisionResult.betterTitle')}</h3>
         <p>{result.betterVersion}</p>
       </DisclosurePanel>
+
+      <div className="discovery-trail">
+        {openSection !== 'why' && (
+          <DisclosureTrigger label={t('disclosure.why')} onClick={() => setOpenSection('why')} />
+        )}
+        {openSection !== 'board' && (
+          <DisclosureTrigger label={t('disclosure.showBoard')} onClick={() => setOpenSection('board')} />
+        )}
+        {openSection !== 'capitals' && (
+          <DisclosureTrigger label={t('disclosure.capitals')} onClick={() => setOpenSection('capitals')} />
+        )}
+        {openSection !== 'better' && (
+          <DisclosureTrigger label={t('disclosure.betterVersion')} onClick={() => setOpenSection('better')} />
+        )}
+      </div>
     </div>
   );
 }
 
-function PotentialPanelDisclosure() {
+function PotentialPanelDisclosure({ onExpandedChange }: { onExpandedChange?: (open: boolean) => void }) {
   const { t } = useLanguage();
   const potential = useMemo(() => runPotentialEngine(), []);
   const today = potential.todaysOpportunity;
   const [open, setOpen] = useState(false);
 
-  return (
-    <div className="potential-panel">
-      {!open && <DisclosureTrigger label={t('disclosure.exploreOpportunities')} onClick={() => setOpen(true)} />}
-      <DisclosurePanel open={open}>
+  const setExpanded = (next: boolean) => {
+    setOpen(next);
+    onExpandedChange?.(next);
+  };
+
+  if (open) {
+    return (
+      <div className="reading-focus-view">
+        <button type="button" className="reading-expand-close" onClick={() => setExpanded(false)}>
+          <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
+        </button>
         <section className="hero">
           <div className="potential-card potential-span2 card-glow">
             <div className="kicker">{t('kickers.todaysOpportunity')}</div>
@@ -123,7 +150,7 @@ function PotentialPanelDisclosure() {
             <p>{t('potential.score')} {Math.round(today.totalScore)} · {today.sourceProject ?? t('potential.system')}</p>
           </div>
         </section>
-        <section className="potential-grid potential-panel-scroll">
+        <section className="potential-grid">
           {[
             [t('kickers.creativeChallenge'), potential.creativeChallenge],
             [t('kickers.skillToLearn'), potential.skillToLearn],
@@ -139,32 +166,35 @@ function PotentialPanelDisclosure() {
               <p>{value}</p>
             </div>
           ))}
-          <div className="potential-card potential-span4">
-            <div className="kicker">{t('kickers.opportunityHistory')}</div>
-            <ul>
-              {potential.opportunityHistory.map(item => (
-                <li key={item.title}>
-                  {item.title} — {t('potential.confidence')} {item.confidenceScore}, {t('potential.score').toLowerCase()} {Math.round(item.totalScore)}
-                </li>
-              ))}
-            </ul>
-          </div>
         </section>
-      </DisclosurePanel>
+      </div>
+    );
+  }
+
+  return (
+    <div className="potential-panel">
+      <DisclosureTrigger label={t('disclosure.exploreOpportunities')} onClick={() => setExpanded(true)} />
     </div>
   );
 }
 
-function ProjectsListDisclosure() {
+function ProjectsListDisclosure({ onExpandedChange }: { onExpandedChange?: (open: boolean) => void }) {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
 
-  return (
-    <>
-      {!open && <DisclosureTrigger label={t('disclosure.openProjects')} onClick={() => setOpen(true)} />}
-      <DisclosurePanel open={open}>
-        <section className="projects-grid card-scroll project-map">
+  const setExpanded = (next: boolean) => {
+    setOpen(next);
+    onExpandedChange?.(next);
+  };
+
+  if (open) {
+    return (
+      <div className="reading-focus-view">
+        <button type="button" className="reading-expand-close" onClick={() => setExpanded(false)}>
+          <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
+        </button>
+        <section className="projects-grid project-map">
           {Object.entries(brain.projects).map(([name, project]) => (
             <button
               type="button"
@@ -186,8 +216,12 @@ function ProjectsListDisclosure() {
             <p>{t('disclosure.progress')}: {PROJECT_PROGRESS[selected] ?? 60}%</p>
           </div>
         )}
-      </DisclosurePanel>
-    </>
+      </div>
+    );
+  }
+
+  return (
+    <DisclosureTrigger label={t('disclosure.openProjects')} onClick={() => setExpanded(true)} />
   );
 }
 
@@ -225,7 +259,11 @@ export default function Home() {
     setDecisionResult(response.decision);
   }
 
-  const [todayUnderstand, setTodayUnderstand] = useState(false);
+  const [todayFocus, setTodayFocus] = useState<'brief' | 'understand' | null>(null);
+  const [memoryExpanded, setMemoryExpanded] = useState(false);
+  const [insightsFocus, setInsightsFocus] = useState<
+    'why' | 'patterns' | 'evidence' | 'reflect' | 'action' | null
+  >(null);
 
   const [todaysLetter, setTodaysLetter] = useState<DailyBriefingResponse | null>(null);
   const [letterLoading, setLetterLoading] = useState(true);
@@ -260,18 +298,29 @@ export default function Home() {
     };
   }, []);
 
-  const [awarenessWhy, setAwarenessWhy] = useState(false);
-  const [awarenessEvidence, setAwarenessEvidence] = useState(false);
-  const [awarenessReflect, setAwarenessReflect] = useState(false);
-  const [awarenessAction, setAwarenessAction] = useState(false);
-
-  const [boardPurpose, setBoardPurpose] = useState(false);
-
   const [projectsWhy, setProjectsWhy] = useState(false);
-
-  const [insightsPatterns, setInsightsPatterns] = useState(false);
+  const [createExpanded, setCreateExpanded] = useState(false);
+  const [decisionsFocus, setDecisionsFocus] = useState<'form' | 'purpose' | null>('form');
 
   const memoryCards = useMemo(() => buildMemoryPalaceCards(brain), []);
+  const memoryPrimaryCards = useMemo(
+    () => memoryCards.filter(card => MEMORY_PRIMARY_LABELS.has(card.label)),
+    [memoryCards]
+  );
+  const memoryExtraCards = useMemo(
+    () => memoryCards.filter(card => !MEMORY_PRIMARY_LABELS.has(card.label)),
+    [memoryCards]
+  );
+
+  useEffect(() => {
+    setTodayFocus(null);
+    setMemoryExpanded(false);
+    setInsightsFocus(null);
+    setDecisionsFocus('form');
+    setProjectsWhy(false);
+    setCreateExpanded(false);
+    setDecisionResult(null);
+  }, [view]);
 
   return (
     <div className="app app-topnav">
@@ -318,62 +367,43 @@ export default function Home() {
 
           <div className={`view-body progressive-body mental-space mental-space-${view}`}>
             {view === 'today' && (
-              <div className="daily-companion editorial-today">
-                <div className="companion-editorial-left">
-                  <div className="space-meta">
-                    <div className="kicker">{t('kickers.today')}</div>
-                    <span className="space-role">{t('navRole.today')}</span>
+              <div className={`daily-companion editorial-today${todayFocus ? ' mental-space--reading' : ''}`}>
+                {todayFocus === 'brief' && (
+                  <div className="reading-focus-view">
+                    <button type="button" className="reading-expand-close" onClick={() => setTodayFocus(null)}>
+                      <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
+                    </button>
+                    <section className="companion-panel">
+                      <div className="kicker">{t('kickers.reality')}</div>
+                      {letterLoading && <p className="companion-panel-text companion-letter-loading">…</p>}
+                      {!letterLoading && letterError && <p className="companion-panel-text companion-letter-error">—</p>}
+                      {!letterLoading && !letterError && todaysLetter && (
+                        <p className="companion-panel-text">{todaysLetter.sections.reality}</p>
+                      )}
+                    </section>
+                    {!letterLoading && !letterError && todaysLetter && (
+                      <div className="companion-brief-grid">
+                        {([
+                          ['opportunity', t('kickers.opportunity'), todaysLetter.sections.opportunity],
+                          ['ignore', t('kickers.ignore'), todaysLetter.sections.ignore],
+                          ['nourish', t('kickers.nourish'), todaysLetter.sections.nourish],
+                          ['reflection', t('kickers.reflection'), todaysLetter.sections.reflection]
+                        ] as const).map(([key, label, text]) => (
+                          <section className="companion-panel companion-panel--compact" key={key}>
+                            <div className="kicker">{label}</div>
+                            <p className="companion-panel-text companion-panel-text--sentence">{text}</p>
+                          </section>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <h1 className="view-title companion-headline">{t('viewHeadings.today')}</h1>
+                )}
 
-                  <p className="companion-section-question">{t('sectionQuestions.today')}</p>
-
-                  <section className="companion-panel companion-panel-letter">
-                    <div className="kicker">{t('kickers.oneBigMove')}</div>
-                    {letterLoading && (
-                      <p className="companion-panel-text companion-panel-text--sentence companion-letter-loading">
-                        {t('today.loading')}
-                      </p>
-                    )}
-                    {!letterLoading && letterError && (
-                      <p className="companion-panel-text companion-panel-text--sentence companion-letter-error">
-                        {letterError}
-                      </p>
-                    )}
-                    {!letterLoading && !letterError && todaysLetter && (
-                      <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter.sections.oneBigMove}</p>
-                    )}
-                  </section>
-
-                  <section className="companion-panel">
-                    <div className="kicker">{t('kickers.reality')}</div>
-                    {letterLoading && <p className="companion-panel-text companion-letter-loading">…</p>}
-                    {!letterLoading && letterError && <p className="companion-panel-text companion-letter-error">—</p>}
-                    {!letterLoading && !letterError && todaysLetter && (
-                      <p className="companion-panel-text">{todaysLetter.sections.reality}</p>
-                    )}
-                  </section>
-
-                  {!letterLoading && !letterError && todaysLetter && (
-                    <div className="companion-brief-grid">
-                      {([
-                        ['opportunity', t('kickers.opportunity'), todaysLetter.sections.opportunity],
-                        ['ignore', t('kickers.ignore'), todaysLetter.sections.ignore],
-                        ['nourish', t('kickers.nourish'), todaysLetter.sections.nourish],
-                        ['reflection', t('kickers.reflection'), todaysLetter.sections.reflection]
-                      ] as const).map(([key, label, text]) => (
-                        <section className="companion-panel companion-panel--compact" key={key}>
-                          <div className="kicker">{label}</div>
-                          <p className="companion-panel-text companion-panel-text--sentence">{text}</p>
-                        </section>
-                      ))}
-                    </div>
-                  )}
-
-                  {!todayUnderstand && todaysLetter && (
-                    <DisclosureTrigger label={t('today.understand')} onClick={() => setTodayUnderstand(true)} />
-                  )}
-                  <DisclosurePanel open={todayUnderstand}>
+                {todayFocus === 'understand' && (
+                  <div className="reading-focus-view">
+                    <button type="button" className="reading-expand-close" onClick={() => setTodayFocus(null)}>
+                      <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
+                    </button>
                     <section className="companion-panel">
                       <div className="kicker">{t('disclosure.why')}</div>
                       <p className="companion-panel-text">{todaysLetter?.pipeline.trajectoryNote ?? t('today.briefingNote')}</p>
@@ -390,115 +420,183 @@ export default function Home() {
                       <div className="kicker">{t('today.possibleActions')}</div>
                       <p className="companion-panel-text">{todaysLetter?.sections.opportunity ?? '—'}</p>
                     </section>
-                  </DisclosurePanel>
-                </div>
+                  </div>
+                )}
 
-                <div className="companion-presence">
-                  <LivingAvatar />
-                </div>
+                {todayFocus === null && (
+                  <>
+                    <div className="companion-editorial-left">
+                      <div className="space-meta">
+                        <div className="kicker">{t('kickers.today')}</div>
+                        <span className="space-role">{t('navRole.today')}</span>
+                      </div>
+                      <h1 className="view-title companion-headline">{t('viewHeadings.today')}</h1>
 
-                <div className="companion-editorial-right">
-                  <p className={`companion-greeting${letterLoading ? ' companion-greeting--loading' : ''}`}>
-                    {letterLoading
-                      ? '…'
-                      : letterError
-                        ? ''
-                        : todaysLetter?.sections.greeting ?? ''}
-                  </p>
-                </div>
+                      <p className="companion-section-question">{t('sectionQuestions.today')}</p>
+
+                      <section className="companion-panel companion-panel-letter">
+                        <div className="kicker">{t('kickers.oneBigMove')}</div>
+                        {letterLoading && (
+                          <p className="companion-panel-text companion-panel-text--sentence companion-letter-loading">
+                            {t('today.loading')}
+                          </p>
+                        )}
+                        {!letterLoading && letterError && (
+                          <p className="companion-panel-text companion-panel-text--sentence companion-letter-error">
+                            {letterError}
+                          </p>
+                        )}
+                        {!letterLoading && !letterError && todaysLetter && (
+                          <p className="companion-panel-text companion-panel-text--sentence">{todaysLetter.sections.oneBigMove}</p>
+                        )}
+                      </section>
+
+                      {!letterLoading && !letterError && todaysLetter && (
+                        <DisclosureTrigger
+                          label={t('disclosure.readFullBrief')}
+                          onClick={() => setTodayFocus('brief')}
+                        />
+                      )}
+
+                      {todaysLetter && (
+                        <DisclosureTrigger
+                          label={t('today.understand')}
+                          onClick={() => setTodayFocus('understand')}
+                        />
+                      )}
+                    </div>
+
+                    <div className="companion-presence">
+                      <LivingAvatar />
+                    </div>
+
+                    <div className="companion-editorial-right">
+                      <p className={`companion-greeting${letterLoading ? ' companion-greeting--loading' : ''}`}>
+                        {letterLoading
+                          ? '…'
+                          : letterError
+                            ? ''
+                            : todaysLetter?.sections.greeting ?? ''}
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
             )}
 
             {view === 'decisions' && (
-              <div className="decision-room">
-                <p className="section-question">{t('sectionQuestions.decisions')}</p>
-
-                <div className="ritual-flow decisions-form-flow">
-                  <RitualStep step={1} label={t('kickers.decisionEngine')} isLast>
-                    <h2>{t('decisions.headline')}</h2>
-                    <p>{t('decisions.subline')}</p>
-                    <label>{t('decisions.decisionLabel')}</label>
-                    <input
-                      className="input"
-                      value={decision}
-                      onChange={e => setDecision(e.target.value)}
-                      placeholder={t('decisions.decisionPlaceholder')}
-                    />
-                    <label>{t('decisions.reasonLabel')}</label>
-                    <textarea
-                      className="textarea"
-                      value={reason}
-                      onChange={e => setReason(e.target.value)}
-                      placeholder={t('decisions.reasonPlaceholder')}
-                    />
-                    <button
-                      className="primary"
-                      type="button"
-                      disabled={decisionLoading || !decision.trim()}
-                      onClick={() => void handleAskBoard()}
-                    >
-                      {decisionLoading ? t('decisions.submitting') : t('decisions.submit')}
+              <div className={`decision-room${decisionsFocus === 'purpose' ? ' mental-space--reading' : ''}`}>
+                {decisionsFocus === 'purpose' ? (
+                  <div className="reading-focus-view">
+                    <button type="button" className="reading-expand-close" onClick={() => setDecisionsFocus('form')}>
+                      <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
                     </button>
-                    {decisionLoading && <p className="decision-simulating">{t('decisions.simulating')}</p>}
-                    {decisionError && <p className="decision-error">{decisionError}</p>}
-                  </RitualStep>
+                    <section className="hero">
+                      <div className="card card-glow">
+                        <div className="kicker">{t('kickers.northStar')}</div>
+                        <h2>{brain.north_star}</h2>
+                      </div>
+                      <div className="card">
+                        <div className="kicker">{t('kickers.purposeEngine')}</div>
+                        <h2>{brain.manifesto}</h2>
+                        <p>{t('decisions.mission2036')}: {brain.mission_2036.toLowerCase()}</p>
+                      </div>
+                    </section>
+                  </div>
+                ) : (
+                  <>
+                    <p className="section-question">{t('sectionQuestions.decisions')}</p>
 
-                  {decisionResult && (
-                    <>
-                      <section className="card decision-scenario-note">
-                        <div className="kicker">{t('decisions.scenarioTitle')}</div>
-                        <p>{t('decisions.scenarioNote')}</p>
-                      </section>
-                      <DecisionResultDisclosure
-                        key={`${decisionResult.categoryLabel}-${decisionResult.nextAction}-${decisionResult.confidenceScore}`}
-                        result={decisionResult}
-                      />
-                    </>
-                  )}
-                </div>
+                    {!decisionResult && (
+                      <div className="ritual-flow decisions-form-flow">
+                        <RitualStep step={1} label={t('kickers.decisionEngine')} isLast>
+                          <h2>{t('decisions.headline')}</h2>
+                          <p>{t('decisions.subline')}</p>
+                          <label>{t('decisions.decisionLabel')}</label>
+                          <input
+                            className="input"
+                            value={decision}
+                            onChange={e => setDecision(e.target.value)}
+                            placeholder={t('decisions.decisionPlaceholder')}
+                          />
+                          <label>{t('decisions.reasonLabel')}</label>
+                          <textarea
+                            className="textarea textarea--compact"
+                            value={reason}
+                            onChange={e => setReason(e.target.value)}
+                            placeholder={t('decisions.reasonPlaceholder')}
+                          />
+                          <button
+                            className="primary"
+                            type="button"
+                            disabled={decisionLoading || !decision.trim()}
+                            onClick={() => void handleAskBoard()}
+                          >
+                            {decisionLoading ? t('decisions.submitting') : t('decisions.submit')}
+                          </button>
+                          {decisionLoading && <p className="decision-simulating">{t('decisions.simulating')}</p>}
+                          {decisionError && <p className="decision-error">{decisionError}</p>}
+                        </RitualStep>
+                      </div>
+                    )}
 
-                {!boardPurpose && (
-                  <DisclosureTrigger label={t('disclosure.explorePurpose')} onClick={() => setBoardPurpose(true)} />
+                    {decisionResult && (
+                      <div className="ritual-flow decisions-form-flow">
+                        <DecisionResultDisclosure
+                          key={`${decisionResult.categoryLabel}-${decisionResult.nextAction}-${decisionResult.confidenceScore}`}
+                          result={decisionResult}
+                        />
+                        <DisclosureTrigger
+                          label={t('decisions.decisionLabel')}
+                          onClick={() => setDecisionResult(null)}
+                        />
+                      </div>
+                    )}
+
+                    <DisclosureTrigger
+                      label={t('disclosure.explorePurpose')}
+                      onClick={() => setDecisionsFocus('purpose')}
+                    />
+                  </>
                 )}
-                <DisclosurePanel open={boardPurpose}>
-                  <section className="hero">
-                    <div className="card card-glow">
-                      <div className="kicker">{t('kickers.northStar')}</div>
-                      <h2>{brain.north_star}</h2>
-                    </div>
-                    <div className="card">
-                      <div className="kicker">{t('kickers.purposeEngine')}</div>
-                      <h2>{brain.manifesto}</h2>
-                      <p>{t('decisions.mission2036')}: {brain.mission_2036.toLowerCase()}</p>
-                    </div>
-                  </section>
-                </DisclosurePanel>
               </div>
             )}
 
             {view === 'insights' && (
-              <div className="insights-space">
-                <p className="section-question">{t('sectionQuestions.insights')}</p>
-                <p className="insights-built-over-time">{t('insights.builtOverTime')}</p>
+              <div className={`insights-space${insightsFocus ? ' mental-space--reading' : ''}`}>
+                {insightsFocus === null && (
+                  <>
+                    <p className="section-question">{t('sectionQuestions.insights')}</p>
+                    <p className="insights-built-over-time">{t('insights.builtOverTime')}</p>
 
-                <div className="quiet-discovery">
-                  <section className="discovery-insight card card-glow">
-                    <div className="kicker">{t('kickers.insight')}</div>
-                    <h2>{awareness.insight}</h2>
-                  </section>
+                    <section className="discovery-insight card card-glow">
+                      <div className="kicker">{t('kickers.insight')}</div>
+                      <h2>{awareness.insight}</h2>
+                    </section>
 
-                  <div className="discovery-trail">
-                    {!awarenessWhy && <DisclosureTrigger label={t('disclosure.tellMeMore')} onClick={() => setAwarenessWhy(true)} />}
-                    <DisclosurePanel open={awarenessWhy}>
+                    <div className="discovery-trail">
+                      <DisclosureTrigger label={t('disclosure.tellMeMore')} onClick={() => setInsightsFocus('why')} />
+                      <DisclosureTrigger label={t('disclosure.patterns')} onClick={() => setInsightsFocus('patterns')} />
+                      <DisclosureTrigger label={t('disclosure.showEvidence')} onClick={() => setInsightsFocus('evidence')} />
+                      <DisclosureTrigger label={t('disclosure.reflect')} onClick={() => setInsightsFocus('reflect')} />
+                      <DisclosureTrigger label={t('disclosure.suggestedAction')} onClick={() => setInsightsFocus('action')} />
+                    </div>
+                  </>
+                )}
+
+                {insightsFocus !== null && (
+                  <div className="reading-focus-view">
+                    <button type="button" className="reading-expand-close" onClick={() => setInsightsFocus(null)}>
+                      <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
+                    </button>
+
+                    <DisclosurePanel open={insightsFocus === 'why'}>
                       <div className="card discovery-panel">
                         <p>{awareness.whyItMatters}</p>
                       </div>
                     </DisclosurePanel>
 
-                    {!insightsPatterns && (
-                      <DisclosureTrigger label={t('disclosure.patterns')} onClick={() => setInsightsPatterns(true)} />
-                    )}
-                    <DisclosurePanel open={insightsPatterns}>
+                    <DisclosurePanel open={insightsFocus === 'patterns'}>
                       <div className="card discovery-panel">
                         <div className="kicker">{t('insights.patternsTitle')}</div>
                         <ul>{brain.patterns.map(item => <li key={item}>{item}</li>)}</ul>
@@ -507,13 +605,7 @@ export default function Home() {
                       </div>
                     </DisclosurePanel>
 
-                    {!awarenessEvidence && awarenessWhy && (
-                      <DisclosureTrigger label={t('disclosure.showEvidence')} onClick={() => setAwarenessEvidence(true)} />
-                    )}
-                    {!awarenessEvidence && !awarenessWhy && (
-                      <DisclosureTrigger label={t('disclosure.showEvidence')} onClick={() => { setAwarenessWhy(true); setAwarenessEvidence(true); }} />
-                    )}
-                    <DisclosurePanel open={awarenessEvidence}>
+                    <DisclosurePanel open={insightsFocus === 'evidence'}>
                       <div className="card discovery-panel">
                         <div className="kicker">{t('kickers.evidence')}</div>
                         <ul>{awareness.evidence.map(item => <li key={item}>{item}</li>)}</ul>
@@ -522,20 +614,14 @@ export default function Home() {
                       </div>
                     </DisclosurePanel>
 
-                    {!awarenessReflect && awarenessEvidence && (
-                      <DisclosureTrigger label={t('disclosure.reflect')} onClick={() => setAwarenessReflect(true)} />
-                    )}
-                    <DisclosurePanel open={awarenessReflect}>
+                    <DisclosurePanel open={insightsFocus === 'reflect'}>
                       <div className="card discovery-panel">
                         <div className="kicker">{t('kickers.reflect')}</div>
                         <p>{awareness.reflectionQuestion}</p>
                       </div>
                     </DisclosurePanel>
 
-                    {!awarenessAction && (
-                      <DisclosureTrigger label={t('disclosure.suggestedAction')} onClick={() => setAwarenessAction(true)} />
-                    )}
-                    <DisclosurePanel open={awarenessAction}>
+                    <DisclosurePanel open={insightsFocus === 'action'}>
                       <div className="card discovery-panel">
                         <div className="kicker">{t('kickers.recommendedAction')}</div>
                         <p>{awareness.recommendedAction}</p>
@@ -544,54 +630,90 @@ export default function Home() {
                       </div>
                     </DisclosurePanel>
                   </div>
-                </div>
+                )}
               </div>
             )}
 
             {view === 'create' && (
-              <div className="energy-ecosystem">
-                <p className="section-question">{t('sectionQuestions.create')}</p>
-                <section className="ecosystem-focus card card-glow">
-                  <div className="kicker">{t('create.focusLabel')}</div>
-                  <h2>{projectName}</h2>
-                  <p>{brain.projects[projectName as keyof typeof brain.projects].role}</p>
-                </section>
+              <div className={`energy-ecosystem${createExpanded ? ' mental-space--reading' : ''}`}>
+                {!createExpanded && (
+                  <>
+                    <p className="section-question">{t('sectionQuestions.create')}</p>
+                    <section className="ecosystem-focus card card-glow">
+                      <div className="kicker">{t('create.focusLabel')}</div>
+                      <h2>{projectName}</h2>
+                      <p>{brain.projects[projectName as keyof typeof brain.projects].role}</p>
+                    </section>
 
-                {!projectsWhy && <DisclosureTrigger label={t('disclosure.why')} onClick={() => setProjectsWhy(true)} />}
-                <DisclosurePanel open={projectsWhy}>
-                  <section className="card">
-                    <div className="kicker">{t('kickers.strategist')}</div>
-                    <h2>{t('create.strategistHeadline')}</h2>
-                    <p>{t('create.strategistSubline')}</p>
-                  </section>
-                </DisclosurePanel>
+                    {!projectsWhy && <DisclosureTrigger label={t('disclosure.why')} onClick={() => setProjectsWhy(true)} />}
+                    <DisclosurePanel open={projectsWhy}>
+                      <section className="card">
+                        <div className="kicker">{t('kickers.strategist')}</div>
+                        <h2>{t('create.strategistHeadline')}</h2>
+                        <p>{t('create.strategistSubline')}</p>
+                      </section>
+                    </DisclosurePanel>
+                  </>
+                )}
 
-                <ProjectsListDisclosure />
-                <PotentialPanelDisclosure />
+                <ProjectsListDisclosure onExpandedChange={setCreateExpanded} />
+                {!createExpanded && <PotentialPanelDisclosure onExpandedChange={setCreateExpanded} />}
               </div>
             )}
 
             {view === 'memory' && (
-              <div className="memory-palace">
-                <p className="section-question">{t('sectionQuestions.memory')}</p>
-                <div className="memory-palace-grid" role="list">
-                  {memoryCards.map(card => (
-                    <article
-                      key={card.label}
-                      className="memory-card"
-                      role="listitem"
-                      aria-labelledby={`memory-${card.label}`}
-                    >
-                      <h3
-                        id={`memory-${card.label}`}
-                        className={`memory-card-label${card.accent ? ' memory-card-label--accent' : ''}`}
-                      >
-                        {card.label}
-                      </h3>
-                      <p className="memory-card-text">{card.text}</p>
-                    </article>
-                  ))}
-                </div>
+              <div className={`memory-palace${memoryExpanded ? ' mental-space--reading' : ''}`}>
+                {memoryExpanded ? (
+                  <div className="reading-focus-view">
+                    <button type="button" className="reading-expand-close" onClick={() => setMemoryExpanded(false)}>
+                      <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
+                    </button>
+                    <div className="memory-palace-grid memory-palace-grid--expanded" role="list">
+                      {memoryExtraCards.map(card => (
+                        <article
+                          key={card.label}
+                          className="memory-card memory-card--compact"
+                          role="listitem"
+                          aria-labelledby={`memory-${card.label}`}
+                        >
+                          <h3
+                            id={`memory-${card.label}`}
+                            className={`memory-card-label${card.accent ? ' memory-card-label--accent' : ''}`}
+                          >
+                            {card.label}
+                          </h3>
+                          <p className="memory-card-text">{card.text}</p>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="section-question">{t('sectionQuestions.memory')}</p>
+                    <div className="memory-palace-grid" role="list">
+                      {memoryPrimaryCards.map(card => (
+                        <article
+                          key={card.label}
+                          className="memory-card"
+                          role="listitem"
+                          aria-labelledby={`memory-${card.label}`}
+                        >
+                          <h3
+                            id={`memory-${card.label}`}
+                            className={`memory-card-label${card.accent ? ' memory-card-label--accent' : ''}`}
+                          >
+                            {card.label}
+                          </h3>
+                          <p className="memory-card-text">{card.text}</p>
+                        </article>
+                      ))}
+                    </div>
+                    <DisclosureTrigger
+                      label={t('disclosure.exploreMemory')}
+                      onClick={() => setMemoryExpanded(true)}
+                    />
+                  </>
+                )}
               </div>
             )}
           </div>

@@ -32,6 +32,41 @@ export function DisclosurePanel({
   return <div className={className}>{children}</div>;
 }
 
+/** Replaces sibling content when open — no page scroll, single-screen reading. */
+export function ReadingExpand({
+  triggerLabel,
+  closeLabel,
+  children,
+  onOpenChange,
+  className = 'reading-expand'
+}: {
+  triggerLabel: string;
+  closeLabel: string;
+  children: ReactNode;
+  onOpenChange?: (open: boolean) => void;
+  className?: string;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const setExpanded = (next: boolean) => {
+    setOpen(next);
+    onOpenChange?.(next);
+  };
+
+  if (open) {
+    return (
+      <div className={`${className} reading-expand--open`}>
+        <button type="button" className="reading-expand-close" onClick={() => setExpanded(false)}>
+          <span aria-hidden="true">←</span> {closeLabel}
+        </button>
+        <div className="reading-expand-body">{children}</div>
+      </div>
+    );
+  }
+
+  return <DisclosureTrigger label={triggerLabel} onClick={() => setExpanded(true)} />;
+}
+
 export function StatusPill({
   label,
   value,
