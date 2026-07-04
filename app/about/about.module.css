@@ -1,17 +1,16 @@
 .page {
-  height: 100vh;
-  max-height: 100dvh;
-  overflow: hidden;
-  max-width: 560px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: 520px;
   margin: 0 auto;
-  padding: clamp(40px, 8vh, 72px) clamp(24px, 5vw, 40px) clamp(32px, 6vh, 56px);
+  padding: clamp(40px, 8vh, 72px) clamp(24px, 5vw, 40px) clamp(40px, 7vh, 64px);
   display: flex;
   flex-direction: column;
+  gap: clamp(36px, 7vh, 56px);
 }
 
 .back {
   display: inline-block;
-  margin-bottom: clamp(24px, 5vh, 48px);
   font-size: 13px;
   color: var(--muted);
   letter-spacing: 0.01em;
@@ -38,35 +37,27 @@
 }
 
 .subtitle {
-  margin: 12px 0 0;
-  font-size: 14px;
+  margin: 14px 0 0;
+  font-size: 15px;
   line-height: 1.5;
-  color: var(--muted);
-  letter-spacing: 0.01em;
-}
-
-.lead {
-  margin: 20px 0 0;
-  font-size: clamp(15px, 2vh, 17px);
-  line-height: 1.55;
+  color: var(--fg);
   letter-spacing: -0.01em;
 }
 
-.actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  margin-top: clamp(28px, 5vh, 48px);
-  flex-shrink: 0;
+.lead {
+  margin: 10px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--muted);
+  letter-spacing: -0.01em;
 }
 
-.section {
-  margin-top: 0;
+.block {
+  margin: 0;
 }
 
 .sectionLabel {
-  margin: 0 0 16px;
+  margin: 0 0 18px;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -75,9 +66,9 @@
 }
 
 .prose p {
-  margin: 0 0 14px;
-  font-size: clamp(14px, 1.8vh, 16px);
-  line-height: 1.65;
+  margin: 0 0 16px;
+  font-size: clamp(15px, 1.9vh, 17px);
+  line-height: 1.6;
   color: var(--fg);
 }
 
@@ -85,34 +76,33 @@
   margin-bottom: 0;
 }
 
-.productList {
+.questionList {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.productItem + .productItem {
-  margin-top: 20px;
+.questionItem + .questionItem {
+  margin-top: 22px;
 }
 
-.productName {
+.questionName {
   margin: 0 0 4px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   letter-spacing: -0.01em;
 }
 
-.productDesc {
+.questionText {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 15px;
+  line-height: 1.5;
   color: var(--muted);
 }
 
 .pageFooter {
   margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-soft);
+  padding-top: 8px;
   font-size: 13px;
   line-height: 1.6;
   color: var(--muted);

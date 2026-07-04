@@ -2,6 +2,7 @@ import type { BrainRequest, ContextPacket, ContextSource, GiuseppeBrain, Working
 import { DECIDE_JSON_INSTRUCTION } from '../decisions/prompt';
 import { detectTopics } from '../intent/detectIntent';
 import { selectSlices } from './slices';
+import { resolveLocale, pickLocale } from '../../i18n/locale';
 
 function nowIso(): string {
   return new Date().toISOString();
@@ -20,7 +21,8 @@ function buildSources(slices: ReturnType<typeof selectSlices>): ContextSource[] 
 function buildSystemPrompt(
   slices: ReturnType<typeof selectSlices>,
   workingMemory: WorkingMemory,
-  intent: BrainRequest['intent']
+  intent: BrainRequest['intent'],
+  locale: ReturnType<typeof resolveLocale>
 ): string {
   const recentSessions = workingMemory.sessions
     .slice(-3)
@@ -47,7 +49,13 @@ function buildSystemPrompt(
     recentSessions || '- none',
     '',
     'RESPONSE FORMAT',
-    intent === 'decide' ? DECIDE_JSON_INSTRUCTION : 'Clear prose. Short paragraphs. Prefer Italian when Giuseppe writes in Italian.'
+    intent === 'decide'
+      ? `${DECIDE_JSON_INSTRUCTION} ${pickLocale(locale, 'Tutti i campi testuali in italiano.', 'All text fields in English.')}`
+      : pickLocale(
+          locale,
+          'Rispondi interamente in italiano. Non mescolare lingue.',
+          'Respond entirely in English. Do not mix languages.'
+        ),
   ].join('\n');
 }
 
@@ -116,14 +124,16 @@ export function buildContext(
   engineContext?: string
 ): ContextPacket {
   const message = [request.message, request.decision, request.reason].filter(Boolean).join(' ');
+  const locale = resolveLocale(request.locale);
   const topics = detectTopics(message);
   const slices = selectSlices(brain, topics);
   const lowContext = message.trim().length === 0 && request.intent !== 'decide';
 
   return {
     intent: request.intent,
+    locale,
     assembledAt: nowIso(),
-    systemPrompt: buildSystemPrompt(slices, workingMemory, request.intent),
+    systemPrompt: buildSystemPrompt(slices, workingMemory, request.intent, locale),
     userPrompt: buildUserPrompt(request, engineContext),
     sources: buildSources(slices),
     slices,

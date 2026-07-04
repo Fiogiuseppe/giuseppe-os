@@ -1,5 +1,15 @@
 import brain from '../memory/giuseppe_brain.json';
 import { liquidityPhrase } from '../lib/publicFinance';
+import type { AppLocale } from '../lib/i18n/locale';
+import { pickLocale, resolveLocale } from '../lib/i18n/locale';
+import {
+  articleFallback,
+  creativeChallengeDefault,
+  creativeChallengeUrees,
+  creativeChallengeVisceral,
+  questionOfTheDay,
+  weeklyFocusDefault
+} from './content/potentialPickStrings';
 import {
   assessEvidence,
   confidenceFromEvidence,
@@ -115,7 +125,7 @@ function projectBoost(status: string): number {
   return -1;
 }
 
-function buildCandidates(): Array<{
+function buildCandidates(locale: AppLocale): Array<{
   title: string;
   description: string;
   whyThisMatters: string;
@@ -127,15 +137,26 @@ function buildCandidates(): Array<{
   dimensions: OpportunityDimensions;
   confidenceSignals: number;
 }> {
+  const L = (it: string, en: string) => pickLocale(locale, it, en);
   const templates = [
     {
-      title: 'Pubblica un pensiero vero su LinkedIn',
-      description:
+      title: L('Pubblica un pensiero vero su LinkedIn', 'Publish a true thought on LinkedIn'),
+      description: L(
         'Trasforma un insight LEGO, creativo o finanziario in un post che mostra come pensi — non cosa fai.',
-      whyThisMatters:
+        'Turn a LEGO, creative, or financial insight into a post that shows how you think — not what you do.'
+      ),
+      whyThisMatters: L(
         'La reputazione stimata tra professionisti è la strategia corretta verso libertà 2036, non la fama generica.',
-      firstAction: 'Scrivi in 30 minuti una bozza su un problema reale che hai risolto questa settimana.',
-      missionAlignment: 'Aumenta capitale reputazionale senza sacrificare verità.',
+        'Esteem among professionals is the right strategy toward freedom 2036, not generic fame.'
+      ),
+      firstAction: L(
+        'Scrivi in 30 minuti una bozza su un problema reale che hai risolto questa settimana.',
+        'Draft in 30 minutes a post about a real problem you solved this week.'
+      ),
+      missionAlignment: L(
+        'Aumenta capitale reputazionale senza sacrificare verità.',
+        'Increases reputation capital without sacrificing truth.'
+      ),
       timeRequired: '45 min',
       energyRequired: 'medium' as const,
       sourceProject: 'Medium/LinkedIn',
@@ -154,13 +175,11 @@ function buildCandidates(): Array<{
       confidenceSignals: 4
     },
     {
-      title: 'Automatizza il trasferimento ETF',
-      description:
-        'Imposta o aumenta un trasferimento mensile automatico verso investimenti — compra mesi di libertà, non status.',
-      whyThisMatters:
-        `${liquidityPhrase()}, la disciplina automatica protegge il percorso verso casa e libertà 2036.`,
-      firstAction: 'Apri la banca e imposta un trasferimento fisso mensile verso ETF o fondo emergenza.',
-      missionAlignment: 'Converte liquidità in opzionalità futura.',
+      title: L('Automatizza il trasferimento ETF', 'Automate ETF transfer'),
+      description: L('Imposta o aumenta un trasferimento mensile automatico verso investimenti — compra mesi di libertà, non status.', 'Set or increase an automatic monthly transfer to investments — buy months of freedom, not status.'),
+      whyThisMatters: `${liquidityPhrase()}, ${L('la disciplina automatica protegge il percorso verso casa e libertà 2036.', 'automatic discipline protects the path toward home and freedom 2036.')}`,
+      firstAction: L('Apri la banca e imposta un trasferimento fisso mensile verso ETF o fondo emergenza.', 'Open your bank and set a fixed monthly transfer to ETF or emergency fund.'),
+      missionAlignment: L('Converte liquidità in opzionalità futura.', 'Converts liquidity into future optionality.'),
       timeRequired: '20 min',
       energyRequired: 'low' as const,
       sourceProject: 'Brand Giuseppe',
@@ -179,13 +198,11 @@ function buildCandidates(): Array<{
       confidenceSignals: 5
     },
     {
-      title: 'Micro-sessione Visceral Poems',
-      description:
-        'Completa una singola opera sacra di altissima qualità — non una collezione, non una serie, una cosa finita.',
-      whyThisMatters:
-        'Visceral Poems è capitale creativo sacro. Una micro-versione eccellente vale più di dieci abbozzi.',
-      firstAction: 'Scegli un solo poem, definisci "finito" in una frase, e lavoraci 90 minuti senza distrazioni.',
-      missionAlignment: 'Protegge bellezza e verità creativa.',
+      title: L('Micro-sessione Visceral Poems', 'Visceral Poems micro-session'),
+      description: L('Completa una singola opera sacra di altissima qualità — non una collezione, non una serie, una cosa finita.', 'Complete one sacred work of the highest quality — not a collection, not a series, one finished thing.'),
+      whyThisMatters: L('Visceral Poems è capitale creativo sacro. Una micro-versione eccellente vale più di dieci abbozzi.', 'Visceral Poems is sacred creative capital. One excellent micro-version beats ten drafts.'),
+      firstAction: L('Scegli un solo poem, definisci "finito" in una frase, e lavoraci 90 minuti senza distrazioni.', 'Pick one poem, define "finished" in one sentence, and work on it 90 minutes without distractions.'),
+      missionAlignment: L('Protegge bellezza e verità creativa.', 'Protects beauty and creative truth.'),
       timeRequired: '90 min',
       energyRequired: 'high' as const,
       sourceProject: 'Visceral Poems',
@@ -204,13 +221,11 @@ function buildCandidates(): Array<{
       confidenceSignals: 3
     },
     {
-      title: 'Prototipo UREES — un solo pezzo',
-      description:
-        'Avanza un prototipo culto di altissima identità. Pochi pezzi, massima qualità, zero industrializzazione.',
-      whyThisMatters:
-        'UREES deve diventare oggetto di culto, non moda di massa. Un prototipo eccellente è capitale creativo e reputazionale.',
-      firstAction: 'Definisci materiali, dimensioni e vincolo di produzione per un solo pezzo prototipo.',
-      missionAlignment: 'Rafforza identità creativa Giuseppe.',
+      title: L('Prototipo UREES — un solo pezzo', 'UREES prototype — one piece only'),
+      description: L('Avanza un prototipo culto di altissima identità. Pochi pezzi, massima qualità, zero industrializzazione.', 'Advance a cult prototype of highest identity. Few pieces, maximum quality, zero industrialization.'),
+      whyThisMatters: L('UREES deve diventare oggetto di culto, non moda di massa. Un prototipo eccellente è capitale creativo e reputazionale.', 'UREES must become a cult object, not mass fashion. An excellent prototype is creative and reputational capital.'),
+      firstAction: L('Definisci materiali, dimensioni e vincolo di produzione per un solo pezzo prototipo.', 'Define materials, dimensions, and production constraint for one prototype piece.'),
+      missionAlignment: L('Rafforza identità creativa Giuseppe.', 'Strengthens Giuseppe creative identity.'),
       timeRequired: '2 ore',
       energyRequired: 'high' as const,
       sourceProject: 'UREES',
@@ -229,12 +244,11 @@ function buildCandidates(): Array<{
       confidenceSignals: 3
     },
     {
-      title: 'Conversazione ownership dentro LEGO',
-      description:
-        'Una mossa di carriera che aumenta ownership, visibilità e reputazione — LEGO come acceleratore, non gabbia.',
+      title: L('Conversazione ownership dentro LEGO', 'Ownership conversation inside LEGO'),
+      description: L('Una mossa di carriera che aumenta ownership, visibilità e reputazione — LEGO come acceleratore, non gabbia.', 'A career move that increases ownership, visibility, and reputation — LEGO as accelerator, not cage.'),
       whyThisMatters: memory.career_goals[0],
-      firstAction: 'Prepara 3 esempi concreti di impatto e chiedi un incontro di 20 minuti con un leader chiave.',
-      missionAlignment: 'Allinea carriera a libertà 2036.',
+      firstAction: L('Prepara 3 esempi concreti di impatto e chiedi un incontro di 20 minuti con un leader chiave.', 'Prepare 3 concrete impact examples and request a 20-minute meeting with a key leader.'),
+      missionAlignment: L('Allinea carriera a libertà 2036.', 'Aligns career to freedom 2036.'),
       timeRequired: '1 ora prep',
       energyRequired: 'medium' as const,
       sourceProject: 'LEGO',
@@ -253,12 +267,11 @@ function buildCandidates(): Array<{
       confidenceSignals: 4
     },
     {
-      title: 'One-pager Brand Giuseppe',
-      description:
-        'Consolida in una pagina chi è Giuseppe, cosa rappresenta, e come LEGO, UREES e Visceral si collegano.',
-      whyThisMatters: 'Il nome Giuseppe è la marca madre. Chiarezza di brand riduce dispersione.',
-      firstAction: 'Scrivi 5 bullet: chi sei, per chi, cosa offri, prove, prossimo passo pubblico.',
-      missionAlignment: 'Riduce dispersione e aumenta focus strategico.',
+      title: L('One-pager Brand Giuseppe', 'Brand Giuseppe one-pager'),
+      description: L('Consolida in una pagina chi è Giuseppe, cosa rappresenta, e come LEGO, UREES e Visceral si collegano.', 'Consolidate on one page who Giuseppe is, what he represents, and how LEGO, UREES, and Visceral connect.'),
+      whyThisMatters: L('Il nome Giuseppe è la marca madre. Chiarezza di brand riduce dispersione.', 'The name Giuseppe is the parent brand. Brand clarity reduces dispersion.'),
+      firstAction: L('Scrivi 5 bullet: chi sei, per chi, cosa offri, prove, prossimo passo pubblico.', 'Write 5 bullets: who you are, for whom, what you offer, proof, next public step.'),
+      missionAlignment: L('Riduce dispersione e aumenta focus strategico.', 'Reduces dispersion and increases strategic focus.'),
       timeRequired: '60 min',
       energyRequired: 'medium' as const,
       sourceProject: 'Brand Giuseppe',
@@ -277,13 +290,11 @@ function buildCandidates(): Array<{
       confidenceSignals: 4
     },
     {
-      title: 'Calcolo fondo casa Copenaghen',
-      description:
-        'Quantifica anticipo, costo mensile totale e mesi di runway persi prima di qualsiasi visita immobiliare.',
-      whyThisMatters:
-        'Comprare casa deve aumentare libertà, non solo togliere l\'affitto. I numeri prima dell\'emozione.',
-      firstAction: 'Crea un foglio con anticipo target, rate mensile, tasse e impatto su investimenti automatici.',
-      missionAlignment: 'Protegge libertà finanziaria durante un obiettivo emotivo.',
+      title: L('Calcolo fondo casa Copenaghen', 'Copenhagen home fund calculation'),
+      description: L('Quantifica anticipo, costo mensile totale e mesi di runway persi prima di qualsiasi visita immobiliare.', 'Quantify down payment, total monthly cost, and months of runway lost before any property visit.'),
+      whyThisMatters: L("Comprare casa deve aumentare libertà, non solo togliere l'affitto. I numeri prima dell'emozione.", 'Buying a home must increase freedom, not just remove rent. Numbers before emotion.'),
+      firstAction: L('Crea un foglio con anticipo target, rate mensile, tasse e impatto su investimenti automatici.', 'Create a sheet with target down payment, monthly payment, taxes, and impact on automatic investments.'),
+      missionAlignment: L('Protegge libertà finanziaria durante un obiettivo emotivo.', 'Protects financial freedom during an emotional goal.'),
       timeRequired: '45 min',
       energyRequired: 'low' as const,
       dimensions: {
@@ -301,12 +312,11 @@ function buildCandidates(): Array<{
       confidenceSignals: 4
     },
     {
-      title: 'Outreach freelance premium',
-      description:
-        'Contatta un solo cliente potenziale ad alto valore reputazionale — non volume, solo premium.',
-      whyThisMatters: 'Freelance è selettivo: deve rafforzare reputazione e reddito senza dispersione.',
-      firstAction: 'Identifica un contatto e invia un messaggio personalizzato con un caso di impatto reale.',
-      missionAlignment: 'Seconda fonte di reddito reputazionale.',
+      title: L('Outreach freelance premium', 'Premium freelance outreach'),
+      description: L('Contatta un solo cliente potenziale ad alto valore reputazionale — non volume, solo premium.', 'Contact one high-value reputational potential client — not volume, premium only.'),
+      whyThisMatters: L('Freelance è selettivo: deve rafforzare reputazione e reddito senza dispersione.', 'Freelance is selective: it must strengthen reputation and income without dispersion.'),
+      firstAction: L('Identifica un contatto e invia un messaggio personalizzato con un caso di impatto reale.', 'Identify one contact and send a personalized message with a real impact case.'),
+      missionAlignment: L('Seconda fonte di reddito reputazionale.', 'Second reputational income source.'),
       timeRequired: '30 min',
       energyRequired: 'medium' as const,
       sourceProject: 'Freelance',
@@ -325,12 +335,11 @@ function buildCandidates(): Array<{
       confidenceSignals: 2
     },
     {
-      title: 'Congela un nuovo fronte per 30 giorni',
-      description:
-        'Blocca esplicitamente ogni nuova idea o progetto per un mese e torna al fronte con priorità più alta.',
+      title: L('Congela un nuovo fronte per 30 giorni', 'Freeze a new front for 30 days'),
+      description: L('Blocca esplicitamente ogni nuova idea o progetto per un mese e torna al fronte con priorità più alta.', 'Explicitly block every new idea or project for a month and return to the highest-priority front.'),
       whyThisMatters: memory.patterns[1],
-      firstAction: 'Scrivi su carta: "Per 30 giorni non apro nuovi fronti" e torna alla priorità #1.',
-      missionAlignment: 'Protegge concentrazione verso libertà 2036.',
+      firstAction: L('Scrivi su carta: "Per 30 giorni non apro nuovi fronti" e torna alla priorità #1.', 'Write on paper: "For 30 days I open no new fronts" and return to priority #1.'),
+      missionAlignment: L('Protegge concentrazione verso libertà 2036.', 'Protects concentration toward freedom 2036.'),
       timeRequired: '10 min',
       energyRequired: 'low' as const,
       dimensions: {
@@ -397,19 +406,19 @@ function mapTemplateToOpportunity(
   };
 }
 
-function pickWeeklyFocus(): string {
-  return memory.priorities[0] ?? 'Un passo verso libertà 2036.';
+function pickWeeklyFocus(locale: AppLocale): string {
+  return memory.priorities[0] ?? weeklyFocusDefault(locale);
 }
 
-function pickCreativeChallenge(): string {
+function pickCreativeChallenge(locale: AppLocale): string {
   const slowProjects = Object.entries(memory.projects).filter(([, p]) => p.status === 'slow-active');
   if (slowProjects.some(([name]) => name === 'Visceral Poems')) {
-    return 'Scrivi un poem viscerale in meno di 40 righe — finito, non perfetto.';
+    return creativeChallengeVisceral(locale);
   }
   if (slowProjects.some(([name]) => name === 'UREES')) {
-    return 'Disegna un UREES che potresti spiegare in una frase a un estraneo.';
+    return creativeChallengeUrees(locale);
   }
-  return 'Crea qualcosa di piccolo ma indimenticabile in 60 minuti.';
+  return creativeChallengeDefault(locale);
 }
 
 function pickSkillToLearn(): string {
@@ -424,8 +433,8 @@ function pickPersonToContact(): string {
   return memory.contacts[1] ?? memory.contacts[0];
 }
 
-function pickArticleToRead(): string {
-  return memory.reading_queue[0] ?? 'Un saggio che rafforza pensiero a lungo termine.';
+function pickArticleToRead(locale: AppLocale): string {
+  return memory.reading_queue[0] ?? articleFallback(locale);
 }
 
 function pickProjectToFinish(): string {
@@ -443,14 +452,15 @@ function pickRiskToAvoid(): string {
   return memory.patterns[0];
 }
 
-function pickQuestionOfTheDay(): string {
+function pickQuestionOfTheDay(locale: AppLocale): string {
   const value = memory.values[Math.floor(Date.now() / 86400000) % memory.values.length];
-  return `Questa mossa aumenta ${value.toLowerCase()} — o solo sollievo immediato?`;
+  return questionOfTheDay(locale, value);
 }
 
 export type PotentialEngineInput = {
   longTerm?: LongTermMemory;
   working?: WorkingMemory;
+  locale?: 'it' | 'en';
 };
 
 export function runPotentialEngine(input: PotentialEngineInput = {}): PotentialBrief {
@@ -458,7 +468,8 @@ export function runPotentialEngine(input: PotentialEngineInput = {}): PotentialB
   const working = input.working ?? { sessions: [], notes: [], records: [] };
   const assessment = assessEvidence(buildEvidenceSnapshot(longTerm, working));
 
-  const ranked = buildCandidates()
+  const locale = resolveLocale(input.locale);
+  const ranked = buildCandidates(locale)
     .map(template => mapTemplateToOpportunity(template, assessment))
     .sort((a, b) => (b.totalScore ?? 0) - (a.totalScore ?? 0));
 
@@ -467,14 +478,14 @@ export function runPotentialEngine(input: PotentialEngineInput = {}): PotentialB
 
   return {
     todaysOpportunity,
-    creativeChallenge: pickCreativeChallenge(),
+    creativeChallenge: pickCreativeChallenge(locale),
     skillToLearn: pickSkillToLearn(),
     personToContact: pickPersonToContact(),
-    articleToRead: pickArticleToRead(),
+    articleToRead: pickArticleToRead(locale),
     projectToFinish: pickProjectToFinish(),
     riskToAvoid: pickRiskToAvoid(),
-    questionOfTheDay: pickQuestionOfTheDay(),
-    weeklyFocus: pickWeeklyFocus(),
+    questionOfTheDay: pickQuestionOfTheDay(locale),
+    weeklyFocus: pickWeeklyFocus(locale),
     opportunityHistory
   };
 }

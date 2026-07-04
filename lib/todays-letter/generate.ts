@@ -1,4 +1,5 @@
 import { createClaudeProvider } from '../brain/providers/claude';
+import { resolveLocale, pickLocale, type AppLocale } from '../i18n/locale';
 import { loadBrain, loadLongTermMemory } from '../brain/memory/store';
 import { ProviderConfigurationError, ProviderRequestError } from '../brain/providers/types';
 import type { DailyBriefingContext, DailyBriefingResponse, DailyBriefingSections } from '../briefing/types';
@@ -106,9 +107,9 @@ function resolveBriefingMode(): 'anthropic' | 'fallback' {
   );
 }
 
-async function generateDailyBriefingFresh(): Promise<DailyBriefingResponse> {
+async function generateDailyBriefingFresh(locale: AppLocale = 'it'): Promise<DailyBriefingResponse> {
   const context = await buildDailyBriefingContext();
-  const fallbackSections = buildFallbackBriefing(context);
+  const fallbackSections = buildFallbackBriefing(context, locale);
   const mode = resolveBriefingMode();
 
   let response: DailyBriefingResponse;
@@ -119,7 +120,16 @@ async function generateDailyBriefingFresh(): Promise<DailyBriefingResponse> {
     response = buildResponse(gated.sections, 'fallback', context, gated.quality, false);
   } else {
     const userPrompt = [
-      'Write Giuseppe his Daily Briefing using only this intelligence pipeline context:',
+      pickLocale(
+        locale,
+        'Scrivi il Daily Briefing di Giuseppe usando solo questo contesto del pipeline di intelligence:',
+        'Write Giuseppe his Daily Briefing using only this intelligence pipeline context:'
+      ),
+      pickLocale(
+        locale,
+        'Rispondi interamente in italiano.',
+        'Respond entirely in English.'
+      ),
       formatContextForPrompt(context)
     ].join('\n\n');
 
@@ -138,22 +148,23 @@ async function generateDailyBriefingFresh(): Promise<DailyBriefingResponse> {
     response = buildResponse(gated.sections, 'anthropic', context, gated.quality, false);
   }
 
-  writeCachedLetter(context.dateKey, response);
+  writeCachedLetter(context.dateKey, response, locale);
   return response;
 }
 
-export async function generateDailyBriefing(): Promise<DailyBriefingResponse> {
+export async function generateDailyBriefing(localeInput?: AppLocale): Promise<DailyBriefingResponse> {
+  const locale = resolveLocale(localeInput);
   const dateKey = letterDateKey();
-  const fileCached = await readCachedLetter(dateKey);
+  const fileCached = await readCachedLetter(dateKey, locale);
   if (fileCached) {
     return fileCached;
   }
 
   if (usePlatformLetterCache()) {
-    return getPlatformCachedLetter(dateKey, generateDailyBriefingFresh);
+    return getPlatformCachedLetter(dateKey, locale, () => generateDailyBriefingFresh(locale));
   }
 
-  return generateDailyBriefingFresh();
+  return generateDailyBriefingFresh(locale);
 }
 
 /** @deprecated Use generateDailyBriefing */

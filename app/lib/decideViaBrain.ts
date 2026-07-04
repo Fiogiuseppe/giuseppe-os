@@ -7,7 +7,8 @@ export type DecideViaBrainResult =
 
 export async function decideViaBrain(
   decision: string,
-  answers: Record<string, string> = {}
+  answers: Record<string, string> = {},
+  locale: 'it' | 'en' = 'it'
 ): Promise<DecideViaBrainResult> {
   const reason = compileDecisionContext(decision, answers);
   const response = await fetch('/api/brain', {
@@ -18,7 +19,8 @@ export async function decideViaBrain(
       decision,
       reason,
       message: decision,
-      persist: true
+      persist: true,
+      locale
     })
   });
 

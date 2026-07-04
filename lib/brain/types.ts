@@ -133,6 +133,7 @@ export interface BrainRequest {
   reason?: string;
   /** When false, skip durable memory persistence (default: true). */
   persist?: boolean;
+  locale?: 'it' | 'en';
 }
 
 export interface ContextSlice {
@@ -144,6 +145,7 @@ export interface ContextSlice {
 
 export interface ContextPacket {
   intent: BrainIntent;
+  locale: 'it' | 'en';
   assembledAt: string;
   systemPrompt: string;
   userPrompt: string;

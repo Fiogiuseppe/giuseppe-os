@@ -4,14 +4,15 @@ export type FetchInsightsResult =
   | { ok: true; awareness: AwarenessInsight; headline?: string }
   | { ok: false; message: string; status: number };
 
-export async function fetchInsightsViaBrain(): Promise<FetchInsightsResult> {
+export async function fetchInsightsViaBrain(locale: 'it' | 'en' = 'it'): Promise<FetchInsightsResult> {
   const response = await fetch('/api/brain', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       intent: 'awareness',
       message: 'Scan for patterns and risks.',
-      persist: true
+      persist: true,
+      locale
     })
   });
 

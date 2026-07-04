@@ -171,30 +171,30 @@ export const messages = {
       description: 'Aiutarti a diventare chi scegli di essere.',
       aboutHeading: 'About',
       aboutBody1:
-        'Giuseppe OS ti aiuta a prendere decisioni migliori, capire te stesso e crescere con intenzione.',
-      aboutBody2:
-        'Collega continuamente il tuo passato, il presente, le ambizioni e il mondo che cambia per rivelare pattern, opportunità e conseguenze difficili da vedere da soli.',
-      productHeading: 'Il prodotto',
+        'Un sistema di pensiero personale per prendere decisioni migliori, capirti più a fondo e restare connesso a chi scegli di diventare.',
+      aboutBody2: 'Non pensa al posto tuo.',
+      aboutBody3: 'Ti aiuta a pensare più chiaramente.',
+      questionsHeading: 'Costruito attorno a cinque domande',
       products: {
         today: {
           name: 'Oggi',
-          desc: 'Guida quotidiana per la tua azione a massima leva.'
+          question: 'Cosa dovrei fare oggi?'
         },
         decisions: {
           name: 'Decisioni',
-          desc: 'Uno spazio per pensare prima di scegliere.'
+          question: 'Qual è la scelta migliore?'
         },
         insights: {
           name: 'Insight',
-          desc: 'Pattern e osservazioni che probabilmente non noteresti da solo.'
+          question: 'Cosa non sto vedendo?'
         },
         create: {
           name: 'Crea',
-          desc: 'Focus e direzione per tutto ciò che stai costruendo.'
+          question: 'Cosa merita la mia energia?'
         },
         memory: {
           name: 'Memoria',
-          desc: 'Un posto per ricordare chi sei e chi scegli di diventare.'
+          question: 'Chi voglio continuare a essere?'
         }
       },
       version: 'v0.1',
@@ -336,30 +336,30 @@ export const messages = {
       description: 'Helping you become who you choose to be.',
       aboutHeading: 'About',
       aboutBody1:
-        'Giuseppe OS helps you make better decisions, understand yourself and grow with intention.',
-      aboutBody2:
-        'It continuously connects your past, your present, your ambitions and the changing world to reveal patterns, opportunities and consequences that are difficult to see alone.',
-      productHeading: 'The Product',
+        'A personal thinking system designed to help you make better decisions, understand yourself more deeply and stay connected to who you choose to become.',
+      aboutBody2: "It doesn't think instead of you.",
+      aboutBody3: 'It helps you think more clearly.',
+      questionsHeading: 'Built around five questions',
       products: {
         today: {
           name: 'Today',
-          desc: 'Daily guidance for your highest leverage action.'
+          question: 'What should I do today?'
         },
         decisions: {
           name: 'Decisions',
-          desc: 'A place to think before making important choices.'
+          question: 'What is the best choice?'
         },
         insights: {
           name: 'Insights',
-          desc: "Patterns and observations you probably wouldn't notice yourself."
+          question: 'What am I not seeing?'
         },
         create: {
           name: 'Create',
-          desc: "Focus and direction for everything you're building."
+          question: 'What deserves my energy?'
         },
         memory: {
           name: 'Memory',
-          desc: 'A place to remember who you are and who you choose to become.'
+          question: 'Who do I want to continue being?'
         }
       },
       version: 'v0.1',

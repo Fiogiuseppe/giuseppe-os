@@ -29,7 +29,8 @@ function parseRequest(body: Record<string, unknown>): BrainRequest {
     message: typeof body.message === 'string' ? body.message : '',
     decision: typeof body.decision === 'string' ? body.decision : undefined,
     reason: typeof body.reason === 'string' ? body.reason : undefined,
-    persist: typeof body.persist === 'boolean' ? body.persist : undefined
+    persist: typeof body.persist === 'boolean' ? body.persist : undefined,
+    locale: body.locale === 'en' ? 'en' : body.locale === 'it' ? 'it' : undefined
   };
 }
 

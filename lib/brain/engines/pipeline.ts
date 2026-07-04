@@ -6,6 +6,7 @@ import { runLearningEngine } from './learningEngine';
 import { loadLongTermMemory, loadWorkingMemory } from '../memory/store';
 import { buildEvidenceSnapshot, recordInsightObservation } from '../../memory/insights';
 import { assessEvidence } from '../../memory/evidence';
+import { resolveLocale } from '../../i18n/locale';
 
 function formatDecisionOutput(result: ReturnType<typeof runDecisionEngine>): string {
   return [
@@ -58,8 +59,10 @@ export async function runEnginePipeline(
   const working = await loadWorkingMemory();
   const persist = request.persist ?? true;
 
+  const locale = resolveLocale(request.locale);
+
   if (plan.engines.includes('awareness')) {
-    outputs.awareness = runAwarenessEngine({ proactive: true, longTerm, working });
+    outputs.awareness = runAwarenessEngine({ proactive: true, longTerm, working, locale });
     outputs.enginesUsed.push('awareness');
     blocks.push(formatAwarenessOutput(outputs.awareness));
 
@@ -70,7 +73,7 @@ export async function runEnginePipeline(
   }
 
   if (plan.engines.includes('potential')) {
-    const potential = runPotentialEngine({ longTerm, working });
+    const potential = runPotentialEngine({ longTerm, working, locale });
     outputs.opportunity = potential.todaysOpportunity;
     outputs.potentialBrief = potential;
     outputs.enginesUsed.push('potential');
@@ -80,7 +83,7 @@ export async function runEnginePipeline(
   if (plan.engines.includes('decision') && (request.decision || request.message)) {
     const decision = request.decision?.trim() || request.message.trim();
     const reason = request.reason?.trim() || '';
-    const decisionResult = runDecisionEngine({ decision, reason });
+    const decisionResult = runDecisionEngine({ decision, reason, locale });
     outputs.decision = decisionResult;
     outputs.enginesUsed.push('decision');
     blocks.push(formatDecisionOutput(decisionResult));

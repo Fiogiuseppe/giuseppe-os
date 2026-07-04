@@ -1,9 +1,14 @@
 import { MAX_BRIEFING_WORDS } from '../../../lib/todays-letter/prompt';
 import { generateDailyBriefing, mapBriefingError } from '../../../lib/todays-letter/generate';
 
-export async function POST() {
+function parseLocale(body: Record<string, unknown> | null): 'it' | 'en' {
+  return body?.locale === 'en' ? 'en' : 'it';
+}
+
+export async function POST(request: Request) {
   try {
-    const response = await generateDailyBriefing();
+    const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+    const response = await generateDailyBriefing(parseLocale(body));
     return Response.json(response);
   } catch (error) {
     const mapped = mapBriefingError(error);

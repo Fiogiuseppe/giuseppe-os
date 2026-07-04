@@ -7,14 +7,21 @@ import { buildEvidenceSnapshot } from '../../memory/insights';
 import { assessEvidence, confidenceFromEvidence } from '../../memory/evidence';
 import type { AICompletionRequest, AICompletionResponse, AIProvider } from './types';
 
-function formatDecisionResult(result: ReturnType<typeof runDecisionEngine>, confidenceScore: number | null): string {
+function formatDecisionResult(
+  result: ReturnType<typeof runDecisionEngine>,
+  confidenceScore: number | null,
+  locale: 'it' | 'en'
+): string {
   const boardPerspective = Object.entries(result.counsellors)
     .map(([key, text]) => `${COUNSELLOR_LABELS[key as keyof typeof result.counsellors]}: ${text}`)
     .join('\n');
 
   return JSON.stringify({
     recommendation: result.betterVersion,
-    whyItMatters: `Questa scelta tocca la North Star: ${result.betterVersion}`,
+    whyItMatters:
+      locale === 'en'
+        ? `This choice touches the North Star: ${result.betterVersion}`
+        : `Questa scelta tocca la North Star: ${result.betterVersion}`,
     hiddenNeed: result.hiddenNeed,
     bias: result.bias,
     boardPerspective,
@@ -30,6 +37,7 @@ export function createRuleBasedProvider(): AIProvider {
     name: 'rule-based',
     async complete(request: AICompletionRequest): Promise<AICompletionResponse> {
       const intent = request.context?.intent ?? 'query';
+      const locale = request.context?.locale ?? 'it';
       const longTerm = await loadLongTermMemory();
       const working = await loadWorkingMemory();
       const assessment = assessEvidence(buildEvidenceSnapshot(longTerm, working));
@@ -39,31 +47,33 @@ export function createRuleBasedProvider(): AIProvider {
         const reasonMatch = request.messages[0]?.content.match(/Reason:\s*(.+)/i);
         const decision = decisionMatch?.[1]?.trim() ?? request.messages[0]?.content ?? '';
         const reason = reasonMatch?.[1]?.trim() ?? '';
-        const result = runDecisionEngine({ decision, reason });
+        const result = runDecisionEngine({ decision, reason, locale });
         const confidence = confidenceFromEvidence(assessment, 3);
         return {
-          content: formatDecisionResult(result, confidence.value),
+          content: formatDecisionResult(result, confidence.value, locale),
           model: 'giuseppe-rule-engine'
         };
       }
 
       if (intent === 'awareness' || intent === 'reflect') {
-        const awareness = runAwarenessEngine({ proactive: true, longTerm, working });
+        const awareness = runAwarenessEngine({ proactive: true, longTerm, working, locale });
         return {
           content: [
             awareness.headline,
             awareness.insight,
             '',
-            `Perché conta: ${awareness.whyItMatters}`,
-            `Azione consigliata: ${awareness.recommendedAction}`,
-            `Prossimo passo: ${awareness.recommendedAction}`
+            locale === 'en' ? `Why it matters: ${awareness.whyItMatters}` : `Perché conta: ${awareness.whyItMatters}`,
+            locale === 'en'
+              ? `Recommended action: ${awareness.recommendedAction}`
+              : `Azione consigliata: ${awareness.recommendedAction}`,
+            locale === 'en' ? `Next step: ${awareness.recommendedAction}` : `Prossimo passo: ${awareness.recommendedAction}`
           ].join('\n'),
           model: 'giuseppe-awareness-engine'
         };
       }
 
       if (intent === 'potential') {
-        const potential = runPotentialEngine({ longTerm, working });
+        const potential = runPotentialEngine({ longTerm, working, locale });
         const today = potential.todaysOpportunity;
         const confidence =
           today.confidenceScore !== null ? String(today.confidenceScore) : today.confidenceLabel;

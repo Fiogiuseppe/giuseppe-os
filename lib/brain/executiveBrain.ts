@@ -155,7 +155,8 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
           answer,
           confidence,
           evidenceAssessment,
-          source: decisionSource
+          source: decisionSource,
+          locale: normalizedRequest.locale ?? context.locale
         })
       : undefined;
 

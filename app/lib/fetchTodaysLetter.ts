@@ -4,8 +4,12 @@ export type FetchTodaysLetterResult =
   | { ok: true; letter: DailyBriefingResponse }
   | { ok: false; message: string; status: number };
 
-export async function fetchTodaysLetter(): Promise<FetchTodaysLetterResult> {
-  const response = await fetch('/api/todays-letter', { method: 'POST' });
+export async function fetchTodaysLetter(locale: 'it' | 'en' = 'it'): Promise<FetchTodaysLetterResult> {
+  const response = await fetch('/api/todays-letter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ locale })
+  });
   const body = await response.json().catch(() => ({}));
 
   if (!response.ok) {

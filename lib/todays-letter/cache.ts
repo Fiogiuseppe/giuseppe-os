@@ -13,8 +13,12 @@ export function letterDateKey(now = new Date()): string {
   }).format(now);
 }
 
-export function readCachedLetter(dateKey: string): DailyBriefingResponse | null {
-  const cached = memoryCache.get(dateKey);
+export function letterCacheKey(dateKey: string, locale: 'it' | 'en' = 'it'): string {
+  return `${dateKey}:${locale}`;
+}
+
+export function readCachedLetter(dateKey: string, locale: 'it' | 'en' = 'it'): DailyBriefingResponse | null {
+  const cached = memoryCache.get(letterCacheKey(dateKey, locale));
   if (!cached) {
     return null;
   }
@@ -25,8 +29,8 @@ export function readCachedLetter(dateKey: string): DailyBriefingResponse | null 
   };
 }
 
-export function writeCachedLetter(dateKey: string, letter: DailyBriefingResponse): void {
-  memoryCache.set(dateKey, {
+export function writeCachedLetter(dateKey: string, letter: DailyBriefingResponse, locale: 'it' | 'en' = 'it'): void {
+  memoryCache.set(letterCacheKey(dateKey, locale), {
     ...letter,
     cached: false,
     letter: letter.briefing

@@ -4,14 +4,15 @@ export type FetchCreateResult =
   | { ok: true; potential: PotentialBrief }
   | { ok: false; message: string; status: number };
 
-export async function fetchCreateViaBrain(): Promise<FetchCreateResult> {
+export async function fetchCreateViaBrain(locale: 'it' | 'en' = 'it'): Promise<FetchCreateResult> {
   const response = await fetch('/api/brain', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       intent: 'potential',
       message: 'What should I focus on today?',
-      persist: true
+      persist: true,
+      locale
     })
   });
 

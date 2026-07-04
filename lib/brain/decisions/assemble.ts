@@ -11,13 +11,18 @@ function clampConfidence(value: number | undefined, fallback: number): number {
   return Math.max(0, Math.min(100, value > 1 ? Math.round(value) : Math.round(value * 100)));
 }
 
+import { pickLocale } from '../../i18n/locale';
+import type { AppLocale } from '../../i18n/locale';
+
 export function assembleDecisionAIResult(params: {
   engine: DecisionResult;
   answer: string;
   confidence: number;
   evidenceAssessment?: EvidenceAssessment;
   source: DecisionResponseSource;
+  locale?: AppLocale;
 }): DecisionAIResult {
+  const locale = params.locale ?? 'it';
   const parsed = parseDecisionFieldsFromAnswer(params.answer);
   const boardPerspective = parsed.boardPerspective ?? summarizeBoard(params.engine);
   const gated = params.evidenceAssessment
@@ -39,7 +44,11 @@ export function assembleDecisionAIResult(params: {
     recommendation: parsed.recommendation ?? params.engine.betterVersion ?? params.engine.nextAction,
     whyItMatters:
       parsed.whyItMatters ??
-      `Questa scelta tocca la North Star di Giuseppe: ${params.engine.betterVersion}`,
+      pickLocale(
+        locale,
+        `Questa scelta tocca la North Star di Giuseppe: ${params.engine.betterVersion}`,
+        `This choice touches Giuseppe's North Star: ${params.engine.betterVersion}`
+      ),
     boardPerspective,
     confidenceScore,
     confidenceLabel: gated?.labelKey ?? (confidenceScore !== null ? 'score' : 'notEnoughData'),

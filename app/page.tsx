@@ -259,7 +259,7 @@ export default function Home() {
     setDecisionError(null);
     setDecisionResult(null);
 
-    const response = await decideViaBrain(decisionText, answers);
+    const response = await decideViaBrain(decisionText, answers, locale);
 
     setDecisionLoading(false);
 
@@ -369,7 +369,7 @@ export default function Home() {
       setInsightsLoading(true);
       setInsightsError(null);
 
-      const response = await fetchInsightsViaBrain();
+      const response = await fetchInsightsViaBrain(locale);
       if (cancelled) {
         return;
       }
@@ -389,7 +389,7 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     let cancelled = false;
@@ -398,7 +398,7 @@ export default function Home() {
       setCreateLoading(true);
       setCreateError(null);
 
-      const response = await fetchCreateViaBrain();
+      const response = await fetchCreateViaBrain(locale);
       if (cancelled) {
         return;
       }
@@ -418,7 +418,7 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     let cancelled = false;
@@ -427,7 +427,7 @@ export default function Home() {
       setLetterLoading(true);
       setLetterError(null);
 
-      const response = await fetchTodaysLetter();
+      const response = await fetchTodaysLetter(locale);
       if (cancelled) {
         return;
       }
@@ -447,7 +447,7 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale]);
 
   const [createFocus, setCreateFocus] = useState<'projects' | 'potential' | 'why' | null>(null);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
@@ -526,9 +526,6 @@ export default function Home() {
           <div className={`view-body progressive-body mental-space mental-space-${view}`}>
             {view === 'today' && (
               <div className="today-calm">
-                <div className="today-presence">
-                  <TodayAvatarNav onNavigate={setView} />
-                </div>
                 <div className="today-action" data-testid="today-action">
                   {letterLoading && (
                     <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>
@@ -539,6 +536,9 @@ export default function Home() {
                   {!letterLoading && !letterError && todaysLetter && (
                     <p className="today-action-text">{todaysLetter.sections.oneBigMove}</p>
                   )}
+                </div>
+                <div className="today-presence">
+                  <TodayAvatarNav onNavigate={setView} />
                 </div>
               </div>
             )}
