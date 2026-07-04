@@ -11,9 +11,9 @@ const PROJECT_VISUALS: Record<string, ProjectVisual> = {
     variant: 'logo'
   },
   'Visceral Poems': {
-    src: '/images/VISCERAL-POETRY-126-scaled.jpg',
+    src: '/images/LOGO_Visceral%20poems%20%20copy.png',
     alt: 'Visceral Poems',
-    variant: 'cover'
+    variant: 'logo'
   },
   UREES: {
     src: '/images/Urees_Logo_9afae6b4-d876-4082-8c40-869d133e917b.webp',

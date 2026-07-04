@@ -96,8 +96,8 @@ export const messages = {
       depthTitle: 'GLI STRATI PROFONDI',
       backToManifesto: 'Torna al manifesto',
       constitutionNote: 'Un manifesto personale — tocca ogni dominio.',
-      tunnelLeft: 'PIÙ',
-      tunnelRight: 'DENTRO'
+      tunnelLeft: 'THINK',
+      tunnelRight: 'POSSIBLE'
     },
     decisions: {
       openingPrompt: 'Cosa stai decidendo?',
@@ -315,8 +315,8 @@ export const messages = {
       depthTitle: 'THE DEEPER LAYERS',
       backToManifesto: 'Back to manifesto',
       constitutionNote: 'A personal manifesto — tap each domain.',
-      tunnelLeft: 'GO',
-      tunnelRight: 'DEEPER'
+      tunnelLeft: 'THINK',
+      tunnelRight: 'POSSIBLE'
     },
     decisions: {
       openingPrompt: 'What are you deciding?',

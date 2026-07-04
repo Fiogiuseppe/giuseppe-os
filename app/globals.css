@@ -1548,17 +1548,19 @@ html.about-route body {
 
 .main-memory {
   gap: 0;
+  padding: 0;
 }
 
 .main-memory .view-body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   flex: 1;
   min-height: 0;
   overflow: hidden;
   position: relative;
+  padding: 0;
 }
 
 .memory-space {
@@ -1733,14 +1735,16 @@ html.about-route body {
 }
 
 .memory-space--immersive {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  inset: auto;
   max-width: none;
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
+  align-items: stretch;
+  justify-content: stretch;
 }
 
 .memory-stage--tunnel {
@@ -1763,6 +1767,7 @@ html.about-route body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: clamp(8px, 2vh, 20px) var(--app-gutter);
 }
 
 .memory-tunnel-content {
@@ -1774,6 +1779,7 @@ html.about-route body {
   gap: clamp(18px, 3vh, 28px);
   width: 100%;
   max-width: min(920px, 100%);
+  margin: 0 auto;
   padding: clamp(8px, 2vh, 20px) var(--app-gutter);
 }
 
@@ -1782,9 +1788,12 @@ html.about-route body {
   --tunnel-y: 0px;
   --tunnel-rotate: 0deg;
   --tunnel-line: rgba(0, 0, 0, 0.14);
-  --tunnel-wall: rgba(0, 0, 0, 0.06);
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  top: 56px;
+  right: 0;
+  bottom: 42px;
+  left: 0;
+  width: 100vw;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
@@ -1805,26 +1814,28 @@ html.about-route body {
 .memory-tunnel-wall {
   position: absolute;
   top: 50%;
-  font-size: clamp(72px, 14vw, 180px);
+  font-family: 'Helvetica Neue Condensed Bold', 'Helvetica Condensed', 'Arial Narrow', Helvetica, Arial, sans-serif;
+  font-stretch: condensed;
+  font-size: clamp(88px, 18vw, 240px);
   font-weight: 700;
-  line-height: 0.85;
-  letter-spacing: -0.06em;
+  line-height: 0.82;
+  letter-spacing: -0.04em;
   text-transform: uppercase;
-  color: var(--tunnel-wall);
-  opacity: 1;
+  color: #000;
+  opacity: 0.16;
   user-select: none;
   white-space: nowrap;
 }
 
 .memory-tunnel-wall--left {
-  left: -4%;
-  transform: translateY(-50%) perspective(500px) rotateY(38deg) scaleX(1.1);
+  left: -2%;
+  transform: translateY(-50%) perspective(620px) rotateY(40deg) scaleX(1.08);
   transform-origin: right center;
 }
 
 .memory-tunnel-wall--right {
-  right: -4%;
-  transform: translateY(-50%) perspective(500px) rotateY(-38deg) scaleX(1.1);
+  right: -2%;
+  transform: translateY(-50%) perspective(620px) rotateY(-40deg) scaleX(1.08);
   transform-origin: left center;
 }
 
@@ -3688,6 +3699,10 @@ label {
 @media (max-width: 1100px) {
   :root {
     --app-gutter: 10px;
+  }
+
+  .memory-tunnel {
+    top: 40px;
   }
 
   .topbar {
