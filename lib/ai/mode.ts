@@ -1,7 +1,7 @@
 export type AIMode = 'mock' | 'live';
 
-export function hasAnthropicApiKey(): boolean {
-  return Boolean(process.env.ANTHROPIC_API_KEY?.trim());
+export function hasRequestyApiKey(): boolean {
+  return Boolean(process.env.REQUESTY_API_KEY?.trim());
 }
 
 export function resolveAIMode(): AIMode {
@@ -10,7 +10,7 @@ export function resolveAIMode(): AIMode {
     return 'mock';
   }
 
-  if (configured === 'live' && hasAnthropicApiKey()) {
+  if (configured === 'live' && hasRequestyApiKey()) {
     return 'live';
   }
 

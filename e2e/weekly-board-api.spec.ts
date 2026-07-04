@@ -30,7 +30,7 @@ test.describe('Giuseppe OS Weekly Board API', () => {
     expect(body.challenge.length).toBeGreaterThan(0);
     expect(typeof body.trajectoryCheck).toBe('string');
     expect(body.trajectoryCheck.length).toBeGreaterThan(0);
-    expect(['anthropic', 'fallback', 'mock']).toContain(body.source);
+    expect(['requesty', 'fallback', 'mock']).toContain(body.source);
     expect(body.weekKey).toMatch(/^\d{4}-W\d{2}$/);
     expect(typeof body.cached).toBe('boolean');
     expect(typeof body.pipeline.thinEvidence).toBe('boolean');

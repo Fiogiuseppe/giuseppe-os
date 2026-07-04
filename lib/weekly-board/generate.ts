@@ -1,7 +1,7 @@
 import { isAIMockMode, isAILiveMode } from '../ai/mode';
 import { runWithAICallMeta } from '../ai/callContext';
 import { wrapProviderWithLogging } from '../ai/loggedProvider';
-import { createClaudeProvider } from '../brain/providers/claude';
+import { createRequestyProvider } from '../brain/providers/requesty';
 import { ProviderConfigurationError, ProviderRequestError } from '../brain/providers/types';
 import { resolveLocale, pickLocale, type AppLocale } from '../i18n/locale';
 import { WEEKLY_BOARD_SYSTEM_PROMPT } from '../oracle/weeklyPrompt';
@@ -22,8 +22,8 @@ export type GenerateWeeklyBoardOptions = {
   regenerate?: boolean;
 };
 
-function hasAnthropicKey(): boolean {
-  return Boolean(process.env.ANTHROPIC_API_KEY?.trim());
+function hasRequestyKey(): boolean {
+  return Boolean(process.env.REQUESTY_API_KEY?.trim());
 }
 
 function pipelineMeta(context: WeeklyBoardContext): WeeklyBoardPipelineMeta {
@@ -62,7 +62,7 @@ async function buildMockWeeklyBoard(context: WeeklyBoardContext): Promise<Weekly
 async function buildLiveWeeklyBoard(context: WeeklyBoardContext): Promise<WeeklyBoardResponse> {
   const fallback = buildFallbackWeeklyBoard(context, context.locale);
 
-  if (context.thinEvidence || !hasAnthropicKey()) {
+  if (context.thinEvidence || !hasRequestyKey()) {
     return buildResponse(fallback, 'fallback', context, false);
   }
 
@@ -83,7 +83,7 @@ async function buildLiveWeeklyBoard(context: WeeklyBoardContext): Promise<Weekly
       context.oracleEvidenceBlock
     ].join('\n\n');
 
-    const provider = wrapProviderWithLogging(createClaudeProvider(), 'weekly-board');
+    const provider = wrapProviderWithLogging(createRequestyProvider(), 'weekly-board');
     const completion = await provider.complete({
       system: WEEKLY_BOARD_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }],
@@ -92,7 +92,7 @@ async function buildLiveWeeklyBoard(context: WeeklyBoardContext): Promise<Weekly
     });
 
     const parsed = normalizeWeeklyBoardSections(parseWeeklyBoardResponse(completion.content), fallback);
-    return buildResponse(parsed, 'anthropic', context, false);
+    return buildResponse(parsed, 'requesty', context, false);
   } catch (error) {
     if (!(error instanceof ProviderConfigurationError || error instanceof ProviderRequestError)) {
       throw error;

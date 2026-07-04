@@ -32,7 +32,7 @@ export async function GET() {
     version: '1.0.0-weekly-board',
     method: 'POST',
     aiMode: resolveAIMode(),
-    provider: 'anthropic',
+    provider: 'requesty',
     cache: 'iso-week',
     pipeline: ['oracle-evidence', 'weekly-board-generator']
   });

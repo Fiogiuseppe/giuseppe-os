@@ -5,7 +5,7 @@ export type WeeklyBoardSections = {
   trajectoryCheck: string;
 };
 
-export type WeeklyBoardSource = 'anthropic' | 'fallback' | 'mock';
+export type WeeklyBoardSource = 'requesty' | 'fallback' | 'mock';
 
 export type WeeklyBoardPipelineMeta = {
   evidenceDecisions: number;

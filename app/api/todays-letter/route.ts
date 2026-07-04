@@ -36,7 +36,7 @@ export async function GET() {
     method: 'POST',
     maxWords: MAX_BRIEFING_WORDS,
     aiMode: resolveAIMode(),
-    provider: 'anthropic',
+    provider: 'requesty',
     cache: 'daily',
     cacheLayers: ['file', 'platform-data-cache'],
     pipeline: [

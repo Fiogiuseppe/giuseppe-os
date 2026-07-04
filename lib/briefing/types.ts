@@ -13,7 +13,7 @@ export interface DailyBriefingSections {
   reflection: string;
 }
 
-export type DailyBriefingSource = 'anthropic' | 'fallback' | 'mock';
+export type DailyBriefingSource = 'requesty' | 'fallback' | 'mock';
 
 export interface DailyBriefingPipelineMeta {
   realitySignals: number;

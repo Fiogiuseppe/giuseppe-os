@@ -1,7 +1,7 @@
 import { isAIMockMode, isAILiveMode } from '../ai/mode';
 import { runWithAICallMeta } from '../ai/callContext';
 import { wrapProviderWithLogging } from '../ai/loggedProvider';
-import { createClaudeProvider } from '../brain/providers/claude';
+import { createRequestyProvider } from '../brain/providers/requesty';
 import { ProviderConfigurationError, ProviderRequestError } from '../brain/providers/types';
 import { resolveLocale, pickLocale, type AppLocale } from '../i18n/locale';
 import { loadBrain, loadLongTermMemory } from '../brain/memory/store';
@@ -125,8 +125,8 @@ function buildResponse(
   };
 }
 
-function hasAnthropicKey(): boolean {
-  return Boolean(process.env.ANTHROPIC_API_KEY?.trim());
+function hasRequestyKey(): boolean {
+  return Boolean(process.env.REQUESTY_API_KEY?.trim());
 }
 
 async function buildMockBriefing(
@@ -145,7 +145,7 @@ async function buildLiveBriefing(
 ): Promise<DailyBriefingResponse> {
   const fallbackSections = buildFallbackBriefing(context, locale);
 
-  if (!hasAnthropicKey()) {
+  if (!hasRequestyKey()) {
     const filtered = await filterSectionsThroughTrajectory(fallbackSections, context);
     const gated = applyQualityGate(filtered, context);
     return buildResponse(gated.sections, 'fallback', context, gated.quality, false);
@@ -166,7 +166,7 @@ async function buildLiveBriefing(
       formatContextForPrompt(context)
     ].join('\n\n');
 
-    const provider = wrapProviderWithLogging(createClaudeProvider(), 'todays-letter');
+    const provider = wrapProviderWithLogging(createRequestyProvider(), 'todays-letter');
     const completion = await provider.complete({
       system: DAILY_BRIEFING_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userPrompt }],
@@ -179,7 +179,7 @@ async function buildLiveBriefing(
 
     const filtered = await filterSectionsThroughTrajectory(parsed, context);
     const gated = applyQualityGate(filtered, context);
-    return buildResponse(gated.sections, 'anthropic', context, gated.quality, false);
+    return buildResponse(gated.sections, 'requesty', context, gated.quality, false);
   } catch (error) {
     if (!(error instanceof ProviderConfigurationError || error instanceof ProviderRequestError)) {
       throw error;
@@ -251,7 +251,7 @@ export function mapBriefingError(error: unknown): { status: number; message: str
     return {
       status: 503,
       message:
-        'Giuseppe OS non può preparare il briefing di oggi. Verifica ANTHROPIC_API_KEY e AI_MODE=live sul server.'
+        'Giuseppe OS non può preparare il briefing di oggi. Verifica REQUESTY_API_KEY e AI_MODE=live sul server.'
     };
   }
 
