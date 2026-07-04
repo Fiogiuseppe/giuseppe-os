@@ -3,7 +3,7 @@
   --parallax-y: 0px;
   --parallax-rotate: 0deg;
   width: 100%;
-  max-width: min(72vh, 880px);
+  max-width: min(56vh, 760px);
   aspect-ratio: 1 / 1;
   margin: 0 auto;
   background: transparent;
