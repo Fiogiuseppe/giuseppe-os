@@ -270,7 +270,7 @@ html.about-route body {
 .today-action-text {
   margin: 0;
   font-size: clamp(36px, 5.6vh, 58px);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 0.98;
   letter-spacing: -0.035em;
   color: var(--fg);
@@ -282,6 +282,7 @@ html.about-route body {
 .today-action-text--error {
   color: var(--muted);
   font-style: italic;
+  font-weight: 500;
   text-transform: none;
 }
 
@@ -4015,7 +4016,7 @@ label {
   .today-ritual-action {
     font-family: var(--font-serif), Georgia, serif;
     font-size: clamp(27px, 6vw, 35px);
-    font-weight: 500;
+    font-weight: 700;
     line-height: 1.18;
     color: var(--fg);
     text-transform: uppercase;
