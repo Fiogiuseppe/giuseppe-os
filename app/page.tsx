@@ -24,6 +24,7 @@ import {
   DisclosurePanel,
   DisclosureTrigger
 } from './components/Disclosure';
+import { DecisionIntakePanel } from './components/DecisionIntakePanel';
 import TodayMobileRitual from './components/TodayMobileRitual';
 import { TodayDraggablePresence } from './components/TodayDraggablePresence';
 import { AppTopbar } from './components/AppTopbar';
@@ -506,8 +507,8 @@ export default function Home() {
       <AppTopbar mode="spa" activeView={view} onNavigate={setView} />
 
       <div className="app-body">
-        <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}`} role="main">
-          <header className={`page-header progressive-header space-header-${view}${view === 'today' ? ' page-header-today' : ''}`}>
+        <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}${view === 'decisions' ? ' main-decisions' : ''}`} role="main">
+          <header className={`page-header progressive-header space-header-${view}${view === 'today' ? ' page-header-today' : ''}${view === 'decisions' ? ' page-header-decisions' : ''}`}>
             {view !== 'today' && (
               <>
                 <div className="space-meta">
@@ -566,73 +567,21 @@ export default function Home() {
                 ) : (
                   <>
                     {!decisionResult && (
-                      <div className="decision-conversation">
-                        {intakePhase === 'opening' && (
-                          <>
-                            <p className="decision-opening-prompt">{t('decisions.openingPrompt')}</p>
-                            <input
-                              className="input decision-open-input"
-                              data-testid="decision-open-input"
-                              value={decision}
-                              onChange={e => setDecision(e.target.value)}
-                              placeholder={t('decisions.openingPlaceholder')}
-                              onKeyDown={e => {
-                                if (e.key === 'Enter') {
-                                  void handleDecisionContinue();
-                                }
-                              }}
-                            />
-                          </>
-                        )}
-
-                        {intakePhase === 'listening' && (
-                          <>
-                            <p className="decision-context-line">{decision}</p>
-                            {intakeQuestion && (
-                              <p className="decision-followup-question" data-testid="decision-followup">
-                                {intakeQuestion}
-                              </p>
-                            )}
-                            <input
-                              className="input decision-followup-input"
-                              data-testid="decision-followup-input"
-                              value={currentAnswer}
-                              onChange={e => setCurrentAnswer(e.target.value)}
-                              placeholder={t('decisions.followupPlaceholder')}
-                              onKeyDown={e => {
-                                if (e.key === 'Enter') {
-                                  void handleDecisionContinue();
-                                }
-                              }}
-                            />
-                          </>
-                        )}
-
-                        {intakePhase === 'reasoning' && (
-                          <p className="decision-reasoning">{t('decisions.reasoning')}</p>
-                        )}
-
-                        {intakePhase !== 'reasoning' && (
-                          <button
-                            className="primary decision-continue"
-                            type="button"
-                            data-testid="decision-continue"
-                            disabled={
-                              decisionLoading ||
-                              (intakePhase === 'opening' ? !decision.trim() : !currentAnswer.trim())
-                            }
-                            onClick={() => void handleDecisionContinue()}
-                          >
-                            {decisionLoading ? t('decisions.simulating') : t('decisions.continue')}
-                          </button>
-                        )}
-
-                        {decisionError && <p className="decision-error">{decisionError}</p>}
-                      </div>
+                      <DecisionIntakePanel
+                        intakePhase={intakePhase}
+                        decision={decision}
+                        currentAnswer={currentAnswer}
+                        intakeQuestion={intakeQuestion}
+                        decisionLoading={decisionLoading}
+                        decisionError={decisionError}
+                        onDecisionChange={setDecision}
+                        onAnswerChange={setCurrentAnswer}
+                        onContinue={() => void handleDecisionContinue()}
+                      />
                     )}
 
                     {decisionResult && (
-                      <div className="decision-conversation">
+                      <div className="decision-result-stage">
                         <DecisionResultDisclosure
                           key={`${decisionResult.categoryLabel}-${decisionResult.nextAction}-${decisionResult.confidenceScore}`}
                           result={decisionResult}
@@ -645,6 +594,7 @@ export default function Home() {
                     )}
 
                     <DisclosureTrigger
+                      className="disclosure-trigger decision-purpose-link"
                       label={t('disclosure.explorePurpose')}
                       onClick={() => setDecisionsFocus('purpose')}
                     />
