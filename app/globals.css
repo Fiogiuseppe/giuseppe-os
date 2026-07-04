@@ -37,6 +37,13 @@ a {
   text-decoration: none;
 }
 
+html.about-route,
+html.about-route body {
+  overflow: auto;
+  height: auto;
+  min-height: 100%;
+}
+
 @keyframes content-enter {
   from {
     opacity: 0;
@@ -1916,14 +1923,22 @@ a {
 
 .footer {
   border-top: 1px solid var(--border-soft);
-  padding: 6px 40px;
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 10px;
-  font-style: italic;
+  padding: 8px 40px;
+  font-size: 11px;
   text-align: center;
   line-height: 1.4;
   color: var(--muted);
   flex-shrink: 0;
+}
+
+.footer-link {
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  transition: color 0.2s var(--ease);
+}
+
+.footer-link:hover {
+  color: var(--fg);
 }
 
 .footer p {
