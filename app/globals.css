@@ -242,7 +242,7 @@ html.about-route body {
   margin: 0;
   font-size: clamp(36px, 5.6vh, 58px);
   font-weight: 500;
-  line-height: 1.05;
+  line-height: 0.98;
   letter-spacing: -0.035em;
   color: var(--fg);
   overflow-wrap: anywhere;
@@ -2533,7 +2533,7 @@ label {
 
   .today-action-text {
     font-size: clamp(25px, 5vw, 37px);
-    line-height: 1.18;
+    line-height: 1.02;
   }
 
   .today-presence {
