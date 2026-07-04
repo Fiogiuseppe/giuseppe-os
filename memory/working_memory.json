@@ -20,6 +20,41 @@
       "intent": "learn",
       "summary": "Learning report",
       "query": "Analyze my patterns and lessons."
+    },
+    {
+      "id": "session_1783158763484",
+      "timestamp": "2026-07-04T09:52:43.484Z",
+      "intent": "learn",
+      "summary": "Learning report",
+      "query": "Analyze my patterns and lessons."
+    },
+    {
+      "id": "session_1783158833085",
+      "timestamp": "2026-07-04T09:53:53.085Z",
+      "intent": "learn",
+      "summary": "Learning report",
+      "query": "Analyze my patterns and lessons."
+    },
+    {
+      "id": "session_1783158942983",
+      "timestamp": "2026-07-04T09:55:42.983Z",
+      "intent": "learn",
+      "summary": "Learning report",
+      "query": "Analyze my patterns and lessons."
+    },
+    {
+      "id": "session_1783159007567",
+      "timestamp": "2026-07-04T09:56:47.567Z",
+      "intent": "learn",
+      "summary": "Learning report",
+      "query": "Analyze my patterns and lessons."
+    },
+    {
+      "id": "session_1783159116153",
+      "timestamp": "2026-07-04T09:58:36.153Z",
+      "intent": "learn",
+      "summary": "Learning report",
+      "query": "Analyze my patterns and lessons."
     }
   ],
   "notes": [],
@@ -45,6 +80,46 @@
       "type": "lesson",
       "content": "Learning report",
       "createdAt": "2026-07-04T09:40:05.301Z",
+      "confidence": 0.75,
+      "source": "interaction"
+    },
+    {
+      "id": "record_1783158763484",
+      "type": "lesson",
+      "content": "Learning report",
+      "createdAt": "2026-07-04T09:52:43.484Z",
+      "confidence": 0.75,
+      "source": "interaction"
+    },
+    {
+      "id": "record_1783158833085",
+      "type": "lesson",
+      "content": "Learning report",
+      "createdAt": "2026-07-04T09:53:53.085Z",
+      "confidence": 0.75,
+      "source": "interaction"
+    },
+    {
+      "id": "record_1783158942983",
+      "type": "lesson",
+      "content": "Learning report",
+      "createdAt": "2026-07-04T09:55:42.983Z",
+      "confidence": 0.75,
+      "source": "interaction"
+    },
+    {
+      "id": "record_1783159007567",
+      "type": "lesson",
+      "content": "Learning report",
+      "createdAt": "2026-07-04T09:56:47.567Z",
+      "confidence": 0.75,
+      "source": "interaction"
+    },
+    {
+      "id": "record_1783159116153",
+      "type": "lesson",
+      "content": "Learning report",
+      "createdAt": "2026-07-04T09:58:36.153Z",
       "confidence": 0.75,
       "source": "interaction"
     }
