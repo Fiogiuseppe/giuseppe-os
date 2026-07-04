@@ -170,7 +170,9 @@ export const messages = {
       goalsTitle: 'Obiettivi finanziari.'
     },
     footer: {
-      about: 'About'
+      about: 'About',
+      designedFor: 'Progettato per Giuseppe da',
+      designerName: 'Giuseppe'
     },
     about: {
       back: 'Giuseppe OS',
@@ -343,7 +345,9 @@ export const messages = {
       goalsTitle: 'Financial goals.'
     },
     footer: {
-      about: 'About'
+      about: 'About',
+      designedFor: 'Designed for Giuseppe by',
+      designerName: 'Giuseppe'
     },
     about: {
       back: 'Giuseppe OS',

@@ -29,6 +29,7 @@ import TodayMobileRitual from './components/TodayMobileRitual';
 import { AppTopbar } from './components/AppTopbar';
 import { DevAiControls } from './components/DevAiControls';
 import { AiStatusIndicator } from './components/AiStatusIndicator';
+import { FooterCredit } from './components/FooterCredit';
 import { useLanguage } from './lib/i18n/LanguageContext';
 import { isAppView, type AppView } from './lib/views';
 
@@ -849,11 +850,16 @@ export default function Home() {
         </main>
 
         <footer className="footer">
-          <DevAiControls letterLoading={letterLoading} onRegenerate={() => void handleRegenerateBriefing()} />
-          <Link href="/about" className="footer-link">
-            {t('footer.about')}
-          </Link>
-          <AiStatusIndicator />
+          <div className="footer-start">
+            <DevAiControls letterLoading={letterLoading} onRegenerate={() => void handleRegenerateBriefing()} />
+            <Link href="/about" className="footer-link">
+              {t('footer.about')}
+            </Link>
+          </div>
+          <FooterCredit />
+          <div className="footer-end">
+            <AiStatusIndicator />
+          </div>
         </footer>
       </div>
     </div>

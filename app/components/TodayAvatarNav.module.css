@@ -17,7 +17,7 @@
 
 .shell :global([class*='portraitBase']),
 .shell :global([class*='eyeOverlay']) {
-  transform: scale(1.12);
+  transform: scale(1.24);
   transform-origin: center center;
 }
 
@@ -155,6 +155,11 @@
 }
 
 @media (max-width: 900px) {
+  .shell :global([class*='portraitBase']),
+  .shell :global([class*='eyeOverlay']) {
+    transform: scale(1.08);
+  }
+
   .hint {
     font-size: 10px;
     bottom: -4%;
