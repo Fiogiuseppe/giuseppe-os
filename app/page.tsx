@@ -18,7 +18,7 @@ import {
   DisclosureTrigger,
   RitualStep
 } from './components/Disclosure';
-import { JewelFace } from './components/JewelFace';
+import LivingAvatar from './components/LivingAvatar';
 import { useLanguage } from './lib/i18n/LanguageContext';
 
 type View = 'today' | 'decisions' | 'insights' | 'create' | 'memory';
@@ -395,7 +395,7 @@ export default function Home() {
                 </div>
 
                 <div className="companion-presence">
-                  <JewelFace />
+                  <LivingAvatar />
                 </div>
 
                 <div className="companion-editorial-right">
