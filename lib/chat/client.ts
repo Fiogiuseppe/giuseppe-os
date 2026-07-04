@@ -26,8 +26,6 @@ const REQUESTY_ENDPOINT = 'https://router.requesty.ai/v1/chat/completions';
 const REQUESTY_MODEL = process.env.BRAIN_AI_MODEL ?? 'openai/gpt-5-mini';
 const GEMINI_MODEL = process.env.BRAIN_GEMINI_MODEL ?? 'gemini-2.0-flash';
 
-const LIVE_CHAT_PROVIDERS: AIProviderName[] = ['groq', 'gemini', 'requesty'];
-
 function mapProviderError(error: unknown, providerLabel: string): never {
   if (error instanceof ProviderConfigurationError) {
     throw new ChatConfigurationError(
@@ -102,30 +100,19 @@ async function chatWithOllamaFallback(messages: ChatMessage[], system: string): 
   }
 }
 
-function providerHasKey(name: AIProviderName): boolean {
-  if (name === 'groq') {
-    return hasGroqApiKey();
-  }
-  if (name === 'gemini') {
-    return hasGeminiApiKey();
-  }
-  if (name === 'requesty') {
-    return hasRequestyApiKey();
-  }
-  return false;
-}
-
 function resolveChatProvider(): ChatProviderName | null {
   const configured = resolveConfiguredAiProvider();
 
-  if (LIVE_CHAT_PROVIDERS.includes(configured) && providerHasKey(configured)) {
-    return configured as ChatProviderName;
+  if (configured === 'groq' && hasGroqApiKey()) {
+    return 'groq';
   }
 
-  for (const candidate of LIVE_CHAT_PROVIDERS) {
-    if (providerHasKey(candidate)) {
-      return candidate as ChatProviderName;
-    }
+  if (configured === 'gemini' && hasGeminiApiKey()) {
+    return 'gemini';
+  }
+
+  if (configured === 'requesty' && hasRequestyApiKey()) {
+    return 'requesty';
   }
 
   return null;
