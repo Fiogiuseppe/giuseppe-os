@@ -966,16 +966,16 @@ html.chat-route body {
 }
 
 .insights-focus-panel {
-  padding: clamp(22px, 3vh, 32px);
-  border: 1.5px solid var(--border-soft);
+  padding: clamp(18px, 2.5vh, 28px) 0 clamp(18px, 2.5vh, 28px) clamp(16px, 2.5vw, 24px);
+  border: none;
   border-left: 2px solid var(--accent);
-  border-radius: clamp(18px, 3vw, 28px);
-  background: rgba(0, 0, 0, 0.02);
+  border-radius: 0;
+  background: transparent;
 }
 
 .insights-focus-panel p,
 .insights-focus-panel li {
-  font-size: clamp(16px, 1.9vw, 20px);
+  font-size: clamp(18px, 2.2vw, 24px);
   line-height: 1.55;
   color: var(--fg);
 }
@@ -3935,15 +3935,20 @@ label {
     font-size: 11px;
   }
 
-  .ai-output-card.card h3,
-  .ai-output-card.card .ai-output-card-title {
-    font-size: clamp(20px, 5.5vw, 28px);
+  .insights-stage .ai-output-card.card h3,
+  .insights-stage .ai-output-card.card .ai-output-card-title {
+    font-size: clamp(24px, 7vw, 36px);
   }
 
-  .ai-output-card.card p,
-  .ai-output-card.card .ai-output-card-body,
-  .ai-output-card.card .ai-output-card-next {
-    font-size: clamp(16px, 4.2vw, 18px);
+  .insights-stage .ai-output-card.card p,
+  .insights-stage .ai-output-card.card .ai-output-card-body,
+  .insights-stage .ai-output-card.card .ai-output-card-next {
+    font-size: clamp(18px, 4.8vw, 22px);
+  }
+
+  .insights-focus-panel p,
+  .insights-focus-panel li {
+    font-size: clamp(17px, 4.5vw, 20px);
   }
 
   .create-hero-card {
@@ -4609,6 +4614,63 @@ label {
 .ai-output-card.card .ai-output-card-next {
   margin: 0;
   font-size: clamp(16px, 1.9vw, 20px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+/* Insights — open editorial layout, no boxed card */
+.insights-stage .ai-output-card.card {
+  width: min(820px, 100%);
+  padding: 0;
+  margin: clamp(-12px, -1.5vh, -4px) 0 clamp(4px, 1vh, 12px);
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.insights-stage .ai-output-card.card:hover {
+  border: none;
+  background: transparent;
+  transform: none;
+}
+
+.insights-stage .ai-output-card .kicker {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  margin-bottom: clamp(14px, 2vh, 20px);
+}
+
+.insights-stage .ai-output-card.card h3,
+.insights-stage .ai-output-card.card .ai-output-card-title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(30px, 4.8vw, 52px);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  margin: 0 0 clamp(18px, 2.8vh, 28px);
+}
+
+.insights-stage .ai-output-card.card p,
+.insights-stage .ai-output-card.card .ai-output-card-body {
+  max-width: min(700px, 100%);
+  margin: 0 auto clamp(22px, 3vh, 34px);
+  font-size: clamp(20px, 2.6vw, 28px);
+  line-height: 1.48;
+  font-weight: 400;
+  color: var(--fg);
+}
+
+.insights-stage .ai-output-card-next-kicker {
+  margin-top: 0;
+  margin-bottom: clamp(12px, 1.8vh, 16px);
+}
+
+.insights-stage .ai-output-card.card .ai-output-card-next {
+  max-width: min(700px, 100%);
+  margin: 0 auto;
+  font-size: clamp(18px, 2.2vw, 24px);
   line-height: 1.5;
   font-weight: 500;
   color: var(--fg);
