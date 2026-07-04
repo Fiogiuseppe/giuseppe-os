@@ -217,3 +217,5 @@ export const SAMPLE_ORACLE_OUTPUTS = {
       'Sei giorni fa scegliesti Netflix invece di chiudere una decisione — cosa stai ancora rimandando oggi?'
   }
 } as const;
+
+export { SAMPLE_WEEKLY_BOARD_RESPONSE } from '../weekly-board/fixtures';

@@ -18,6 +18,7 @@ import { fetchDecisionIntake } from './lib/decisionIntake';
 import { fetchCreateViaBrain } from './lib/fetchCreateViaBrain';
 import { fetchInsightsViaBrain } from './lib/fetchInsightsViaBrain';
 import { fetchTodaysLetter } from './lib/fetchTodaysLetter';
+import { fetchWeeklyBoard } from './lib/fetchWeeklyBoard';
 import { formatConfidenceDisplay, formatProgressDisplay } from './lib/formatConfidence';
 import { MemoryManifesto } from './components/MemoryManifesto';
 import {
@@ -28,6 +29,13 @@ import { InsightsStage } from './components/InsightsStage';
 import { CreateStage } from './components/CreateStage';
 import { DecisionIntakePanel } from './components/DecisionIntakePanel';
 import { DecisionReviewGate, type DueReviewPayload } from './components/DecisionReviewGate';
+import {
+  WeeklyBoardCard,
+  dismissWeeklyBoard,
+  isWeeklyBoardDismissed
+} from './components/WeeklyBoardCard';
+import type { WeeklyBoardResponse } from '../lib/weekly-board/types';
+import { weeklyBoardWeekKey } from '../lib/weekly-board/cache';
 import TodayMobileRitual from './components/TodayMobileRitual';
 import { TodayDraggablePresence } from './components/TodayDraggablePresence';
 import { AppTopbar } from './components/AppTopbar';
@@ -249,6 +257,9 @@ export default function Home() {
   const [dueReview, setDueReview] = useState<DueReviewPayload | null>(null);
   const [reviewCheckDone, setReviewCheckDone] = useState(false);
   const [reviewGateCleared, setReviewGateCleared] = useState(false);
+  const [weeklyBoard, setWeeklyBoard] = useState<WeeklyBoardResponse | null>(null);
+  const [weeklyBoardLoading, setWeeklyBoardLoading] = useState(false);
+  const [weeklyBoardDismissed, setWeeklyBoardDismissed] = useState(false);
 
   useEffect(() => {
     const syncFromHash = () => {
@@ -378,6 +389,42 @@ export default function Home() {
     };
   }, [locale, view, reviewCheckDone, dueReview, reviewGateCleared]);
 
+  useEffect(() => {
+    if (view !== 'today' || !reviewCheckDone || (dueReview && !reviewGateCleared)) {
+      return;
+    }
+
+    const weekKey = weeklyBoardWeekKey();
+    if (isWeeklyBoardDismissed(weekKey)) {
+      setWeeklyBoardDismissed(true);
+      setWeeklyBoard(null);
+      return;
+    }
+
+    setWeeklyBoardDismissed(false);
+    let cancelled = false;
+
+    async function loadWeeklyBoard() {
+      setWeeklyBoardLoading(true);
+      const response = await fetchWeeklyBoard(locale);
+      if (cancelled) {
+        return;
+      }
+
+      setWeeklyBoardLoading(false);
+
+      if (response.ok) {
+        setWeeklyBoard(response.board);
+      }
+    }
+
+    void loadWeeklyBoard();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [locale, view, reviewCheckDone, dueReview, reviewGateCleared]);
+
   async function handleRegenerateBriefing() {
     setLetterLoading(true);
     setLetterError(null);
@@ -446,6 +493,19 @@ export default function Home() {
                   </div>
                 ) : (
                   <>
+                    {!weeklyBoardDismissed && weeklyBoardLoading && (
+                      <p className="weekly-board-loading">{t('weeklyBoard.loading')}</p>
+                    )}
+                    {!weeklyBoardDismissed && !weeklyBoardLoading && weeklyBoard && (
+                      <WeeklyBoardCard
+                        board={weeklyBoard}
+                        onDismiss={() => {
+                          dismissWeeklyBoard(weeklyBoard.weekKey);
+                          setWeeklyBoardDismissed(true);
+                          setWeeklyBoard(null);
+                        }}
+                      />
+                    )}
                     <TodayDraggablePresence onNavigate={setView}>
                       {letterLoading && (
                         <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>

@@ -37,9 +37,10 @@ export const WEEKLY_BOARD_SYSTEM_PROMPT = [
   `Maximum ${MAX_BRIEFING_RECOMMENDATIONS} recommendations across the board.`,
   'Return ONLY JSON:',
   '{',
-  '  "priorities": ["first-person memory from 2036-Giuseppe, evidence-backed"],',
-  '  "doNotDo": ["what 2036-Giuseppe remembers regretting — evidence-backed"],',
-  '  "challenge": "one weekly fork framed as a memory/regret from 2036-Giuseppe — evidence-backed"',
+  '  "priorities": ["max 3 — first-person memory from 2036-Giuseppe, evidence-backed"],',
+  '  "doNotDo": ["max 3 — what 2036-Giuseppe remembers regretting, evidence-backed"],',
+  '  "challenge": "one weekly fork framed as memory/regret — one sentence, evidence-backed",',
+  '  "trajectoryCheck": "one paragraph grounded in this week\'s actual evidence — not generic advice"',
   '}',
   'Prefer Italian in the body. Speak as io to tu.'
 ].join('\n');
