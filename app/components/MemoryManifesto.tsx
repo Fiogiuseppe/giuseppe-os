@@ -112,9 +112,9 @@ export function MemoryManifesto() {
   }
 
   return (
-    <article className="memory-stage memory-stage--tunnel" data-testid="memory-manifesto">
-      <div className="memory-tunnel-scene">
-        <MemoryTunnelBackground />
+    <>
+      <MemoryTunnelBackground />
+      <article className="memory-stage memory-stage--tunnel" data-testid="memory-manifesto">
         <div className="memory-tunnel-content">
           <header className="memory-stage-intro">
             <p className="memory-stage-epigraph">{t('navRole.memory')}</p>
@@ -144,7 +144,7 @@ export function MemoryManifesto() {
 
           <p className="insights-built-over-time">{t('memory.constitutionNote')}</p>
         </div>
-      </div>
-    </article>
+      </article>
+    </>
   );
 }

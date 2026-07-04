@@ -1,20 +1,24 @@
 export type ProjectVisual = {
   src: string;
   alt: string;
+  variant?: 'logo' | 'cover' | 'wordmark';
 };
 
 const PROJECT_VISUALS: Record<string, ProjectVisual> = {
   LEGO: {
-    src: '/images/projects/lego.svg',
-    alt: 'LEGO'
+    src: '/images/LEGO_logo.svg.webp',
+    alt: 'LEGO',
+    variant: 'logo'
   },
   'Visceral Poems': {
-    src: '/images/projects/visceral-poems.svg',
-    alt: 'Visceral Poems manifesto'
+    src: '/images/VISCERAL-POETRY-126-scaled.jpg',
+    alt: 'Visceral Poems',
+    variant: 'cover'
   },
   UREES: {
-    src: '/images/projects/urees.svg',
-    alt: 'UREES'
+    src: '/images/Urees_Logo_9afae6b4-d876-4082-8c40-869d133e917b.webp',
+    alt: 'Urees',
+    variant: 'wordmark'
   },
   'Brand Giuseppe': {
     src: '/images/giuseppe-logo.png',

@@ -9,8 +9,8 @@ function buildSpeedLines(): string[] {
   const lines: string[] = [];
   for (let index = 0; index < SPEED_LINE_COUNT; index += 1) {
     const angle = (index / SPEED_LINE_COUNT) * Math.PI * 2;
-    const x2 = 50 + Math.cos(angle) * 72;
-    const y2 = 50 + Math.sin(angle) * 72;
+    const x2 = 50 + Math.cos(angle) * 95;
+    const y2 = 50 + Math.sin(angle) * 95;
     lines.push(`M50 50 L${x2.toFixed(2)} ${y2.toFixed(2)}`);
   }
   return lines;

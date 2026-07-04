@@ -42,8 +42,8 @@ function ProjectVisualMark({
   return (
     <img
       src={visual.src}
-      alt=""
-      className={`create-project-mark${className ? ` ${className}` : ''}`}
+      alt={visual.alt}
+      className={`create-project-mark${visual.variant ? ` create-project-mark--${visual.variant}` : ''}${className ? ` ${className}` : ''}`}
       draggable={false}
     />
   );

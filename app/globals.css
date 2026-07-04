@@ -699,9 +699,39 @@ html.about-route body {
   object-fit: contain;
 }
 
+.create-project-mark--logo {
+  max-width: 80px;
+  max-height: 80px;
+}
+
+.create-project-mark--cover {
+  max-width: 56px;
+  max-height: 84px;
+}
+
+.create-project-mark--wordmark {
+  max-width: 96px;
+  max-height: 36px;
+}
+
 .create-project-mark[src$='.png'] {
   max-width: 96px;
   max-height: 40px;
+}
+
+.create-hero-mark.create-project-mark--logo {
+  max-width: 96px;
+  max-height: 96px;
+}
+
+.create-hero-mark.create-project-mark--cover {
+  max-width: 72px;
+  max-height: 108px;
+}
+
+.create-hero-mark.create-project-mark--wordmark {
+  max-width: 120px;
+  max-height: 44px;
 }
 
 .create-hero-mark {
@@ -789,6 +819,21 @@ html.about-route body {
   min-height: 72px;
 }
 
+.create-project-tile-visual .create-project-mark--logo {
+  max-width: 64px;
+  max-height: 64px;
+}
+
+.create-project-tile-visual .create-project-mark--cover {
+  max-width: 44px;
+  max-height: 66px;
+}
+
+.create-project-tile-visual .create-project-mark--wordmark {
+  max-width: 72px;
+  max-height: 28px;
+}
+
 .create-project-tile-visual .create-project-mark {
   max-width: 72px;
 }
@@ -831,6 +876,21 @@ html.about-route body {
   border: 1px solid var(--border-soft);
   border-radius: 20px;
   background: rgba(0, 0, 0, 0.02);
+}
+
+.create-project-detail-visual .create-project-mark--logo {
+  max-width: 96px;
+  max-height: 96px;
+}
+
+.create-project-detail-visual .create-project-mark--cover {
+  max-width: 64px;
+  max-height: 96px;
+}
+
+.create-project-detail-visual .create-project-mark--wordmark {
+  max-width: 108px;
+  max-height: 40px;
 }
 
 .create-project-detail-visual .create-project-mark {
@@ -1498,6 +1558,7 @@ html.about-route body {
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  position: relative;
 }
 
 .memory-space {
@@ -1671,24 +1732,37 @@ html.about-route body {
   letter-spacing: 0.06em;
 }
 
+.memory-space--immersive {
+  position: absolute;
+  inset: 0;
+  max-width: none;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 .memory-stage--tunnel {
   position: relative;
+  z-index: 1;
   width: 100%;
-  min-height: min(68vh, 560px);
+  min-height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .memory-stage--depth {
   width: 100%;
-}
-
-.memory-tunnel-scene {
-  position: relative;
-  width: 100%;
-  min-height: inherit;
+  min-height: 100%;
+  flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 
 .memory-tunnel-content {
@@ -1699,14 +1773,18 @@ html.about-route body {
   align-items: center;
   gap: clamp(18px, 3vh, 28px);
   width: 100%;
+  max-width: min(920px, 100%);
+  padding: clamp(8px, 2vh, 20px) var(--app-gutter);
 }
 
 .memory-tunnel {
   --tunnel-x: 0px;
   --tunnel-y: 0px;
   --tunnel-rotate: 0deg;
+  --tunnel-line: rgba(0, 0, 0, 0.14);
+  --tunnel-wall: rgba(0, 0, 0, 0.06);
   position: absolute;
-  inset: -12%;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
@@ -1732,8 +1810,8 @@ html.about-route body {
   line-height: 0.85;
   letter-spacing: -0.06em;
   text-transform: uppercase;
-  color: var(--accent);
-  opacity: 0.07;
+  color: var(--tunnel-wall);
+  opacity: 1;
   user-select: none;
   white-space: nowrap;
 }
@@ -1767,7 +1845,7 @@ html.about-route body {
 
 .memory-tunnel-line {
   fill: none;
-  stroke: var(--accent);
+  stroke: var(--tunnel-line);
   stroke-width: 0.35;
   stroke-linecap: round;
   opacity: 0;
@@ -1775,7 +1853,7 @@ html.about-route body {
 }
 
 .memory-tunnel--static .memory-tunnel-line {
-  opacity: 0.12;
+  opacity: 0.35;
   animation: none;
 }
 
@@ -1792,7 +1870,7 @@ html.about-route body {
 .memory-tunnel-core {
   width: clamp(48px, 8vw, 88px);
   height: clamp(48px, 8vw, 88px);
-  border: 1.5px solid var(--accent-line);
+  border: 1.5px solid var(--tunnel-line);
   border-radius: 50%;
   opacity: 0.35;
   animation: memory-tunnel-core-pulse 3.5s ease-in-out infinite;
@@ -1816,8 +1894,8 @@ html.about-route body {
   animation: none;
 }
 
-.memory-tunnel-scene .memory-node,
-.memory-tunnel-scene .memory-hero-card {
+.memory-stage--tunnel .memory-node,
+.memory-stage--tunnel .memory-hero-card {
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(2px);
 }
@@ -1848,13 +1926,13 @@ html.about-route body {
 @keyframes memory-tunnel-line-pulse {
   0%,
   100% {
-    opacity: 0.04;
+    opacity: 0.08;
     stroke-width: 0.25;
   }
 
   45% {
-    opacity: 0.22;
-    stroke-width: 0.45;
+    opacity: 0.28;
+    stroke-width: 0.4;
   }
 }
 
