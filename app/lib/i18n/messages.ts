@@ -144,7 +144,8 @@ export const messages = {
     create: {
       strategistHeadline: 'Dove va la tua energia creativa adesso?',
       strategistSubline: 'Ogni progetto deve rafforzare la traiettoria — non disperdere attenzione.',
-      focusLabel: 'FOCUS SUGGERITO'
+      focusLabel: 'FOCUS SUGGERITO',
+      energyNote: 'Energia creativa — un progetto alla volta.'
     },
     disclosure: {
       why: 'Perché?',
@@ -347,7 +348,8 @@ export const messages = {
     create: {
       strategistHeadline: 'Where should your creative energy go right now?',
       strategistSubline: 'Every project must strengthen trajectory — not scatter attention.',
-      focusLabel: 'SUGGESTED FOCUS'
+      focusLabel: 'SUGGESTED FOCUS',
+      energyNote: 'Creative energy — one project at a time.'
     },
     disclosure: {
       why: 'Why?',

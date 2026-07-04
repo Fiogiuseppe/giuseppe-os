@@ -25,6 +25,7 @@ import {
   DisclosureTrigger
 } from './components/Disclosure';
 import { InsightsStage } from './components/InsightsStage';
+import { CreateStage } from './components/CreateStage';
 import { DecisionIntakePanel } from './components/DecisionIntakePanel';
 import { DecisionReviewGate, type DueReviewPayload } from './components/DecisionReviewGate';
 import TodayMobileRitual from './components/TodayMobileRitual';
