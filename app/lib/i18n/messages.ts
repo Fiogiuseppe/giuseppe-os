@@ -102,6 +102,23 @@ export const messages = {
       how3: 'Ogni decisione deve aumentare almeno un capitale.',
       how4: 'Scegli sempre verità e bellezza.'
     },
+    content: {
+      open: 'Genera contenuti',
+      generate: 'Genera',
+      loading: 'Sto scrivendo…',
+      error: 'Non sono riuscito a generare i contenuti.',
+      copyError: 'Copia non riuscita.',
+      copied: 'Copiato',
+      copy: 'Copia negli appunti',
+      topicLabel: 'Tema',
+      topicPlaceholder: 'Di cosa vuoi scrivere?',
+      formatsLegend: 'Formati',
+      formats: {
+        medium: 'Medium',
+        linkedin: 'LinkedIn',
+        instagram: 'Instagram Story'
+      }
+    },
     decisions: {
       openingPrompt: 'Cosa stai decidendo?',
       openingPlaceholder: 'Es. comprare casa, pubblicare un post, cambiare lavoro…',
@@ -323,6 +340,23 @@ export const messages = {
       how2: 'Build one extraordinary thing instead of many average ones.',
       how3: 'Every decision should strengthen at least one form of capital.',
       how4: 'Always choose truth and beauty.'
+    },
+    content: {
+      open: 'Generate content',
+      generate: 'Generate',
+      loading: 'Writing…',
+      error: 'Could not generate content.',
+      copyError: 'Copy failed.',
+      copied: 'Copied',
+      copy: 'Copy to clipboard',
+      topicLabel: 'Topic',
+      topicPlaceholder: 'What do you want to write about?',
+      formatsLegend: 'Formats',
+      formats: {
+        medium: 'Medium',
+        linkedin: 'LinkedIn',
+        instagram: 'Instagram Story'
+      }
     },
     decisions: {
       openingPrompt: 'What are you deciding?',

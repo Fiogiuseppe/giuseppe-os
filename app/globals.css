@@ -4071,3 +4071,131 @@ label {
     gap: 5px;
   }
 }
+
+.content-generator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: min(720px, 100%);
+}
+
+.content-generator--review {
+  align-items: flex-start;
+  max-width: 100%;
+  margin-top: 12px;
+}
+
+.content-generator-toggle {
+  margin-top: 4px;
+}
+
+.content-generator-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.content-generator-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.content-generator-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.content-generator-input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 14px;
+  background: transparent;
+  color: var(--fg);
+}
+
+.content-generator-formats {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+}
+
+.content-generator-format {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--fg);
+}
+
+.content-generator-run {
+  align-self: flex-start;
+}
+
+.content-generator-error {
+  margin: 0;
+  font-size: 13px;
+  color: #8b2f2f;
+}
+
+.content-generator-result {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.content-generator-result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.content-generator-copy {
+  border: 1.5px solid var(--fg);
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.content-generator-copy:hover,
+.content-generator-copy:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  outline: none;
+}
+
+.content-generator-textarea {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+  resize: vertical;
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--fg);
+}

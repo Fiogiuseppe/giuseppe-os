@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { useLanguage } from '../lib/i18n/LanguageContext';
+import { ContentGeneratorPanel } from './ContentGeneratorPanel';
 import type { DecisionReviewAnswers } from '../../lib/decision-learning/types';
 
 export type DueReviewPayload = {
@@ -115,6 +116,7 @@ export function DecisionReviewGate({ review, onComplete }: DecisionReviewGatePro
             {t('decisionReview.start')}
             <span aria-hidden="true">→</span>
           </button>
+          <ContentGeneratorPanel sourceType="decision" sourceId={review.id} className="content-generator--review" />
         </div>
       )}
 
