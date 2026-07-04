@@ -4,7 +4,6 @@ import { useLanguage } from '../lib/i18n/LanguageContext';
 
 export function LanguageSwitch({ className }: { className?: string }) {
   const { locale, setLocale, t } = useLanguage();
-  const isEnglish = locale === 'en';
 
   return (
     <div
@@ -12,23 +11,25 @@ export function LanguageSwitch({ className }: { className?: string }) {
       role="group"
       aria-label={t('language.switchLabel')}
     >
-      <span className={`language-switch-label${isEnglish ? '' : ' language-switch-label--active'}`}>
+      <button
+        type="button"
+        className={`language-switch-option${locale === 'it' ? ' language-switch-option--active' : ''}`}
+        aria-pressed={locale === 'it'}
+        onClick={() => setLocale('it')}
+      >
         {t('language.italian')}
+      </button>
+      <span className="language-switch-sep" aria-hidden="true">
+        /
       </span>
       <button
         type="button"
-        className="language-switch-track"
-        data-locale={locale}
-        role="switch"
-        aria-checked={isEnglish}
-        aria-label={t('language.switchLabel')}
-        onClick={() => setLocale(isEnglish ? 'it' : 'en')}
+        className={`language-switch-option${locale === 'en' ? ' language-switch-option--active' : ''}`}
+        aria-pressed={locale === 'en'}
+        onClick={() => setLocale('en')}
       >
-        <span className="language-switch-knob" />
-      </button>
-      <span className={`language-switch-label${isEnglish ? ' language-switch-label--active' : ''}`}>
         {t('language.english')}
-      </span>
+      </button>
     </div>
   );
 }

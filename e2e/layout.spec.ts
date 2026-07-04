@@ -7,6 +7,29 @@ async function expectInViewport(page: import('@playwright/test').Page, locator: 
 }
 
 test.describe('Giuseppe OS layout — no clipping', () => {
+  test('desktop today home panels stay readable without page scroll', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.goto('/');
+
+    await expect(page.locator('.companion-panel-letter')).toBeVisible();
+    await expect(page.locator('.companion-brief-grid')).toBeVisible({ timeout: 15_000 });
+
+    const oneBigMove = page.locator('.companion-panel-letter .companion-panel-text--sentence');
+    await expect(oneBigMove).toBeVisible();
+    const box = await oneBigMove.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.height).toBeGreaterThan(8);
+
+    const pageMetrics = await page.evaluate(() => ({
+      bodyOverflowY: getComputedStyle(document.body).overflowY,
+      docScrollHeight: document.documentElement.scrollHeight,
+      docClientHeight: document.documentElement.clientHeight
+    }));
+
+    expect(pageMetrics.bodyOverflowY).toBe('hidden');
+    expect(pageMetrics.docScrollHeight).toBeLessThanOrEqual(pageMetrics.docClientHeight + 1);
+  });
+
   test('desktop memory grid bottom content stays reachable', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto('/');
