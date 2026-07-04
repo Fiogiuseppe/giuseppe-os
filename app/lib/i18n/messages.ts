@@ -82,7 +82,12 @@ export const messages = {
       trajectoryImpact: 'Impatto traiettoria',
       possibleActions: 'Azioni possibili',
       briefingNote: 'Il Daily Brief è giudizio, non informazione.',
-      avatarHint: 'Il tuo avatar è interattivo.'
+      avatarHint: 'Il tuo avatar è interattivo.',
+      ritual: {
+        insight: 'Segnale',
+        action: 'Mossa',
+        reflection: 'Domanda'
+      }
     },
     decisions: {
       openingPrompt: 'Cosa stai decidendo?',
@@ -247,7 +252,12 @@ export const messages = {
       trajectoryImpact: 'Trajectory impact',
       possibleActions: 'Possible actions',
       briefingNote: 'The Daily Brief is judgement, not information.',
-      avatarHint: 'Your avatar is interactive.'
+      avatarHint: 'Your avatar is interactive.',
+      ritual: {
+        insight: 'Signal',
+        action: 'Move',
+        reflection: 'Question'
+      }
     },
     decisions: {
       openingPrompt: 'What are you deciding?',

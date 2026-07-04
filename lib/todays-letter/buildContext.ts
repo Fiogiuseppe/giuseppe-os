@@ -16,6 +16,8 @@ import {
 } from '../trajectory/engine';
 import { letterDateKey } from './cache';
 import { loadConstitutionExcerpt } from './loadConstitution';
+import { gatherOracleEvidence } from '../oracle/evidence';
+import { formatEvidenceForPrompt } from '../oracle/formatEvidence';
 
 function resolveDayPart(hour: number): DailyBriefingContext['dayPart'] {
   if (hour >= 6 && hour < 12) return 'morning';
@@ -64,6 +66,7 @@ export async function buildDailyBriefingContext(now = new Date()): Promise<Daily
     ...rawRelevance,
     items: filterRelevanceByTrajectory(rawRelevance.items, trajectory)
   };
+  const oracle = await gatherOracleEvidence();
   const hour = Number(
     new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Europe/Copenhagen' }).format(
       now
@@ -92,7 +95,8 @@ export async function buildDailyBriefingContext(now = new Date()): Promise<Daily
     priorities: brain.priorities,
     reality,
     relevance,
-    trajectory
+    trajectory,
+    oracle
   };
 }
 
@@ -154,6 +158,8 @@ export function formatContextForPrompt(context: DailyBriefingContext): string {
     'TRAJECTORY ENGINE:',
     trajectoryItems || '- No trajectory evaluations',
     `TRAJECTORY NOTE: ${context.trajectory.trajectoryNote}`,
-    `CONFIDENCE: ${context.relevance.confidenceNote}`
+    `CONFIDENCE: ${context.relevance.confidenceNote}`,
+    '',
+    formatEvidenceForPrompt(context.oracle)
   ].join('\n');
 }

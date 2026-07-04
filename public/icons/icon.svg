@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Giuseppe OS">
+  <rect width="512" height="512" fill="#f7f5e8"/>
+  <circle cx="256" cy="228" r="118" fill="#001fff" opacity="0.92"/>
+  <circle cx="256" cy="228" r="88" fill="#f7f5e8" opacity="0.18"/>
+  <text x="256" y="420" text-anchor="middle" font-family="Georgia, serif" font-size="54" fill="#000000">giuseppe</text>
+</svg>

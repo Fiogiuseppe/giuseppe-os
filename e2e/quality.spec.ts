@@ -177,7 +177,7 @@ test.describe('Giuseppe OS quality loop', () => {
     const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     expect(bodyBg).toBe('rgb(247, 245, 232)');
 
-    await expect(page.getByRole('button', { name: /Giuseppe OS home/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Giuseppe OS home/i })).toBeVisible();
     await expect(page.getByTestId('today-action')).toBeVisible();
     await expect(page.locator('.topbar')).toBeVisible();
   });

@@ -1,3 +1,5 @@
+import { WEEKLY_BOARD_SYSTEM_PROMPT } from '../lib/oracle/weeklyPrompt';
+
 export function generateWeeklyBoard() {
   return {
     priorities: [
@@ -13,3 +15,6 @@ export function generateWeeklyBoard() {
     challenge: '7 giorni: 1 post, 1 azione finanziaria, 1 relazione, 0 nuove idee.'
   };
 }
+
+/** Oracle voice + evidence-only rules for future weekly trajectory generation. */
+export const weeklyBoardSystemPrompt = WEEKLY_BOARD_SYSTEM_PROMPT;

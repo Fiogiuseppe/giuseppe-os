@@ -1,8 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect } from 'react';
-import { LanguageSwitch } from '../components/LanguageSwitch';
+import { AppTopbar } from '../components/AppTopbar';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 import styles from './about.module.css';
 
@@ -17,15 +16,10 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <>
-      <div className="about-topbar">
-        <LanguageSwitch className="language-switch-topbar" />
-      </div>
+    <div className="app app-topnav about-app">
+      <AppTopbar mode="link" />
       <main className={styles.page}>
-        <Link href="/" className={styles.back}>
-          {t('about.back')}
-        </Link>
-
+        <div className={styles.pageInner}>
         <header className={styles.hero}>
           <h1 className={styles.title}>{t('about.title')}</h1>
           <p className={styles.subtitle}>{t('about.subtitle')}</p>
@@ -61,7 +55,8 @@ export default function AboutPage() {
           <p>{t('about.version')}</p>
           <p>{t('about.tagline')}</p>
         </footer>
+        </div>
       </main>
-    </>
+    </div>
   );
 }

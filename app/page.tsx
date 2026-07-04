@@ -25,12 +25,10 @@ import {
   DisclosureTrigger
 } from './components/Disclosure';
 import TodayAvatarNav from './components/TodayAvatarNav';
-import { LanguageSwitch } from './components/LanguageSwitch';
+import TodayMobileRitual from './components/TodayMobileRitual';
+import { AppTopbar } from './components/AppTopbar';
 import { useLanguage } from './lib/i18n/LanguageContext';
-
-type View = 'today' | 'decisions' | 'insights' | 'create' | 'memory';
-
-const VIEWS: View[] = ['today', 'decisions', 'insights', 'create', 'memory'];
+import { isAppView, type AppView } from './lib/views';
 
 const MEMORY_PRIMARY_LABELS = new Set([
   'MISSION',
@@ -233,7 +231,7 @@ function ProjectsListFocus({
 
 export default function Home() {
   const { t, locale } = useLanguage();
-  const [view, setView] = useState<View>('today');
+  const [view, setView] = useState<AppView>('today');
   const [awareness, setAwareness] = useState<AwarenessInsight | null>(null);
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [insightsError, setInsightsError] = useState<string | null>(null);
@@ -365,6 +363,19 @@ export default function Home() {
   const [letterError, setLetterError] = useState<string | null>(null);
 
   useEffect(() => {
+    const syncFromHash = () => {
+      const raw = window.location.hash.replace(/^#/, '');
+      if (isAppView(raw)) {
+        setView(raw);
+      }
+    };
+
+    syncFromHash();
+    window.addEventListener('hashchange', syncFromHash);
+    return () => window.removeEventListener('hashchange', syncFromHash);
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
 
     async function loadInsights() {
@@ -484,32 +495,7 @@ export default function Home() {
 
   return (
     <div className="app app-topnav">
-      <header className="topbar">
-        <button type="button" className="topbar-brand" onClick={() => setView('today')} aria-label={t('aria.home')}>
-          <img
-            src="/images/giuseppe-logo.png"
-            alt=""
-            className="brand-logo"
-            width={300}
-            height={87}
-            draggable={false}
-          />
-        </button>
-        <nav className="topnav" aria-label={t('aria.mainNav')}>
-          {VIEWS.map(id => (
-            <button
-              key={id}
-              type="button"
-              data-testid={`nav-${id}`}
-              className={view === id ? 'active' : undefined}
-              onClick={() => setView(id)}
-            >
-              {t(`nav.${id}`)}
-            </button>
-          ))}
-        </nav>
-        <LanguageSwitch className="language-switch-topbar" />
-      </header>
+      <AppTopbar mode="spa" activeView={view} onNavigate={setView} />
 
       <div className="app-body">
         <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}`} role="main">
@@ -527,24 +513,32 @@ export default function Home() {
 
           <div className={`view-body progressive-body mental-space mental-space-${view}`}>
             {view === 'today' && (
-              <div className="today-calm">
-                <div className="today-action" data-testid="today-action">
-                  {letterLoading && (
-                    <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>
-                  )}
-                  {!letterLoading && letterError && (
-                    <p className="today-action-text today-action-text--error">{letterError}</p>
-                  )}
-                  {!letterLoading && !letterError && todaysLetter && (
-                    <p className="today-action-text">
-                      {limitWords(todaysLetter.sections.oneBigMove, MAX_TODAY_ONE_BIG_MOVE_WORDS)}
-                    </p>
-                  )}
+              <>
+                <div className="today-calm today-calm--desktop">
+                  <div className="today-action" data-testid="today-action">
+                    {letterLoading && (
+                      <p className="today-action-text today-action-text--loading">{t('today.loading')}</p>
+                    )}
+                    {!letterLoading && letterError && (
+                      <p className="today-action-text today-action-text--error">{letterError}</p>
+                    )}
+                    {!letterLoading && !letterError && todaysLetter && (
+                      <p className="today-action-text">
+                        {limitWords(todaysLetter.sections.oneBigMove, MAX_TODAY_ONE_BIG_MOVE_WORDS)}
+                      </p>
+                    )}
+                  </div>
+                  <div className="today-presence">
+                    <TodayAvatarNav onNavigate={setView} />
+                  </div>
                 </div>
-                <div className="today-presence">
-                  <TodayAvatarNav onNavigate={setView} />
-                </div>
-              </div>
+                <TodayMobileRitual
+                  letterLoading={letterLoading}
+                  letterError={letterError}
+                  todaysLetter={todaysLetter}
+                  onNavigate={setView}
+                />
+              </>
             )}
 
             {view === 'decisions' && (

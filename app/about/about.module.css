@@ -1,64 +1,64 @@
 .page {
-  min-height: 100vh;
-  min-height: 100dvh;
-  max-width: 520px;
-  margin: 0 auto;
-  padding: clamp(40px, 8vh, 72px) clamp(24px, 5vw, 40px) clamp(40px, 7vh, 64px);
+  flex: 1;
+  min-height: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: clamp(36px, 7vh, 56px);
+  overflow: hidden;
+  padding: clamp(4px, 0.8vh, 10px) clamp(20px, 4vw, 36px);
 }
 
-.back {
-  display: inline-block;
-  font-size: 13px;
-  color: var(--muted);
-  letter-spacing: 0.01em;
-  transition: color 0.2s var(--ease);
-  flex-shrink: 0;
-}
-
-.back:hover {
-  color: var(--fg);
+.pageInner {
+  width: 100%;
+  max-width: 520px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1.2vh, 12px);
+  flex-shrink: 1;
+  min-height: 0;
 }
 
 .hero {
   margin: 0;
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-height: 0;
 }
 
 .title {
   margin: 0;
   font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(28px, 4.5vh, 36px);
+  font-size: clamp(18px, 2.6vh, 28px);
   font-weight: 400;
   letter-spacing: -0.03em;
   line-height: 1.1;
 }
 
 .subtitle {
-  margin: 14px 0 0;
-  font-size: 15px;
-  line-height: 1.5;
+  margin: 5px 0 0;
+  font-size: clamp(11px, 1.45vh, 14px);
+  line-height: 1.35;
   color: var(--fg);
   letter-spacing: -0.01em;
 }
 
 .lead {
-  margin: 10px 0 0;
-  font-size: 15px;
-  line-height: 1.55;
+  margin: 3px 0 0;
+  font-size: clamp(11px, 1.45vh, 14px);
+  line-height: 1.4;
   color: var(--muted);
   letter-spacing: -0.01em;
 }
 
 .block {
   margin: 0;
+  flex-shrink: 1;
+  min-height: 0;
 }
 
 .sectionLabel {
-  margin: 0 0 18px;
-  font-size: 11px;
+  margin: 0 0 clamp(3px, 0.7vh, 7px);
+  font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -66,9 +66,9 @@
 }
 
 .prose p {
-  margin: 0 0 16px;
-  font-size: clamp(15px, 1.9vh, 17px);
-  line-height: 1.6;
+  margin: 0 0 clamp(3px, 0.7vh, 7px);
+  font-size: clamp(11px, 1.4vh, 14px);
+  line-height: 1.38;
   color: var(--fg);
 }
 
@@ -83,28 +83,28 @@
 }
 
 .questionItem + .questionItem {
-  margin-top: 22px;
+  margin-top: clamp(3px, 0.7vh, 7px);
 }
 
 .questionName {
-  margin: 0 0 4px;
-  font-size: 15px;
+  margin: 0 0 1px;
+  font-size: clamp(11px, 1.4vh, 14px);
   font-weight: 500;
   letter-spacing: -0.01em;
 }
 
 .questionText {
   margin: 0;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: clamp(10px, 1.3vh, 13px);
+  line-height: 1.35;
   color: var(--muted);
 }
 
 .pageFooter {
-  margin-top: auto;
-  padding-top: 8px;
-  font-size: 13px;
-  line-height: 1.6;
+  margin-top: 0;
+  padding-top: 0;
+  font-size: clamp(10px, 1.3vh, 12px);
+  line-height: 1.35;
   color: var(--muted);
   flex-shrink: 0;
 }
@@ -114,5 +114,61 @@
 }
 
 .pageFooter p + p {
-  margin-top: 4px;
+  margin-top: 2px;
+}
+
+@media (max-height: 720px) {
+  .pageInner {
+    gap: 5px;
+  }
+
+  .title {
+    font-size: clamp(17px, 2.4vh, 22px);
+  }
+
+  .questionItem + .questionItem {
+    margin-top: 3px;
+  }
+}
+
+@media (max-height: 600px) {
+  .page {
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  .pageInner {
+    gap: 4px;
+  }
+
+  .subtitle,
+  .lead,
+  .prose p,
+  .questionName {
+    font-size: clamp(10px, 1.35vh, 12px);
+    line-height: 1.32;
+  }
+
+  .questionText,
+  .pageFooter {
+    font-size: clamp(9px, 1.25vh, 11px);
+  }
+}
+
+@media (max-height: 520px) {
+  .pageInner {
+    gap: 3px;
+  }
+
+  .title {
+    font-size: clamp(16px, 2.2vh, 20px);
+  }
+
+  .sectionLabel {
+    margin-bottom: 2px;
+  }
+
+  .prose p {
+    margin-bottom: 2px;
+  }
 }

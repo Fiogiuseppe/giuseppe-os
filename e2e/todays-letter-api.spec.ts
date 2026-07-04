@@ -30,7 +30,7 @@ test.describe('Giuseppe OS Daily Briefing API', () => {
 
     expect(typeof body.briefing).toBe('string');
     expect(typeof body.letter).toBe('string');
-    expect(body.sections.greeting).toMatch(/Good (morning|afternoon|evening|night) Giuseppe/i);
+    expect(body.sections.greeting).toMatch(/Good.*Giuseppe|Buon.*Giuseppe/i);
     expect(body.sections.oneBigMove.length).toBeGreaterThan(0);
     expect(body.sections.reality.length).toBeGreaterThan(0);
     expect(body.sections.opportunity.length).toBeGreaterThan(0);

@@ -24,6 +24,8 @@ create table if not exists memory_decisions (
   decision text not null,
   reason text,
   category text,
+  outcome text,
+  outcome_rating integer,
   created_at timestamptz not null default now()
 );
 

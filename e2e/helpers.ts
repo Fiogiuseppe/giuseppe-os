@@ -17,6 +17,13 @@ export const VIEW_HEADING_PATTERNS: Record<AppView, RegExp> = {
 };
 
 export async function expectTodayActionVisible(page: Page) {
+  const ritual = page.getByTestId('today-ritual');
+  if (await ritual.isVisible()) {
+    await expect(page.getByTestId('today-ritual-action')).toBeVisible();
+    await expect(page.getByTestId('today-ritual-action')).not.toBeEmpty({ timeout: 15_000 });
+    return;
+  }
+
   const action = page.getByTestId('today-action');
   await expect(action).toBeVisible();
   await expect(action.locator('.today-action-text')).not.toBeEmpty({ timeout: 15_000 });

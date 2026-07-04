@@ -15,6 +15,7 @@ import { buildFallbackBriefing } from './fallback';
 import { getPlatformCachedLetter } from './platformCache';
 import { assembleBriefing, countWords, limitWords, parseBriefingSections } from './parse';
 import { DAILY_BRIEFING_SYSTEM_PROMPT, MAX_BRIEFING_WORDS, MAX_TODAY_ONE_BIG_MOVE_WORDS } from './prompt';
+import { validateOracleClaims } from '../oracle/validate';
 
 function clampOneBigMove(sections: DailyBriefingSections): DailyBriefingSections {
   return {
@@ -139,33 +140,45 @@ async function generateDailyBriefingFresh(locale: AppLocale = 'it'): Promise<Dai
     const gated = applyQualityGate(filtered, context);
     response = buildResponse(gated.sections, 'fallback', context, gated.quality, false);
   } else {
-    const userPrompt = [
-      pickLocale(
-        locale,
-        'Scrivi il Daily Briefing di Giuseppe usando solo questo contesto del pipeline di intelligence:',
-        'Write Giuseppe his Daily Briefing using only this intelligence pipeline context:'
-      ),
-      pickLocale(
-        locale,
-        'Rispondi interamente in italiano.',
-        'Respond entirely in English.'
-      ),
-      formatContextForPrompt(context)
-    ].join('\n\n');
+    try {
+      const userPrompt = [
+        pickLocale(
+          locale,
+          'Scrivi il Daily Briefing di Giuseppe usando solo questo contesto del pipeline di intelligence:',
+          'Write Giuseppe his Daily Briefing using only this intelligence pipeline context:'
+        ),
+        pickLocale(
+          locale,
+          'Rispondi interamente in italiano.',
+          'Respond entirely in English.'
+        ),
+        formatContextForPrompt(context)
+      ].join('\n\n');
 
-    const completion = await createClaudeProvider().complete({
-      system: DAILY_BRIEFING_SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userPrompt }],
-      maxTokens: 1000,
-      temperature: 0.35
-    });
+      const completion = await createClaudeProvider().complete({
+        system: DAILY_BRIEFING_SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: userPrompt }],
+        maxTokens: 1000,
+        temperature: 0.35
+      });
 
-    const filtered = await filterSectionsThroughTrajectory(
-      normalizeSections(parseBriefingSections(completion.content), fallbackSections),
-      context
-    );
-    const gated = applyQualityGate(filtered, context);
-    response = buildResponse(gated.sections, 'anthropic', context, gated.quality, false);
+      const parsed = normalizeSections(parseBriefingSections(completion.content), fallbackSections);
+      validateOracleClaims(parsed, context.oracle);
+
+      const filtered = await filterSectionsThroughTrajectory(parsed, context);
+      const gated = applyQualityGate(filtered, context);
+      response = buildResponse(gated.sections, 'anthropic', context, gated.quality, false);
+    } catch (error) {
+      if (
+        !(error instanceof ProviderConfigurationError || error instanceof ProviderRequestError)
+      ) {
+        throw error;
+      }
+
+      const filtered = await filterSectionsThroughTrajectory(fallbackSections, context);
+      const gated = applyQualityGate(filtered, context);
+      response = buildResponse(gated.sections, 'fallback', context, gated.quality, false);
+    }
   }
 
   writeCachedLetter(context.dateKey, response, locale);
@@ -200,6 +213,14 @@ export function mapBriefingError(error: unknown): { status: number; message: str
   }
 
   if (error instanceof ProviderRequestError) {
+    if (/credit balance|billing|purchase credits/i.test(error.message)) {
+      return {
+        status: 502,
+        message:
+          'Il servizio AI non è disponibile al momento. Giuseppe OS mostra il briefing locale.'
+      };
+    }
+
     return { status: 502, message: 'La generazione del briefing non è riuscita. Riprova tra poco.' };
   }
 

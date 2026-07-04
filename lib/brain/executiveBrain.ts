@@ -50,7 +50,22 @@ function composeAnswer(intent: BrainRequest['intent'], providerAnswer: string, o
       `Recommended action: ${outputs.awareness.recommendedAction}`,
       '',
       providerAnswer
-    ].join('\n');
+    ]
+      .filter(Boolean)
+      .join('\n');
+  }
+
+  if (intent === 'reflect' && outputs.awareness) {
+    return [
+      outputs.awareness.headline,
+      outputs.awareness.insight,
+      '',
+      outputs.awareness.whyItMatters,
+      '',
+      providerAnswer
+    ]
+      .filter(Boolean)
+      .join('\n');
   }
 
   if (intent === 'potential' && outputs.opportunity) {
@@ -127,14 +142,26 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
   try {
     completion = await provider.complete(completionRequest);
   } catch (error) {
-    const canFallbackDecision =
-      resolvedIntent === 'decide' &&
-      outputs.decision &&
-      (error instanceof ProviderConfigurationError || error instanceof ProviderRequestError);
+    const providerFailed =
+      error instanceof ProviderConfigurationError || error instanceof ProviderRequestError;
 
-    if (canFallbackDecision) {
+    if (!providerFailed) {
+      throw error;
+    }
+
+    if (resolvedIntent === 'decide' && outputs.decision) {
       completion = await createRuleBasedProvider().complete(completionRequest);
       decisionSource = 'fallback';
+    } else if (resolvedIntent === 'awareness' && outputs.awareness) {
+      completion = { content: '', model: 'engine' };
+    } else if (resolvedIntent === 'potential' && outputs.potentialBrief) {
+      completion = { content: '', model: 'engine' };
+    } else if (resolvedIntent === 'reflect' && outputs.awareness) {
+      completion = { content: '', model: 'engine' };
+    } else if (resolvedIntent === 'learn' && outputs.learning) {
+      completion = { content: '', model: 'engine' };
+    } else if (resolvedIntent === 'query') {
+      completion = await createRuleBasedProvider().complete(completionRequest);
     } else {
       throw error;
     }

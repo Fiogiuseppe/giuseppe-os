@@ -32,7 +32,7 @@ test.describe('Giuseppe OS navigation', () => {
 
   test('loads the home page', async ({ page }) => {
     await expectTodayActionVisible(page);
-    await expect(page.getByRole('button', { name: 'Giuseppe OS home' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Giuseppe OS home' })).toBeVisible();
     await expect(page.locator('footer.footer')).toContainText(FOOTER_PATTERN);
   });
 

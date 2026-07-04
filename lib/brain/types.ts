@@ -108,6 +108,8 @@ export interface LongTermMemory {
     reason: string;
     category?: string;
     timestamp: string;
+    outcome?: string;
+    outcomeRating?: number | null;
   }>;
   lessons: Array<{
     id: string;

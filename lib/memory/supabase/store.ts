@@ -24,6 +24,8 @@ type DbDecision = {
   decision: string;
   reason: string | null;
   category: string | null;
+  outcome?: string | null;
+  outcome_rating?: number | null;
   created_at: string;
 };
 
@@ -115,6 +117,8 @@ export async function loadLongTermMemoryFromSupabase(): Promise<LongTermMemory> 
       decision: row.decision,
       reason: row.reason ?? '',
       category: row.category ?? undefined,
+      outcome: row.outcome ?? undefined,
+      outcomeRating: row.outcome_rating ?? null,
       timestamp: row.created_at
     })),
     lessons: (lessons ?? []).map((row: DbLesson) => ({
@@ -143,6 +147,8 @@ export async function saveLongTermMemoryToSupabase(memory: LongTermMemory): Prom
     decision: row.decision,
     reason: row.reason,
     category: row.category ?? null,
+    outcome: row.outcome ?? null,
+    outcome_rating: row.outcomeRating ?? null,
     created_at: row.timestamp
   }));
 

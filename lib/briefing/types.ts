@@ -1,6 +1,7 @@
 import type { PersonalRelevanceReport } from '../relevance/types';
 import type { RealityReport } from '../reality/types';
 import type { TrajectoryReport } from '../trajectory/types';
+import type { OracleEvidence } from '../oracle/types';
 
 export interface DailyBriefingSections {
   greeting: string;
@@ -49,6 +50,7 @@ export interface DailyBriefingContext {
   reality: RealityReport;
   relevance: PersonalRelevanceReport;
   trajectory: TrajectoryReport;
+  oracle: OracleEvidence;
 }
 
 export interface DailyBriefingResponse {
