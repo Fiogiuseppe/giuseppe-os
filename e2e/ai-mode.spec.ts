@@ -26,9 +26,8 @@ test.describe('Giuseppe OS AI cost control', () => {
     await expect(indicator).not.toHaveRole('button');
   });
 
-  test('dev regenerate control is visible on Today', async ({ page }) => {
+  test('dev regenerate control stays hidden when AI is mock', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByTestId('dev-ai-controls')).toBeVisible();
-    await expect(page.getByTestId('regenerate-ai-button')).toBeVisible();
+    await expect(page.getByTestId('dev-ai-controls')).toBeHidden();
   });
 });

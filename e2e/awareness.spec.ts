@@ -15,6 +15,9 @@ test.describe('Giuseppe OS insights engine', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await gotoView(page, 'insights');
+    await expect(page.getByRole('main').locator('.discovery-insight .kicker')).toContainText('INSIGHT', {
+      timeout: 15_000
+    });
   });
 
   test('opens the Insights page', async ({ page }) => {

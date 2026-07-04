@@ -1,18 +1,23 @@
 import type { PotentialBrief } from '../../engine/potentialEngine';
 
 export type FetchCreateResult =
-  | { ok: true; potential: PotentialBrief }
+  | { ok: true; potential: PotentialBrief; source?: 'local' | 'live' }
   | { ok: false; message: string; status: number };
 
-export async function fetchCreateViaBrain(locale: 'it' | 'en' = 'it'): Promise<FetchCreateResult> {
-  const response = await fetch('/api/brain', {
+export type FetchCreateOptions = {
+  analyze?: boolean;
+};
+
+export async function fetchCreateViaBrain(
+  locale: 'it' | 'en' = 'it',
+  options: FetchCreateOptions = {}
+): Promise<FetchCreateResult> {
+  const response = await fetch('/api/create/brief', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      intent: 'potential',
-      message: 'What should I focus on today?',
-      persist: true,
-      locale
+      locale,
+      analyze: options.analyze === true
     })
   });
 
@@ -25,20 +30,21 @@ export async function fetchCreateViaBrain(locale: 'it' | 'en' = 'it'): Promise<F
       message:
         typeof body.error === 'string'
           ? body.error
-          : 'Giuseppe OS Brain non disponibile. Verifica la configurazione AI.'
+          : 'Giuseppe OS non ha potuto preparare il brief creativo.'
     };
   }
 
-  if (!body.potentialBrief) {
+  if (!body.potential) {
     return {
       ok: false,
       status: 502,
-      message: 'Risposta Create incompleta dal Brain.'
+      message: 'Risposta Create incompleta.'
     };
   }
 
   return {
     ok: true,
-    potential: body.potentialBrief as PotentialBrief
+    potential: body.potential as PotentialBrief,
+    source: body.source
   };
 }

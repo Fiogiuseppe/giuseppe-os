@@ -66,4 +66,12 @@ test.describe('Giuseppe OS Daily Briefing API', () => {
     expect(b.briefing).toBe(a.briefing);
     expect(b.sections).toEqual(a.sections);
   });
+
+  test('POST /api/todays-letter regenerate is blocked when AI is mock', async ({ request }) => {
+    const response = await request.post('/api/todays-letter', {
+      data: { regenerate: true }
+    });
+
+    expect(response.status()).toBe(403);
+  });
 });

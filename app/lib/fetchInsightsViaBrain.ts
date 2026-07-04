@@ -1,18 +1,23 @@
 import type { AwarenessInsight } from '../../engine/awarenessEngine';
 
 export type FetchInsightsResult =
-  | { ok: true; awareness: AwarenessInsight; headline?: string }
+  | { ok: true; awareness: AwarenessInsight; source?: 'local' | 'live'; cached?: boolean }
   | { ok: false; message: string; status: number };
 
-export async function fetchInsightsViaBrain(locale: 'it' | 'en' = 'it'): Promise<FetchInsightsResult> {
-  const response = await fetch('/api/brain', {
+export type FetchInsightsOptions = {
+  regenerate?: boolean;
+};
+
+export async function fetchInsightsViaBrain(
+  locale: 'it' | 'en' = 'it',
+  options: FetchInsightsOptions = {}
+): Promise<FetchInsightsResult> {
+  const response = await fetch('/api/insights', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      intent: 'awareness',
-      message: 'Scan for patterns and risks.',
-      persist: true,
-      locale
+      locale,
+      regenerate: options.regenerate === true
     })
   });
 
@@ -25,21 +30,22 @@ export async function fetchInsightsViaBrain(locale: 'it' | 'en' = 'it'): Promise
       message:
         typeof body.error === 'string'
           ? body.error
-          : 'Giuseppe OS Brain non disponibile. Verifica la configurazione AI.'
+          : 'Giuseppe OS non ha potuto preparare l’insight mensile.'
     };
   }
 
-  if (!body.awareness) {
+  if (!body.insight) {
     return {
       ok: false,
       status: 502,
-      message: 'Risposta insights incompleta dal Brain.'
+      message: 'Risposta insights incompleta.'
     };
   }
 
   return {
     ok: true,
-    awareness: body.awareness as AwarenessInsight,
-    headline: typeof body.headline === 'string' ? body.headline : undefined
+    awareness: body.insight as AwarenessInsight,
+    source: body.source,
+    cached: body.cached
   };
 }

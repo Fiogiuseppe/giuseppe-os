@@ -1,4 +1,5 @@
-import { isAIMockMode, isDevelopmentEnvironment } from '../ai/mode';
+import { isAIMockMode, isAILiveMode } from '../ai/mode';
+import { runWithAICallMeta } from '../ai/callContext';
 import { wrapProviderWithLogging } from '../ai/loggedProvider';
 import { createClaudeProvider } from '../brain/providers/claude';
 import { ProviderConfigurationError, ProviderRequestError } from '../brain/providers/types';
@@ -212,6 +213,13 @@ export async function generateDailyBriefing(
   const dateKey = letterDateKey();
   const regenerate = options.regenerate === true;
 
+  if (regenerate && !isAILiveMode()) {
+    const cached = readCachedLetter(dateKey, locale);
+    if (cached) {
+      return applyTodayMoveLimit(cached);
+    }
+  }
+
   if (regenerate) {
     clearCachedLetter(dateKey, locale);
   }
@@ -223,15 +231,16 @@ export async function generateDailyBriefing(
     }
   }
 
-  if (isDevelopmentEnvironment() && !regenerate) {
-    return applyTodayMoveLimit(await generateDailyBriefingFresh(locale, options));
-  }
-
   if (usePlatformLetterCache() && !regenerate) {
     return getPlatformCachedLetter(dateKey, locale, () => generateDailyBriefingFresh(locale, options));
   }
 
-  return generateDailyBriefingFresh(locale, options);
+  const response = await runWithAICallMeta(
+    { page: 'today', reason: regenerate ? 'regenerate' : 'daily-brief' },
+    () => generateDailyBriefingFresh(locale, options)
+  );
+
+  return applyTodayMoveLimit(response);
 }
 
 /** @deprecated Use generateDailyBriefing */

@@ -9,6 +9,7 @@ import { applyMemoryUpdate, estimateConfidence, extractResponseNextAction } from
 import { evaluateMissionAlignment } from './missionGate';
 import { resolveAIProvider, createRuleBasedProvider } from './providers';
 import { ProviderConfigurationError, ProviderRequestError } from './providers/types';
+import { runWithAICallMeta, intentToPage } from '../ai/callContext';
 import { fetchRealityContext } from '../reality';
 import { assessEvidence } from '../memory/evidence';
 import { buildEvidenceSnapshot } from '../memory/insights';
@@ -140,7 +141,13 @@ export async function runExecutiveBrain(request: BrainRequest): Promise<BrainRes
   let decisionSource: DecisionResponseSource = provider.name === 'rule-based' ? 'engine' : 'ai';
 
   try {
-    completion = await provider.complete(completionRequest);
+    completion = await runWithAICallMeta(
+      {
+        page: intentToPage(resolvedIntent),
+        reason: resolvedIntent === 'decide' ? 'user-submit' : `${resolvedIntent}-request`
+      },
+      () => provider.complete(completionRequest)
+    );
   } catch (error) {
     const providerFailed =
       error instanceof ProviderConfigurationError || error instanceof ProviderRequestError;

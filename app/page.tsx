@@ -378,6 +378,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (view !== 'insights') {
+      return;
+    }
+
     let cancelled = false;
 
     async function loadInsights() {
@@ -404,36 +408,22 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [locale]);
+  }, [view, locale]);
 
-  useEffect(() => {
-    let cancelled = false;
+  async function loadCreateBrief(analyze = false) {
+    setCreateLoading(true);
+    setCreateError(null);
 
-    async function loadCreate() {
-      setCreateLoading(true);
-      setCreateError(null);
+    const response = await fetchCreateViaBrain(locale, { analyze });
+    setCreateLoading(false);
 
-      const response = await fetchCreateViaBrain(locale);
-      if (cancelled) {
-        return;
-      }
-
-      setCreateLoading(false);
-
-      if (!response.ok) {
-        setCreateError(response.message);
-        return;
-      }
-
-      setPotential(response.potential);
+    if (!response.ok) {
+      setCreateError(response.message);
+      return;
     }
 
-    void loadCreate();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [locale]);
+    setPotential(response.potential);
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -785,9 +775,14 @@ export default function Home() {
 
                     <DisclosureTrigger label={t('disclosure.why')} onClick={() => setCreateFocus('why')} />
                     <ProjectsListDisclosure onOpen={() => setCreateFocus('projects')} />
-                    {!createLoading && !createError && potential && (
-                      <PotentialPanelDisclosure onOpen={() => setCreateFocus('potential')} />
-                    )}
+                    <PotentialPanelDisclosure
+                      onOpen={() => {
+                        setCreateFocus('potential');
+                        if (!potential && !createLoading) {
+                          void loadCreateBrief(false);
+                        }
+                      }}
+                    />
                     {createLoading && <p className="companion-letter-loading">…</p>}
                     {createError && <p className="companion-letter-error">{createError}</p>}
                   </>

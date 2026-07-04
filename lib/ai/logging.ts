@@ -1,5 +1,7 @@
 export type LiveAICallLog = {
   route: string;
+  page?: string;
+  reason?: string;
   provider: string;
   model: string;
   estimatedInputTokens: number;

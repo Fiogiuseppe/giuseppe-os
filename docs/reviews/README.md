@@ -70,3 +70,7 @@ npm run guardian:report
 ```
 
 Outputs `docs/reviews/GUARDIAN_REPORT_<date>.md`. See [`docs/THE_GUARDIAN.md`](../THE_GUARDIAN.md).
+
+## AI usage audits
+
+Cost-control and live-call maps: [`AI_USAGE_AUDIT.md`](AI_USAGE_AUDIT.md).
