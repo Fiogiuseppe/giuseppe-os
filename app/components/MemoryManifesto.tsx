@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useLanguage } from '../lib/i18n/LanguageContext';
+import { MemoryTunnelBackground } from './MemoryTunnelBackground';
 
 const HOW_SLOTS = [
   { key: 'memory.how1', slot: '1' },
@@ -39,11 +40,13 @@ export function MemoryManifesto() {
   const constitutionRef = useConstitutionParallax<HTMLElement>();
 
   return (
-    <article
-      ref={constitutionRef}
-      className="memory-constitution"
-      data-testid="memory-constitution"
-    >
+    <>
+      <MemoryTunnelBackground />
+      <article
+        ref={constitutionRef}
+        className="memory-constitution memory-constitution--tunnel"
+        data-testid="memory-constitution"
+      >
       <section className="memory-why-row" aria-labelledby="memory-why-label">
         <h2 id="memory-why-label" className="memory-constitution-tag memory-constitution-tag--why">
           {t('memory.whyLabel')}
@@ -68,5 +71,6 @@ export function MemoryManifesto() {
         </ol>
       </section>
     </article>
+    </>
   );
 }

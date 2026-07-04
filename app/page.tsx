@@ -623,7 +623,7 @@ export default function Home() {
             )}
 
             {view === 'memory' && (
-              <div className="memory-space">
+              <div className="memory-space memory-space--immersive">
                 <MemoryManifesto />
               </div>
             )}
