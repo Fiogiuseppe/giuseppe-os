@@ -1,10 +1,7 @@
-import { hasAnthropicApiKey, isClientAiToggleAllowed } from '../../../lib/ai/mode';
+import { resolveAIMode } from '../../../lib/ai/mode';
 
 export async function GET() {
-  const clientToggleEnabled = isClientAiToggleAllowed();
-
   return Response.json({
-    liveAvailable: hasAnthropicApiKey() && clientToggleEnabled,
-    clientToggleEnabled
+    mode: resolveAIMode()
   });
 }

@@ -62,9 +62,7 @@ export const messages = {
     },
     ai: {
       label: 'AI',
-      offTooltip: 'Modalità locale. Nessuna richiesta AI.',
-      onTooltip: 'AI live attiva.',
-      lockedTooltip: 'Modalità locale. Sul deploy condiviso le chiamate AI restano disattivate.'
+      offTooltip: 'Modalità locale. Nessuna richiesta AI.'
     },
     viewHeadings: {
       today: 'COSA HA MASSIMA LEVA OGGI?',
@@ -237,9 +235,7 @@ export const messages = {
     },
     ai: {
       label: 'AI',
-      offTooltip: 'Local mode. No AI requests.',
-      onTooltip: 'Live AI enabled.',
-      lockedTooltip: 'Local mode. On shared deploys, live AI stays disabled.'
+      offTooltip: 'Local mode. No AI requests.'
     },
     viewHeadings: {
       today: 'WHAT HAS THE HIGHEST LEVERAGE TODAY?',

@@ -28,9 +28,8 @@ import TodayAvatarNav from './components/TodayAvatarNav';
 import TodayMobileRitual from './components/TodayMobileRitual';
 import { AppTopbar } from './components/AppTopbar';
 import { DevAiControls } from './components/DevAiControls';
-import { AiStatusToggle } from './components/AiStatusToggle';
+import { AiStatusIndicator } from './components/AiStatusIndicator';
 import { useLanguage } from './lib/i18n/LanguageContext';
-import { useAiLive } from './lib/AiLiveContext';
 import { isAppView, type AppView } from './lib/views';
 
 const MEMORY_PRIMARY_LABELS = new Set([
@@ -234,7 +233,6 @@ function ProjectsListFocus({
 
 export default function Home() {
   const { t, locale } = useLanguage();
-  const { aiLive, ready: aiLiveReady } = useAiLive();
   const [view, setView] = useState<AppView>('today');
   const [awareness, setAwareness] = useState<AwarenessInsight | null>(null);
   const [insightsLoading, setInsightsLoading] = useState(false);
@@ -380,10 +378,6 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!aiLiveReady) {
-      return;
-    }
-
     let cancelled = false;
 
     async function loadInsights() {
@@ -410,13 +404,9 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [locale, aiLive, aiLiveReady]);
+  }, [locale]);
 
   useEffect(() => {
-    if (!aiLiveReady) {
-      return;
-    }
-
     let cancelled = false;
 
     async function loadCreate() {
@@ -443,13 +433,9 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [locale, aiLive, aiLiveReady]);
+  }, [locale]);
 
   useEffect(() => {
-    if (!aiLiveReady) {
-      return;
-    }
-
     let cancelled = false;
 
     async function loadLetter(regenerate = false) {
@@ -476,7 +462,7 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [locale, aiLive, aiLiveReady]);
+  }, [locale]);
 
   async function handleRegenerateBriefing() {
     setLetterLoading(true);
@@ -872,7 +858,7 @@ export default function Home() {
           <Link href="/about" className="footer-link">
             {t('footer.about')}
           </Link>
-          <AiStatusToggle />
+          <AiStatusIndicator />
         </footer>
       </div>
     </div>

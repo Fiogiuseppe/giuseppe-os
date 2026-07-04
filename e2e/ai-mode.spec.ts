@@ -1,14 +1,12 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Giuseppe OS AI cost control', () => {
-  test('ai-status reports live availability', async ({ request }) => {
+  test('ai-status reports server mode', async ({ request }) => {
     const response = await request.get('/api/ai-status');
     expect(response.ok()).toBeTruthy();
 
     const body = await response.json();
-    expect(body).toHaveProperty('liveAvailable');
-    expect(typeof body.liveAvailable).toBe('boolean');
-    expect(body.clientToggleEnabled).toBe(true);
+    expect(body.mode).toBe('mock');
   });
 
   test('todays-letter metadata reports aiMode', async ({ request }) => {
@@ -19,13 +17,13 @@ test.describe('Giuseppe OS AI cost control', () => {
     expect(body.aiMode).toBe('mock');
   });
 
-  test('footer AI toggle defaults to OFF', async ({ page }) => {
+  test('footer AI indicator is read-only and OFF', async ({ page }) => {
     await page.goto('/');
-    const toggle = page.getByTestId('ai-status-toggle');
-    await expect(toggle).toBeVisible();
-    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
-    await expect(toggle.locator('.status-dot--off')).toBeVisible();
-    await expect(toggle).toContainText('AI');
+    const indicator = page.getByTestId('ai-status-indicator');
+    await expect(indicator).toBeVisible();
+    await expect(indicator.locator('.status-dot--off')).toBeVisible();
+    await expect(indicator).toContainText('AI');
+    await expect(indicator).not.toHaveRole('button');
   });
 
   test('dev regenerate control is visible on Today', async ({ page }) => {

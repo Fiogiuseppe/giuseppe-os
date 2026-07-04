@@ -1,7 +1,5 @@
 import { mapBrainError, runExecutiveBrain } from '../../../lib/brain/executiveBrain';
 import type { BrainIntent, BrainRequest } from '../../../lib/brain/types';
-import { runWithAIRequestContext } from '../../../lib/ai/requestContext';
-import { resolveRequestAILive } from '../../../lib/ai/resolveRequestLive';
 
 const INTENTS: BrainIntent[] = [
   'auto',
@@ -40,9 +38,7 @@ export async function POST(request: Request) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const payload = parseRequest(body);
-    const aiLive = resolveRequestAILive(request, body);
-
-    const response = await runWithAIRequestContext({ aiLive }, () => runExecutiveBrain(payload));
+    const response = await runExecutiveBrain(payload);
     return Response.json(response);
   } catch (error) {
     const mapped = mapBrainError(error);

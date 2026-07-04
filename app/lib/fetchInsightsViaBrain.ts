@@ -1,5 +1,4 @@
 import type { AwarenessInsight } from '../../engine/awarenessEngine';
-import { buildAiLiveHeaders } from './aiLive';
 
 export type FetchInsightsResult =
   | { ok: true; awareness: AwarenessInsight; headline?: string }
@@ -8,10 +7,7 @@ export type FetchInsightsResult =
 export async function fetchInsightsViaBrain(locale: 'it' | 'en' = 'it'): Promise<FetchInsightsResult> {
   const response = await fetch('/api/brain', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...buildAiLiveHeaders()
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       intent: 'awareness',
       message: 'Scan for patterns and risks.',

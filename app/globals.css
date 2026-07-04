@@ -2152,26 +2152,6 @@ html.about-route body {
   white-space: nowrap;
 }
 
-.footer-ai-toggle {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  color: inherit;
-  font: inherit;
-  transition: opacity 0.2s var(--ease);
-}
-
-.footer-ai-toggle:hover {
-  opacity: 0.72;
-}
-
-.footer-ai-toggle:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
-
 .footer-ai-status--locked {
   cursor: default;
 }

@@ -1,5 +1,4 @@
 import type { DailyBriefingResponse } from '../../lib/briefing/types';
-import { buildAiLiveHeaders } from './aiLive';
 
 export type FetchTodaysLetterResult =
   | { ok: true; letter: DailyBriefingResponse }
@@ -15,10 +14,7 @@ export async function fetchTodaysLetter(
 ): Promise<FetchTodaysLetterResult> {
   const response = await fetch('/api/todays-letter', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...buildAiLiveHeaders()
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       locale,
       regenerate: options.regenerate === true

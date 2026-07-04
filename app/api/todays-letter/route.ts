@@ -1,8 +1,6 @@
 import { MAX_BRIEFING_WORDS } from '../../../lib/todays-letter/prompt';
 import { generateDailyBriefing, mapBriefingError } from '../../../lib/todays-letter/generate';
 import { resolveAIMode } from '../../../lib/ai/mode';
-import { runWithAIRequestContext } from '../../../lib/ai/requestContext';
-import { resolveRequestAILive } from '../../../lib/ai/resolveRequestLive';
 
 function parseLocale(body: Record<string, unknown> | null): 'it' | 'en' {
   return body?.locale === 'en' ? 'en' : 'it';
@@ -11,14 +9,9 @@ function parseLocale(body: Record<string, unknown> | null): 'it' | 'en' {
 export async function POST(request: Request) {
   try {
     const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
-    const aiLive = resolveRequestAILive(request, body);
-
-    const response = await runWithAIRequestContext({ aiLive }, () =>
-      generateDailyBriefing(parseLocale(body), {
-        regenerate: body.regenerate === true
-      })
-    );
-
+    const response = await generateDailyBriefing(parseLocale(body), {
+      regenerate: body.regenerate === true
+    });
     return Response.json(response);
   } catch (error) {
     const mapped = mapBriefingError(error);

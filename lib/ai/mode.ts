@@ -1,5 +1,3 @@
-import { isAIRequestLiveEnabled } from './requestContext';
-
 export type AIMode = 'mock' | 'live';
 
 export function hasAnthropicApiKey(): boolean {
@@ -12,7 +10,7 @@ export function resolveAIMode(): AIMode {
     return 'mock';
   }
 
-  if (isAIRequestLiveEnabled() && hasAnthropicApiKey()) {
+  if (configured === 'live' && hasAnthropicApiKey()) {
     return 'live';
   }
 
@@ -29,14 +27,6 @@ export function isAILiveMode(): boolean {
 
 export function isDevelopmentEnvironment(): boolean {
   return process.env.NODE_ENV === 'development';
-}
-
-/** Client footer toggle may enable live AI — only in dev or with explicit server opt-in. */
-export function isClientAiToggleAllowed(): boolean {
-  return (
-    isDevelopmentEnvironment() ||
-    process.env.AI_ALLOW_CLIENT_LIVE?.trim().toLowerCase() === 'true'
-  );
 }
 
 export function shouldShowDevAiControls(): boolean {
