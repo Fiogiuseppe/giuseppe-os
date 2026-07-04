@@ -40,7 +40,6 @@ import { TodayExperience } from './components/TodayExperience';
 import { AiOutputCard } from './components/AiOutputCard';
 import { AppTopbar } from './components/AppTopbar';
 import { DevAiControls } from './components/DevAiControls';
-import { AiStatusIndicator } from './components/AiStatusIndicator';
 import { FooterCredit } from './components/FooterCredit';
 import { useLanguage } from './lib/i18n/LanguageContext';
 import { isAppView, type AppView } from './lib/views';
@@ -671,9 +670,6 @@ export default function Home() {
             </Link>
           </div>
           <FooterCredit />
-          <div className="footer-end">
-            <AiStatusIndicator />
-          </div>
         </footer>
       </div>
     </div>
