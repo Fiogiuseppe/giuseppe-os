@@ -41,6 +41,7 @@ import { AiOutputCard } from './components/AiOutputCard';
 import { AppTopbar } from './components/AppTopbar';
 import { DevAiControls } from './components/DevAiControls';
 import { FooterCredit } from './components/FooterCredit';
+import { GlobalContentStudio } from './components/GlobalContentStudio';
 import { useLanguage } from './lib/i18n/LanguageContext';
 import { isAppView, type AppView } from './lib/views';
 
@@ -672,6 +673,8 @@ export default function Home() {
           <FooterCredit />
         </footer>
       </div>
+
+      <GlobalContentStudio hideTrigger={view === 'memory'} />
     </div>
   );
 }

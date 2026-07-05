@@ -126,7 +126,10 @@ export const messages = {
       how1: 'Compra tempo, non status.',
       how2: 'Una cosa eccezionale vale più di dieci mediocri.',
       how3: 'Ogni decisione deve aumentare almeno un capitale.',
-      how4: 'Scegli sempre verità e bellezza.'
+      how4: 'Scegli sempre verità e bellezza.',
+      suggestionsLabel: 'Libri e podcast suggeriti',
+      suggestionBook: 'Libro',
+      suggestionPodcast: 'Podcast'
     },
     content: {
       open: 'Genera contenuti',
@@ -393,7 +396,10 @@ export const messages = {
       how1: 'Buy time, not status.',
       how2: 'Build one extraordinary thing instead of many average ones.',
       how3: 'Every decision should strengthen at least one form of capital.',
-      how4: 'Always choose truth and beauty.'
+      how4: 'Always choose truth and beauty.',
+      suggestionsLabel: 'Suggested books and podcasts',
+      suggestionBook: 'Book',
+      suggestionPodcast: 'Podcast'
     },
     content: {
       open: 'Generate content',

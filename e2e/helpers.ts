@@ -25,6 +25,7 @@ export async function expectSectionHeading(page: Page, view: AppView) {
   if (view === 'memory') {
     await expect(page.getByTestId('memory-constitution')).toBeVisible();
     await expect(page.getByRole('heading', { name: VIEW_HEADING_PATTERNS.memory })).toBeVisible();
+    await expect(page.getByTestId('memory-suggestion-clouds')).toBeVisible();
     return;
   }
 

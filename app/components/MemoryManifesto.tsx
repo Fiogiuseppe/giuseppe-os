@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 import { MemoryTunnelBackground } from './MemoryTunnelBackground';
+import { MemorySuggestionClouds } from './MemorySuggestionClouds';
 
 const HOW_SLOTS = [
   { key: 'memory.how1', slot: '1' },
@@ -42,6 +43,7 @@ export function MemoryManifesto() {
   return (
     <>
       <MemoryTunnelBackground />
+      <MemorySuggestionClouds />
       <article
         ref={constitutionRef}
         className="memory-constitution memory-constitution--tunnel"

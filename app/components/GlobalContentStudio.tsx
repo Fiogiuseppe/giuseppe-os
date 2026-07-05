@@ -5,7 +5,7 @@ import { ContentGeneratorStage } from './ContentGeneratorStage';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 import { useContentStudio } from '../lib/contentStudio/ContentStudioContext';
 
-export function GlobalContentStudio() {
+export function GlobalContentStudio({ hideTrigger = false }: { hideTrigger?: boolean }) {
   const { t } = useLanguage();
   const { isOpen, config, open, close } = useContentStudio();
 
@@ -33,7 +33,7 @@ export function GlobalContentStudio() {
 
   return (
     <>
-      {!isOpen ? (
+      {!isOpen && !hideTrigger ? (
         <button
           type="button"
           className="global-content-trigger insights-action-chip"
