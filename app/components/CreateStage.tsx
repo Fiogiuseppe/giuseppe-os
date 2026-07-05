@@ -1,288 +1,180 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import brain from '../../memory/giuseppe_brain.json';
-import type { PotentialBrief } from '../../engine/potentialEngine';
-import {
-  CREATE_FEATURED_PROJECTS,
-  getProjectVisual,
-  type ProjectVisual
-} from '../lib/createProjectVisuals';
-import { formatConfidenceDisplay, formatProgressDisplay } from '../lib/formatConfidence';
+import { useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { useLanguage } from '../lib/i18n/LanguageContext';
-export type CreateFocus = 'why' | 'projects' | 'potential' | null;
+import { useContentStudio } from '../lib/contentStudio/ContentStudioContext';
 
-type CreateStageProps = {
-  projectName: string;
-  projectRole: string;
-  focus: CreateFocus;
-  onFocusChange: (focus: CreateFocus) => void;
-  loading: boolean;
-  error: string | null;
-  potential: PotentialBrief | null;
-  selectedProject: string | null;
-  onSelectProject: (name: string) => void;
-  onRequestPotential: () => void;
+type CreativeOutputKind = 'text' | 'visual' | 'video';
+
+type ReferenceFile = {
+  id: string;
+  name: string;
+  previewUrl: string;
+  kind: 'image' | 'other';
 };
 
-const FOCUS_ACTIONS = [
-  { id: 'why', labelKey: 'why' },
-  { id: 'projects', labelKey: 'openProjects' },
-  { id: 'potential', labelKey: 'exploreOpportunities' }
-] as const;
+const OUTPUT_KINDS: CreativeOutputKind[] = ['text', 'visual', 'video'];
 
-function ProjectVisualMark({
-  visual,
-  className = ''
-}: {
-  visual: ProjectVisual;
-  className?: string;
-}) {
-  return (
-    <img
-      src={visual.src}
-      alt={visual.alt}
-      className={`create-project-mark${visual.variant ? ` create-project-mark--${visual.variant}` : ''}${className ? ` ${className}` : ''}`}
-      draggable={false}
-    />
-  );
-}
-
-function ProjectVisualTile({
-  name,
-  status,
-  selected,
-  onSelect
-}: {
-  name: string;
-  status: string;
-  selected?: boolean;
-  onSelect: () => void;
-}) {
-  const visual = getProjectVisual(name);
-
-  return (
-    <button
-      type="button"
-      className={`create-project-tile${selected ? ' create-project-tile--active' : ''}`}
-      onClick={onSelect}
-      aria-pressed={selected}
-      aria-label={name}
-    >
-      <div className="create-project-tile-visual">
-        <ProjectVisualMark visual={visual} />
-      </div>
-      <div className="create-project-tile-copy">
-        <span className="create-project-tile-name">{name}</span>
-        <span className="create-project-tile-status">{status}</span>
-      </div>
-    </button>
-  );
-}
-
-function PotentialFocusPanel({ potential }: { potential: PotentialBrief }) {
+export function CreateStage() {
   const { t } = useLanguage();
-  const today = potential.todaysOpportunity;
+  const { open } = useContentStudio();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [brief, setBrief] = useState('');
+  const [outputKind, setOutputKind] = useState<CreativeOutputKind>('text');
+  const [references, setReferences] = useState<ReferenceFile[]>([]);
 
-  return (
-    <>
-      <div className="insights-focus-panel create-potential-lead">
-        <div className="kicker">{t('kickers.todaysOpportunity')}</div>
-        <h2 className="create-potential-title">{today.title}</h2>
-        <p>{today.description}</p>
-        <p>
-          <b>{t('potential.whyMatters')}:</b> {today.whyThisMatters}
-        </p>
-        <p>
-          <b>{t('potential.firstAction')}:</b> {today.firstAction}
-        </p>
-        <div className="potential-meta">
-          {t('potential.impact')} {today.estimatedImpact} · {today.timeRequired} · {t('potential.energy')}{' '}
-          {today.energyRequired}
-        </div>
-        <div className="potential-score">
-          {formatConfidenceDisplay(t, today.confidenceScore, today.confidenceLabel)}
-        </div>
-        <p>
-          {today.hasEnoughData && today.totalScore !== null
-            ? `${t('potential.score')} ${Math.round(today.totalScore)} · ${today.sourceProject ?? t('potential.system')}`
-            : formatProgressDisplay(t)}
-        </p>
-      </div>
+  const canGenerate = brief.trim().length > 0 || references.length > 0;
 
-      <div className="create-potential-grid">
-        {[
-          [t('kickers.creativeChallenge'), potential.creativeChallenge],
-          [t('kickers.skillToLearn'), potential.skillToLearn],
-          [t('kickers.personToContact'), potential.personToContact],
-          [t('kickers.articleToRead'), potential.articleToRead],
-          [t('kickers.projectToFinish'), potential.projectToFinish],
-          [t('kickers.riskToAvoid'), potential.riskToAvoid],
-          [t('kickers.questionOfTheDay'), potential.questionOfTheDay],
-          [t('kickers.weeklyFocus'), potential.weeklyFocus]
-        ].map(([label, value]) => (
-          <div className="insights-focus-panel create-potential-item" key={label}>
-            <div className="kicker">{label}</div>
-            <p>{value}</p>
-          </div>
-        ))}
-      </div>
-    </>
+  const outputLabels = useMemo(
+    () => ({
+      text: t('createStudio.outputs.text'),
+      visual: t('createStudio.outputs.visual'),
+      video: t('createStudio.outputs.video')
+    }),
+    [t]
   );
-}
 
-export function CreateStage({
-  projectName,
-  projectRole,
-  focus,
-  onFocusChange,
-  loading,
-  error,
-  potential,
-  selectedProject,
-  onSelectProject,
-  onRequestPotential
-}: CreateStageProps) {
-  const { t } = useLanguage();
-  const [heroProject, setHeroProject] = useState(projectName);
+  function handleReferencePick(event: ChangeEvent<HTMLInputElement>) {
+    const files = event.target.files;
+    if (!files?.length) {
+      return;
+    }
 
-  useEffect(() => {
-    setHeroProject(projectName);
-  }, [projectName]);
+    const next = Array.from(files).map(file => {
+      const isImage = file.type.startsWith('image/');
+      return {
+        id: `${file.name}-${file.lastModified}`,
+        name: file.name,
+        previewUrl: isImage ? URL.createObjectURL(file) : '',
+        kind: isImage ? 'image' : 'other'
+      } satisfies ReferenceFile;
+    });
 
-  const heroVisual = getProjectVisual(heroProject);
-  const heroRole =
-    brain.projects[heroProject as keyof typeof brain.projects]?.role ?? projectRole;
-  const heroStatus =
-    brain.projects[heroProject as keyof typeof brain.projects]?.status.toUpperCase() ?? 'ACTIVE';
-
-  function selectProject(name: string) {
-    setHeroProject(name);
-    onSelectProject(name);
+    setReferences(current => [...current, ...next].slice(0, 8));
+    event.target.value = '';
   }
 
-  if (focus !== null) {
-    return (
-      <div className="insights-focus-stage reading-focus-view" data-testid="create-focus-stage">
-        <button type="button" className="reading-expand-close" onClick={() => onFocusChange(null)}>
-          <span aria-hidden="true">←</span> {t('disclosure.closeReading')}
-        </button>
+  function removeReference(id: string) {
+    setReferences(current => {
+      const target = current.find(item => item.id === id);
+      if (target?.previewUrl) {
+        URL.revokeObjectURL(target.previewUrl);
+      }
+      return current.filter(item => item.id !== id);
+    });
+  }
 
-        {focus === 'why' && (
-          <div className="insights-focus-panel">
-            <div className="kicker">{t('kickers.strategist')}</div>
-            <h2>{t('create.strategistHeadline')}</h2>
-            <p>{t('create.strategistSubline')}</p>
-          </div>
-        )}
+  function handleGenerate() {
+    if (!canGenerate) {
+      return;
+    }
 
-        {focus === 'projects' && (
-          <>
-            <div className="create-project-grid" role="group" aria-label={t('disclosure.openProjects')}>
-              {Object.entries(brain.projects).map(([name, project]) => (
-                <ProjectVisualTile
-                  key={name}
-                  name={name}
-                  status={project.status}
-                  selected={selectedProject === name}
-                  onSelect={() => selectProject(name)}
-                />
-              ))}
-            </div>
-            {selectedProject && (
-              <div className="insights-focus-panel create-project-detail">
-                <div className="create-project-detail-visual">
-                  <ProjectVisualMark visual={getProjectVisual(selectedProject)} />
-                </div>
-                <div className="create-project-detail-copy">
-                  <div className="kicker">
-                    {brain.projects[selectedProject as keyof typeof brain.projects].status.toUpperCase()}
-                  </div>
-                  <h2>{selectedProject}</h2>
-                  <p>{brain.projects[selectedProject as keyof typeof brain.projects].role}</p>
-                  <p>
-                    {t('disclosure.progress')}: {formatProgressDisplay(t)}
-                  </p>
-                </div>
-              </div>
-            )}
-          </>
-        )}
+    const referenceNote =
+      references.length > 0
+        ? `\n\nReferences attached: ${references.map(item => item.name).join(', ')}`
+        : '';
 
-        {focus === 'potential' && loading && (
-          <p className="insights-stage-loading">{t('today.loading')}</p>
-        )}
-
-        {focus === 'potential' && error && (
-          <p className="insights-stage-error">{error}</p>
-        )}
-
-        {focus === 'potential' && potential && !loading && (
-          <PotentialFocusPanel potential={potential} />
-        )}
-      </div>
-    );
+    open({
+      sourceType: 'freeform',
+      topic: `${brief.trim()}${referenceNote}`.trim()
+    });
   }
 
   return (
-    <div className="create-stage" data-testid="create-stage">
+    <div className="create-stage creative-studio-stage" data-testid="create-stage">
       <h1 className="create-stage-title view-title">{t('viewHeadings.create')}</h1>
-      <p className="create-stage-headline">{t('create.strategistSubline')}</p>
+      <p className="create-stage-headline">{t('createStudio.lead')}</p>
 
-      <section className="create-hero-card">
-        <div className="create-hero-visual">
-          <ProjectVisualMark visual={heroVisual} className="create-hero-mark" />
+      <section className="creative-studio-panel">
+        <div className="creative-studio-field">
+          <label className="creative-studio-label" htmlFor="creative-studio-brief">
+            {t('createStudio.briefLabel')}
+          </label>
+          <textarea
+            id="creative-studio-brief"
+            className="creative-studio-textarea"
+            rows={4}
+            value={brief}
+            placeholder={t('createStudio.briefPlaceholder')}
+            onChange={event => setBrief(event.target.value)}
+          />
         </div>
-        <div className="create-hero-copy">
-          <div className="kicker">{t('create.focusLabel')}</div>
-          <h2 className="create-hero-title">{heroProject}</h2>
-          <p className="create-hero-status">{heroStatus}</p>
-          <p className="create-hero-role">{heroRole}</p>
+
+        <div className="creative-studio-field">
+          <span className="creative-studio-label">{t('createStudio.referencesLabel')}</span>
+          <div className="creative-studio-references">
+            {references.map(reference => (
+              <div key={reference.id} className="creative-studio-reference">
+                {reference.kind === 'image' ? (
+                  <img src={reference.previewUrl} alt="" className="creative-studio-reference-image" />
+                ) : (
+                  <span className="creative-studio-reference-file" aria-hidden="true">
+                    ↗
+                  </span>
+                )}
+                <span className="creative-studio-reference-name">{reference.name}</span>
+                <button
+                  type="button"
+                  className="creative-studio-reference-remove"
+                  aria-label={t('createStudio.removeReference')}
+                  onClick={() => removeReference(reference.id)}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="creative-studio-reference-add"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {t('createStudio.addReference')}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="creative-studio-file-input"
+              accept="image/*,video/*,.pdf,.txt,.md"
+              multiple
+              onChange={handleReferencePick}
+            />
+          </div>
+          <p className="creative-studio-hint">{t('createStudio.referencesHint')}</p>
         </div>
+
+        <div className="creative-studio-field">
+          <span className="creative-studio-label">{t('createStudio.outputLabel')}</span>
+          <div className="creative-studio-output-grid" role="group" aria-label={t('createStudio.outputLabel')}>
+            {OUTPUT_KINDS.map(kind => (
+              <button
+                key={kind}
+                type="button"
+                className={`insights-action-chip${outputKind === kind ? ' insights-action-chip--active' : ''}`}
+                aria-pressed={outputKind === kind}
+                disabled={kind !== 'text'}
+                onClick={() => setOutputKind(kind)}
+              >
+                {outputLabels[kind]}
+                {kind !== 'text' ? (
+                  <span className="creative-studio-soon">{t('createStudio.comingSoon')}</span>
+                ) : null}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          className="insights-action-chip creative-studio-generate"
+          disabled={!canGenerate}
+          onClick={handleGenerate}
+        >
+          {t('createStudio.generate')}
+          <span aria-hidden="true">→</span>
+        </button>
       </section>
 
-      <div className="create-ecosystem" role="list" aria-label={t('create.ecosystemLabel')}>
-        {CREATE_FEATURED_PROJECTS.map(name => {
-          const project = brain.projects[name as keyof typeof brain.projects];
-          if (!project) {
-            return null;
-          }
-
-          return (
-            <ProjectVisualTile
-              key={name}
-              name={name}
-              status={project.status}
-              selected={heroProject === name}
-              onSelect={() => selectProject(name)}
-            />
-          );
-        })}
-      </div>
-
-      <div className="insights-action-grid" role="group" aria-label={t('nav.create')}>
-        {FOCUS_ACTIONS.map(action => (
-          <button
-            key={action.id}
-            type="button"
-            className="insights-action-chip"
-            onClick={() => {
-              if (action.id === 'potential') {
-                onRequestPotential();
-              }
-              onFocusChange(action.id);
-            }}
-          >
-            {t(`disclosure.${action.labelKey}`)}
-            <span aria-hidden="true">→</span>
-          </button>
-        ))}
-      </div>
-
-      {loading && <p className="insights-stage-loading">{t('today.loading')}</p>}
-      {error && <p className="insights-stage-error">{error}</p>}
-
-      <p className="insights-built-over-time">{t('create.energyNote')}</p>
+      <p className="insights-built-over-time">{t('createStudio.note')}</p>
     </div>
   );
 }

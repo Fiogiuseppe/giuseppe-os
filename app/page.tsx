@@ -24,6 +24,7 @@ import {
   DisclosureTrigger
 } from './components/Disclosure';
 import { InsightsStage } from './components/InsightsStage';
+import { BrandsStage } from './components/BrandsStage';
 import { CreateStage } from './components/CreateStage';
 import { DecisionIntakePanel } from './components/DecisionIntakePanel';
 import { DecisionReviewGate, type DueReviewPayload } from './components/DecisionReviewGate';
@@ -469,14 +470,14 @@ export default function Home() {
     setTodayExperience(response.today);
   }
 
-  const [createFocus, setCreateFocus] = useState<'projects' | 'potential' | 'why' | null>(null);
+  const [brandsFocus, setBrandsFocus] = useState<'projects' | 'potential' | 'why' | null>(null);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [decisionsFocus, setDecisionsFocus] = useState<'form' | 'purpose' | null>('form');
 
   useEffect(() => {
     setInsightsFocus(null);
     setDecisionsFocus('form');
-    setCreateFocus(null);
+    setBrandsFocus(null);
     setSelectedProject(null);
     setDecision('');
     setIntakeAnswers({});
@@ -494,8 +495,8 @@ export default function Home() {
       <AppTopbar mode="spa" activeView={view} onNavigate={setView} />
 
       <div className="app-body">
-        <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}${view === 'decisions' ? ' main-decisions' : ''}${view === 'insights' ? ' main-insights' : ''}${view === 'memory' ? ' main-memory' : ''}${view === 'create' ? ' main-create' : ''}`} role="main">
-          <header className={`page-header progressive-header space-header-${view}${view === 'today' ? ' page-header-today' : ''}${view === 'decisions' ? ' page-header-decisions' : ''}${view === 'insights' ? ' page-header-insights' : ''}${view === 'memory' ? ' page-header-memory' : ''}${view === 'create' ? ' page-header-create' : ''}`}>
+        <main className={`main space-${view} ${view === 'today' ? 'main-home' : 'main-progressive'}${view === 'decisions' ? ' main-decisions' : ''}${view === 'insights' ? ' main-insights' : ''}${view === 'memory' ? ' main-memory' : ''}${view === 'brands' ? ' main-brands' : ''}${view === 'create' ? ' main-create' : ''}`} role="main">
+          <header className={`page-header progressive-header space-header-${view}${view === 'today' ? ' page-header-today' : ''}${view === 'decisions' ? ' page-header-decisions' : ''}${view === 'insights' ? ' page-header-insights' : ''}${view === 'memory' ? ' page-header-memory' : ''}${view === 'brands' ? ' page-header-brands' : ''}${view === 'create' ? ' page-header-create' : ''}`}>
             {view !== 'today' && (
               <>
                 <div className="space-meta">
@@ -634,13 +635,13 @@ export default function Home() {
               </div>
             )}
 
-            {view === 'create' && (
-              <div className="create-space">
-                <CreateStage
+            {view === 'brands' && (
+              <div className="create-space brands-space">
+                <BrandsStage
                   projectName={projectName}
                   projectRole={brain.projects[projectName as keyof typeof brain.projects].role}
-                  focus={createFocus}
-                  onFocusChange={setCreateFocus}
+                  focus={brandsFocus}
+                  onFocusChange={setBrandsFocus}
                   loading={createLoading}
                   error={createError}
                   potential={potential}
@@ -652,6 +653,12 @@ export default function Home() {
                     }
                   }}
                 />
+              </div>
+            )}
+
+            {view === 'create' && (
+              <div className="create-space creative-space">
+                <CreateStage />
               </div>
             )}
 
@@ -674,7 +681,7 @@ export default function Home() {
         </footer>
       </div>
 
-      <GlobalContentStudio hideTrigger={view === 'memory'} />
+      <GlobalContentStudio hideTrigger={view === 'memory' || view === 'create'} />
     </div>
   );
 }

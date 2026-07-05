@@ -38,7 +38,8 @@ export const GUARDIAN_SECTION_QUESTIONS: Record<ProductSectionId, string> = {
   today: 'What is the highest leverage thing I can do today?',
   decisions: 'What is the best decision I can make?',
   insights: 'What am I not seeing?',
-  create: 'What deserves my energy?',
+  brands: 'How are my brands doing?',
+  create: 'What do I want to create?',
   memory: 'Who do I want to continue being?'
 };
 

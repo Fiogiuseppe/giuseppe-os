@@ -1,9 +1,9 @@
 /**
- * Giuseppe OS — five product sections.
+ * Giuseppe OS — product sections.
  * Each section has one purpose and answers one life question.
  */
 
-export type ProductSectionId = 'today' | 'decisions' | 'insights' | 'create' | 'memory';
+export type ProductSectionId = 'today' | 'decisions' | 'insights' | 'brands' | 'create' | 'memory';
 
 export interface ProductSection {
   id: ProductSectionId;
@@ -95,20 +95,36 @@ export const PRODUCT_SECTIONS: ProductSection[] = [
     ]
   },
   {
-    id: 'create',
-    purpose: 'Help Giuseppe build meaningful things.',
-    question: 'What deserves my energy?',
+    id: 'brands',
+    purpose: 'Show brand and project momentum without exposing financial balances.',
+    question: 'How are my brands doing?',
     engines: ['potential-engine', 'trajectory-engine', 'digital-twin'],
     dataNeeds: [
       'Active project roster',
-      'Importance, momentum, risk per project',
-      'Trajectory impact',
-      'Creative goals'
+      'Brand momentum signals (non-financial)',
+      'Publishing and reputation proxies',
+      'Trajectory impact'
     ],
     futureImprovements: [
-      'Importance Score and Momentum per project',
-      'Suggested focus, pause, collaboration, experiments',
-      'Constant attention rebalancing'
+      'Real signals from writing, LinkedIn, and project activity',
+      'Where to invest attention this month',
+      'Importance Score and Momentum per brand'
+    ]
+  },
+  {
+    id: 'create',
+    purpose: 'Creative studio — make anything from brief and references.',
+    question: 'What do I want to create?',
+    engines: ['content-generator', 'executive-brain', 'digital-twin'],
+    dataNeeds: [
+      'Creative brief and uploaded references',
+      'Identity and Memory context',
+      'Output format (text, visual, video)'
+    ],
+    futureImprovements: [
+      'Multimodal generation from references',
+      'Video and visual output pipelines',
+      'Unified creative lab instead of scattered generators'
     ]
   },
   {

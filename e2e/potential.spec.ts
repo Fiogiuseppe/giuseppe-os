@@ -8,14 +8,14 @@ async function expandPotential(page: import('@playwright/test').Page) {
 test.describe('Giuseppe OS potential engine', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await gotoView(page, 'create');
+    await gotoView(page, 'brands');
     await expandPotential(page);
   });
 
   test('opens the Potential page', async ({ page }) => {
     await expect(page.getByText("TODAY'S OPPORTUNITY")).toBeVisible();
     await expect(page.getByText('CREATIVE CHALLENGE')).toBeVisible();
-    await expect(page.getByTestId('nav-create')).toHaveClass(/active/);
+    await expect(page.getByTestId('nav-brands')).toHaveClass(/active/);
   });
 
   test('shows today opportunity with confidence or honest uncertainty', async ({ page }) => {
@@ -50,7 +50,7 @@ test.describe('Giuseppe OS potential engine', () => {
     await gotoView(page, 'today');
     await expectTodayActionVisible(page);
 
-    await gotoView(page, 'create');
+    await gotoView(page, 'brands');
     await expandPotential(page);
     await expect(page.getByText("TODAY'S OPPORTUNITY")).toBeVisible();
   });

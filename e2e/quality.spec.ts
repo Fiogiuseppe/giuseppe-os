@@ -7,6 +7,7 @@ const MAIN_SECTIONS = [
   { id: 'today' as const, heading: VIEW_HEADING_PATTERNS.today },
   { id: 'decisions' as const, heading: VIEW_HEADING_PATTERNS.decisions },
   { id: 'insights' as const, heading: VIEW_HEADING_PATTERNS.insights },
+  { id: 'brands' as const, heading: VIEW_HEADING_PATTERNS.brands },
   { id: 'create' as const, heading: VIEW_HEADING_PATTERNS.create },
   { id: 'memory' as const, heading: VIEW_HEADING_PATTERNS.memory }
 ] as const;

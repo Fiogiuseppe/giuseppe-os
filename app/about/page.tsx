@@ -5,7 +5,7 @@ import { AppTopbar } from '../components/AppTopbar';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 import styles from './about.module.css';
 
-const PRODUCT_KEYS = ['today', 'decisions', 'insights', 'create', 'memory'] as const;
+const PRODUCT_KEYS = ['today', 'decisions', 'insights', 'brands', 'create', 'memory'] as const;
 
 export default function AboutPage() {
   const { t } = useLanguage();

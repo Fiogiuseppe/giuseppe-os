@@ -1,6 +1,6 @@
 import { expect, type Page } from '@playwright/test';
 
-export type AppView = 'today' | 'decisions' | 'insights' | 'create' | 'memory';
+export type AppView = 'today' | 'decisions' | 'insights' | 'brands' | 'create' | 'memory';
 
 export async function gotoView(page: Page, view: AppView) {
   await page.getByTestId(`nav-${view}`).click();
@@ -12,7 +12,8 @@ export const VIEW_HEADING_PATTERNS: Record<AppView, RegExp> = {
   today: /./, // Today shows action only — no page heading
   decisions: /MIGLIORE DECISIONE|BEST DECISION I CAN MAKE/i,
   insights: /COSA NON STO VEDENDO|WHAT AM I NOT SEEING/i,
-  create: /MERITA LA MIA ENERGIA|DESERVES MY ENERGY/i,
+  brands: /COME STANNO LE MIE MARCHE|HOW ARE MY BRANDS DOING/i,
+  create: /COSA VOGLIO CREARE|WHAT DO I WANT TO CREATE/i,
   memory: /Perché|Why/i
 };
 
@@ -30,7 +31,7 @@ export async function expectSectionHeading(page: Page, view: AppView) {
   }
 
   const stageTitle = page.locator(
-    '.decision-stage-title.view-title, .insights-stage-title.view-title, .create-stage-title.view-title'
+    '.decision-stage-title.view-title, .insights-stage-title.view-title, .create-stage-title.view-title, .brands-stage .create-stage-title.view-title'
   );
   await expect(stageTitle).toContainText(VIEW_HEADING_PATTERNS[view]);
 }

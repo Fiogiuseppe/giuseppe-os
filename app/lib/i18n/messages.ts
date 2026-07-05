@@ -50,6 +50,7 @@ export const messages = {
       today: 'Oggi',
       decisions: 'Decisioni',
       insights: 'Insight',
+      brands: 'Brands',
       create: 'Crea',
       memory: 'Memoria'
     },
@@ -57,7 +58,8 @@ export const messages = {
       today: 'Guida del mattino',
       decisions: 'Partner decisionale',
       insights: 'Osservazione nel tempo',
-      create: 'Energia creativa',
+      brands: 'Momentum delle marche',
+      create: 'Studio creativo',
       memory: 'Costituzione personale'
     },
     ai: {
@@ -78,14 +80,16 @@ export const messages = {
       today: 'COSA HA MASSIMA LEVA OGGI?',
       decisions: 'QUAL È LA MIGLIORE DECISIONE CHE POSSO PRENDERE?',
       insights: 'COSA NON STO VEDENDO?',
-      create: 'COSA MERITA LA MIA ENERGIA?',
+      brands: 'COME STANNO LE MIE MARCHE?',
+      create: 'COSA VOGLIO CREARE?',
       memory: 'CHI VOGLIO CONTINUARE A ESSERE?'
     },
     sectionQuestions: {
       today: 'Qual è la cosa a massima leva che posso fare oggi?',
       decisions: 'Qual è la migliore decisione che posso prendere?',
       insights: 'Cosa non sto vedendo?',
-      create: 'Cosa merita la mia energia?',
+      brands: 'Come stanno andando i miei motori di reddito e reputazione?',
+      create: 'Cosa voglio creare adesso?',
       memory: 'Chi voglio continuare a essere?'
     },
     kickers: shared.kickers,
@@ -213,6 +217,32 @@ export const messages = {
       energyNote: 'Energia creativa — un progetto alla volta.',
       ecosystemLabel: 'Ecosistema creativo'
     },
+    brands: {
+      strategistHeadline: 'Dove investire attenzione questo mese?',
+      strategistSubline: 'Momentum delle marche — nessun saldo, solo segnali su come stanno andando i tuoi motori.',
+      focusLabel: 'MARCA IN EVIDENZA',
+      ecosystemLabel: 'Ecosistema brand',
+      momentumLabel: 'Momentum',
+      privacyNote: 'Nessun dato finanziario sensibile — solo traiettoria e concentrazione.'
+    },
+    createStudio: {
+      lead: 'Carica reference, scrivi il brief, genera. Testo oggi — visuale e video in arrivo.',
+      briefLabel: 'Brief creativo',
+      briefPlaceholder: 'Cosa vuoi creare? Mood, messaggio, formato…',
+      referencesLabel: 'Reference',
+      addReference: 'Aggiungi file',
+      removeReference: 'Rimuovi reference',
+      referencesHint: 'Immagini, video, PDF o note — fino a 8 file.',
+      outputLabel: 'Output',
+      outputs: {
+        text: 'Testo',
+        visual: 'Visuale',
+        video: 'Video'
+      },
+      comingSoon: 'presto',
+      generate: 'Genera',
+      note: 'Il contesto Identity e Memory guida l\'AI — non inventa fatti su di te.'
+    },
     disclosure: {
       why: 'Perché?',
       showBoard: 'Mostra il Board',
@@ -293,9 +323,13 @@ export const messages = {
           name: 'Insight',
           question: 'Cosa non sto vedendo?'
         },
+        brands: {
+          name: 'Brands',
+          question: 'Come stanno le mie marche?'
+        },
         create: {
           name: 'Crea',
-          question: 'Cosa merita la mia energia?'
+          question: 'Cosa voglio creare?'
         },
         memory: {
           name: 'Memoria',
@@ -320,6 +354,7 @@ export const messages = {
       today: 'Today',
       decisions: 'Decisions',
       insights: 'Insights',
+      brands: 'Brands',
       create: 'Create',
       memory: 'Memory'
     },
@@ -327,7 +362,8 @@ export const messages = {
       today: 'Morning guide',
       decisions: 'Decision partner',
       insights: 'Observation over time',
-      create: 'Creative energy',
+      brands: 'Brand momentum',
+      create: 'Creative studio',
       memory: 'Personal constitution'
     },
     ai: {
@@ -348,14 +384,16 @@ export const messages = {
       today: 'WHAT HAS THE HIGHEST LEVERAGE TODAY?',
       decisions: 'WHAT IS THE BEST DECISION I CAN MAKE?',
       insights: 'WHAT AM I NOT SEEING?',
-      create: 'WHAT DESERVES MY ENERGY?',
+      brands: 'HOW ARE MY BRANDS DOING?',
+      create: 'WHAT DO I WANT TO CREATE?',
       memory: 'WHO DO I WANT TO CONTINUE BEING?'
     },
     sectionQuestions: {
       today: 'What is the highest leverage thing I can do today?',
       decisions: 'What is the best decision I can make?',
       insights: 'What am I not seeing?',
-      create: 'What deserves my energy?',
+      brands: 'How are my income and reputation engines performing?',
+      create: 'What do I want to create right now?',
       memory: 'Who do I want to continue being?'
     },
     kickers: shared.kickers,
@@ -483,6 +521,32 @@ export const messages = {
       energyNote: 'Creative energy — one project at a time.',
       ecosystemLabel: 'Creative ecosystem'
     },
+    brands: {
+      strategistHeadline: 'Where should attention go this month?',
+      strategistSubline: 'Brand momentum — no balances, only signals on how your engines are performing.',
+      focusLabel: 'FEATURED BRAND',
+      ecosystemLabel: 'Brand ecosystem',
+      momentumLabel: 'Momentum',
+      privacyNote: 'No sensitive financial data — trajectory and focus only.'
+    },
+    createStudio: {
+      lead: 'Upload references, write the brief, generate. Text today — visual and video coming soon.',
+      briefLabel: 'Creative brief',
+      briefPlaceholder: 'What do you want to create? Mood, message, format…',
+      referencesLabel: 'References',
+      addReference: 'Add files',
+      removeReference: 'Remove reference',
+      referencesHint: 'Images, video, PDF, or notes — up to 8 files.',
+      outputLabel: 'Output',
+      outputs: {
+        text: 'Text',
+        visual: 'Visual',
+        video: 'Video'
+      },
+      comingSoon: 'soon',
+      generate: 'Generate',
+      note: 'Identity and Memory context guides the AI — it does not invent facts about you.'
+    },
     disclosure: {
       why: 'Why?',
       showBoard: 'Show the Board',
@@ -563,9 +627,13 @@ export const messages = {
           name: 'Insights',
           question: 'What am I not seeing?'
         },
+        brands: {
+          name: 'Brands',
+          question: 'How are my brands doing?'
+        },
         create: {
           name: 'Create',
-          question: 'What deserves my energy?'
+          question: 'What do I want to create?'
         },
         memory: {
           name: 'Memory',

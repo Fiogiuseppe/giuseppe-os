@@ -218,6 +218,16 @@ Each entry includes:
 
 ---
 
+### 2026-07 — Split Create into Brands + Creative Studio (six sections)
+
+**Decision:** Add **Brands** as a dedicated section for project/brand momentum (no financial balances). Redefine **Create** as a creative studio (brief, references, text generation today; visual/video later). Navigation becomes Today → Decisions → Insights → Brands → Create → Memory.
+
+**Rationale:** Create previously mixed income engines (projects, potential opportunities) with creative output. Giuseppe needs separate mental spaces: *how are my brands performing?* vs *what do I want to make right now?*
+
+**Implications:** `BrandsStage`, `lib/brands/momentum.ts`, section registry and i18n updated. Momentum scores are deterministic placeholders until real activity signals ship (Phase 2). Global content trigger hidden on Create (studio is inline). Product constitution five-section model superseded — update `PRODUCT_EVOLUTION.md` in a follow-up doc pass.
+
+---
+
 ## Template for New Entries
 
 ```markdown
