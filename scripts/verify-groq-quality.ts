@@ -126,8 +126,8 @@ async function verifyContentGenerator(): Promise<void> {
   };
 
   const linkedin = await provider.complete({
-    system: buildContentSystemPrompt(),
-    messages: [{ role: 'user', content: buildFormatUserPrompt('linkedin', material) }],
+    system: buildContentSystemPrompt('en'),
+    messages: [{ role: 'user', content: buildFormatUserPrompt('linkedin', material, 'en') }],
     maxTokens: 700,
     temperature: CREATIVE_CONTENT_TEMPERATURE
   });
@@ -137,8 +137,8 @@ async function verifyContentGenerator(): Promise<void> {
 
   section('CONTENT GENERATOR — Instagram story (JSON array contract)');
   const instagram = await completeWithJsonContract(provider, {
-    system: buildContentSystemPrompt(),
-    messages: [{ role: 'user', content: buildFormatUserPrompt('instagram-story', material) }],
+    system: buildContentSystemPrompt('en'),
+    messages: [{ role: 'user', content: buildFormatUserPrompt('instagram-story', material, 'en') }],
     maxTokens: 500,
     expectJson: true
   });

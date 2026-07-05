@@ -25,7 +25,7 @@ export function ContentGeneratorPanel({
   topic: initialTopic,
   className = ''
 }: ContentGeneratorPanelProps) {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [topic, setTopic] = useState(initialTopic ?? '');
   const [selectedFormats, setSelectedFormats] = useState<ContentFormat[]>(['medium', 'linkedin', 'instagram-story']);
@@ -69,7 +69,8 @@ export function ContentGeneratorPanel({
             : sourceType === 'insight'
               ? initialTopic ?? topic.trim()
               : undefined,
-        formats: selectedFormats
+        formats: selectedFormats,
+        locale
       })
     });
 

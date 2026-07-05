@@ -1,5 +1,5 @@
 import type { BrainRequest, ContextPacket, ContextSource, GiuseppeBrain, WorkingMemory } from '../types';
-import { DECIDE_JSON_INSTRUCTION } from '../decisions/prompt';
+import { buildDecideJsonInstruction } from '../decisions/prompt';
 import { detectTopics } from '../intent/detectIntent';
 import { selectSlices } from './slices';
 import { resolveLocale, pickLocale } from '../../i18n/locale';
@@ -50,7 +50,7 @@ function buildSystemPrompt(
     '',
     'RESPONSE FORMAT',
     intent === 'decide'
-      ? `${DECIDE_JSON_INSTRUCTION} ${pickLocale(locale, 'Tutti i campi testuali in italiano.', 'All text fields in English.')}`
+      ? `${buildDecideJsonInstruction(locale)} ${pickLocale(locale, 'Tutti i campi testuali in italiano.', 'All text fields in English.')}`
       : pickLocale(
           locale,
           'Rispondi interamente in italiano. Non mescolare lingue.',

@@ -39,7 +39,7 @@ export function TodayExecuteAction({
   onOpenDecisions,
   className = ''
 }: TodayExecuteActionProps) {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<GeneratedResult | null>(null);
@@ -89,7 +89,8 @@ export function TodayExecuteAction({
       body: JSON.stringify({
         sourceType: 'freeform',
         topic: resolved.topic,
-        formats: [format]
+        formats: [format],
+        locale
       })
     });
 

@@ -21,6 +21,7 @@ export type ContentGenerateRequest = {
   sourceId?: string;
   topic?: string;
   formats: ContentFormat[];
+  locale?: 'it' | 'en';
 };
 
 export type ContentGenerateResponse = {

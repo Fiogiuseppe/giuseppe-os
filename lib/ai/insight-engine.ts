@@ -6,7 +6,7 @@ import { isAILiveMode } from './mode';
 import { completeJsonWithProviderChain } from './jsonProviderChain';
 import { loadLongTermMemory, loadWorkingMemory } from '../brain/memory/store';
 import { loadStrongestPatterns } from '../self-model/summary';
-import { resolveLocale, type AppLocale } from '../i18n/locale';
+import { pickLocale, resolveLocale, type AppLocale } from '../i18n/locale';
 import {
   clearCachedMonthlyInsight,
   insightMonthKey,
@@ -48,13 +48,29 @@ type ParsedInsightPayload = {
  * Placeholder for a future server-side web search provider.
  * Returns deterministic mock signals until live search is wired.
  */
-export async function fetchOnlineSignals(): Promise<{ signals: string[]; source: 'mock' | 'web' }> {
+export async function fetchOnlineSignals(
+  localeInput?: AppLocale
+): Promise<{ signals: string[]; source: 'mock' | 'web' }> {
+  const locale = resolveLocale(localeInput);
+
   return {
     source: 'mock',
     signals: [
-      'Mock signal: hybrid creators who ship in public continue to compound reputation faster than pure builders.',
-      'Mock signal: LEGO-adjacent expertise remains a differentiated income channel for Giuseppe’s profile.',
-      'Mock signal: long-form reflection paired with one concrete weekly move beats daily noise for trajectory.'
+      pickLocale(
+        locale,
+        'Segnale: i creator ibridi che pubblicano in pubblico continuano a far crescere la reputazione più dei puri builder.',
+        'Mock signal: hybrid creators who ship in public continue to compound reputation faster than pure builders.'
+      ),
+      pickLocale(
+        locale,
+        'Segnale: l\'expertise LEGO-adjacent resta un canale di reddito differenziante per il profilo di Giuseppe.',
+        'Mock signal: LEGO-adjacent expertise remains a differentiated income channel for Giuseppe\'s profile.'
+      ),
+      pickLocale(
+        locale,
+        'Segnale: riflessione long-form più una mossa concreta settimanale battono il rumore quotidiano per la traiettoria.',
+        'Mock signal: long-form reflection paired with one concrete weekly move beats daily noise for trajectory.'
+      )
     ]
   };
 }
@@ -163,7 +179,7 @@ async function generateLiveInsight(locale: AppLocale): Promise<{
   provider?: string;
 }> {
   const local = await generateLocalInsight(locale);
-  const { signals } = await fetchOnlineSignals();
+  const { signals } = await fetchOnlineSignals(locale);
   const system = buildGiuseppeSystemPrompt();
   const userPrompt = buildInsightPrompt({ locale, onlineSignals: signals, localInsight: local });
 
@@ -210,7 +226,7 @@ export async function generateOnlineInsight(
   } else {
     const cached = readCachedMonthlyInsight(monthKey, locale);
     if (cached) {
-      const online = await fetchOnlineSignals();
+      const online = await fetchOnlineSignals(locale);
       return {
         insight: cached.insight,
         card: {
@@ -247,7 +263,7 @@ export async function generateOnlineInsight(
   }
 
   const localInsight = await generateLocalInsight(locale);
-  const online = await fetchOnlineSignals();
+  const online = await fetchOnlineSignals(locale);
   const payload: InsightEngineResponse = {
     insight: localInsight,
     card: {

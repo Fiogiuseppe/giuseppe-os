@@ -25,7 +25,7 @@ export function ContentGeneratorStage({
   topic: initialTopic,
   onClose
 }: ContentGeneratorStageProps) {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
   const [topic, setTopic] = useState(initialTopic ?? '');
   const [selectedFormats, setSelectedFormats] = useState<ContentFormat[]>([
     'medium',
@@ -77,7 +77,8 @@ export function ContentGeneratorStage({
             : sourceType === 'insight'
               ? initialTopic ?? topic.trim()
               : undefined,
-        formats: selectedFormats
+        formats: selectedFormats,
+        locale
       })
     });
 

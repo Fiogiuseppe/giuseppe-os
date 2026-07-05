@@ -17,7 +17,7 @@ import {
 import { buildFallbackTodayPayload } from './fallback';
 import { getPlatformCachedToday } from './platformCache';
 import { limitWords, normalizeTodayPayload, parseTodayPayload } from './parse';
-import { MAX_TODAY_NEXT_ACTION_WORDS, TODAY_SYSTEM_PROMPT } from './prompt';
+import { buildTodaySystemPrompt, MAX_TODAY_NEXT_ACTION_WORDS } from './prompt';
 import type { GenerateTodayOptions, TodayResponse, TodaySource } from './types';
 
 function clampNextAction(response: TodayResponse): TodayResponse {
@@ -83,7 +83,7 @@ async function buildLiveToday(context: Awaited<ReturnType<typeof buildTodayConte
 
     const provider = wrapProviderWithLogging(createCompletionProvider(), 'today');
     const completion = await completeWithJsonContract(provider, {
-      system: TODAY_SYSTEM_PROMPT,
+      system: buildTodaySystemPrompt(locale),
       messages: [{ role: 'user', content: userPrompt }],
       maxTokens: 900,
       expectJson: true
