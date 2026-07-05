@@ -208,6 +208,16 @@ Each entry includes:
 
 ---
 
+### 2026-07 — Continuous Learning + Memory Graph foundation (types + docs only)
+
+**Decision:** Define two foundation contracts before any runtime: **Memory Graph** (operational knowledge graph from extractions) and **Continuous Learning Engine** (gap detection + personalized resource recommendations). Ship types in `lib/learning/types.ts` and engine docs in `docs/engines/`. **No UI, no API routes, no engine runtime in this phase.**
+
+**Rationale:** Giuseppe OS must observe goals, projects, decisions, mistakes, and knowledge gaps continuously — not only respond to questions. Recommendations (books, podcasts, articles, people, tools, mental models) must cite real evidence from memory and never devolve into generic bestseller lists. Memory must evolve as a **graph** (importance, category, confidence, links), not a flat list. Golden Rule applies: **silence > weak or generic suggestion.**
+
+**Implications:** Memory Graph is distinct from Identity Graph (`lib/identity/types.ts`) — facts and extractions vs meaning. Existing Decision Learning loop (`lib/decision-learning/`) is the first closed loop; graph extraction and gap detection wire in later phases. `lib/brain/engines/learningEngine.ts` rule-based stub will be superseded by this contract. AI calls must use orchestrator only when runtime is built. Weekly cap: max 3 resource recommendations. Implementation requires prior doc + decision — do not skip to UI.
+
+---
+
 ## Template for New Entries
 
 ```markdown
