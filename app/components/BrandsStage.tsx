@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import brain from '../../memory/giuseppe_brain.json';
 import type { PotentialBrief } from '../../engine/potentialEngine';
-import { computeBrandMomentum } from '../../lib/brands/momentum';
+import { computeBrandMomentum, type BrandMomentum } from '../../lib/brands/momentum';
 import {
   CREATE_FEATURED_PROJECTS,
   getProjectVisual,
@@ -50,6 +50,18 @@ function ProjectVisualMark({
   );
 }
 
+function formatMomentumLabel(t: (key: string) => string, momentum: BrandMomentum | null): string {
+  if (!momentum) {
+    return t('today.loading');
+  }
+
+  if (momentum.status === 'available') {
+    return `${t('brands.momentumLabel')} ${momentum.momentum}%`;
+  }
+
+  return momentum.message;
+}
+
 function ProjectVisualTile({
   name,
   status,
@@ -59,7 +71,7 @@ function ProjectVisualTile({
 }: {
   name: string;
   status: string;
-  momentum: number;
+  momentum: BrandMomentum | null;
   selected?: boolean;
   onSelect: () => void;
 }) {
@@ -79,9 +91,7 @@ function ProjectVisualTile({
       </div>
       <div className="create-project-tile-copy">
         <span className="create-project-tile-name">{name}</span>
-        <span className="create-project-tile-status">
-          {t('brands.momentumLabel')} {momentum}%
-        </span>
+        <span className="create-project-tile-status">{formatMomentumLabel(t, momentum)}</span>
         <span className="create-project-tile-meta">{status}</span>
       </div>
     </button>
@@ -162,10 +172,41 @@ export function BrandsStage({
   const heroMeta = brain.projects[heroProject as keyof typeof brain.projects];
   const heroRole = heroMeta?.role ?? projectRole;
   const heroStatus = heroMeta?.status.toUpperCase() ?? 'ACTIVE';
-  const heroMomentum = useMemo(
-    () => computeBrandMomentum(heroProject, heroMeta?.status ?? 'active', locale),
-    [heroProject, heroMeta?.status, locale]
-  );
+  const [heroMomentum, setHeroMomentum] = useState<BrandMomentum | null>(null);
+  const [projectMomentums, setProjectMomentums] = useState<Record<string, BrandMomentum>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void computeBrandMomentum(heroProject, heroMeta?.status ?? 'active', locale).then(result => {
+      if (!cancelled) {
+        setHeroMomentum(result);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [heroProject, heroMeta?.status, locale]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void Promise.all(
+      Object.entries(brain.projects).map(async ([name, project]) => {
+        const result = await computeBrandMomentum(name, project.status, locale);
+        return [name, result] as const;
+      })
+    ).then(results => {
+      if (!cancelled) {
+        setProjectMomentums(Object.fromEntries(results));
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [locale]);
 
   function selectProject(name: string) {
     setHeroProject(name);
@@ -190,19 +231,16 @@ export function BrandsStage({
         {focus === 'projects' && (
           <>
             <div className="create-project-grid" role="group" aria-label={t('disclosure.openProjects')}>
-              {Object.entries(brain.projects).map(([name, project]) => {
-                const momentum = computeBrandMomentum(name, project.status, locale);
-                return (
-                  <ProjectVisualTile
-                    key={name}
-                    name={name}
-                    status={project.status}
-                    momentum={momentum.momentum}
-                    selected={selectedProject === name}
-                    onSelect={() => selectProject(name)}
-                  />
-                );
-              })}
+              {Object.entries(brain.projects).map(([name, project]) => (
+                <ProjectVisualTile
+                  key={name}
+                  name={name}
+                  status={project.status}
+                  momentum={projectMomentums[name] ?? null}
+                  selected={selectedProject === name}
+                  onSelect={() => selectProject(name)}
+                />
+              ))}
             </div>
             {selectedProject && (
               <div className="insights-focus-panel create-project-detail">
@@ -216,19 +254,11 @@ export function BrandsStage({
                   <h2>{selectedProject}</h2>
                   <p>{brain.projects[selectedProject as keyof typeof brain.projects].role}</p>
                   <p>
-                    {t('brands.momentumLabel')}{' '}
-                    {computeBrandMomentum(
-                      selectedProject,
-                      brain.projects[selectedProject as keyof typeof brain.projects].status,
-                      locale
-                    ).momentum}
-                    %
+                    {formatMomentumLabel(t, projectMomentums[selectedProject] ?? null)}
                   </p>
-                  <p>{computeBrandMomentum(
-                    selectedProject,
-                    brain.projects[selectedProject as keyof typeof brain.projects].status,
-                    locale
-                  ).signal}</p>
+                  {projectMomentums[selectedProject]?.status === 'available' ? (
+                    <p>{projectMomentums[selectedProject].signal}</p>
+                  ) : null}
                 </div>
               </div>
             )}
@@ -262,10 +292,10 @@ export function BrandsStage({
         <div className="create-hero-copy">
           <div className="kicker">{t('brands.focusLabel')}</div>
           <h2 className="create-hero-title">{heroProject}</h2>
-          <p className="create-hero-status">
-            {t('brands.momentumLabel')} {heroMomentum.momentum}%
-          </p>
-          <p className="create-hero-role">{heroMomentum.signal}</p>
+          <p className="create-hero-status">{formatMomentumLabel(t, heroMomentum)}</p>
+          {heroMomentum?.status === 'available' ? (
+            <p className="create-hero-role">{heroMomentum.signal}</p>
+          ) : null}
           <p className="create-hero-meta">{heroStatus} · {heroRole}</p>
         </div>
       </section>
@@ -277,14 +307,12 @@ export function BrandsStage({
             return null;
           }
 
-          const momentum = computeBrandMomentum(name, project.status, locale);
-
           return (
             <ProjectVisualTile
               key={name}
               name={name}
               status={project.status}
-              momentum={momentum.momentum}
+              momentum={projectMomentums[name] ?? null}
               selected={heroProject === name}
               onSelect={() => selectProject(name)}
             />

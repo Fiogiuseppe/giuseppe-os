@@ -9,6 +9,7 @@ import { loadStrongestPatterns } from '../self-model/summary';
 import { pickLocale, resolveLocale, type AppLocale } from '../i18n/locale';
 import { buildPresenceSignals } from '../presence/summarize';
 import { runPresenceScan } from '../presence/run';
+import { ORACLE_EVIDENCE_RULE } from '../oracle/voiceRules';
 import {
   clearCachedMonthlyInsight,
   insightMonthKey,
@@ -24,6 +25,8 @@ export type InsightCard = {
 };
 
 export type InsightEngineSource = 'ai' | 'local';
+
+export type OnlineSignalSource = 'web' | 'unavailable';
 
 export type InsightEngineResponse = {
   insight: AwarenessInsight;
@@ -46,13 +49,9 @@ type ParsedInsightPayload = {
   confidenceScore?: number;
 };
 
-/**
- * Placeholder for a future server-side web search provider.
- * Returns deterministic mock signals until live search is wired.
- */
 export async function fetchOnlineSignals(
   localeInput?: AppLocale
-): Promise<{ signals: string[]; source: 'mock' | 'web' }> {
+): Promise<{ signals: string[]; source: OnlineSignalSource }> {
   const locale = resolveLocale(localeInput);
 
   try {
@@ -65,39 +64,20 @@ export async function fetchOnlineSignals(
       return { source: 'web', signals };
     }
   } catch {
-    // Fall back to deterministic mock signals below.
+    // No live signals — return unavailable instead of invented placeholders.
   }
 
-  return {
-    source: 'mock',
-    signals: [
-      pickLocale(
-        locale,
-        'Segnale: i creator ibridi che pubblicano in pubblico continuano a far crescere la reputazione più dei puri builder.',
-        'Mock signal: hybrid creators who ship in public continue to compound reputation faster than pure builders.'
-      ),
-      pickLocale(
-        locale,
-        'Segnale: l\'expertise LEGO-adjacent resta un canale di reddito differenziante per il profilo di Giuseppe.',
-        'Mock signal: LEGO-adjacent expertise remains a differentiated income channel for Giuseppe\'s profile.'
-      ),
-      pickLocale(
-        locale,
-        'Segnale: riflessione long-form più una mossa concreta settimanale battono il rumore quotidiano per la traiettoria.',
-        'Mock signal: long-form reflection paired with one concrete weekly move beats daily noise for trajectory.'
-      )
-    ]
-  };
+  return { source: 'unavailable', signals: [] };
 }
 
 function buildInsightPrompt(params: {
   locale: AppLocale;
   onlineSignals: string[];
+  signalSource: OnlineSignalSource;
   localInsight: AwarenessInsight;
 }): string {
   const language = params.locale === 'en' ? 'English' : 'Italian';
-
-  return [
+  const sections = [
     'You are Giuseppe OS Insight AI — generate one personalized insight for Giuseppe.',
     'Respond with JSON only (no markdown fences).',
     '',
@@ -119,11 +99,29 @@ function buildInsightPrompt(params: {
     'LOCAL AWARENESS ENGINE (ground truth — refine, do not contradict blindly):',
     `Headline: ${params.localInsight.headline}`,
     `Insight: ${params.localInsight.insight}`,
-    `Why it matters: ${params.localInsight.whyItMatters}`,
-    '',
-    'ONLINE SIGNALS (may include mock data):',
-    params.onlineSignals.map(signal => `- ${signal}`).join('\n')
-  ].join('\n');
+    `Why it matters: ${params.localInsight.whyItMatters}`
+  ];
+
+  if (params.onlineSignals.length > 0) {
+    sections.push(
+      '',
+      'ONLINE SIGNALS (verified from presence scan):',
+      params.onlineSignals.map(signal => `- ${signal}`).join('\n')
+    );
+  } else {
+    sections.push(
+      '',
+      'ONLINE SIGNALS: unavailable — do not invent external trends or placeholder market signals.',
+      ORACLE_EVIDENCE_RULE,
+      pickLocale(
+        params.locale,
+        'Se i segnali online non sono disponibili, dillo chiaramente invece di inventare trend.',
+        'If online signals are unavailable, say so clearly instead of inventing trends.'
+      )
+    );
+  }
+
+  return sections.join('\n');
 }
 
 function parseInsightPayload(content: string): ParsedInsightPayload {
@@ -194,9 +192,14 @@ async function generateLiveInsight(locale: AppLocale): Promise<{
   provider?: string;
 }> {
   const local = await generateLocalInsight(locale);
-  const { signals } = await fetchOnlineSignals(locale);
+  const { signals, source } = await fetchOnlineSignals(locale);
   const system = buildGiuseppeSystemPrompt();
-  const userPrompt = buildInsightPrompt({ locale, onlineSignals: signals, localInsight: local });
+  const userPrompt = buildInsightPrompt({
+    locale,
+    onlineSignals: signals,
+    signalSource: source,
+    localInsight: local
+  });
 
   const completion = await runWithAICallMeta(
     { page: 'insights', reason: 'online-insight' },
