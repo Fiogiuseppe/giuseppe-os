@@ -114,6 +114,8 @@ test.describe('Giuseppe OS Sources — Phase 3 website connector', () => {
   });
 
   test('failed sync creates error state and failed sync log', async ({ request }) => {
+    await resetStores(request);
+
     await request.post('/api/sources', {
       data: { sourceId: 'medium_personal', action: 'connect' }
     });
@@ -126,8 +128,18 @@ test.describe('Giuseppe OS Sources — Phase 3 website connector', () => {
     expect(body.source.healthStatus).toBe('unavailable');
     expect(body.source.lastSyncRun?.status).toBe('failed');
 
-    const runs = await request.get('/api/sources/medium_personal/sync-runs');
-    const runBody = await runs.json();
-    expect(runBody.runs[0]?.status).toBe('failed');
+    await expect
+      .poll(
+        async () => {
+          const runs = await request.get('/api/sources/medium_personal/sync-runs');
+          if (!runs.ok()) {
+            return undefined;
+          }
+          const runBody = await runs.json();
+          return runBody.runs[0]?.status as string | undefined;
+        },
+        { timeout: 5_000 }
+      )
+      .toBe('failed');
   });
 });

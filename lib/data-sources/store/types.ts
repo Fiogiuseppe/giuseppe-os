@@ -41,5 +41,9 @@ export interface DataSourceStore {
 }
 
 export function resolveDataSourceStoreBackend(): DataSourceStoreBackend {
+  if (process.env.DATA_SOURCES_STORE === 'memory' || process.env.SOURCES_ENGINE_STORE === 'memory') {
+    return 'memory';
+  }
+
   return isSupabaseConfigured() ? 'supabase' : 'memory';
 }

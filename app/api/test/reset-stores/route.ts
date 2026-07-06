@@ -19,5 +19,8 @@ export async function POST() {
   ]);
   resetAdapterRegistryForTests();
 
-  return Response.json({ ok: true });
+  return Response.json({
+    ok: true,
+    reset: ['source_engine', 'data_sources', 'knowledge', 'adapter_registry']
+  });
 }
