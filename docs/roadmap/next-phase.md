@@ -8,33 +8,33 @@
 
 | Field | Value |
 |-------|-------|
-| **Last completed** | Phase 12 — OAuth Foundation |
-| **Up next** | Phase 13 — TBD (requires Giuseppe approval) |
-| **Blocked by** | Nothing for OAuth foundation work |
+| **Last completed** | Phase 13 — Token Vault |
+| **Up next** | Phase 14 — TBD (requires Giuseppe approval) |
+| **Blocked by** | Nothing for token vault work |
 
 ---
 
-## Phase 13 — Not yet scoped
+## Phase 14 — Not yet scoped
 
-Phase 12 delivered generic OAuth routes, state security, and the provider adapter interface. **No provider is registered yet.**
+Phase 13 delivered encrypted server-side token storage with memory/file/Supabase backends. **No provider is registered and OAuth callback is not wired to persist tokens yet.**
 
 Likely candidates (require Giuseppe approval):
 
-- **Token persistence** — Supabase migration + server-side vault (ADR required)
-- **Instagram Personal OAuth** — first real provider registration
+- **Instagram Personal OAuth** — first real provider registration + callback wiring
 - **LinkedIn Personal OAuth** — after Instagram or in parallel
 - **Sources UI** — redirect OAuth-capable Connect to `/api/sources/{id}/oauth/connect`
+- **Token refresh worker** — background refresh before expiry
 
 ### Do not start without approval
 
-- Real provider API calls without token storage ADR
-- Storing tokens in browser or API responses
+- Real provider API calls without Giuseppe sign-off
+- Storing or returning tokens in browser or public API responses
 
 ### Reference
 
-- [`docs/reports/phase-12-report.md`](../reports/phase-12-report.md)
+- [`docs/reports/phase-13-report.md`](../reports/phase-13-report.md)
 - [`docs/architecture/oauth.md`](../architecture/oauth.md)
-- [`docs/decisions/ADR-012-oauth-foundation.md`](../decisions/ADR-012-oauth-foundation.md)
+- [`docs/decisions/ADR-013-token-vault.md`](../decisions/ADR-013-token-vault.md)
 
 ---
 

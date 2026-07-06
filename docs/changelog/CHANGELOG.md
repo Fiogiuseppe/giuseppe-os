@@ -6,6 +6,42 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
+## [0.13.0-token-vault] — 2026-07-06
+
+### Added
+
+- Token Vault module (`src/modules/sources/token-vault/`)
+- AES-256-GCM encryption for OAuth tokens at rest (`SOURCES_TOKEN_ENCRYPTION_KEY`)
+- memory / file / Supabase store backends for token persistence
+- Supabase migration `source_oauth_tokens`
+- Internal API: `saveTokenBundle`, `getValidTokenBundle`, `markTokenRevoked`, `deleteTokenBundle`, `listTokenMetadata`
+- OAuth hook `saveTokenBundleFromOAuth` (not wired to callback yet)
+- `POST/GET /api/test/token-vault` — gated test route (metadata only)
+- `e2e/token-vault.spec.ts` — 8 encryption and safety tests
+- ADR-013 and Phase 13 report
+
+### Changed
+
+- `reset-stores` clears token vault
+- `playwright.config.ts` — `SOURCES_TOKEN_VAULT_STORE=memory`, test encryption key
+- `docs/architecture/oauth.md` — token vault integration path
+- `docs/architecture/production-persistence.md` — token vault store row
+
+### Security
+
+- Tokens encrypted before persistence; decrypt server-side only
+- Production fails closed without `SOURCES_TOKEN_ENCRYPTION_KEY`
+- No public API returns `accessToken`, `refreshToken`, or `clientSecret`
+- Fake test tokens only in e2e — no real credentials stored
+
+### Notes
+
+- Report: [`reports/phase-13-report.md`](reports/phase-13-report.md)
+- ADR: [`decisions/ADR-013-token-vault.md`](decisions/ADR-013-token-vault.md)
+- No Instagram, LinkedIn, or real provider OAuth
+
+---
+
 ## [0.12.0-oauth-foundation] — 2026-07-06
 
 ### Added
