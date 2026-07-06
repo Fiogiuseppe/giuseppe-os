@@ -1,7 +1,7 @@
 # Instagram Setup Guide — Giuseppe OS
 
-**Status:** Preparation only (Phase 15). **No Instagram OAuth is implemented yet.**  
-**Purpose:** Prepare Meta/Instagram credentials and account requirements safely before Phase 16 implementation.
+**Status:** Preparation (Phase 15) + scope strategy (Phase 16). **No Instagram OAuth is implemented yet.**  
+**Purpose:** Prepare Meta/Instagram credentials and account requirements safely before Phase 17 OAuth implementation.
 
 ---
 
@@ -25,7 +25,9 @@ Giuseppe OS will use **server-side OAuth only**:
 | `instagram_personal` | @fiogiuseppe | https://instagram.com/fiogiuseppe |
 | `instagram_urees` | @urees__ | https://www.instagram.com/urees__/ |
 
-Both are configured in `src/modules/sources/config/source-config.ts` with `authMethod: 'oauth'`. Implementation is **not** live until Phase 16+.
+Both are configured in `src/modules/sources/config/source-config.ts` with `authMethod: 'oauth'`. Implementation is **not** live until Phase 17+.
+
+**Data scope:** See [`docs/architecture/instagram-scope-strategy.md`](../architecture/instagram-scope-strategy.md) — Level 1 (profile + media) ships first; engagement, insights, and DMs are deferred.
 
 ### What Giuseppe OS will access (intent — verify at implementation)
 
@@ -190,18 +192,28 @@ Mismatch causes `redirect_uri_mismatch` errors during OAuth.
 
 ## 5. Permissions / scopes
 
-**Verify before implementation.** Meta changes product names, permissions, and review requirements. The list below is a **preparation checklist**, not a guarantee of access.
+**Authoritative scope strategy:** [`docs/architecture/instagram-scope-strategy.md`](../architecture/instagram-scope-strategy.md)
 
-### Likely permissions to review (to verify before implementation)
+Phase 16 locked the implementation order:
+
+| Level | Scope | Phase |
+|-------|-------|-------|
+| 1 | Profile + owned media (read-only) | **Implement first (Phase 17+)** |
+| 2 | Comments on owned media | Defer |
+| 3 | Insights (reach, impressions, saves) | Defer |
+| 4 | DMs and private messaging | **Do not implement** |
+
+### Level 1 permissions to verify (before implementation)
 
 | Permission / scope (name may vary) | Intended use | Status |
 |-----------------------------------|--------------|--------|
-| `instagram_basic` / business profile read | Profile and media metadata | **To verify** |
-| `instagram_content_publish` | — | **Do not request** (publish out of scope) |
-| `pages_show_list` | Discover linked Facebook Pages | **To verify** |
-| `pages_read_engagement` | Page-linked IG engagement | **To verify** |
-| `instagram_manage_insights` / insights scopes | Reach, impressions | **To verify** — only if Meta grants and product needs it |
-| `instagram_manage_comments` / comment read | Comments on owned media | **To verify** — do not assume availability |
+| `instagram_basic` / business profile read | Profile and media metadata | **Level 1 — verify** |
+| `pages_show_list` | Discover linked Facebook Pages | **Level 1 — verify** |
+| `pages_read_engagement` | Media counts if required by API | **Level 1 — verify only if mandatory** |
+| `instagram_manage_comments` / comment read | Comments on owned media | **Level 2 — defer** |
+| `instagram_manage_insights` / insights scopes | Reach, impressions, saves | **Level 3 — defer** |
+| `instagram_content_publish` | Publishing | **Do not request** |
+| `instagram_manage_messages` | DMs | **Do not request** |
 
 ### Principles
 
@@ -229,7 +241,7 @@ Before connecting real Instagram accounts in Giuseppe OS:
 
 ## 7. Implementation readiness checklist
 
-Copy and fill before requesting Phase 16:
+Copy and fill before requesting Phase 17:
 
 ```
 Instagram preparation — Giuseppe OS
@@ -258,14 +270,15 @@ Date: ___________
 
 ## 8. Do not proceed until
 
-**Do not implement Phase 16 (real Instagram OAuth provider) until:**
+**Do not implement Phase 17 (real Instagram OAuth + Level 1 sync) until:**
 
 1. All required Meta values are available locally in `.env.local` (or production secrets manager)
 2. Both Instagram accounts (`@fiogiuseppe`, `@urees__`) meet Meta’s account-type requirements
 3. Facebook Page linkage is confirmed **if** Meta’s current flow requires it
 4. Redirect URIs are registered and match `META_REDIRECT_URI` / `NEXT_PUBLIC_APP_URL`
 5. Intended scopes are verified against **current** Meta documentation and App Review status
-6. Giuseppe has explicitly approved moving from preparation to implementation
+6. [`instagram-scope-strategy.md`](../architecture/instagram-scope-strategy.md) Level 1 plan is understood and approved
+7. Giuseppe has explicitly approved moving from preparation to implementation
 
 Until then, Giuseppe OS continues to use the **test OAuth provider** only when `ALLOW_TEST_ROUTES=1`.
 
@@ -273,6 +286,7 @@ Until then, Giuseppe OS continues to use the **test OAuth provider** only when `
 
 ## Related documentation
 
+- Scope strategy: [`docs/architecture/instagram-scope-strategy.md`](../architecture/instagram-scope-strategy.md)
 - OAuth architecture: [`docs/architecture/oauth.md`](../architecture/oauth.md)
 - Token Vault: [`docs/decisions/ADR-013-token-vault.md`](../decisions/ADR-013-token-vault.md)
 - OAuth persistence: [`docs/decisions/ADR-014-oauth-token-persistence.md`](../decisions/ADR-014-oauth-token-persistence.md)

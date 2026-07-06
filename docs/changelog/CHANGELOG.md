@@ -6,6 +6,26 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
+## [0.16.0-instagram-scope-strategy] — 2026-07-06
+
+### Added
+
+- Instagram scope strategy (`docs/architecture/instagram-scope-strategy.md`)
+- Four-level data plan: Level 1 profile+media first; Levels 2–3 deferred; Level 4 messaging excluded
+- Normalized field spec, evidence → knowledge path, dual-source support
+- Phase 16 report
+
+### Changed
+
+- `docs/setup/instagram.md` — links scope strategy; Phase 17 gate for OAuth implementation
+
+### Notes
+
+- Documentation only — no OAuth code, Meta API calls, or tokens
+- Report: [`reports/phase-16-report.md`](reports/phase-16-report.md)
+
+---
+
 ## [0.15.0-instagram-preparation] — 2026-07-06
 
 ### Added

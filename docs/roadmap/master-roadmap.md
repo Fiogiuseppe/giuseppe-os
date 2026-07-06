@@ -62,8 +62,9 @@ Full spec: [`docs/SOURCES_ROADMAP.md`](../SOURCES_ROADMAP.md).
 | 13 | **Token Vault** | ✅ Complete |
 | 14 | **OAuth UI + Callback Token Persistence** | ✅ Complete |
 | 15 | **Instagram Preparation Guide** | ✅ Complete |
+| 16 | **Instagram Scope Strategy** | ✅ Complete |
 
-Reports: [`phase-02-report.md`](../reports/phase-02-report.md) · [`phase-03-report.md`](../reports/phase-03-report.md) · [`phase-04-report.md`](../reports/phase-04-report.md) · [`phase-05-report.md`](../reports/phase-05-report.md) · [`phase-06-report.md`](../reports/phase-06-report.md) · [`phase-07-report.md`](../reports/phase-07-report.md) · [`phase-08-report.md`](../reports/phase-08-report.md) · [`phase-09-report.md`](../reports/phase-09-report.md) · [`phase-10-report.md`](../reports/phase-10-report.md) · [`phase-11-report.md`](../reports/phase-11-report.md) · [`phase-12-report.md`](../reports/phase-12-report.md) · [`phase-13-report.md`](../reports/phase-13-report.md) · [`phase-14-report.md`](../reports/phase-14-report.md) · [`phase-15-report.md`](../reports/phase-15-report.md)
+Reports: [`phase-02-report.md`](../reports/phase-02-report.md) · [`phase-03-report.md`](../reports/phase-03-report.md) · [`phase-04-report.md`](../reports/phase-04-report.md) · [`phase-05-report.md`](../reports/phase-05-report.md) · [`phase-06-report.md`](../reports/phase-06-report.md) · [`phase-07-report.md`](../reports/phase-07-report.md) · [`phase-08-report.md`](../reports/phase-08-report.md) · [`phase-09-report.md`](../reports/phase-09-report.md) · [`phase-10-report.md`](../reports/phase-10-report.md) · [`phase-11-report.md`](../reports/phase-11-report.md) · [`phase-12-report.md`](../reports/phase-12-report.md) · [`phase-13-report.md`](../reports/phase-13-report.md) · [`phase-14-report.md`](../reports/phase-14-report.md) · [`phase-15-report.md`](../reports/phase-15-report.md) · [`phase-16-report.md`](../reports/phase-16-report.md)
 
 ADR: [`ADR-004-knowledge-layer.md`](../decisions/ADR-004-knowledge-layer.md) · [`ADR-005-intelligence-read-layer.md`](../decisions/ADR-005-intelligence-read-layer.md) · [`ADR-006-brain-evidence-answer-layer.md`](../decisions/ADR-006-brain-evidence-answer-layer.md) · [`ADR-007-configurable-website-connectors.md`](../decisions/ADR-007-configurable-website-connectors.md) · [`ADR-008-official-source-configuration.md`](../decisions/ADR-008-official-source-configuration.md) · [`ADR-009-medium-public-feed-connector.md`](../decisions/ADR-009-medium-public-feed-connector.md) · [`ADR-010-brain-summary-layer.md`](../decisions/ADR-010-brain-summary-layer.md) · [`ADR-011-production-persistence-readiness.md`](../decisions/ADR-011-production-persistence-readiness.md) · [`ADR-012-oauth-foundation.md`](../decisions/ADR-012-oauth-foundation.md) · [`ADR-013-token-vault.md`](../decisions/ADR-013-token-vault.md) · [`ADR-014-oauth-token-persistence.md`](../decisions/ADR-014-oauth-token-persistence.md) · [`ADR-015-instagram-preparation.md`](../decisions/ADR-015-instagram-preparation.md)
 
@@ -73,7 +74,7 @@ ADR: [`ADR-004-knowledge-layer.md`](../decisions/ADR-004-knowledge-layer.md) · 
 
 - [ ] Backfill Phase 1 implementation report
 - [ ] Guardian scan after major Sources/Knowledge changes
-- [ ] Instagram OAuth provider implementation (post–Phase 15 — requires readiness checklist)
+- [ ] Instagram OAuth + Level 1 connector (post–Phase 16 — requires setup checklist + scope approval)
 
 ---
 

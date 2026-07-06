@@ -29,6 +29,7 @@ Copy [`REPORT_TEMPLATE.md`](REPORT_TEMPLATE.md) → `phase-NN-report.md`
 | 13 | Token Vault | [phase-13-report.md](phase-13-report.md) | 2026-07-06 | Complete |
 | 14 | OAuth UI + Callback Token Persistence | [phase-14-report.md](phase-14-report.md) | 2026-07-06 | Complete |
 | 15 | Instagram Preparation Guide | [phase-15-report.md](phase-15-report.md) | 2026-07-06 | Complete |
+| 16 | Instagram Scope Strategy | [phase-16-report.md](phase-16-report.md) | 2026-07-06 | Complete |
 
 ### Historical note — Phase 7 URL / sourceId corrections
 
@@ -41,6 +42,7 @@ Phase 7 initially used legacy IDs (`urees-website`) and split URL registries. **
 - Persistence: [`../architecture/production-persistence.md`](../architecture/production-persistence.md)
 - OAuth: [`../architecture/oauth.md`](../architecture/oauth.md)
 - Instagram setup: [`../setup/instagram.md`](../setup/instagram.md)
+- Instagram scope: [`../architecture/instagram-scope-strategy.md`](../architecture/instagram-scope-strategy.md)
 
 ---
 
