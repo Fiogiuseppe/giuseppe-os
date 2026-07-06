@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { beginOAuthConnect } from '../../../../../src/modules/sources/oauth/oauth-flow.server';
-import { normalizeSourceId } from '../../../../../src/modules/sources/config/source-config';
+import { beginOAuthConnect } from '../../../../../../src/modules/sources/oauth/oauth-flow.server';
+import { normalizeSourceId } from '../../../../../../src/modules/sources/config/source-config';
 
 type RouteContext = {
   params: Promise<{ provider: string }>;
@@ -20,8 +20,8 @@ export async function GET(_request: Request, context: RouteContext) {
   }
 
   const response = NextResponse.redirect(result.authorizeUrl, { status: 302 });
-  for (const [key, value] of headers.entries()) {
+  headers.forEach((value, key) => {
     response.headers.append(key, value);
-  }
+  });
   return response;
 }

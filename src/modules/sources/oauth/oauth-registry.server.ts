@@ -14,7 +14,7 @@ export function getOAuthProviderAdapter(providerId: string): OAuthProviderAdapte
 }
 
 export function getOAuthProviderForSource(sourceId: SourceProviderId): OAuthProviderAdapter | null {
-  for (const adapter of providerAdapters.values()) {
+  for (const adapter of Array.from(providerAdapters.values())) {
     if (adapter.sourceIds.includes(sourceId)) {
       return adapter;
     }

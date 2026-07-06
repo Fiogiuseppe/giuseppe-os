@@ -11,9 +11,9 @@ export async function GET(request: Request) {
       status: result.ok ? 302 : 302
     });
 
-    for (const [key, value] of headers.entries()) {
+    headers.forEach((value, key) => {
       response.headers.append(key, value);
-    }
+    });
 
     return response;
   } catch (error) {
