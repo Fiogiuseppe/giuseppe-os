@@ -73,7 +73,7 @@ const SOURCE_CONFIGS: Record<SourceProviderId, SourceConfig> = {
     officialUrl: 'https://instagram.com/fiogiuseppe',
     permissions: ['Read profile', 'Read media', 'Read comments', 'Read insights'],
     dataCollected: ['Posts', 'Captions', 'Comments', 'Publish dates', 'Engagement metrics'],
-    seededHealthNote: 'OAuth not configured — Phase 11.'
+    seededHealthNote: 'OAuth foundation ready — provider not implemented yet.'
   },
   linkedin_personal: {
     id: 'linkedin_personal',
@@ -84,7 +84,7 @@ const SOURCE_CONFIGS: Record<SourceProviderId, SourceConfig> = {
     officialUrl: 'https://linkedin.com/in/fiogiuseppe/?skipRedirect=true',
     permissions: ['Read member feed', 'Read comments', 'Read post analytics'],
     dataCollected: ['Posts', 'Comments', 'Reactions', 'Impressions (when approved)'],
-    seededHealthNote: 'OAuth not configured — Phase 12.'
+    seededHealthNote: 'OAuth foundation ready — provider not implemented yet.'
   },
   medium_personal: {
     id: 'medium_personal',
@@ -126,7 +126,7 @@ const SOURCE_CONFIGS: Record<SourceProviderId, SourceConfig> = {
     officialUrl: 'https://www.instagram.com/urees__/',
     permissions: ['Read profile', 'Read media', 'Read comments'],
     dataCollected: ['Posts', 'Captions', 'Comments', 'Engagement metrics'],
-    seededHealthNote: 'OAuth not configured — Phase 11.'
+    seededHealthNote: 'OAuth foundation ready — provider not implemented yet.'
   }
 };
 

@@ -1,7 +1,7 @@
 import { normalizeSourceId } from '../config/source-config';
 import type { SourceProviderId } from '../config/source-config';
 import { isSourceProviderId } from '../providers/source-registry';
-import { OAUTH_ERROR_CODES, OAuthError, mapOAuthError } from './oauth-errors';
+import { OAUTH_ERROR_CODES, mapOAuthError } from './oauth-errors';
 import {
   getOAuthProviderForSource,
   isOAuthCapableSource
