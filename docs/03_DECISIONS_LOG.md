@@ -248,6 +248,16 @@ Each entry includes:
 
 ---
 
+### 2026-07 — Personal Data Sources foundation
+
+**Decision:** Add `lib/data-sources/` with pipeline `Source → Normalize → Analyze → Evidence → Self Model`. Connector stubs for ten sources (Instagram, LinkedIn, Calendar, Gmail, GitHub, Health, Books, Spotify, Figma, manual_import). Supabase tables: `data_sources`, `raw_source_items`, `normalized_source_items`, `evidence_items`. Read-only ingestion only — no OAuth routes or auto-posting yet.
+
+**Rationale:** Giuseppe OS must learn from real life outputs over time with traceable evidence, without treating imports as constitutional truth or hardcoding API secrets.
+
+**Implications:** `manual_import` works today; social connectors fail gracefully until OAuth. Self Model bridge accepts attributed evidence. Docs: `docs/architecture/PERSONAL_DATA_SOURCES.md`. Next: Instagram OAuth, LinkedIn Community Management API.
+
+---
+
 ## Template for New Entries
 
 ```markdown
