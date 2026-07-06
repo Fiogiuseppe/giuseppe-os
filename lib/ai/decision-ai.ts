@@ -73,6 +73,25 @@ function summarizeEngineForPrompt(engine: ReturnType<typeof runDecisionEngine>):
   ].join('\n');
 }
 
+function stripDecisionAnswerJson(answer: string): string {
+  const trimmed = answer.trim();
+  const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  return fenced?.[1]?.trim() ?? trimmed;
+}
+
+function isDecisionJsonParseable(answer: string): boolean {
+  if (!answer.trim()) {
+    return false;
+  }
+
+  try {
+    const json = JSON.parse(stripDecisionAnswerJson(answer)) as unknown;
+    return json !== null && typeof json === 'object' && !Array.isArray(json);
+  } catch {
+    return false;
+  }
+}
+
 function mergeExtendedFields(
   base: DecisionAIResult,
   parsed: ReturnType<typeof parseDecisionFieldsFromAnswer> & {
@@ -103,25 +122,24 @@ function parseExtendedDecisionFields(answer: string) {
     missingInformation?: string[];
   };
 
-  try {
-    const cleaned = answer.trim().match(/```(?:json)?\s*([\s\S]*?)```/i)?.[1]?.trim() ?? answer.trim();
-    const json = JSON.parse(cleaned) as Record<string, unknown>;
-    if (Array.isArray(json.risks)) {
-      parsed.risks = json.risks.filter(item => typeof item === 'string') as string[];
-    }
-    if (typeof json.emotionalBiasCheck === 'string') {
-      parsed.emotionalBiasCheck = json.emotionalBiasCheck;
-    }
-    if (typeof json.alignment === 'string') {
-      parsed.alignment = json.alignment;
-    }
-    if (Array.isArray(json.missingInformation)) {
-      parsed.missingInformation = json.missingInformation.filter(
-        item => typeof item === 'string'
-      ) as string[];
-    }
-  } catch {
-    // Regex parsing from parseDecisionFieldsFromAnswer is enough for rule-based fallback.
+  if (!isDecisionJsonParseable(answer)) {
+    return parsed;
+  }
+
+  const json = JSON.parse(stripDecisionAnswerJson(answer)) as Record<string, unknown>;
+  if (Array.isArray(json.risks)) {
+    parsed.risks = json.risks.filter(item => typeof item === 'string') as string[];
+  }
+  if (typeof json.emotionalBiasCheck === 'string') {
+    parsed.emotionalBiasCheck = json.emotionalBiasCheck;
+  }
+  if (typeof json.alignment === 'string') {
+    parsed.alignment = json.alignment;
+  }
+  if (Array.isArray(json.missingInformation)) {
+    parsed.missingInformation = json.missingInformation.filter(
+      item => typeof item === 'string'
+    ) as string[];
   }
 
   return parsed;
@@ -139,7 +157,7 @@ export async function generateDecisionAI(input: DecisionAIInput): Promise<Decisi
     const assembled = assembleDecisionAIResult({
       engine,
       answer: '',
-      confidence: 55,
+      confidence: 0,
       evidenceAssessment,
       source: 'engine',
       locale
@@ -148,6 +166,8 @@ export async function generateDecisionAI(input: DecisionAIInput): Promise<Decisi
     return {
       decision: {
         ...assembled,
+        confidenceScore: null,
+        confidenceLabel: 'notEnoughData',
         risks: [
           pickLocale(
             locale,
@@ -180,43 +200,47 @@ export async function generateDecisionAI(input: DecisionAIInput): Promise<Decisi
     locale
   });
 
-  let source: DecisionResponseSource = 'ai';
-  let answer = '';
-  let provider: string | undefined;
+  const completion = await runWithAICallMeta(
+    { page: 'decisions', reason: 'decision-recommend' },
+    () =>
+      completeJsonWithProviderChain(
+        {
+          system,
+          messages: [{ role: 'user', content: userPrompt }],
+          maxTokens: 1400,
+          expectJson: true
+        },
+        { route: 'decision-ai', page: 'decisions', reason: 'decision-recommend' }
+      )
+  );
 
-  try {
-    const completion = await runWithAICallMeta(
-      { page: 'decisions', reason: 'decision-recommend' },
-      () =>
-        completeJsonWithProviderChain(
-          {
-            system,
-            messages: [{ role: 'user', content: userPrompt }],
-            maxTokens: 1400,
-            expectJson: true
-          },
-          { route: 'decision-ai', page: 'decisions', reason: 'decision-recommend' }
-        )
-    );
-    answer = completion.content;
-    provider = completion.provider;
-  } catch {
-    source = 'fallback';
-    answer = '';
-  }
-
+  const answer = completion.content;
+  const provider = completion.provider;
+  const aiJsonValid = isDecisionJsonParseable(answer);
+  const source: DecisionResponseSource = aiJsonValid ? 'ai' : 'engine';
   const parsed = parseExtendedDecisionFields(answer);
   const assembled = assembleDecisionAIResult({
     engine,
     answer,
-    confidence: parsed.confidenceScore ?? 60,
+    confidence: aiJsonValid ? (parsed.confidenceScore ?? 60) : 0,
     evidenceAssessment,
     source,
     locale
   });
 
-  return {
-    decision: mergeExtendedFields(assembled, parsed),
-    provider
-  };
+  const decision = mergeExtendedFields(assembled, parsed);
+
+  if (!aiJsonValid) {
+    return {
+      decision: {
+        ...decision,
+        confidenceScore: null,
+        confidenceLabel: 'notEnoughData',
+        source: 'engine'
+      },
+      provider
+    };
+  }
+
+  return { decision, provider };
 }
