@@ -8,33 +8,33 @@
 
 | Field | Value |
 |-------|-------|
-| **Last completed** | Phase 13 — Token Vault |
-| **Up next** | Phase 14 — TBD (requires Giuseppe approval) |
-| **Blocked by** | Nothing for token vault work |
+| **Last completed** | Phase 14 — OAuth UI + Callback Token Persistence |
+| **Up next** | Phase 15 — TBD (requires Giuseppe approval) |
+| **Blocked by** | Nothing for OAuth persistence work |
 
 ---
 
-## Phase 14 — Not yet scoped
+## Phase 15 — Not yet scoped
 
-Phase 13 delivered encrypted server-side token storage with memory/file/Supabase backends. **No provider is registered and OAuth callback is not wired to persist tokens yet.**
+Phase 14 delivered end-to-end OAuth → Token Vault → connected source using a **test provider only**. Production still has no real Instagram or LinkedIn adapter.
 
 Likely candidates (require Giuseppe approval):
 
-- **Instagram Personal OAuth** — first real provider registration + callback wiring
+- **Instagram Personal OAuth** — first real provider registration
 - **LinkedIn Personal OAuth** — after Instagram or in parallel
-- **Sources UI** — redirect OAuth-capable Connect to `/api/sources/{id}/oauth/connect`
+- **OAuth source sync connector** — fetch data using `getValidTokenBundle`
 - **Token refresh worker** — background refresh before expiry
 
 ### Do not start without approval
 
 - Real provider API calls without Giuseppe sign-off
-- Storing or returning tokens in browser or public API responses
+- Exposing tokens in browser or public API responses
 
 ### Reference
 
-- [`docs/reports/phase-13-report.md`](../reports/phase-13-report.md)
+- [`docs/reports/phase-14-report.md`](../reports/phase-14-report.md)
+- [`docs/decisions/ADR-014-oauth-token-persistence.md`](../decisions/ADR-014-oauth-token-persistence.md)
 - [`docs/architecture/oauth.md`](../architecture/oauth.md)
-- [`docs/decisions/ADR-013-token-vault.md`](../decisions/ADR-013-token-vault.md)
 
 ---
 

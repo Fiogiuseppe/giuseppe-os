@@ -27,6 +27,7 @@ Copy [`REPORT_TEMPLATE.md`](REPORT_TEMPLATE.md) → `phase-NN-report.md`
 | 11 | Stability & Production Persistence Audit | [phase-11-report.md](phase-11-report.md) | 2026-07-06 | Complete |
 | 12 | OAuth Foundation | [phase-12-report.md](phase-12-report.md) | 2026-07-06 | Complete |
 | 13 | Token Vault | [phase-13-report.md](phase-13-report.md) | 2026-07-06 | Complete |
+| 14 | OAuth UI + Callback Token Persistence | [phase-14-report.md](phase-14-report.md) | 2026-07-06 | Complete |
 
 ### Historical note — Phase 7 URL / sourceId corrections
 

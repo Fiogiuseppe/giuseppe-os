@@ -11,7 +11,7 @@ Browser → GET /api/sources/{sourceId}/oauth/connect
        → state cookie (HttpOnly) + redirect to provider (when implemented)
        → GET /api/sources/oauth/callback
        → validate state → exchange code (server-only, future)
-       → saveTokenBundleFromOAuth() (Phase 13 hook — not wired yet)
+       → saveTokenBundleFromOAuth() + mark source connected
        → redirect to /sources?connected={sourceId}
 ```
 
@@ -85,12 +85,12 @@ State lives in a **server-side in-memory store** (production should move to Redi
 
 ---
 
-## Token Vault integration (Phase 13)
+## Token Vault integration (Phase 13–14)
 
-When a provider ships, the OAuth callback will:
+When OAuth completes (test provider in dev/test; real providers in future):
 
 1. Exchange authorization code via `OAuthProviderAdapter.exchangeCodeForTokens()`
-2. Call `saveTokenBundleFromOAuth({ sourceId, provider, providerAccountId, tokenBundle })`
+2. Call `completeOAuthConnection()` → `saveTokenBundleFromOAuth()` + `writeConnectionState(connected)`
 3. Connectors call `getValidTokenBundle(sourceId)` server-side for sync
 
 | Function | Returns | Exposed to API? |
@@ -101,11 +101,25 @@ When a provider ships, the OAuth callback will:
 | `markTokenRevoked` | `SafeTokenMetadata` | No |
 | `deleteTokenBundle` | `boolean` | No |
 
+Source status includes safe `oauthToken: { hasToken, tokenExpiresAt, scopes }`.
+
 Encryption key: `SOURCES_TOKEN_ENCRYPTION_KEY` (required in production).
 
-**Phase 13:** callback does not persist tokens yet — hook exists but is not wired.
+**Phase 14:** callback persists tokens via test provider when `ALLOW_TEST_ROUTES=1`. Production without test routes still returns 501 until a real adapter registers.
 
 ---
+
+## Test OAuth provider (Phase 14)
+
+Gated by `ALLOW_TEST_ROUTES=1` or `NODE_ENV=test`:
+
+| Component | Path |
+|-----------|------|
+| Provider adapter | `test-oauth-provider.server.ts` |
+| Bootstrap | `oauth-bootstrap.server.ts` |
+| Simulated consent | `GET /api/test/oauth/authorize` |
+
+Serves `instagram_personal`, `linkedin_personal`, `instagram_urees` with fake tokens only.
 
 ## Provider adapter interface
 
@@ -121,9 +135,16 @@ getGrantedScopes(tokenBundle)
 
 Register via `registerOAuthProvider(adapter)` at server bootstrap when a provider ships.
 
-**Current:** registry is empty — connect returns `501 OAuth provider not implemented`.
+**Current:** test provider registered in dev/test only; production registry empty for real providers — connect returns `501` without `ALLOW_TEST_ROUTES`.
 
 ---
+
+## Sources UI connect behavior
+
+| `authMethod` | Connect action |
+|--------------|----------------|
+| `oauth` | Browser redirect to `GET /api/sources/{sourceId}/oauth/connect` |
+| `feed` | `POST /api/sources` with `action: connect` |
 
 ## Error codes
 
@@ -147,7 +168,7 @@ Errors redirect to `/sources?oauth_error={code}` — never include tokens.
 
 - Real Instagram / LinkedIn OAuth provider registration
 - External provider API calls
-- Wiring callback to `saveTokenBundleFromOAuth`
+- OAuth source sync connectors using stored tokens
 - Token refresh workers
 - localStorage / frontend token access
 
@@ -158,6 +179,7 @@ Errors redirect to `/sources?oauth_error={code}` — never include tokens.
 | Suite | Coverage |
 |-------|----------|
 | `e2e/sources-oauth.spec.ts` | Connect rejection, callback state validation, no token fields |
+| `e2e/oauth-token-persistence.spec.ts` | Full fake OAuth → vault → connected flow |
 | `e2e/token-vault.spec.ts` | Encryption, metadata safety, revoke, delete, production key guard |
 
 Test helpers (gated by `ALLOW_TEST_ROUTES=1`):
@@ -171,9 +193,11 @@ Test helpers (gated by `ALLOW_TEST_ROUTES=1`):
 
 - [`ADR-012-oauth-foundation.md`](../decisions/ADR-012-oauth-foundation.md)
 - [`ADR-013-token-vault.md`](../decisions/ADR-013-token-vault.md)
+- [`ADR-014-oauth-token-persistence.md`](../decisions/ADR-014-oauth-token-persistence.md)
 - [`production-persistence.md`](production-persistence.md)
 - [`docs/reports/phase-12-report.md`](../reports/phase-12-report.md)
 - [`docs/reports/phase-13-report.md`](../reports/phase-13-report.md)
+- [`docs/reports/phase-14-report.md`](../reports/phase-14-report.md)
 
 ---
 

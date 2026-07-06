@@ -6,6 +6,39 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
+## [0.14.0-oauth-token-persistence] — 2026-07-06
+
+### Added
+
+- Test OAuth provider adapter (`test_oauth`) — gated by `ALLOW_TEST_ROUTES` / `NODE_ENV=test`
+- Simulated authorize route `GET /api/test/oauth/authorize`
+- OAuth callback wiring to `saveTokenBundleFromOAuth` + connection state
+- Safe `oauthToken` metadata on `SourceProviderStatus` (`hasToken`, `tokenExpiresAt`, `scopes`)
+- `e2e/oauth-token-persistence.spec.ts` — 5 end-to-end tests
+- ADR-014 and Phase 14 report
+
+### Changed
+
+- Sources UI redirects OAuth connect to `/api/sources/{id}/oauth/connect`
+- Feed sources keep `POST /api/sources` connect behavior
+- OAuth disconnect revokes (simulated), deletes vault entry, sets `disconnected`
+- `reset-stores` re-registers test OAuth provider after registry reset
+- Updated `sources-oauth.spec.ts` for test provider redirect behavior
+
+### Security
+
+- Fake tokens only in test mode — no real credentials
+- Encrypted persistence via Token Vault (ADR-013)
+- No `accessToken`, `refreshToken`, or `clientSecret` in API/UI responses
+
+### Notes
+
+- Report: [`reports/phase-14-report.md`](reports/phase-14-report.md)
+- ADR: [`decisions/ADR-014-oauth-token-persistence.md`](decisions/ADR-014-oauth-token-persistence.md)
+- No Instagram, LinkedIn, or external provider APIs
+
+---
+
 ## [0.13.0-token-vault] — 2026-07-06
 
 ### Added
