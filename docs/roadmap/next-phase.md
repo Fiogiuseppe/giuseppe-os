@@ -8,42 +8,35 @@
 
 | Field | Value |
 |-------|-------|
-| **Last completed** | Phase 8 — Source Configuration Cleanup |
-| **Up next** | Sources Phase 5 — Medium Connector (RSS) |
-| **Blocked by** | Nothing |
+| **Last completed** | Phase 9 — Medium Connector (public RSS) |
+| **Up next** | Phase 10 — TBD (Instagram / LinkedIn / OAuth not started) |
+| **Blocked by** | Nothing for documentation; social connectors require explicit scope |
 
 ---
 
-## Sources Phase 5 — Medium Connector (RSS)
+## Phase 10 — Not yet scoped
 
-### Goal
+Phase 9 completed the Medium public RSS connector. The next sources phase has **not** been started.
 
-Add a real public RSS connector for `medium_personal` using the official URL from `source-config.ts`.
+Likely candidates (require Giuseppe approval before implementation):
 
-### Implement
+- **Instagram Personal** — public profile only, no OAuth in first slice
+- **LinkedIn Personal** — public profile only
+- **OAuth infrastructure** — for private API access later
+- **Scheduled sync** — cron/worker hook for connected sources
 
-- [ ] Register Medium connector (replace stub) for `medium_personal`
-- [ ] Fetch public articles via RSS (`https://medium.com/feed/@fiogiuseppe`)
-- [ ] Raw + normalized + evidence persistence with dedup
-- [ ] Knowledge extractor hook for Medium
+### Do not start without approval
 
-### Constraints
-
-- Read URLs from `src/modules/sources/config/source-config.ts` only
-- Public RSS only — no OAuth, Instagram, LinkedIn
-- No LLM
-
-### Tests required
-
-- [ ] Medium sync works end-to-end
-- [ ] `npx tsc --noEmit` and `npm run build` pass
-- [ ] All existing e2e suites pass
+- Instagram OAuth
+- LinkedIn OAuth
+- Token storage
+- LLM-based knowledge extraction
 
 ### Reference
 
+- [`docs/reports/phase-09-report.md`](../reports/phase-09-report.md)
+- [`docs/decisions/ADR-009-medium-public-feed-connector.md`](../decisions/ADR-009-medium-public-feed-connector.md)
 - [`src/modules/sources/config/source-config.ts`](../src/modules/sources/config/source-config.ts)
-- [`docs/reports/phase-08-report.md`](../reports/phase-08-report.md)
-- [`docs/decisions/ADR-008-official-source-configuration.md`](../decisions/ADR-008-official-source-configuration.md)
 
 ---
 

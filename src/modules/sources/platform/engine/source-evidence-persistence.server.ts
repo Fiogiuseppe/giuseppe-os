@@ -9,7 +9,8 @@ import { buildWebsiteContentHash } from '../../connectors/website/configurable-w
 
 const PIPELINE_SOURCE_MAP: Partial<Record<SourceProviderId, DataSourceId>> = {
   website_personal: 'website',
-  website_urees: 'website'
+  website_urees: 'website',
+  medium_personal: 'manual_import'
 };
 
 export type SourceEvidencePersistenceSummary = {

@@ -85,13 +85,14 @@ test.describe('Giuseppe OS Sources — Phase 3 website connector', () => {
     expect(secondBody.source.lastSyncRun?.normalized).toBe(0);
   });
 
-  test('medium stub connect sync and disconnect still work', async ({ request }) => {
+  test('medium_personal connect, sync, and disconnect', async ({ request }) => {
     const connect = await request.post('/api/sources', {
       data: { sourceId: 'medium_personal', action: 'connect' }
     });
     expect(connect.ok()).toBeTruthy();
     const connected = await connect.json();
     expect(connected.source.connectionStatus).toBe('connected');
+    expect(connected.message).toMatch(/Drafts are unsupported/i);
 
     const sync = await request.post('/api/sources', {
       data: { sourceId: 'medium_personal', action: 'sync' }
@@ -99,6 +100,10 @@ test.describe('Giuseppe OS Sources — Phase 3 website connector', () => {
     expect(sync.ok()).toBeTruthy();
     const synced = await sync.json();
     expect(synced.source.lastSyncRun?.status).toBe('success');
+    expect(synced.source.lastSyncRun?.fetched).toBeGreaterThan(0);
+    expect(synced.source.lastSyncRun?.normalized).toBeGreaterThan(0);
+    expect(synced.source.lastSyncRun?.evidence).toBeGreaterThan(0);
+    expect(synced.message).toMatch(/Drafts are unsupported/i);
 
     const disconnect = await request.post('/api/sources', {
       data: { sourceId: 'medium_personal', action: 'disconnect' }

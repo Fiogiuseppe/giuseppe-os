@@ -6,6 +6,33 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
+## [0.9.0-medium-connector] — 2026-07-06
+
+### Added
+
+- Real public RSS connector for `medium_personal` (`src/modules/sources/connectors/medium/`)
+- Medium knowledge extractor — deterministic topics/projects from article evidence
+- `e2e/medium.spec.ts` — sync, dedup, intelligence, brain, and security tests
+- ADR-009: Medium public feed connector
+
+### Changed
+
+- Platform connect/sync responses now propagate connector messages (e.g. drafts-unsupported note)
+- Brain Answer routes Medium-related questions to `medium_personal` knowledge
+
+### Security
+
+- Public RSS only — no OAuth, tokens, or private Medium data
+- Drafts explicitly unsupported in connect, sync, and health messages
+- API responses remain secret-free
+
+### Notes
+
+- Report: [`reports/phase-09-report.md`](reports/phase-09-report.md)
+- ADR: [`decisions/ADR-009-medium-public-feed-connector.md`](decisions/ADR-009-medium-public-feed-connector.md)
+
+---
+
 ## [0.8.0-source-configuration] — 2026-07-06
 
 ### Added

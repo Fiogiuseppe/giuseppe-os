@@ -26,6 +26,11 @@ function bootstrapDefaultAdapters(): void {
     registerAdapter('website_urees', () => createConnectorAdapter(ureesWebsiteConnector));
   }
 
+  const mediumConnector = getSourceConnector('medium_personal');
+  if (mediumConnector) {
+    registerAdapter('medium_personal', () => createConnectorAdapter(mediumConnector));
+  }
+
   for (const provider of listSourceProviders()) {
     if (adapterFactories.has(provider.id)) {
       continue;

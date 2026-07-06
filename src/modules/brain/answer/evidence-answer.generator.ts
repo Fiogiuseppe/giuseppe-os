@@ -18,6 +18,14 @@ export function deriveKnowledgeQueryFromQuestion(question: string): DerivedKnowl
     return { query: { q: 'urees' }, reason: 'question mentions UREES' };
   }
 
+  if (normalized.includes('medium') || normalized.includes('article')) {
+    return { query: { sourceId: 'medium_personal' }, reason: 'question asks about Medium' };
+  }
+
+  if (normalized.includes('decision intelligence')) {
+    return { query: { q: 'decision intelligence' }, reason: 'question mentions Decision Intelligence' };
+  }
+
   if (normalized.includes('visceral')) {
     return { query: { q: 'visceral' }, reason: 'question mentions Visceral' };
   }

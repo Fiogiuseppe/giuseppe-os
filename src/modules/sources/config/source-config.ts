@@ -94,9 +94,12 @@ const SOURCE_CONFIGS: Record<SourceProviderId, SourceConfig> = {
     authMethod: 'feed',
     officialUrl: 'https://medium.com/@fiogiuseppe',
     feedUrl: 'https://medium.com/feed/@fiogiuseppe',
+    connectorId: 'medium_personal',
+    owner: 'fiogiuseppe',
+    sourceLabel: 'medium.com',
     permissions: ['Read public feed'],
-    dataCollected: ['Articles', 'Titles', 'Publish dates', 'Summaries'],
-    seededHealthNote: 'Feed connector not wired — Phase 5.'
+    dataCollected: ['Articles', 'Titles', 'Publish dates', 'Summaries', 'Tags'],
+    seededHealthNote: 'Public RSS at medium.com/feed/@fiogiuseppe — connect to sync.'
   },
   website_urees: {
     id: 'website_urees',

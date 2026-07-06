@@ -32,7 +32,7 @@ export async function connectSource(sourceId: SourceProviderId): Promise<{
   }
 
   const source = await buildSafeProviderStatus(sourceId);
-  return { source, message: `${source.label}: Connected.` };
+  return { source, message: result.message };
 }
 
 export async function completeOAuthConnect(
@@ -100,10 +100,10 @@ export async function syncSource(
   const source = await buildSafeProviderStatus(sourceId);
 
   if (source.healthStatus === 'unavailable' || source.lastSyncRun?.status === 'failed') {
-    return { source, message: `${source.label}: Sync failed.` };
+    return { source, message: source.healthNote ?? `${source.label}: Sync failed.` };
   }
 
-  return { source, message: `${source.label}: Sync completed.` };
+  return { source, message: source.healthNote ?? `${source.label}: Sync completed.` };
 }
 
 export async function refreshSource(sourceId: SourceProviderId): Promise<{

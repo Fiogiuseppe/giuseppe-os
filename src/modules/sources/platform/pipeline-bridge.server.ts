@@ -10,7 +10,8 @@ const PIPELINE_SOURCE_MAP: Partial<Record<SourceProviderId, DataSourceId>> = {
   instagram_urees: 'instagram',
   linkedin_personal: 'linkedin',
   website_personal: 'website',
-  website_urees: 'website'
+  website_urees: 'website',
+  medium_personal: 'manual_import'
 };
 
 export type PipelineIngestSummary = {
