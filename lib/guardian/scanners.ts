@@ -19,7 +19,17 @@ function fileExists(relativePath: string): boolean {
   return fs.existsSync(path.join(ROOT, relativePath));
 }
 
-function grepFiles(pattern: RegExp, globs: string[]): GuardianFinding[] {
+function grepFiles(
+  pattern: RegExp,
+  globs: string[],
+  options?: {
+    category?: GuardianFinding['category'];
+    severity?: GuardianFinding['severity'];
+    title?: string;
+    why?: string;
+    recommendation?: string;
+  }
+): GuardianFinding[] {
   const findings: GuardianFinding[] = [];
 
   for (const relativePath of globs) {
@@ -30,17 +40,46 @@ function grepFiles(pattern: RegExp, globs: string[]): GuardianFinding[] {
 
     findings.push({
       id: `grep:${relativePath}:${pattern.source}`,
-      category: 'ai-consistency',
-      severity: 'medium',
-      title: `Pattern detected: ${pattern.source}`,
+      category: options?.category ?? 'ai-consistency',
+      severity: options?.severity ?? 'medium',
+      title: options?.title ?? `Pattern detected: ${pattern.source}`,
       detail: `Matched in ${relativePath}.`,
-      why: 'The Guardian flags patterns that can erode trust or introduce fake certainty.',
-      recommendation: 'Review this usage and ensure evidence, uncertainty, or silence is explicit.',
+      why:
+        options?.why ??
+        'The Guardian flags patterns that can erode trust or introduce fake certainty.',
+      recommendation:
+        options?.recommendation ??
+        'Review this usage and ensure evidence, uncertainty, or silence is explicit.',
       file: relativePath
     });
   }
 
   return findings;
+}
+
+function requirePattern(
+  relativePath: string,
+  pattern: RegExp,
+  finding: Omit<GuardianFinding, 'id'> & { id: string }
+): GuardianFinding | null {
+  const content = read(relativePath);
+  if (!content) {
+    return {
+      ...finding,
+      detail: `${relativePath} was not found.`,
+      file: relativePath
+    };
+  }
+
+  if (!pattern.test(content)) {
+    return {
+      ...finding,
+      detail: finding.detail || `Expected pattern missing in ${relativePath}.`,
+      file: relativePath
+    };
+  }
+
+  return null;
 }
 
 function dedupeFindings(findings: GuardianFinding[]): GuardianFinding[] {
@@ -111,6 +150,36 @@ export function scanFakeData(): GuardianFinding[] {
     });
   }
 
+  const momentum = read('lib/brands/momentum.ts');
+  if (/hashProject\(/.test(momentum) && /momentum\s*=\s*min\s*\+/.test(momentum)) {
+    findings.push({
+      id: 'fake-data:brand-momentum-hash',
+      category: 'trust',
+      severity: 'high',
+      title: 'Hash-derived brand momentum percentages',
+      detail:
+        'lib/brands/momentum.ts derives momentum scores from project name hashes, not measured activity.',
+      why: 'Brands surfaces display these as percentages — invented momentum is the same trust failure as PROJECT_PROGRESS.',
+      recommendation:
+        'Replace with real signals from presence/data-sources, or show qualitative signals without numeric percentages.',
+      file: 'lib/brands/momentum.ts'
+    });
+  }
+
+  const brandsStage = read('app/components/BrandsStage.tsx');
+  if (/\{momentum\}%/.test(brandsStage) && /computeBrandMomentum/.test(brandsStage)) {
+    findings.push({
+      id: 'fake-data:brand-momentum-ui',
+      category: 'trust',
+      severity: 'medium',
+      title: 'Brands UI renders hash momentum as a percentage',
+      detail: 'BrandsStage displays computeBrandMomentum() output with a % suffix.',
+      why: 'Numeric percentages imply measurement. Hash placeholders read as real performance.',
+      recommendation: 'Show honest unknowns, qualitative momentum copy, or wire real evidence-backed scores.',
+      file: 'app/components/BrandsStage.tsx'
+    });
+  }
+
   const ruleBased = read('lib/brain/providers/ruleBased.ts');
   if (/confidenceScore:\s*72/.test(ruleBased)) {
     findings.push({
@@ -136,7 +205,10 @@ export function scanMemoryPersistence(): GuardianFinding[] {
     'lib/todays-letter/cache.ts',
     'lib/todays-letter/loadConstitution.ts',
     'lib/brain/memory/update.ts',
-    'lib/brain/engines/pipeline.ts'
+    'lib/brain/engines/pipeline.ts',
+    'lib/insights/monthlyInsight.ts',
+    'lib/presence/cache.ts',
+    'lib/data-sources/store/supabase.ts'
   ];
 
   for (const relativePath of productionPaths) {
@@ -191,11 +263,311 @@ export function scanDeadCode(): GuardianFinding[] {
     });
   }
 
+  const providersIndex = read('lib/brain/providers/index.ts');
+  if (/@deprecated/.test(providersIndex)) {
+    findings.push({
+      id: 'dead-code:legacy-provider-exports',
+      category: 'technical-debt',
+      severity: 'info',
+      title: 'Legacy AI provider exports remain in lib/brain/providers/',
+      detail:
+        'requesty/gemini exports are marked @deprecated. Live path is lib/ai/provider.ts + completionAdapter.',
+      why: 'Stale provider files can mislead contributors into wiring the wrong AI path.',
+      recommendation:
+        'Remove deprecated providers after confirming zero imports, or relocate stubs under lib/ai/providers only.',
+      file: 'lib/brain/providers/index.ts'
+    });
+  }
+
   return findings;
 }
 
 export function scanAiConsistency(): GuardianFinding[] {
   return grepFiles(/Math\.round\(item\.totalScore\)/, ['app/page.tsx']);
+}
+
+export function scanAiOrchestrator(): GuardianFinding[] {
+  const findings: GuardianFinding[] = [];
+
+  const jsonCompletion = read('lib/ai/jsonCompletion.ts');
+  const jsonChain = read('lib/ai/jsonProviderChain.ts');
+  const provider = read('lib/ai/provider.ts');
+  const ruleBased = read('lib/brain/providers/ruleBased.ts');
+  const insightEngine = read('lib/ai/insight-engine.ts');
+  const decisionAi = read('lib/ai/decision-ai.ts');
+
+  const jsonRepairMissing = requirePattern('lib/ai/jsonCompletion.ts', /JSON_REPAIR_USER_MESSAGE/, {
+    id: 'ai-orchestrator:missing-json-repair',
+    category: 'ai-consistency',
+    severity: 'high',
+    title: 'JSON repair retry may be missing from AI orchestrator',
+    detail: 'completeWithJsonContract should enforce a JSON repair retry path.',
+    why: 'Without repair retry, structured AI outputs silently break downstream parsers.',
+    recommendation: 'Keep JSON_REPAIR_USER_MESSAGE and the two-attempt loop in lib/ai/jsonCompletion.ts.'
+  });
+  if (jsonRepairMissing) {
+    findings.push(jsonRepairMissing);
+  }
+
+  if (jsonCompletion && !/for \(let attempt = 0; attempt < 2; attempt/.test(jsonCompletion)) {
+    findings.push({
+      id: 'ai-orchestrator:missing-retry-loop',
+      category: 'ai-consistency',
+      severity: 'high',
+      title: 'JSON contract completion lacks retry loop',
+      detail: 'lib/ai/jsonCompletion.ts should attempt parse + one repair retry.',
+      why: 'Single-shot JSON parsing increases fallback-to-empty behavior.',
+      recommendation: 'Restore the two-attempt loop with repair user message.',
+      file: 'lib/ai/jsonCompletion.ts'
+    });
+  }
+
+  if (!jsonChain.includes('completeJsonWithProviderChain')) {
+    findings.push({
+      id: 'ai-orchestrator:missing-json-chain',
+      category: 'ai-consistency',
+      severity: 'high',
+      title: 'JSON provider chain entry point missing',
+      detail: 'lib/ai/jsonProviderChain.ts should export completeJsonWithProviderChain.',
+      why: 'Structured surfaces (insights, decisions) depend on the provider-agnostic JSON chain.',
+      recommendation: 'Restore completeJsonWithProviderChain and provider logging wrapper.',
+      file: 'lib/ai/jsonProviderChain.ts'
+    });
+  }
+
+  if (!provider.includes('buildProviderChain')) {
+    findings.push({
+      id: 'ai-orchestrator:missing-provider-chain',
+      category: 'ai-consistency',
+      severity: 'high',
+      title: 'Provider chain builder missing',
+      detail: 'lib/ai/provider.ts should export buildProviderChain for orchestrated fallback.',
+      why: 'Direct provider calls from UI would bypass logging, cost tracking, and mock routing.',
+      recommendation: 'Route AI calls through buildProviderChain / completeWithProviderChain.',
+      file: 'lib/ai/provider.ts'
+    });
+  }
+
+  if (ruleBased && !/confidenceFromEvidence/.test(ruleBased)) {
+    findings.push({
+      id: 'ai-orchestrator:rule-based-evidence-gate-missing',
+      category: 'ai-consistency',
+      severity: 'medium',
+      title: 'Rule-based provider may not gate confidence on evidence',
+      detail: 'lib/brain/providers/ruleBased.ts should use confidenceFromEvidence / assessEvidence.',
+      why: 'Mock-mode AI still shapes decisions — confidence must stay evidence-backed.',
+      recommendation: 'Keep assessEvidence + confidenceFromEvidence in the rule-based fallback path.',
+      file: 'lib/brain/providers/ruleBased.ts'
+    });
+  }
+
+  if (
+    insightEngine.includes('fetchOnlineSignals') &&
+    /catch\s*\{[\s\S]*mock signals/.test(insightEngine)
+  ) {
+    findings.push({
+      id: 'ai-orchestrator:insight-mock-fallback-silent',
+      category: 'trust',
+      severity: 'medium',
+      title: 'Insights silently fall back to mock online signals',
+      detail:
+        'lib/ai/insight-engine.ts catch block returns deterministic mock signals when presence scan fails.',
+      why: 'Mock signals can enter prompts without explicit uncertainty if the catch swallows upstream errors.',
+      recommendation:
+        'Label mock fallback in every locale, surface source:mock in UI, or prefer silence when presence is unavailable.',
+      file: 'lib/ai/insight-engine.ts'
+    });
+  }
+
+  if (
+    insightEngine.includes("'Segnale:") &&
+    insightEngine.includes("'Mock signal:") &&
+    !/mock|esempio|simulat/i.test(insightEngine.match(/'Segnale:[^']+'/)?.[0] ?? '')
+  ) {
+    findings.push({
+      id: 'ai-orchestrator:insight-mock-unlabeled-it',
+      category: 'trust',
+      severity: 'medium',
+      title: 'Italian mock online signals are not labeled as mock',
+      detail: 'Italian fetchOnlineSignals fallback strings use "Segnale:" without mock disclosure.',
+      why: 'Insights may treat placeholder web signals as real activity in Italian UI.',
+      recommendation: 'Prefix Italian fallback signals with explicit mock/simulated wording.',
+      file: 'lib/ai/insight-engine.ts'
+    });
+  }
+
+  if (
+    decisionAi.includes('completeJsonWithProviderChain') &&
+    /catch\s*\{[\s\S]*source = 'fallback'/.test(decisionAi)
+  ) {
+    findings.push({
+      id: 'ai-orchestrator:decision-ai-silent-fallback',
+      category: 'ai-consistency',
+      severity: 'medium',
+      title: 'Decision AI silently falls back when JSON chain fails',
+      detail: 'lib/ai/decision-ai.ts sets source=fallback on caught provider errors without surfacing why.',
+      why: 'Silent fallback can hide provider outages and look like measured AI analysis.',
+      recommendation: 'Log the failure, lower confidence, or return explicit uncertainty to the client.',
+      file: 'lib/ai/decision-ai.ts'
+    });
+  }
+
+  if (/confidence:\s*55/.test(decisionAi) && /isAIMockMode\(\)/.test(decisionAi)) {
+    findings.push({
+      id: 'ai-orchestrator:decision-mock-confidence-fixed',
+      category: 'ai-consistency',
+      severity: 'low',
+      title: 'Fixed mock confidence in decision AI',
+      detail: 'lib/ai/decision-ai.ts uses confidence: 55 in mock mode.',
+      why: 'Even mock mode should model evidence gating, not a static mid-score.',
+      recommendation: 'Derive mock confidence from assessEvidence like the rule-based provider.',
+      file: 'lib/ai/decision-ai.ts'
+    });
+  }
+
+  return findings;
+}
+
+export function scanContentGenerator(): GuardianFinding[] {
+  const findings: GuardianFinding[] = [];
+  const rules = read('lib/content/rules.ts');
+  const generate = read('lib/content/generate.ts');
+  const prompts = read('lib/content/prompts.ts');
+
+  if (!rules.includes('MEDIUM_BIO_BLOCK')) {
+    findings.push({
+      id: 'content:missing-medium-bio',
+      category: 'ai-consistency',
+      severity: 'high',
+      title: 'Content generator missing Medium bio block',
+      detail: 'lib/content/rules.ts should define MEDIUM_BIO_BLOCK for editorial consistency.',
+      why: 'Medium output must end with the canonical English bio — not an improvised one.',
+      recommendation: 'Restore MEDIUM_BIO_BLOCK and reference it from prompts.',
+      file: 'lib/content/rules.ts'
+    });
+  }
+
+  if (!rules.includes('[VERIFY:') && !rules.includes('VERIFY:')) {
+    findings.push({
+      id: 'content:missing-verify-placeholder',
+      category: 'ai-consistency',
+      severity: 'medium',
+      title: 'Content editorial rules may allow invented facts',
+      detail: 'lib/content/rules.ts should instruct [VERIFY: detail needed] for missing facts.',
+      why: 'Creative output must not invent biography or history.',
+      recommendation: 'Keep the VERIFY placeholder rule in buildContentEditorialRules.',
+      file: 'lib/content/rules.ts'
+    });
+  }
+
+  if (!generate.includes('buildContentSystemPrompt')) {
+    findings.push({
+      id: 'content:missing-system-prompt',
+      category: 'ai-consistency',
+      severity: 'high',
+      title: 'Content generator bypasses editorial system prompt',
+      detail: 'lib/content/generate.ts should call buildContentSystemPrompt for live generation.',
+      why: 'Without the system prompt, tone and fact-grounding rules are not enforced.',
+      recommendation: 'Pass buildContentSystemPrompt(locale) as the provider system message.',
+      file: 'lib/content/generate.ts'
+    });
+  }
+
+  if (!prompts.includes('MEDIUM_BIO_BLOCK')) {
+    findings.push({
+      id: 'content:missing-bio-in-prompts',
+      category: 'ai-consistency',
+      severity: 'medium',
+      title: 'Medium format prompt may omit verbatim bio block',
+      detail: 'lib/content/prompts.ts should inject MEDIUM_BIO_BLOCK into the Medium user prompt.',
+      why: 'Bio drift breaks brand consistency across Giuseppe channels.',
+      recommendation: 'Keep the verbatim English bio instruction in buildFormatUserPrompt for medium.',
+      file: 'lib/content/prompts.ts'
+    });
+  }
+
+  return findings;
+}
+
+export function scanPresenceAndDataSources(): GuardianFinding[] {
+  const findings: GuardianFinding[] = [];
+  const presenceCanonical = read('lib/presence/canonical.ts');
+  const dataSourcesIngest = read('lib/data-sources/ingest.ts');
+  const dataSourcesTypes = read('lib/data-sources/types.ts');
+
+  if (presenceCanonical && /google|generic search/i.test(presenceCanonical)) {
+    findings.push({
+      id: 'presence:generic-search',
+      category: 'trust',
+      severity: 'high',
+      title: 'Presence engine may allow generic web search',
+      detail: 'lib/presence/canonical.ts should list only Giuseppe canonical channels.',
+      why: 'Generic search introduces unverified third-party context.',
+      recommendation: 'Keep presence scoped to canonical URLs and approved feeds only.',
+      file: 'lib/presence/canonical.ts'
+    });
+  }
+
+  if (dataSourcesTypes && !dataSourcesTypes.includes("readOnly: true")) {
+    findings.push({
+      id: 'data-sources:write-capable',
+      category: 'trust',
+      severity: 'critical',
+      title: 'Personal data sources may allow write operations',
+      detail: 'DataSource type should enforce readOnly: true.',
+      why: 'Giuseppe OS must never auto-post from ingestion connectors.',
+      recommendation: 'Keep read-only types and connector contracts.',
+      file: 'lib/data-sources/types.ts'
+    });
+  }
+
+  if (dataSourcesIngest && !/errors\.push/.test(dataSourcesIngest)) {
+    findings.push({
+      id: 'data-sources:missing-graceful-errors',
+      category: 'trust',
+      severity: 'medium',
+      title: 'Data source ingestion may not fail gracefully',
+      detail: 'ingestFromSource should record connector errors instead of throwing.',
+      why: 'Missing OAuth permissions should not crash the pipeline.',
+      recommendation: 'Return SourceIngestionResult.errors for needs_auth / not_configured.',
+      file: 'lib/data-sources/ingest.ts'
+    });
+  }
+
+  return findings;
+}
+
+export function scanWeeklyBoard(): GuardianFinding[] {
+  const findings: GuardianFinding[] = [];
+  const weekly = read('lib/weekly-board/buildContext.ts');
+
+  if (!weekly.includes('gatherOracleEvidence')) {
+    findings.push({
+      id: 'weekly-board:missing-oracle-evidence',
+      category: 'trust',
+      severity: 'high',
+      title: 'Weekly board may bypass Oracle evidence',
+      detail: 'lib/weekly-board/buildContext.ts should call gatherOracleEvidence.',
+      why: 'Weekly synthesis must use measured decisions/outcomes, not invented narrative.',
+      recommendation: 'Keep Oracle evidence gathering and week filtering in buildWeeklyBoardContext.',
+      file: 'lib/weekly-board/buildContext.ts'
+    });
+  }
+
+  if (!weekly.includes('filterEvidenceToPastWeek')) {
+    findings.push({
+      id: 'weekly-board:missing-week-filter',
+      category: 'ai-consistency',
+      severity: 'medium',
+      title: 'Weekly board may include unbounded evidence',
+      detail: 'buildContext should filter Oracle evidence to the past week.',
+      why: 'Stale evidence weakens the weekly board signal-to-noise ratio.',
+      recommendation: 'Keep filterEvidenceToPastWeek with LOOKBACK_DAYS window.',
+      file: 'lib/weekly-board/buildContext.ts'
+    });
+  }
+
+  return findings;
 }
 
 export function scanProductSimplicity(): GuardianFinding[] {
@@ -252,7 +624,7 @@ export function scanDecisionLearning(): GuardianFinding[] {
     });
   }
 
-  if (!oracle.includes('row.reviewed')) {
+  if (!oracle.includes('reviewed')) {
     findings.push({
       id: 'decision-learning:oracle-unreviewed-outcomes',
       category: 'ai-consistency',
@@ -326,6 +698,20 @@ export function scanSelfModel(): GuardianFinding[] {
     });
   }
 
+  const dataBridge = read('lib/data-sources/self-model-bridge.ts');
+  if (dataBridge && !dataBridge.includes('evidence:')) {
+    findings.push({
+      id: 'self-model:data-source-attribution-missing',
+      category: 'trust',
+      severity: 'medium',
+      title: 'Data source evidence may lack attribution in Self Model',
+      detail: 'applyEvidenceToSelfModel should prefix evidence_sources with evidence:attribution.',
+      why: 'Imported personal data must remain traceable, not blended as generic notes.',
+      recommendation: 'Keep evidence: attribution prefixes in self-model-bridge.ts.',
+      file: 'lib/data-sources/self-model-bridge.ts'
+    });
+  }
+
   return findings;
 }
 
@@ -337,8 +723,52 @@ export function runAllScans(): GuardianFinding[] {
     ...scanMemoryPersistence(),
     ...scanDeadCode(),
     ...scanAiConsistency(),
+    ...scanAiOrchestrator(),
+    ...scanContentGenerator(),
+    ...scanPresenceAndDataSources(),
+    ...scanWeeklyBoard(),
     ...scanProductSimplicity(),
     ...scanDecisionLearning(),
     ...scanSelfModel()
   ]);
 }
+
+/** Documented scan targets — update when architecture shifts. */
+export const GUARDIAN_SCAN_PATHS = [
+  'agents/The_Guardian.md',
+  'lib/architecture/sections.ts',
+  'app/page.tsx',
+  'app/components/BrandsStage.tsx',
+  'app/globals.css',
+  'lib/brands/momentum.ts',
+  'lib/brain/providers/ruleBased.ts',
+  'lib/brain/providers/index.ts',
+  'lib/ai/jsonCompletion.ts',
+  'lib/ai/jsonProviderChain.ts',
+  'lib/ai/provider.ts',
+  'lib/ai/insight-engine.ts',
+  'lib/ai/decision-ai.ts',
+  'lib/content/rules.ts',
+  'lib/content/generate.ts',
+  'lib/content/prompts.ts',
+  'lib/presence/canonical.ts',
+  'lib/data-sources/types.ts',
+  'lib/data-sources/ingest.ts',
+  'lib/data-sources/self-model-bridge.ts',
+  'lib/weekly-board/buildContext.ts',
+  'lib/memory/persistentStore.ts',
+  'lib/memory/insights.ts',
+  'lib/todays-letter/cache.ts',
+  'lib/todays-letter/loadConstitution.ts',
+  'lib/brain/memory/update.ts',
+  'lib/brain/engines/pipeline.ts',
+  'lib/insights/monthlyInsight.ts',
+  'lib/presence/cache.ts',
+  'lib/data-sources/store/supabase.ts',
+  'lib/decision-learning/learning.ts',
+  'lib/oracle/evidence.ts',
+  'lib/self-model/store.ts',
+  'lib/self-model/summary.ts',
+  'lib/self-model/estimate.ts',
+  'public/avatar/avatar-eyes-debug-box.png'
+] as const;
