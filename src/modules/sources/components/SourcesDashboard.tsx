@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { SourceProviderId, SourceProviderStatus } from '../providers/source-provider.types';
 import { groupSources } from '../providers/source-groups';
-import { fetchSources, runSourceAction, startOAuthConnect } from '../services/sources.client';
+import { fetchSources, runSourceAction } from '../services/sources.client';
 import { SourceCard } from './SourceCard';
 import styles from './SourcesDashboard.module.css';
 
@@ -50,7 +50,7 @@ export function SourcesDashboard() {
   }, [load]);
 
   async function handleConnect(source: SourceProviderStatus) {
-    setToast('Connect is available in Phase 2.');
+    await handleAction(source.id, 'connect');
   }
 
   async function handleAction(sourceId: SourceProviderId, action: 'connect' | 'disconnect' | 'sync') {
@@ -77,7 +77,7 @@ export function SourcesDashboard() {
         <p className={styles.kicker}>Personal data</p>
         <h1 className={styles.title}>Sources</h1>
         <p className={styles.lead}>
-          Connect Giuseppe&apos;s life outputs — read-only ingestion with server-side OAuth. The UI
+          Connect Giuseppe&apos;s life outputs — read-only ingestion with server-side state. The UI
           never sees tokens or secrets.
         </p>
         {updatedAt ? (

@@ -1,10 +1,10 @@
+import { applyPlatformAction, listProviderStatuses, syncSource } from '../../../src/modules/sources/platform/platform.server';
 import { parseSourceActionRequest } from '../../../src/modules/sources/services/sources.server';
-import { listPhase1MockStatuses } from '../../../src/modules/sources/services/phase1-mock-status.server';
 
-/** Phase 1: read-only mock metadata. Connect/sync ship in Phase 2. */
+/** Phase 2: safe metadata from persistent engine. */
 export async function GET() {
   return Response.json({
-    sources: listPhase1MockStatuses(),
+    sources: await listProviderStatuses(),
     updatedAt: new Date().toISOString()
   });
 }
@@ -23,8 +23,25 @@ export async function POST(request: Request) {
     return Response.json({ error: 'Invalid source action request.' }, { status: 400 });
   }
 
-  return Response.json(
-    { error: 'Source actions are not available in Phase 1. See Phase 2.' },
-    { status: 501 }
-  );
+  const simulateFailure =
+    process.env.ALLOW_TEST_ROUTES === '1' &&
+    body &&
+    typeof body === 'object' &&
+    (body as Record<string, unknown>).simulateFailure === true;
+
+  if (simulateFailure && payload.action !== 'sync') {
+    return Response.json({ error: 'simulateFailure applies only to sync.' }, { status: 400 });
+  }
+
+  try {
+    const result =
+      payload.action === 'sync' && simulateFailure
+        ? await syncSource(payload.sourceId, { mode: 'manual', simulateFailure: true })
+        : await applyPlatformAction(payload.sourceId, payload.action);
+
+    return Response.json(result);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Source action failed.';
+    return Response.json({ error: message }, { status: 400 });
+  }
 }

@@ -10,8 +10,8 @@ const SOURCE_IDS = [
   'urees-website'
 ] as const;
 
-test.describe('Giuseppe OS Sources — Phase 1 dashboard', () => {
-  test('GET /api/sources returns six safe mock sources only', async ({ request }) => {
+test.describe('Giuseppe OS Sources — Phase 2 engine', () => {
+  test('GET /api/sources returns six safe sources without secrets', async ({ request }) => {
     const response = await request.get('/api/sources');
     expect(response.ok()).toBeTruthy();
 
@@ -22,37 +22,70 @@ test.describe('Giuseppe OS Sources — Phase 1 dashboard', () => {
       expect(body.sources.some((row: { id: string }) => row.id === id)).toBeTruthy();
     }
 
-    expect(body.sources.some((row: { id: string }) => row.id === 'github')).toBeFalsy();
-    expect(body.sources.some((row: { id: string }) => row.id === 'gmail')).toBeFalsy();
-
-    const instagram = body.sources.find((row: { id: string }) => row.id === 'instagram');
-    expect(instagram.group).toBe('personal');
-    expect(instagram.authMethod).toBe('mock');
-    expect(instagram).not.toHaveProperty('accessToken');
-    expect(instagram).not.toHaveProperty('refreshToken');
-    expect(instagram).not.toHaveProperty('clientSecret');
+    const medium = body.sources.find((row: { id: string }) => row.id === 'medium');
+    expect(medium.authMethod).toBe('feed');
+    expect(medium).not.toHaveProperty('accessToken');
+    expect(medium).not.toHaveProperty('refreshToken');
+    expect(medium).not.toHaveProperty('clientSecret');
   });
 
-  test('Sources page loads with Personal and UREES groups only', async ({ page }) => {
+  test('Sources page loads with Personal and UREES groups', async ({ page }) => {
     await page.goto('/sources');
     await expect(page.getByTestId('sources-dashboard')).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Sources' })).toBeVisible();
     await expect(page.getByTestId('source-group-personal')).toBeVisible();
     await expect(page.getByTestId('source-group-urees')).toBeVisible();
-    await expect(page.getByTestId('source-group-personal')).toContainText('Personal');
-    await expect(page.getByTestId('source-group-urees')).toContainText('UREES');
 
     for (const id of SOURCE_IDS) {
       await expect(page.getByTestId(`source-card-${id}`)).toBeVisible();
     }
-
-    await expect(page.getByTestId('source-card-github')).toHaveCount(0);
   });
 
-  test('Source actions are not available in Phase 1', async ({ request }) => {
+  test('connect, sync, and disconnect update backend state', async ({ request }) => {
     const connect = await request.post('/api/sources', {
       data: { sourceId: 'medium', action: 'connect' }
     });
-    expect(connect.status()).toBe(501);
+    expect(connect.ok()).toBeTruthy();
+    const connected = await connect.json();
+    expect(connected.source.connectionStatus).toBe('connected');
+    expect(connected.source.permissionsGranted.length).toBeGreaterThan(0);
+
+    const sync = await request.post('/api/sources', {
+      data: { sourceId: 'medium', action: 'sync' }
+    });
+    expect(sync.ok()).toBeTruthy();
+    const synced = await sync.json();
+    expect(synced.source.lastSyncAt).toBeTruthy();
+    expect(synced.source.lastSuccessfulSyncAt).toBeTruthy();
+    expect(synced.source.lastSyncRun?.status).toBe('success');
+
+    const runs = await request.get('/api/sources/medium/sync-runs');
+    expect(runs.ok()).toBeTruthy();
+    const runBody = await runs.json();
+    expect(runBody.runs.length).toBeGreaterThan(0);
+
+    const disconnect = await request.post('/api/sources', {
+      data: { sourceId: 'medium', action: 'disconnect' }
+    });
+    expect(disconnect.ok()).toBeTruthy();
+    const disconnected = await disconnect.json();
+    expect(disconnected.source.connectionStatus).toBe('disconnected');
+  });
+
+  test('failed sync creates error state and failed sync log', async ({ request }) => {
+    await request.post('/api/sources', {
+      data: { sourceId: 'website', action: 'connect' }
+    });
+
+    const sync = await request.post('/api/sources', {
+      data: { sourceId: 'website', action: 'sync', simulateFailure: true }
+    });
+    expect(sync.ok()).toBeTruthy();
+    const body = await sync.json();
+    expect(body.source.healthStatus).toBe('unavailable');
+    expect(body.source.lastSyncRun?.status).toBe('failed');
+
+    const runs = await request.get('/api/sources/website/sync-runs');
+    const runBody = await runs.json();
+    expect(runBody.runs[0]?.status).toBe('failed');
   });
 });

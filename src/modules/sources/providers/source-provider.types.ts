@@ -2,7 +2,7 @@
  * Safe, frontend-visible types only.
  * Never include access tokens, refresh tokens, client secrets, or API keys here.
  *
- * PHASE 1: six sources only (Personal + UREES).
+ * Phase 2: six sources only (Personal + UREES).
  */
 
 export const SOURCE_PROVIDER_IDS = [
@@ -24,12 +24,14 @@ export type SyncRunStatus = 'success' | 'partial' | 'failed' | 'skipped';
 
 export type SyncMode = 'manual' | 'scheduled' | 'incremental';
 
-/** Phase 1: all sources active. Later phases add future availability. */
+/** Phase 2: all six sources are active. Later phases add future availability. */
 export type SourceAvailability = 'active' | 'future';
 
 export type SourceProviderCategory = 'social';
 
 export type SourceProviderGroupId = 'personal' | 'urees';
+
+export type SourceAuthMethod = 'oauth' | 'feed' | 'stub';
 
 /** Static provider contract — metadata only, no secrets. */
 export type SourceProvider = {
@@ -38,6 +40,7 @@ export type SourceProvider = {
   description: string;
   category: SourceProviderCategory;
   group: SourceProviderGroupId;
+  authMethod: SourceAuthMethod;
   permissions: string[];
   dataCollected: string[];
   profileUrl?: string;
@@ -59,8 +62,8 @@ export type SourceProviderStatus = {
   category: SourceProviderCategory;
   group: SourceProviderGroupId;
   availability: SourceAvailability;
-  /** Phase 1: always mock */
-  authMethod: 'mock';
+  /** Connector type — never includes secrets. */
+  authMethod: 'oauth' | 'feed' | 'mock';
   connectionStatus: ConnectionStatus;
   healthStatus: HealthStatus;
   lastSyncAt: string | null;

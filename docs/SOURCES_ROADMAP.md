@@ -6,11 +6,11 @@ At the end of every phase, stop and report: what changed, files created/modified
 
 ---
 
-## PHASE 1 — Sources Dashboard ✅ (current)
+## PHASE 1 — Sources Dashboard ✅
 
 Goal: Dashboard + provider registry. **6 sources only.** Personal + UREES. Mock status. No OAuth, API, or tokens.
 
-## PHASE 2 — Sources Engine
+## PHASE 2 — Sources Engine ✅ (current)
 
 Persistent connection state, sync logs, lastSyncAt, permissions, dataCollected, safe metadata API. No external APIs.
 

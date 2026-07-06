@@ -5,6 +5,7 @@ create table if not exists source_connections (
   connection_status text not null default 'disconnected',
   health_status text not null default 'unknown',
   last_sync_at timestamptz,
+  last_successful_sync_at timestamptz,
   permissions_granted jsonb not null default '[]'::jsonb,
   data_collection_enabled jsonb not null default '[]'::jsonb,
   health_note text,

@@ -1,6 +1,6 @@
-import type { SourceProvider, SourceProviderId } from './source-provider.types';
+import type { SourceAvailability, SourceProvider, SourceProviderId } from './source-provider.types';
 
-/** Phase 1 catalog — six sources, metadata only. */
+/** Phase 2 catalog — six sources with connector metadata only. */
 const PROVIDERS: Record<SourceProviderId, SourceProvider> = {
   instagram: {
     id: 'instagram',
@@ -8,6 +8,7 @@ const PROVIDERS: Record<SourceProviderId, SourceProvider> = {
     description: 'Posts, captions, comments, and reach from @fiogiuseppe.',
     category: 'social',
     group: 'personal',
+    authMethod: 'oauth',
     profileUrl: 'https://www.instagram.com/fiogiuseppe/',
     permissions: ['Read profile', 'Read media', 'Read comments', 'Read insights'],
     dataCollected: ['Posts', 'Captions', 'Comments', 'Publish dates', 'Engagement metrics']
@@ -18,6 +19,7 @@ const PROVIDERS: Record<SourceProviderId, SourceProvider> = {
     description: 'Profile posts, comments, and creator analytics for /in/fiogiuseppe.',
     category: 'social',
     group: 'personal',
+    authMethod: 'oauth',
     profileUrl: 'https://www.linkedin.com/in/fiogiuseppe/',
     permissions: ['Read member feed', 'Read comments', 'Read post analytics'],
     dataCollected: ['Posts', 'Comments', 'Reactions', 'Impressions (when approved)']
@@ -28,6 +30,7 @@ const PROVIDERS: Record<SourceProviderId, SourceProvider> = {
     description: 'Long-form articles from @fiogiuseppe.',
     category: 'social',
     group: 'personal',
+    authMethod: 'feed',
     profileUrl: 'https://medium.com/@fiogiuseppe',
     permissions: ['Read public feed'],
     dataCollected: ['Articles', 'Titles', 'Publish dates', 'Summaries']
@@ -38,6 +41,7 @@ const PROVIDERS: Record<SourceProviderId, SourceProvider> = {
     description: 'Site posts and projects from fiogiuseppe.com.',
     category: 'social',
     group: 'personal',
+    authMethod: 'feed',
     profileUrl: 'https://fiogiuseppe.com/',
     permissions: ['Read public feed', 'Read comments feed'],
     dataCollected: ['Posts', 'Comments', 'Publish dates', 'Permalinks']
@@ -48,6 +52,7 @@ const PROVIDERS: Record<SourceProviderId, SourceProvider> = {
     description: 'Brand posts and comments from @urees__.',
     category: 'social',
     group: 'urees',
+    authMethod: 'oauth',
     profileUrl: 'https://www.instagram.com/urees__/',
     permissions: ['Read profile', 'Read media', 'Read comments'],
     dataCollected: ['Posts', 'Captions', 'Comments', 'Engagement metrics']
@@ -58,6 +63,7 @@ const PROVIDERS: Record<SourceProviderId, SourceProvider> = {
     description: 'UREES shop, products, and brand storytelling at urees.shop.',
     category: 'social',
     group: 'urees',
+    authMethod: 'feed',
     profileUrl: 'https://urees.shop/',
     permissions: ['Read public products JSON'],
     dataCollected: ['Products', 'Titles', 'Publish dates', 'Shop URLs']
@@ -78,4 +84,12 @@ export function isSourceProviderId(value: string): value is SourceProviderId {
 
 export function listProvidersByGroup(groupId: SourceProvider['group']): SourceProvider[] {
   return listSourceProviders().filter(provider => provider.group === groupId);
+}
+
+export function isSourceActive(sourceId: SourceProviderId): boolean {
+  return sourceId in PROVIDERS;
+}
+
+export function getSourceAvailability(sourceId: SourceProviderId): SourceAvailability {
+  return isSourceActive(sourceId) ? 'active' : 'future';
 }
