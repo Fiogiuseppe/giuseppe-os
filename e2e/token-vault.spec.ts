@@ -165,11 +165,14 @@ test.describe('Giuseppe OS Token Vault — Phase 13', () => {
   });
 
   test('oauth routes still expose no token fields', async ({ request }) => {
-    const connect = await request.get('/api/sources/instagram_personal/oauth/connect');
-    const connectBody = await connect.json();
-    expect(connectBody).not.toHaveProperty('accessToken');
-    expect(connectBody).not.toHaveProperty('refreshToken');
-    expect(connectBody).not.toHaveProperty('clientSecret');
+    const connect = await request.get('/api/sources/instagram_personal/oauth/connect', {
+      maxRedirects: 0
+    });
+    expect(connect.status()).toBe(302);
+    const location = connect.headers()['location'] ?? '';
+    expect(location).not.toContain('accessToken');
+    expect(location).not.toContain('refreshToken');
+    expect(location).not.toContain('clientSecret');
 
     const callback = await request.get('/api/sources/oauth/callback?code=test', {
       maxRedirects: 0

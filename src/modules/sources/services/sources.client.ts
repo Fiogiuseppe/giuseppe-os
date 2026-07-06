@@ -15,7 +15,7 @@ async function parseJson<T>(response: Response): Promise<T> {
 }
 
 export function getOAuthConnectPath(sourceId: SourceProviderId): string {
-  return `/api/sources/${sourceId}/connect`;
+  return `/api/sources/${sourceId}/oauth/connect`;
 }
 
 export function startOAuthConnect(sourceId: SourceProviderId): void {

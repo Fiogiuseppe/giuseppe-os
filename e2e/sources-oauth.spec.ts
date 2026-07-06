@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { OAUTH_ERROR_CODES } from '../src/modules/sources/oauth/oauth-errors';
 import { getOAuthRedirectUri } from '../src/modules/sources/oauth/oauth-flow.server';
+import { TEST_OAUTH_AUTHORIZATION_CODE } from '../src/modules/sources/oauth/test-oauth-provider.server';
 
 async function resetStores(request: import('@playwright/test').APIRequestContext) {
   const response = await request.post('/api/test/reset-stores');
@@ -25,14 +26,16 @@ test.describe('Giuseppe OS Sources OAuth — Phase 12', () => {
     expect(body).not.toHaveProperty('clientSecret');
   });
 
-  test('connect route rejects OAuth sources without implemented provider', async ({ request }) => {
-    const response = await request.get('/api/sources/instagram_personal/oauth/connect');
-    expect(response.status()).toBe(501);
-    const body = await response.json();
-    expect(body.code).toBe(OAUTH_ERROR_CODES.PROVIDER_NOT_IMPLEMENTED);
-    expect(body.error).toMatch(/not implemented/i);
-    expect(body).not.toHaveProperty('accessToken');
-    expect(body).not.toHaveProperty('refreshToken');
+  test('connect route redirects OAuth sources when test provider is registered', async ({ request }) => {
+    const response = await request.get('/api/sources/instagram_personal/oauth/connect', {
+      maxRedirects: 0
+    });
+    expect(response.status()).toBe(302);
+    const location = response.headers()['location'] ?? '';
+    expect(location).toContain('/api/test/oauth/authorize');
+    expect(response.headers()['set-cookie']).toContain('giuseppe_sources_oauth_state');
+    expect(location).not.toContain('accessToken');
+    expect(location).not.toContain('refreshToken');
   });
 
   test('POST connect on OAuth source directs users to authorize route', async ({ request }) => {
@@ -101,16 +104,17 @@ test.describe('Giuseppe OS Sources OAuth — Phase 12', () => {
     const cookie = seed.headers()['set-cookie'] ?? '';
 
     const first = await request.get(
-      `/api/sources/oauth/callback?code=test-code&state=${seedBody.state}`,
+      `/api/sources/oauth/callback?code=${TEST_OAUTH_AUTHORIZATION_CODE}&state=${seedBody.state}`,
       {
         headers: { cookie },
         maxRedirects: 0
       }
     );
     expect(first.status()).toBe(302);
+    expect(first.headers()['location']).toContain('connected=instagram_personal');
 
     const second = await request.get(
-      `/api/sources/oauth/callback?code=test-code&state=${seedBody.state}`,
+      `/api/sources/oauth/callback?code=${TEST_OAUTH_AUTHORIZATION_CODE}&state=${seedBody.state}`,
       {
         headers: { cookie },
         maxRedirects: 0
@@ -122,11 +126,14 @@ test.describe('Giuseppe OS Sources OAuth — Phase 12', () => {
   });
 
   test('oauth routes never expose token fields', async ({ request }) => {
-    const connect = await request.get('/api/sources/linkedin_personal/oauth/connect');
-    const connectBody = await connect.json();
-    expect(connectBody).not.toHaveProperty('accessToken');
-    expect(connectBody).not.toHaveProperty('refreshToken');
-    expect(connectBody).not.toHaveProperty('clientSecret');
+    const connect = await request.get('/api/sources/linkedin_personal/oauth/connect', {
+      maxRedirects: 0
+    });
+    expect(connect.status()).toBe(302);
+    const location = connect.headers()['location'] ?? '';
+    expect(location).not.toContain('accessToken');
+    expect(location).not.toContain('refreshToken');
+    expect(location).not.toContain('clientSecret');
 
     const callback = await request.get('/api/sources/oauth/callback?code=test', {
       maxRedirects: 0

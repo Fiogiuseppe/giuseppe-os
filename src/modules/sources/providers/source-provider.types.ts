@@ -68,6 +68,12 @@ export type SourceProviderStatus = {
   dataCollectionEnabled: string[];
   healthNote: string | null;
   lastSyncRun: SourceSyncRunSummary | null;
+  /** Safe OAuth token metadata — never includes token values. */
+  oauthToken?: {
+    hasToken: boolean;
+    tokenExpiresAt: string | null;
+    scopes: string[];
+  };
 };
 
 export type SourceAction = 'connect' | 'disconnect' | 'sync';

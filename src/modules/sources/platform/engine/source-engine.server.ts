@@ -10,6 +10,7 @@ import {
   seedPersistedConnectionIfMissing
 } from './connection-persistence.server';
 import { getLatestSyncRun } from './sync-run-persistence.server';
+import { getTokenMetadata } from '../../token-vault/token-vault.server';
 
 function mapAuthMethod(
   authMethod: ReturnType<typeof getSourceProvider>['authMethod']
@@ -79,6 +80,7 @@ export async function buildSafeProviderStatus(sourceId: SourceProviderId): Promi
   );
 
   const permissionModel = buildPermissionModel(sourceId, persisted?.permissionsGranted ?? []);
+  const tokenMetadata = await getTokenMetadata(sourceId);
 
   return {
     id: provider.id,
@@ -107,7 +109,18 @@ export async function buildSafeProviderStatus(sourceId: SourceProviderId): Promi
           evidence: latestRun.evidence,
           mode: latestRun.mode
         }
-      : null
+      : null,
+    oauthToken: tokenMetadata
+      ? {
+          hasToken: !tokenMetadata.revokedAt,
+          tokenExpiresAt: tokenMetadata.expiresAt,
+          scopes: [...tokenMetadata.scopes]
+        }
+      : {
+          hasToken: false,
+          tokenExpiresAt: null,
+          scopes: []
+        }
   };
 }
 

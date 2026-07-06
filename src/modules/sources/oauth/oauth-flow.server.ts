@@ -1,6 +1,8 @@
 import { normalizeSourceId } from '../config/source-config';
 import type { SourceProviderId } from '../config/source-config';
 import { isSourceProviderId } from '../providers/source-registry';
+import { ensureOAuthProvidersBootstrapped } from './oauth-bootstrap.server';
+import { completeOAuthConnection } from './oauth-connection.server';
 import { OAUTH_ERROR_CODES, mapOAuthError } from './oauth-errors';
 import {
   getOAuthProviderForSource,
@@ -41,6 +43,7 @@ export async function beginOAuthConnect(sourceIdInput: string): Promise<{
   result: OAuthConnectResult;
   headers: Headers;
 }> {
+  ensureOAuthProvidersBootstrapped();
   const headers = new Headers();
   const normalized = normalizeSourceId(sourceIdInput);
 
@@ -107,6 +110,7 @@ export async function handleOAuthCallback(request: Request): Promise<{
   result: OAuthCallbackResult;
   headers: Headers;
 }> {
+  ensureOAuthProvidersBootstrapped();
   const headers = new Headers();
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
@@ -191,9 +195,12 @@ export async function handleOAuthCallback(request: Request): Promise<{
       redirectUri
     });
 
-    // Phase 13: OAuth callback can persist tokens via saveTokenBundleFromOAuth() when providers ship.
-    void tokenBundle;
-    void provider.getGrantedScopes(tokenBundle);
+    const scopes = provider.getGrantedScopes(tokenBundle);
+    await completeOAuthConnection({
+      sourceId: pending.sourceId,
+      tokenBundle,
+      scopes
+    });
 
     return {
       result: {

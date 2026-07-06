@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { SourceProviderId, SourceProviderStatus } from '../providers/source-provider.types';
 import { groupSources } from '../providers/source-groups';
-import { fetchSources, runSourceAction } from '../services/sources.client';
+import { fetchSources, runSourceAction, startOAuthConnect } from '../services/sources.client';
 import { SourceCard } from './SourceCard';
 import styles from './SourcesDashboard.module.css';
 
@@ -50,6 +50,11 @@ export function SourcesDashboard() {
   }, [load]);
 
   async function handleConnect(source: SourceProviderStatus) {
+    if (source.authMethod === 'oauth') {
+      startOAuthConnect(source.id);
+      return;
+    }
+
     await handleAction(source.id, 'connect');
   }
 

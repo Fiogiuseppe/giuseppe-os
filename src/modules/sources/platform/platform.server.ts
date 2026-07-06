@@ -1,6 +1,9 @@
 import type { SourceAction, SourceProviderId, SourceProviderStatus } from '../providers/source-provider.types';
 import { getSourceAdapter } from './adapter-registry.server';
-import { isOAuthCapableSource } from '../oauth/oauth-registry.server';
+import { isOAuthCapableSource, getOAuthProviderForSource } from '../oauth/oauth-registry.server';
+import { getSourceConfig } from '../config/source-config';
+import { getValidTokenBundle, deleteTokenBundle } from '../token-vault/token-vault.server';
+import { clearConnectionState, writeConnectionState } from './connection-state.server';
 import { runSyncWithEngine } from './sync/sync-engine.server';
 import type { ConnectResult, SyncInput } from './types';
 import { buildSafeProviderStatus, listSafeProviderStatuses } from './engine/source-engine.server';
@@ -77,6 +80,30 @@ export async function disconnectSource(sourceId: SourceProviderId): Promise<{
   source: SourceProviderStatus;
   message: string;
 }> {
+  if (isOAuthCapableSource(sourceId)) {
+    const bundle = await getValidTokenBundle(sourceId);
+    const provider = getOAuthProviderForSource(sourceId);
+
+    if (bundle && provider?.revokeToken) {
+      try {
+        await provider.revokeToken({ sourceId, accessToken: bundle.accessToken });
+      } catch {
+        // Simulated revoke failures should not block local disconnect.
+      }
+    }
+
+    await deleteTokenBundle(sourceId);
+    await writeConnectionState(sourceId, {
+      connectionStatus: 'disconnected',
+      healthStatus: 'unknown',
+      healthNote: getSourceConfig(sourceId)?.seededHealthNote ?? null,
+      permissionsGranted: [],
+      connectedAt: null
+    });
+    const source = await buildSafeProviderStatus(sourceId);
+    return { source, message: `${source.label}: Disconnected.` };
+  }
+
   const adapter = getSourceAdapter(sourceId);
   await adapter.disconnect();
   const source = await buildSafeProviderStatus(sourceId);
