@@ -84,6 +84,6 @@ export function extractWebsiteKnowledge(input: KnowledgeExtractorInput): Knowled
 }
 
 export const websiteKnowledgeExtractor: KnowledgeExtractor = {
-  sourceIds: ['website', 'urees-website'],
+  sourceIds: ['website_personal', 'website_urees'],
   extract: extractWebsiteKnowledge
 };

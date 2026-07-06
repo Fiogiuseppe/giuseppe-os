@@ -16,14 +16,14 @@ function bootstrapDefaultAdapters(): void {
     return;
   }
 
-  const websiteConnector = getSourceConnector('website');
+  const websiteConnector = getSourceConnector('website_personal');
   if (websiteConnector) {
-    registerAdapter('website', () => createConnectorAdapter(websiteConnector));
+    registerAdapter('website_personal', () => createConnectorAdapter(websiteConnector));
   }
 
-  const ureesWebsiteConnector = getSourceConnector('urees-website');
+  const ureesWebsiteConnector = getSourceConnector('website_urees');
   if (ureesWebsiteConnector) {
-    registerAdapter('urees-website', () => createConnectorAdapter(ureesWebsiteConnector));
+    registerAdapter('website_urees', () => createConnectorAdapter(ureesWebsiteConnector));
   }
 
   for (const provider of listSourceProviders()) {

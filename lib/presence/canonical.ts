@@ -20,7 +20,7 @@ export const GIUSEPPE_PRESENCE = {
     linkedin: {
       id: 'linkedin' as const,
       label: 'LinkedIn',
-      profileUrl: 'https://www.linkedin.com/in/fiogiuseppe/'
+      profileUrl: 'https://linkedin.com/in/fiogiuseppe/?skipRedirect=true'
     },
     instagram: {
       id: 'instagram' as const,

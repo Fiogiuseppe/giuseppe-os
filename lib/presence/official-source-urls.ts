@@ -1,14 +1,17 @@
 /**
- * Official public source URLs — single registry for future connector configuration.
- * Do not invent or guess URLs; only add operator-confirmed endpoints here.
+ * @deprecated Import from `src/modules/sources/config/source-config.ts`.
  */
-export const OFFICIAL_SOURCE_URLS = {
-  website_personal: 'https://fiogiuseppe.com/',
-  instagram_personal: 'https://instagram.com/fiogiuseppe',
-  instagram_urees: 'https://www.instagram.com/urees__/',
-  linkedin_personal: 'https://linkedin.com/in/fiuseppe/?skipRedirect=true',
-  medium_personal: 'https://medium.com/@fiogiuseppe',
-  website_urees: 'https://urees.shop/'
-} as const;
+import {
+  getOfficialSourceUrl,
+  listSourceConfigs,
+  SOURCE_PROVIDER_IDS,
+  type SourceProviderId
+} from '../../src/modules/sources/config/source-config';
 
-export type OfficialSourceUrlKey = keyof typeof OFFICIAL_SOURCE_URLS;
+export const OFFICIAL_SOURCE_URLS = Object.fromEntries(
+  listSourceConfigs().map(config => [config.id, config.officialUrl])
+) as Record<SourceProviderId, string>;
+
+export type OfficialSourceUrlKey = SourceProviderId;
+
+export { getOfficialSourceUrl };

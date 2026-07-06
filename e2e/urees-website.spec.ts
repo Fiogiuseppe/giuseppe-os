@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { BRAIN_UNKNOWN_ANSWER } from '../src/modules/brain/answer/brain-answer.types';
+import { getOfficialSourceUrl } from '../src/modules/sources/config/source-config';
 
 async function resetStores(request: import('@playwright/test').APIRequestContext) {
   const response = await request.post('/api/test/reset-stores');
@@ -8,10 +9,10 @@ async function resetStores(request: import('@playwright/test').APIRequestContext
 
 async function seedUreesWebsiteKnowledge(request: import('@playwright/test').APIRequestContext) {
   await request.post('/api/sources', {
-    data: { sourceId: 'urees-website', action: 'connect' }
+    data: { sourceId: 'website_urees', action: 'connect' }
   });
   await request.post('/api/sources', {
-    data: { sourceId: 'urees-website', action: 'sync' }
+    data: { sourceId: 'website_urees', action: 'sync' }
   });
 }
 
@@ -22,16 +23,16 @@ test.describe('Giuseppe OS UREES Website Connector — Phase 7', () => {
     await resetStores(request);
   });
 
-  test('urees-website connect, sync, and deduplicated re-sync', async ({ request }) => {
+  test('website_urees connect, sync, and deduplicated re-sync', async ({ request }) => {
     const connect = await request.post('/api/sources', {
-      data: { sourceId: 'urees-website', action: 'connect' }
+      data: { sourceId: 'website_urees', action: 'connect' }
     });
     expect(connect.ok()).toBeTruthy();
     const connected = await connect.json();
     expect(connected.source.connectionStatus).toBe('connected');
 
     const sync = await request.post('/api/sources', {
-      data: { sourceId: 'urees-website', action: 'sync' }
+      data: { sourceId: 'website_urees', action: 'sync' }
     });
     expect(sync.ok()).toBeTruthy();
     const synced = await sync.json();
@@ -44,13 +45,13 @@ test.describe('Giuseppe OS UREES Website Connector — Phase 7', () => {
     expect(synced.source.lastSyncRun?.evidence).toBeGreaterThan(0);
 
     const second = await request.post('/api/sources', {
-      data: { sourceId: 'urees-website', action: 'sync' }
+      data: { sourceId: 'website_urees', action: 'sync' }
     });
     const secondBody = await second.json();
     expect(secondBody.source.lastSyncRun?.normalized).toBe(0);
   });
 
-  test('urees-website sync creates UREES knowledge from evidence', async ({ request }) => {
+  test('website_urees sync creates UREES knowledge from evidence', async ({ request }) => {
     await seedUreesWebsiteKnowledge(request);
 
     const knowledge = await request.get('/api/intelligence/knowledge?q=urees');
@@ -59,11 +60,11 @@ test.describe('Giuseppe OS UREES Website Connector — Phase 7', () => {
 
     const urees = body.items.find((row: { label: string }) => row.label === 'UREES');
     expect(urees).toBeTruthy();
-    expect(urees.sourceId).toBe('urees-website');
+    expect(urees.sourceId).toBe('website_urees');
     expect(urees.evidenceUrls.length).toBeGreaterThan(0);
   });
 
-  test('brain can answer UREES questions from synchronized urees-website evidence', async ({
+  test('brain can answer UREES questions from synchronized website_urees evidence', async ({
     request
   }) => {
     await seedUreesWebsiteKnowledge(request);
@@ -77,17 +78,17 @@ test.describe('Giuseppe OS UREES Website Connector — Phase 7', () => {
     expect(body.answer).toMatch(/UREES/i);
     expect(body.answer).not.toBe(BRAIN_UNKNOWN_ANSWER);
     expect(body.evidence.length).toBeGreaterThan(0);
-    expect(body.evidence.some((row: { sourceId: string }) => row.sourceId === 'urees-website')).toBe(
+    expect(body.evidence.some((row: { sourceId: string }) => row.sourceId === 'website_urees')).toBe(
       true
     );
   });
 
-  test('GET /api/sources exposes urees-website without secrets', async ({ request }) => {
+  test('GET /api/sources exposes website_urees without secrets', async ({ request }) => {
     const response = await request.get('/api/sources');
     expect(response.ok()).toBeTruthy();
     const body = await response.json();
 
-    const urees = body.sources.find((row: { id: string }) => row.id === 'urees-website');
+    const urees = body.sources.find((row: { id: string }) => row.id === 'website_urees');
     expect(urees).toBeTruthy();
     expect(urees.authMethod).toBe('feed');
     expect(urees).not.toHaveProperty('accessToken');
@@ -97,20 +98,15 @@ test.describe('Giuseppe OS UREES Website Connector — Phase 7', () => {
 });
 
 test.describe('UREES website official URL', () => {
-  test('defaults to https://urees.shop/ from official source registry', async () => {
+  test('website_urees uses https://urees.shop/ from source config', async () => {
     const { resolveUreesWebsiteConfig } = await import(
       '../src/modules/sources/connectors/website/website-connector.configs.server'
     );
 
-    const previousUrl = process.env.UREES_WEBSITE_URL;
-    delete process.env.UREES_WEBSITE_URL;
+    expect(getOfficialSourceUrl('website_urees')).toBe('https://urees.shop/');
 
     const config = resolveUreesWebsiteConfig();
     expect(config.baseUrl).toBe('https://urees.shop/');
-    expect(config.productsJsonUrl).toBe('https://urees.shop/products.json');
-
-    if (previousUrl !== undefined) {
-      process.env.UREES_WEBSITE_URL = previousUrl;
-    }
+    expect(config.sourceId).toBe('website_urees');
   });
 });

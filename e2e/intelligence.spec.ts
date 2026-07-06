@@ -7,10 +7,10 @@ async function resetStores(request: import('@playwright/test').APIRequestContext
 
 async function seedWebsiteKnowledge(request: import('@playwright/test').APIRequestContext) {
   await request.post('/api/sources', {
-    data: { sourceId: 'website', action: 'connect' }
+    data: { sourceId: 'website_personal', action: 'connect' }
   });
   await request.post('/api/sources', {
-    data: { sourceId: 'website', action: 'sync' }
+    data: { sourceId: 'website_personal', action: 'sync' }
   });
 }
 

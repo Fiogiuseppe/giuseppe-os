@@ -8,13 +8,13 @@ import { listPersistedKnowledge, upsertKnowledgeCandidate } from './knowledge-pe
 export const DEFAULT_KNOWLEDGE_OWNER: KnowledgeOwner = 'giuseppe';
 
 export function mapSourceType(sourceId: SourceProviderId): string {
-  if (sourceId === 'website' || sourceId === 'urees-website') {
+  if (sourceId === 'website_personal' || sourceId === 'website_urees') {
     return 'website';
   }
-  if (sourceId === 'medium') {
+  if (sourceId === 'medium_personal') {
     return 'feed';
   }
-  if (sourceId.includes('instagram') || sourceId === 'linkedin') {
+  if (sourceId.includes('instagram') || sourceId === 'linkedin_personal') {
     return 'social';
   }
   return sourceId;

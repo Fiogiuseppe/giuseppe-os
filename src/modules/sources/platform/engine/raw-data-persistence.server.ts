@@ -5,9 +5,9 @@ import type { RawSyncItem } from '../types';
 
 /** Maps Sources catalog IDs to lib/data-sources pipeline IDs. */
 const RAW_SOURCE_MAP: Partial<Record<SourceProviderId, DataSourceId>> = {
-  website: 'website',
-  medium: 'manual_import',
-  'urees-website': 'manual_import'
+  website_personal: 'website',
+  website_urees: 'website',
+  medium_personal: 'manual_import'
 };
 
 export type RawPersistenceSummary = {

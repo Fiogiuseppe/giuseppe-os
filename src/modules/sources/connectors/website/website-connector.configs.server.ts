@@ -1,16 +1,11 @@
-import { GIUSEPPE_PRESENCE, UREES_PRESENCE } from '../../../../../lib/presence/canonical';
-import { OFFICIAL_SOURCE_URLS } from '../../../../../lib/presence/official-source-urls';
+import {
+  getSourceConfig,
+  requireSourceConfig,
+  resolveWebsiteBaseUrl,
+  resolveWebsiteProductsJsonUrl
+} from '../../config/source-config';
 import type { WebsiteConnectorConfig } from './website-connector.config.types';
 import { buildWebsiteContentHash } from './configurable-website.fetch.server';
-
-const WEBSITE = GIUSEPPE_PRESENCE.channels.website;
-const UREES = UREES_PRESENCE.channels.website;
-
-function normalizeBaseUrl(url: string): string {
-  return url.endsWith('/') ? url : `${url}/`;
-}
-
-const UREES_OFFICIAL_BASE = normalizeBaseUrl(OFFICIAL_SOURCE_URLS.website_urees);
 
 function readEnv(key: string): string | null {
   const value = process.env[key]?.trim();
@@ -53,42 +48,45 @@ function buildMockItem(
 }
 
 export function resolveFiogiuseppeWebsiteConfig(): WebsiteConnectorConfig {
+  const source = requireSourceConfig('website_personal');
+  const baseUrl = source.officialUrl;
+
   return {
-    sourceId: 'website',
-    connectorId: 'website_personal',
-    label: WEBSITE.label,
-    owner: 'fiogiuseppe',
-    sourceLabel: 'fiogiuseppe.com',
-    displayName: GIUSEPPE_PRESENCE.displayName,
-    baseUrl: WEBSITE.profileUrl,
-    feedUrl: WEBSITE.feedUrl,
-    commentsFeedUrl: WEBSITE.commentsFeedUrl,
+    sourceId: source.id,
+    connectorId: source.connectorId ?? source.id,
+    label: source.label,
+    owner: source.owner ?? 'fiogiuseppe',
+    sourceLabel: source.sourceLabel ?? 'fiogiuseppe.com',
+    displayName: 'Giuseppe Fioretti',
+    baseUrl,
+    feedUrl: source.feedUrl ?? null,
+    commentsFeedUrl: source.commentsFeedUrl ?? null,
     sitemapUrl: null,
     productsJsonUrl: null,
     maxPages: 12,
     maxComments: 10,
-    handles: [...GIUSEPPE_PRESENCE.handles],
+    handles: ['@fiogiuseppe', 'fiogiuseppe'],
     mockFixtures: () => {
       const collectedAt = new Date().toISOString();
-      const postUrl = `${WEBSITE.profileUrl}mock-project/`;
+      const postUrl = `${baseUrl}mock-project/`;
 
       return [
         buildMockItem(
-          { sourceId: 'website', owner: 'fiogiuseppe', sourceLabel: 'fiogiuseppe.com' },
-          'website:profile',
+          { sourceId: source.id, owner: source.owner!, sourceLabel: source.sourceLabel! },
+          `${source.id}:profile`,
           {
             kind: 'profile',
-            url: WEBSITE.profileUrl,
-            title: GIUSEPPE_PRESENCE.displayName,
+            url: baseUrl,
+            title: 'Giuseppe Fioretti',
             description: 'Personal site and projects.',
             content: 'Giuseppe Fioretti — designer, builder, decision intelligence.',
-            metadata: { handles: GIUSEPPE_PRESENCE.handles, feedUrl: WEBSITE.feedUrl },
+            metadata: { handles: ['@fiogiuseppe', 'fiogiuseppe'], feedUrl: source.feedUrl },
             collectedAt
           }
         ),
         buildMockItem(
-          { sourceId: 'website', owner: 'fiogiuseppe', sourceLabel: 'fiogiuseppe.com' },
-          'website:post:mock-project',
+          { sourceId: source.id, owner: source.owner!, sourceLabel: source.sourceLabel! },
+          `${source.id}:post:mock-project`,
           {
             kind: 'post',
             url: postUrl,
@@ -101,11 +99,11 @@ export function resolveFiogiuseppeWebsiteConfig(): WebsiteConnectorConfig {
           }
         ),
         buildMockItem(
-          { sourceId: 'website', owner: 'fiogiuseppe', sourceLabel: 'fiogiuseppe.com' },
-          'website:comment:mock-1',
+          { sourceId: source.id, owner: source.owner!, sourceLabel: source.sourceLabel! },
+          `${source.id}:comment:mock-1`,
           {
             kind: 'comment',
-            url: WEBSITE.profileUrl,
+            url: baseUrl,
             title: 'Visitor note',
             description: 'Mock comment fixture.',
             content: 'Mock comment fixture.',
@@ -119,46 +117,47 @@ export function resolveFiogiuseppeWebsiteConfig(): WebsiteConnectorConfig {
 }
 
 export function resolveUreesWebsiteConfig(): WebsiteConnectorConfig {
-  const envBaseUrl = readEnv('UREES_WEBSITE_URL');
-  const normalizedBase = envBaseUrl ? normalizeBaseUrl(envBaseUrl) : UREES_OFFICIAL_BASE;
+  const source = requireSourceConfig('website_urees');
+  const normalizedBase = resolveWebsiteBaseUrl('website_urees');
 
   return {
-    sourceId: 'urees-website',
-    connectorId: 'website_urees',
-    label: UREES.label,
-    owner: 'urees',
-    sourceLabel: 'urees.shop',
-    displayName: UREES_PRESENCE.displayName,
+    sourceId: source.id,
+    connectorId: source.connectorId ?? source.id,
+    label: source.label,
+    owner: source.owner ?? 'urees',
+    sourceLabel: source.sourceLabel ?? 'urees.shop',
+    displayName: 'UREES',
     baseUrl: normalizedBase,
-    feedUrl: readEnv('UREES_WEBSITE_FEED_URL') ?? `${normalizedBase}feed/`,
+    feedUrl: readEnv('UREES_WEBSITE_FEED_URL') ?? source.feedUrl ?? `${normalizedBase}feed/`,
     commentsFeedUrl: null,
     sitemapUrl: readEnv('UREES_WEBSITE_SITEMAP_URL') ?? `${normalizedBase}sitemap.xml`,
-    productsJsonUrl: readEnv('UREES_WEBSITE_PRODUCTS_URL') ?? UREES.productsUrl,
+    productsJsonUrl: resolveWebsiteProductsJsonUrl('website_urees'),
     maxPages: Number(readEnv('UREES_WEBSITE_MAX_PAGES') ?? '12'),
-    handles: [...UREES_PRESENCE.handles],
+    handles: ['@urees__', 'urees'],
     mockFixtures: () => {
       const collectedAt = new Date().toISOString();
+      const productsJsonUrl = resolveWebsiteProductsJsonUrl('website_urees');
 
       return [
         buildMockItem(
-          { sourceId: 'urees-website', owner: 'urees', sourceLabel: 'urees.shop' },
-          'urees-website:profile',
+          { sourceId: source.id, owner: source.owner!, sourceLabel: source.sourceLabel! },
+          `${source.id}:profile`,
           {
             kind: 'profile',
-            url: UREES_OFFICIAL_BASE,
+            url: normalizedBase,
             title: 'UREES',
             description: 'UREES brand shop and storytelling.',
             content: 'UREES is a brand focused on products, brand identity, and creative storytelling.',
-            metadata: { handles: UREES_PRESENCE.handles, productsJsonUrl: UREES.productsUrl },
+            metadata: { handles: ['@urees__', 'urees'], productsJsonUrl },
             collectedAt
           }
         ),
         buildMockItem(
-          { sourceId: 'urees-website', owner: 'urees', sourceLabel: 'urees.shop' },
-          'urees-website:product:signature',
+          { sourceId: source.id, owner: source.owner!, sourceLabel: source.sourceLabel! },
+          `${source.id}:product:signature`,
           {
             kind: 'product',
-            url: `${UREES_OFFICIAL_BASE}products/urees-signature`,
+            url: `${normalizedBase}products/urees-signature`,
             title: 'UREES Signature Piece',
             description: 'Signature UREES product from the public shop.',
             content: 'UREES signature product — brand storytelling, design, and creative direction.',
@@ -167,11 +166,11 @@ export function resolveUreesWebsiteConfig(): WebsiteConnectorConfig {
           }
         ),
         buildMockItem(
-          { sourceId: 'urees-website', owner: 'urees', sourceLabel: 'urees.shop' },
-          'urees-website:story:about',
+          { sourceId: source.id, owner: source.owner!, sourceLabel: source.sourceLabel! },
+          `${source.id}:story:about`,
           {
             kind: 'page',
-            url: `${UREES_OFFICIAL_BASE}pages/about`,
+            url: `${normalizedBase}pages/about`,
             title: 'About UREES',
             description: 'Brand story and creative direction.',
             content: 'UREES explores branding, art, and product storytelling across collections.',
@@ -184,8 +183,16 @@ export function resolveUreesWebsiteConfig(): WebsiteConnectorConfig {
   };
 }
 
+export function resolveWebsiteConnectorConfig(sourceId: 'website_personal' | 'website_urees') {
+  return sourceId === 'website_personal'
+    ? resolveFiogiuseppeWebsiteConfig()
+    : resolveUreesWebsiteConfig();
+}
+
+const personalWebsite = getSourceConfig('website_personal');
+
 export const FIOGIUSEPPE_WEBSITE_FEED_URLS = {
-  posts: WEBSITE.feedUrl,
-  comments: WEBSITE.commentsFeedUrl,
-  profile: WEBSITE.profileUrl
+  posts: personalWebsite?.feedUrl ?? '',
+  comments: personalWebsite?.commentsFeedUrl ?? '',
+  profile: personalWebsite?.officialUrl ?? ''
 } as const;

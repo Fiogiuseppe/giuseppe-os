@@ -8,8 +8,8 @@ import {
   KNOWLEDGE_STATUSES,
   KNOWLEDGE_TYPES
 } from '../../knowledge/models/knowledge.types';
-import type { SourceProviderId } from '../../sources/providers/source-provider.types';
-import { isSourceProviderId } from '../../sources/providers/source-registry';
+import type { SourceProviderId } from '../../sources/config/source-config';
+import { isSourceProviderId, normalizeSourceId } from '../../sources/providers/source-registry';
 
 export type IntelligenceKnowledgeQuery = {
   owner?: KnowledgeOwner;
@@ -54,10 +54,11 @@ export function parseIntelligenceKnowledgeQuery(
 
   const sourceId = searchParams.get('sourceId');
   if (sourceId) {
-    if (!isSourceProviderId(sourceId)) {
+    const normalized = normalizeSourceId(sourceId);
+    if (!normalized) {
       return null;
     }
-    query.sourceId = sourceId;
+    query.sourceId = normalized;
   }
 
   const knowledgeType = searchParams.get('knowledgeType');

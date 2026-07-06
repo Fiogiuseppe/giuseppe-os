@@ -13,11 +13,11 @@ test.describe('Giuseppe OS Knowledge — Phase 4', () => {
   });
   test('website sync creates knowledge from evidence', async ({ request }) => {
     await request.post('/api/sources', {
-      data: { sourceId: 'website', action: 'connect' }
+      data: { sourceId: 'website_personal', action: 'connect' }
     });
 
     await request.post('/api/sources', {
-      data: { sourceId: 'website', action: 'sync' }
+      data: { sourceId: 'website_personal', action: 'sync' }
     });
 
     const knowledge = await request.get('/api/knowledge');
@@ -44,7 +44,7 @@ test.describe('Giuseppe OS Knowledge — Phase 4', () => {
     const beforeCount = beforeBody.items.length;
 
     await request.post('/api/sources', {
-      data: { sourceId: 'website', action: 'sync' }
+      data: { sourceId: 'website_personal', action: 'sync' }
     });
 
     const after = await request.get('/api/knowledge');

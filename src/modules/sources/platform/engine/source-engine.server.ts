@@ -1,4 +1,5 @@
 import { getSourceAvailability, getSourceProvider, isSourceActive, listSourceProviders } from '../../providers/source-registry';
+import { getSourceConfig } from '../../config/source-config';
 import type { SourceProviderId, SourceProviderStatus } from '../../providers/source-provider.types';
 import { buildDataCollectedModel } from '../models/data-collected';
 import { buildPermissionModel } from '../models/permissions';
@@ -9,15 +10,6 @@ import {
   seedPersistedConnectionIfMissing
 } from './connection-persistence.server';
 import { getLatestSyncRun } from './sync-run-persistence.server';
-
-const SEEDED_NOTES: Partial<Record<SourceProviderId, string>> = {
-  instagram: 'OAuth not configured — Phase 11.',
-  linkedin: 'OAuth not configured — Phase 12.',
-  medium: 'Feed connector not wired — Phase 5.',
-  website: 'Public feeds at fiogiuseppe.com/feed/ — connect to sync.',
-  'urees-website': 'Public site at urees.shop — connect to sync.',
-  'urees-instagram': 'OAuth not configured — Phase 11.'
-};
 
 function mapAuthMethod(
   authMethod: ReturnType<typeof getSourceProvider>['authMethod']
@@ -33,7 +25,7 @@ function mapAuthMethod(
 
 async function ensureSeeded(sourceId: SourceProviderId): Promise<void> {
   const provider = getSourceProvider(sourceId);
-  const seededNote = SEEDED_NOTES[sourceId];
+  const seededNote = getSourceConfig(sourceId)?.seededHealthNote;
 
   if (!isSourceActive(sourceId)) {
     await seedPersistedConnectionIfMissing(sourceId, {
@@ -78,13 +70,15 @@ export async function buildSafeProviderStatus(sourceId: SourceProviderId): Promi
   const health = await adapter.health();
   const permissions = await adapter.permissions();
   const persisted = await readPersistedConnection(sourceId);
-  const permissionModel = buildPermissionModel(sourceId, permissions.granted);
-  const dataModel = buildDataCollectedModel(
+  const latestRun = await getLatestSyncRun(sourceId);
+
+  const dataCollected = buildDataCollectedModel(
     sourceId,
     persisted?.dataCollectionEnabled ?? [],
-    { connected: health.connectionStatus === 'connected' }
+    { connected: persisted?.connectionStatus === 'connected' }
   );
-  const lastSyncRun = await getLatestSyncRun(sourceId);
+
+  const permissionModel = buildPermissionModel(sourceId, persisted?.permissionsGranted ?? []);
 
   return {
     id: provider.id,
@@ -94,24 +88,24 @@ export async function buildSafeProviderStatus(sourceId: SourceProviderId): Promi
     group: provider.group,
     availability: getSourceAvailability(sourceId),
     authMethod: mapAuthMethod(provider.authMethod),
-    connectionStatus: health.connectionStatus,
-    healthStatus: health.status,
-    lastSyncAt: health.lastSyncAt ?? persisted?.lastSyncAt ?? null,
+    connectionStatus: persisted?.connectionStatus ?? health.connectionStatus,
+    healthStatus: persisted?.healthStatus ?? health.status,
+    lastSyncAt: persisted?.lastSyncAt ?? health.lastSyncAt,
     lastSuccessfulSyncAt: persisted?.lastSuccessfulSyncAt ?? null,
     permissions: permissionModel.declared,
     permissionsGranted: permissionModel.granted,
-    dataCollected: dataModel.catalog,
-    dataCollectionEnabled: dataModel.enabled,
-    healthNote: health.note,
-    lastSyncRun: lastSyncRun
+    dataCollected: dataCollected.catalog,
+    dataCollectionEnabled: dataCollected.enabled,
+    healthNote: persisted?.healthNote ?? health.note,
+    lastSyncRun: latestRun
       ? {
-          id: lastSyncRun.id,
-          status: lastSyncRun.status,
-          finishedAt: lastSyncRun.finishedAt,
-          fetched: lastSyncRun.fetched,
-          normalized: lastSyncRun.normalized,
-          evidence: lastSyncRun.evidence,
-          mode: lastSyncRun.mode
+          id: latestRun.id,
+          status: latestRun.status,
+          finishedAt: latestRun.finishedAt,
+          fetched: latestRun.fetched,
+          normalized: latestRun.normalized,
+          evidence: latestRun.evidence,
+          mode: latestRun.mode
         }
       : null
   };

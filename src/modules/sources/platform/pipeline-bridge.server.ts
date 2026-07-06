@@ -6,9 +6,11 @@ import type { RawSyncItem } from './types';
 
 /** Maps Sources catalog IDs to data-sources pipeline IDs when aligned. */
 const PIPELINE_SOURCE_MAP: Partial<Record<SourceProviderId, DataSourceId>> = {
-  instagram: 'instagram',
-  linkedin: 'linkedin',
-  website: 'website'
+  instagram_personal: 'instagram',
+  instagram_urees: 'instagram',
+  linkedin_personal: 'linkedin',
+  website_personal: 'website',
+  website_urees: 'website'
 };
 
 export type PipelineIngestSummary = {

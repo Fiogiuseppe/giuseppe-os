@@ -4,8 +4,8 @@ import { fiogiuseppeWebsiteConnector } from './fiogiuseppe-website.connector.ser
 import { ureesWebsiteConnector } from './urees-website.connector.server';
 
 const CONNECTORS = new Map<SourceProviderId, SourceConnector>([
-  ['website', fiogiuseppeWebsiteConnector],
-  ['urees-website', ureesWebsiteConnector]
+  ['website_personal', fiogiuseppeWebsiteConnector],
+  ['website_urees', ureesWebsiteConnector]
 ]);
 
 export function getSourceConnector(sourceId: SourceProviderId): SourceConnector | null {

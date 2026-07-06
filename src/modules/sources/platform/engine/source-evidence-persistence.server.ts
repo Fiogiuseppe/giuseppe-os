@@ -8,8 +8,8 @@ import type { RawSyncItem } from '../types';
 import { buildWebsiteContentHash } from '../../connectors/website/configurable-website.fetch.server';
 
 const PIPELINE_SOURCE_MAP: Partial<Record<SourceProviderId, DataSourceId>> = {
-  website: 'website',
-  'urees-website': 'website'
+  website_personal: 'website',
+  website_urees: 'website'
 };
 
 export type SourceEvidencePersistenceSummary = {
