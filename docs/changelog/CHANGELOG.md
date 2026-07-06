@@ -6,6 +6,33 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
+## [0.11.0-stability-persistence] — 2026-07-06
+
+### Added
+
+- Production persistence guide (`docs/architecture/production-persistence.md`)
+- ADR-011: production persistence readiness
+- Phase 11 audit report and updated reports index (Phases 1–11)
+
+### Changed
+
+- `e2e/sources.spec.ts` — reset + poll for failed-sync test (Turbopack flake mitigation)
+- `DATA_SOURCES_STORE=memory` in Playwright; data sources honor `SOURCES_ENGINE_STORE=memory`
+- `reset-stores` API returns manifest of cleared stores
+
+### Security
+
+- Confirmed no tokens, secrets, or raw private data in public APIs
+- Test routes remain gated by `ALLOW_TEST_ROUTES=1`
+- Supabase migrations confirmed for all pipeline tables (no token tables yet)
+
+### Notes
+
+- Report: [`reports/phase-11-report.md`](reports/phase-11-report.md)
+- ADR: [`decisions/ADR-011-production-persistence-readiness.md`](decisions/ADR-011-production-persistence-readiness.md)
+
+---
+
 ## [0.10.0-brain-summary] — 2026-07-06
 
 ### Added

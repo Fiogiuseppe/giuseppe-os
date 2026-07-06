@@ -8,35 +8,34 @@
 
 | Field | Value |
 |-------|-------|
-| **Last completed** | Phase 10 — Brain Summary Layer |
-| **Up next** | Phase 11 — TBD (requires Giuseppe approval) |
-| **Blocked by** | Nothing for documentation |
+| **Last completed** | Phase 11 — Stability & Production Persistence Audit |
+| **Up next** | Phase 12 — TBD (requires Giuseppe approval) |
+| **Blocked by** | Nothing for stability work |
 
 ---
 
-## Phase 11 — Not yet scoped
+## Phase 12 — Not yet scoped
 
-Phase 10 completed cross-source Brain summaries. The next phase has **not** been started.
+Phase 11 confirmed persistence readiness and test stability. Giuseppe OS is stabilized for production Supabase deploy and future OAuth work.
 
-Likely candidates (require Giuseppe approval before implementation):
+Likely candidates (require Giuseppe approval):
 
-- **Brain Summary UI** — debug page or chat integration for `/api/brain/summary`
-- **Instagram Personal** — public profile only, no OAuth in first slice
-- **LinkedIn Personal** — public profile only
-- **Scheduled sync** — cron/worker hook for connected sources
-- **OAuth infrastructure** — for private API access later
+- **OAuth infrastructure** — authorize routes, token vault, migrations (no Instagram/LinkedIn until scoped)
+- **Scheduled sync** — cron/worker for connected sources
+- **Instagram Personal** — public profile first slice
+- **Brain Summary UI** — debug page integration
 
 ### Do not start without approval
 
-- Instagram OAuth
-- LinkedIn OAuth
-- Token storage
-- LLM-based summaries or knowledge extraction
+- Token storage tables without ADR
+- Instagram / LinkedIn OAuth
+- LLM-based extraction or summaries
 
 ### Reference
 
-- [`docs/reports/phase-10-report.md`](../reports/phase-10-report.md)
-- [`docs/decisions/ADR-010-brain-summary-layer.md`](../decisions/ADR-010-brain-summary-layer.md)
+- [`docs/reports/phase-11-report.md`](../reports/phase-11-report.md)
+- [`docs/architecture/production-persistence.md`](../architecture/production-persistence.md)
+- [`docs/decisions/ADR-011-production-persistence-readiness.md`](../decisions/ADR-011-production-persistence-readiness.md)
 
 ---
 

@@ -57,18 +57,19 @@ Full spec: [`docs/SOURCES_ROADMAP.md`](../SOURCES_ROADMAP.md).
 | 8 | **Source Configuration Cleanup** | ✅ Complete |
 | 9 | **Medium Connector (public RSS)** | ✅ Complete |
 | 10 | **Brain Summary Layer** | ✅ Complete |
+| 11 | **Stability & Production Persistence Audit** | ✅ Complete |
 
-Reports: [`phase-02-report.md`](../reports/phase-02-report.md) · [`phase-03-report.md`](../reports/phase-03-report.md) · [`phase-04-report.md`](../reports/phase-04-report.md) · [`phase-05-report.md`](../reports/phase-05-report.md) · [`phase-06-report.md`](../reports/phase-06-report.md) · [`phase-07-report.md`](../reports/phase-07-report.md) · [`phase-08-report.md`](../reports/phase-08-report.md) · [`phase-09-report.md`](../reports/phase-09-report.md) · [`phase-10-report.md`](../reports/phase-10-report.md)
+Reports: [`phase-02-report.md`](../reports/phase-02-report.md) · [`phase-03-report.md`](../reports/phase-03-report.md) · [`phase-04-report.md`](../reports/phase-04-report.md) · [`phase-05-report.md`](../reports/phase-05-report.md) · [`phase-06-report.md`](../reports/phase-06-report.md) · [`phase-07-report.md`](../reports/phase-07-report.md) · [`phase-08-report.md`](../reports/phase-08-report.md) · [`phase-09-report.md`](../reports/phase-09-report.md) · [`phase-10-report.md`](../reports/phase-10-report.md) · [`phase-11-report.md`](../reports/phase-11-report.md)
 
-ADR: [`ADR-004-knowledge-layer.md`](../decisions/ADR-004-knowledge-layer.md) · [`ADR-005-intelligence-read-layer.md`](../decisions/ADR-005-intelligence-read-layer.md) · [`ADR-006-brain-evidence-answer-layer.md`](../decisions/ADR-006-brain-evidence-answer-layer.md) · [`ADR-007-configurable-website-connectors.md`](../decisions/ADR-007-configurable-website-connectors.md) · [`ADR-008-official-source-configuration.md`](../decisions/ADR-008-official-source-configuration.md) · [`ADR-009-medium-public-feed-connector.md`](../decisions/ADR-009-medium-public-feed-connector.md) · [`ADR-010-brain-summary-layer.md`](../decisions/ADR-010-brain-summary-layer.md)
+ADR: [`ADR-004-knowledge-layer.md`](../decisions/ADR-004-knowledge-layer.md) · [`ADR-005-intelligence-read-layer.md`](../decisions/ADR-005-intelligence-read-layer.md) · [`ADR-006-brain-evidence-answer-layer.md`](../decisions/ADR-006-brain-evidence-answer-layer.md) · [`ADR-007-configurable-website-connectors.md`](../decisions/ADR-007-configurable-website-connectors.md) · [`ADR-008-official-source-configuration.md`](../decisions/ADR-008-official-source-configuration.md) · [`ADR-009-medium-public-feed-connector.md`](../decisions/ADR-009-medium-public-feed-connector.md) · [`ADR-010-brain-summary-layer.md`](../decisions/ADR-010-brain-summary-layer.md) · [`ADR-011-production-persistence-readiness.md`](../decisions/ADR-011-production-persistence-readiness.md)
 
 ---
 
 ## Backlog
 
 - [ ] Backfill Phase 1 implementation report
-- [ ] ADR for Sources Engine store backend selection
 - [ ] Guardian scan after major Sources/Knowledge changes
+- [ ] OAuth infrastructure and token persistence (post–Phase 11)
 
 ---
 
