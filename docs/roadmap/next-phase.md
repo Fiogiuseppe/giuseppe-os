@@ -8,50 +8,49 @@
 
 | Field | Value |
 |-------|-------|
-| **Last completed** | Phase 6 — Brain Evidence Answer Layer |
-| **Up next** | Sources Phase 4 — UREES Website Connector |
+| **Last completed** | Phase 7 — UREES Website Connector |
+| **Up next** | Sources Phase 5 — Medium Connector (RSS) |
 | **Blocked by** | Nothing |
 
 ---
 
-## Sources Phase 4 — UREES Website Connector
+## Sources Phase 5 — Medium Connector (RSS)
 
 ### Goal
 
-Reuse the Phase 3 website connector architecture for `urees-website` at urees.shop.
+Add a real public RSS connector for Giuseppe's Medium feed at `@fiogiuseppe`.
 
 ### Implement
 
-- [ ] Generic configurable website connector (URL + source ID)
-- [ ] Register `urees-website` connector
-- [ ] Fetch public products/collections/storytelling
+- [ ] Reuse configurable feed patterns where applicable
+- [ ] Register Medium connector (replace stub)
+- [ ] Fetch public articles via RSS
 - [ ] Raw + normalized + evidence persistence with dedup
-- [ ] Knowledge extractor hook for UREES (extend registry)
+- [ ] Knowledge extractor hook for Medium
 
 ### Constraints
 
-- Reuse Phase 3 patterns — no duplicated fetch logic
-- Public content only
-- No OAuth, Medium, Instagram, LinkedIn
+- Public RSS only
+- No OAuth, Instagram, LinkedIn
+- No LLM
 
 ### Tests required
 
-- [ ] UREES sync works end-to-end
+- [ ] Medium sync works end-to-end
 - [ ] `npx tsc --noEmit` and `npm run build` pass
-- [ ] Existing `e2e/sources.spec.ts`, `e2e/knowledge.spec.ts`, `e2e/intelligence.spec.ts`, and `e2e/brain-answer.spec.ts` pass
+- [ ] Existing e2e suites pass (sources, knowledge, intelligence, brain, urees-website)
 
 ### Documentation required
 
-- [ ] Phase report (per SOURCES_ROADMAP numbering)
+- [ ] Phase report
 - [ ] Update `docs/architecture/sources.md`
-- [ ] ADR if generic website connector config is decided
+- [ ] ADR if architectural decisions emerge
 
 ### Reference
 
 - [`docs/SOURCES_ROADMAP.md`](../SOURCES_ROADMAP.md)
-- [`docs/reports/phase-06-report.md`](../reports/phase-06-report.md)
-- [`docs/architecture/knowledge.md`](../architecture/knowledge.md)
-- [`docs/decisions/ADR-006-brain-evidence-answer-layer.md`](../decisions/ADR-006-brain-evidence-answer-layer.md)
+- [`docs/reports/phase-07-report.md`](../reports/phase-07-report.md)
+- [`docs/decisions/ADR-007-configurable-website-connectors.md`](../decisions/ADR-007-configurable-website-connectors.md)
 
 ---
 

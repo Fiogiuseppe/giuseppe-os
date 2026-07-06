@@ -21,6 +21,11 @@ function bootstrapDefaultAdapters(): void {
     registerAdapter('website', () => createConnectorAdapter(websiteConnector));
   }
 
+  const ureesWebsiteConnector = getSourceConnector('urees-website');
+  if (ureesWebsiteConnector) {
+    registerAdapter('urees-website', () => createConnectorAdapter(ureesWebsiteConnector));
+  }
+
   for (const provider of listSourceProviders()) {
     if (adapterFactories.has(provider.id)) {
       continue;

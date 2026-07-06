@@ -48,8 +48,8 @@ const MOCK_STATUS: Partial<
   },
   'urees-website': {
     connectionStatus: 'disconnected',
-    healthStatus: 'unknown',
-    healthNote: 'Website connector — Phase 4.',
+    healthStatus: 'unavailable',
+    healthNote: 'Set UREES_WEBSITE_URL in .env.local to enable UREES website sync.',
     lastSyncAt: null,
     lastSuccessfulSyncAt: null
   }

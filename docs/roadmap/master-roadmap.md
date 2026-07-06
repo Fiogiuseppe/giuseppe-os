@@ -40,8 +40,8 @@ Full spec: [`docs/SOURCES_ROADMAP.md`](../SOURCES_ROADMAP.md).
 | 1 | Sources Dashboard | ✅ Complete |
 | 2 | Sources Engine | ✅ Complete |
 | 3 | Website Connector — fiogiuseppe.com | ✅ Complete |
-| 4 | UREES Website Connector | Next |
-| 5 | Medium Connector (RSS) | Planned |
+| 4 | UREES Website Connector | ✅ Complete |
+| 5 | Medium Connector (RSS) | Next |
 | 6–13 | Normalization, read layer, AI, OAuth, social, sync | Planned |
 
 ---
@@ -53,11 +53,10 @@ Full spec: [`docs/SOURCES_ROADMAP.md`](../SOURCES_ROADMAP.md).
 | 4 | **Knowledge Layer** | ✅ Complete |
 | 5 | **Intelligence Read Layer** | ✅ Complete |
 | 6 | **Brain Evidence Answer Layer** | ✅ Complete |
-| — | First AI Evidence Use (cited) | Planned |
 
-Reports: [`phase-02-report.md`](../reports/phase-02-report.md) · [`phase-03-report.md`](../reports/phase-03-report.md) · [`phase-04-report.md`](../reports/phase-04-report.md) · [`phase-05-report.md`](../reports/phase-05-report.md) · [`phase-06-report.md`](../reports/phase-06-report.md)
+Reports: [`phase-02-report.md`](../reports/phase-02-report.md) · [`phase-03-report.md`](../reports/phase-03-report.md) · [`phase-04-report.md`](../reports/phase-04-report.md) · [`phase-05-report.md`](../reports/phase-05-report.md) · [`phase-06-report.md`](../reports/phase-06-report.md) · [`phase-07-report.md`](../reports/phase-07-report.md)
 
-ADR: [`ADR-004-knowledge-layer.md`](../decisions/ADR-004-knowledge-layer.md) · [`ADR-005-intelligence-read-layer.md`](../decisions/ADR-005-intelligence-read-layer.md) · [`ADR-006-brain-evidence-answer-layer.md`](../decisions/ADR-006-brain-evidence-answer-layer.md)
+ADR: [`ADR-004-knowledge-layer.md`](../decisions/ADR-004-knowledge-layer.md) · [`ADR-005-intelligence-read-layer.md`](../decisions/ADR-005-intelligence-read-layer.md) · [`ADR-006-brain-evidence-answer-layer.md`](../decisions/ADR-006-brain-evidence-answer-layer.md) · [`ADR-007-configurable-website-connectors.md`](../decisions/ADR-007-configurable-website-connectors.md)
 
 ---
 

@@ -15,7 +15,7 @@ const SEEDED_NOTES: Partial<Record<SourceProviderId, string>> = {
   linkedin: 'OAuth not configured — Phase 12.',
   medium: 'Feed connector not wired — Phase 5.',
   website: 'Public feeds at fiogiuseppe.com/feed/ — connect to sync.',
-  'urees-website': 'Website connector not wired — Phase 4.',
+  'urees-website': 'Set UREES_WEBSITE_URL in .env.local to enable UREES website sync.',
   'urees-instagram': 'OAuth not configured — Phase 11.'
 };
 

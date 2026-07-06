@@ -5,10 +5,11 @@ import { getDataSourceStore } from '../../../../../lib/data-sources/store';
 import type { DataSourceId } from '../../../../../lib/data-sources/types';
 import type { SourceProviderId } from '../../providers/source-provider.types';
 import type { RawSyncItem } from '../types';
-import { buildWebsiteContentHash } from '../../connectors/fetch/fiogiuseppe-website.fetch.server';
+import { buildWebsiteContentHash } from '../../connectors/website/configurable-website.fetch.server';
 
 const PIPELINE_SOURCE_MAP: Partial<Record<SourceProviderId, DataSourceId>> = {
-  website: 'website'
+  website: 'website',
+  'urees-website': 'website'
 };
 
 export type SourceEvidencePersistenceSummary = {

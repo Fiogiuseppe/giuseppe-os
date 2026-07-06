@@ -6,7 +6,31 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
-## [0.6.0-brain-evidence-answer] — 2026-07-06
+## [0.7.0-urees-website] — 2026-07-06
+
+### Added
+
+- Configurable website connector architecture (`src/modules/sources/connectors/website/`)
+- UREES website connector (`urees-website`, `website_urees`)
+- `UREES_WEBSITE_URL` environment configuration
+- ADR-007: configurable website connectors
+
+### Changed
+
+- fiogiuseppe.com connector refactored to shared website architecture (no duplicated fetch logic)
+- Knowledge extractor now includes `urees-website` source
+
+### Security
+
+- No hardcoded UREES URL; missing config fails safely with unavailable health status
+- API responses remain secret-free
+
+### Notes
+
+- Report: [`reports/phase-07-report.md`](reports/phase-07-report.md)
+- ADR: [`decisions/ADR-007-configurable-website-connectors.md`](decisions/ADR-007-configurable-website-connectors.md)
+
+---
 
 ### Added
 
