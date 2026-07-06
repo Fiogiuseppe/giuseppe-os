@@ -1,6 +1,6 @@
 # OAuth Foundation
 
-Generic OAuth architecture for Giuseppe OS social connectors. **No real provider is connected in Phase 12.**
+Generic OAuth architecture for Giuseppe OS social connectors. **No real provider is connected.** Phase 12 delivered routes and state security; Phase 13 added encrypted token persistence.
 
 ---
 
@@ -11,6 +11,7 @@ Browser → GET /api/sources/{sourceId}/oauth/connect
        → state cookie (HttpOnly) + redirect to provider (when implemented)
        → GET /api/sources/oauth/callback
        → validate state → exchange code (server-only, future)
+       → saveTokenBundleFromOAuth() (Phase 13 hook — not wired yet)
        → redirect to /sources?connected={sourceId}
 ```
 
@@ -19,6 +20,8 @@ Tokens never reach the browser. Client secrets stay in server environment variab
 ---
 
 ## Module layout
+
+### OAuth flow (`src/modules/sources/oauth/`)
 
 | File | Purpose |
 |------|---------|
@@ -29,6 +32,15 @@ Tokens never reach the browser. Client secrets stay in server environment variab
 | `oauth-security.server.ts` | HttpOnly cookie helpers |
 | `oauth-errors.ts` | Error codes and `OAuthError` |
 | `oauth-flow.server.ts` | Connect + callback orchestration |
+
+### Token Vault (`src/modules/sources/token-vault/`)
+
+| File | Purpose |
+|------|---------|
+| `token-vault.types.ts` | Persisted record, safe metadata, store interface |
+| `token-encryption.server.ts` | AES-256-GCM encrypt/decrypt |
+| `token-vault-store.server.ts` | memory / file / Supabase persistence |
+| `token-vault.server.ts` | save, get, revoke, delete, list metadata |
 
 ---
 
@@ -69,7 +81,29 @@ Feed sources (`website_personal`, `medium_personal`, `website_urees`) reject OAu
 | Reuse protection | State consumed on callback; second use → `state_reused` |
 | Expiry | Explicit `state_expired` before purge |
 
-State lives in a **server-side in-memory store** (production should move to Redis/Supabase in a future phase with token tables).
+State lives in a **server-side in-memory store** (production should move to Redis/Supabase in a future phase).
+
+---
+
+## Token Vault integration (Phase 13)
+
+When a provider ships, the OAuth callback will:
+
+1. Exchange authorization code via `OAuthProviderAdapter.exchangeCodeForTokens()`
+2. Call `saveTokenBundleFromOAuth({ sourceId, provider, providerAccountId, tokenBundle })`
+3. Connectors call `getValidTokenBundle(sourceId)` server-side for sync
+
+| Function | Returns | Exposed to API? |
+|----------|---------|-----------------|
+| `saveTokenBundle` | `SafeTokenMetadata` | No — internal only |
+| `getValidTokenBundle` | `DecryptedTokenBundle` | No — server-only |
+| `listTokenMetadata` | `SafeTokenMetadata[]` | No — test route metadata only |
+| `markTokenRevoked` | `SafeTokenMetadata` | No |
+| `deleteTokenBundle` | `boolean` | No |
+
+Encryption key: `SOURCES_TOKEN_ENCRYPTION_KEY` (required in production).
+
+**Phase 13:** callback does not persist tokens yet — hook exists but is not wired.
 
 ---
 
@@ -87,7 +121,7 @@ getGrantedScopes(tokenBundle)
 
 Register via `registerOAuthProvider(adapter)` at server bootstrap when a provider ships.
 
-**Phase 12:** registry is empty — connect returns `501 OAuth provider not implemented`.
+**Current:** registry is empty — connect returns `501 OAuth provider not implemented`.
 
 ---
 
@@ -109,31 +143,37 @@ Errors redirect to `/sources?oauth_error={code}` — never include tokens.
 
 ---
 
-## What is NOT in Phase 12
+## What is NOT implemented yet
 
-- Token database tables
-- Real Instagram / LinkedIn OAuth
+- Real Instagram / LinkedIn OAuth provider registration
 - External provider API calls
-- Token storage or refresh workers
+- Wiring callback to `saveTokenBundleFromOAuth`
+- Token refresh workers
 - localStorage / frontend token access
 
 ---
 
 ## Testing
 
-`e2e/sources-oauth.spec.ts` covers connect rejection, callback state validation, and absence of token fields.
+| Suite | Coverage |
+|-------|----------|
+| `e2e/sources-oauth.spec.ts` | Connect rejection, callback state validation, no token fields |
+| `e2e/token-vault.spec.ts` | Encryption, metadata safety, revoke, delete, production key guard |
 
-Test helper (gated by `ALLOW_TEST_ROUTES=1`):
+Test helpers (gated by `ALLOW_TEST_ROUTES=1`):
 
 - `POST /api/test/seed-oauth-state` — seed valid/expired state for callback tests
+- `POST/GET /api/test/token-vault` — vault operations (metadata only in responses)
 
 ---
 
 ## Related
 
 - [`ADR-012-oauth-foundation.md`](../decisions/ADR-012-oauth-foundation.md)
+- [`ADR-013-token-vault.md`](../decisions/ADR-013-token-vault.md)
 - [`production-persistence.md`](production-persistence.md)
 - [`docs/reports/phase-12-report.md`](../reports/phase-12-report.md)
+- [`docs/reports/phase-13-report.md`](../reports/phase-13-report.md)
 
 ---
 

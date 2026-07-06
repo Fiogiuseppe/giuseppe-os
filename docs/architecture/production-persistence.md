@@ -2,7 +2,7 @@
 
 How Giuseppe OS persists Sources, Knowledge, and Brain read layers — and how backends are selected per environment.
 
-**Status:** Phase 11 audit (2026-07-06). No OAuth token tables yet.
+**Status:** Phase 13 (2026-07-06). Token vault with encrypted OAuth credentials.
 
 ---
 
@@ -33,6 +33,7 @@ Intelligence Read and Brain layers **never** read raw provider payloads directly
 | **Intelligence Read** | `src/modules/intelligence/read/` | — (queries Knowledge store) | — | inherits Knowledge backend |
 | **Brain Answer** | `src/modules/brain/answer/` | — (queries Intelligence Read) | — | no persistence |
 | **Brain Summary** | `src/modules/brain/summary/` | — (queries Intelligence Read) | — | no persistence |
+| **Token Vault** | `src/modules/sources/token-vault/` | `source_oauth_tokens` | memory, file, Supabase | Supabase when configured; else file (`.data/token-vault/`) |
 
 ### Backend resolution
 
@@ -42,6 +43,7 @@ Intelligence Read and Brain layers **never** read raw provider payloads directly
 | `SOURCES_ENGINE_STORE=memory` | Forces in-memory Sources Engine (e2e) |
 | `KNOWLEDGE_STORE=memory` | Forces in-memory Knowledge (e2e) |
 | `DATA_SOURCES_STORE=memory` | Forces in-memory raw/normalized/evidence (e2e) |
+| `SOURCES_TOKEN_VAULT_STORE=memory` | Forces in-memory token vault (e2e) |
 | `NODE_ENV=test` | Sources Engine and Knowledge default to memory if Supabase not configured |
 
 Resolver files:
@@ -49,6 +51,7 @@ Resolver files:
 - `src/modules/sources/platform/store/resolve-backend.ts`
 - `src/modules/knowledge/store/resolve-backend.ts`
 - `lib/data-sources/store/types.ts` → `resolveDataSourceStoreBackend()`
+- `src/modules/sources/token-vault/token-vault-store.server.ts` → `resolveTokenVaultStoreBackend()`
 
 ---
 
@@ -60,6 +63,7 @@ Resolver files:
 |----------|---------|
 | `SUPABASE_URL` | Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-side only — never expose to browser |
+| `SOURCES_TOKEN_ENCRYPTION_KEY` | AES-256-GCM key for OAuth tokens (required in production) |
 
 ### Sources & knowledge (optional overrides)
 
@@ -67,6 +71,7 @@ Resolver files:
 |----------|--------|---------|
 | `SOURCES_ENGINE_STORE` | `memory` | Supabase → file |
 | `KNOWLEDGE_STORE` | `memory` | Supabase → file |
+| `SOURCES_TOKEN_VAULT_STORE` | `memory` | Supabase → file |
 | `DATA_SOURCES_STORE` | `memory` | Supabase → memory |
 
 ### Test / dev only
@@ -107,6 +112,8 @@ ALLOW_TEST_ROUTES=1
 SOURCES_ENGINE_STORE=memory
 KNOWLEDGE_STORE=memory
 DATA_SOURCES_STORE=memory
+SOURCES_TOKEN_VAULT_STORE=memory
+SOURCES_TOKEN_ENCRYPTION_KEY=test-token-vault-key-phase-13
 workers=1
 fullyParallel=false
 ```
@@ -116,6 +123,7 @@ Each suite calls `POST /api/test/reset-stores` to clear:
 - Source engine connections and sync runs
 - Raw, normalized, and evidence items
 - Knowledge items
+- Token vault OAuth credentials
 - Adapter registry singleton
 
 This prevents cross-suite mutable state. Serial workers avoid parallel mutation of the shared in-memory stores.
@@ -143,8 +151,9 @@ When `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are set and memory overrides
 | `20260706_sources_engine.sql` | `source_connections`, `source_sync_runs` |
 | `20260706_personal_data_sources.sql` | `data_sources`, `raw_source_items`, `normalized_source_items`, `evidence_items` |
 | `20260706_knowledge_items.sql` | `knowledge_items` |
+| `20260706_source_oauth_tokens.sql` | `source_oauth_tokens` |
 
-All required tables for the current pipeline exist. **No token or OAuth credential tables** — intentionally deferred until OAuth phase.
+All required tables for the current pipeline and token vault exist.
 
 Apply migrations:
 
@@ -159,7 +168,7 @@ supabase db push
 
 | Check | Status |
 |-------|--------|
-| OAuth tokens in API responses | None stored or returned |
+| OAuth tokens in API responses | Never returned — encrypted at rest; metadata only in test routes |
 | Client secrets in API responses | None |
 | Service role key in client bundle | Never — server env only |
 | Raw `raw_json` in public APIs | Never — Intelligence/Brain use safe knowledge metadata |
@@ -169,9 +178,9 @@ Public APIs return safe metadata only: labels, summaries, evidence URLs, sync co
 
 ---
 
-## Known limitations (pre-OAuth)
+## Known limitations (pre-provider OAuth)
 
-1. **No credential persistence** — OAuth/token tables not created yet
+1. **No provider registered** — Instagram / LinkedIn adapters not implemented; callback does not persist tokens yet
 2. **Instagram / LinkedIn** — stub adapters only; no real sync
 3. **Data sources in-memory without Supabase** — raw/normalized/evidence lost on restart when Supabase not configured
 4. **File backends** — single-node only; not suitable for multi-instance serverless without Supabase
@@ -183,7 +192,9 @@ Public APIs return safe metadata only: labels, summaries, evidence URLs, sync co
 ## Related
 
 - [`docs/decisions/ADR-011-production-persistence-readiness.md`](../decisions/ADR-011-production-persistence-readiness.md)
+- [`docs/decisions/ADR-013-token-vault.md`](../decisions/ADR-013-token-vault.md)
 - [`docs/reports/phase-11-report.md`](../reports/phase-11-report.md)
+- [`docs/reports/phase-13-report.md`](../reports/phase-13-report.md)
 - [`docs/architecture/sources.md`](sources.md)
 
 ---
