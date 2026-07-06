@@ -6,7 +6,26 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
-## [0.5.0-intelligence-read] — 2026-07-06
+## [0.6.0-brain-evidence-answer] — 2026-07-06
+
+### Added
+
+- Brain Evidence Answer Layer (`src/modules/brain/answer/`)
+- `POST /api/brain/answer` — deterministic answers from synchronized knowledge
+- `/brain` debug page
+- ADR-006: Brain answers from knowledge via Intelligence Read only
+
+### Security
+
+- No external LLM calls; no raw provider data, tokens, or secrets in responses
+- Unknown answers when no synchronized evidence exists
+
+### Notes
+
+- Report: [`reports/phase-06-report.md`](reports/phase-06-report.md)
+- ADR: [`decisions/ADR-006-brain-evidence-answer-layer.md`](decisions/ADR-006-brain-evidence-answer-layer.md)
+
+---
 
 ### Added
 

@@ -8,7 +8,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Last completed** | Phase 5 — Intelligence Read Layer |
+| **Last completed** | Phase 6 — Brain Evidence Answer Layer |
 | **Up next** | Sources Phase 4 — UREES Website Connector |
 | **Blocked by** | Nothing |
 
@@ -38,7 +38,7 @@ Reuse the Phase 3 website connector architecture for `urees-website` at urees.sh
 
 - [ ] UREES sync works end-to-end
 - [ ] `npx tsc --noEmit` and `npm run build` pass
-- [ ] Existing `e2e/sources.spec.ts`, `e2e/knowledge.spec.ts`, and `e2e/intelligence.spec.ts` pass
+- [ ] Existing `e2e/sources.spec.ts`, `e2e/knowledge.spec.ts`, `e2e/intelligence.spec.ts`, and `e2e/brain-answer.spec.ts` pass
 
 ### Documentation required
 
@@ -49,9 +49,9 @@ Reuse the Phase 3 website connector architecture for `urees-website` at urees.sh
 ### Reference
 
 - [`docs/SOURCES_ROADMAP.md`](../SOURCES_ROADMAP.md)
-- [`docs/reports/phase-05-report.md`](../reports/phase-05-report.md)
+- [`docs/reports/phase-06-report.md`](../reports/phase-06-report.md)
 - [`docs/architecture/knowledge.md`](../architecture/knowledge.md)
-- [`docs/decisions/ADR-005-intelligence-read-layer.md`](../decisions/ADR-005-intelligence-read-layer.md)
+- [`docs/decisions/ADR-006-brain-evidence-answer-layer.md`](../decisions/ADR-006-brain-evidence-answer-layer.md)
 
 ---
 

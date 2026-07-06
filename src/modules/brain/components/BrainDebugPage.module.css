@@ -1,0 +1,144 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kicker {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.title {
+  font-size: clamp(28px, 4vw, 40px);
+  margin: 0;
+}
+
+.lead {
+  margin: 0;
+  max-width: 60ch;
+  opacity: 0.85;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  color: inherit;
+  font: inherit;
+  resize: vertical;
+}
+
+.submit {
+  align-self: flex-start;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.presets {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.preset {
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  color: inherit;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.preset:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.error {
+  margin: 0;
+  color: #b42318;
+}
+
+.result {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.meta {
+  margin: 0 0 12px;
+  font-size: 12px;
+  opacity: 0.7;
+  font-family: ui-monospace, monospace;
+}
+
+.answer {
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.evidence {
+  margin-top: 16px;
+}
+
+.evidenceTitle {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.evidenceList {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 12px;
+}
+
+.evidenceItem {
+  opacity: 0.9;
+}
+
+.links {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.links a {
+  word-break: break-all;
+}

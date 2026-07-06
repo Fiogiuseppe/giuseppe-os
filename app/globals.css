@@ -59,6 +59,8 @@ html.knowledge-route,
 html.knowledge-route body,
 html.intelligence-route,
 html.intelligence-route body,
+html.brain-route,
+html.brain-route body,
 html.chat-route,
 html.chat-route body {
   overflow: hidden;
