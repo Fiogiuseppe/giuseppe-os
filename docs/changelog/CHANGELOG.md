@@ -6,6 +6,31 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
+## [0.10.0-brain-summary] — 2026-07-06
+
+### Added
+
+- Brain Summary Layer (`src/modules/brain/summary/`)
+- `POST /api/brain/summary` — deterministic cross-source evidence summaries
+- Owner, source, topic, and knowledge-type summary modes with grouped evidence
+- `e2e/brain-summary.spec.ts` — summary, grouping, unknown, and security tests
+- ADR-010: Brain Summary Layer
+
+### Security
+
+- Intelligence Read Layer only — no raw provider data
+- No LLM or external API calls
+- Unknown topics return honest evidence-only message
+- API responses remain secret-free
+
+### Notes
+
+- Report: [`reports/phase-10-report.md`](reports/phase-10-report.md)
+- ADR: [`decisions/ADR-010-brain-summary-layer.md`](decisions/ADR-010-brain-summary-layer.md)
+- `/api/brain/answer` unchanged
+
+---
+
 ## [0.9.0-medium-connector] — 2026-07-06
 
 ### Added

@@ -8,35 +8,35 @@
 
 | Field | Value |
 |-------|-------|
-| **Last completed** | Phase 9 — Medium Connector (public RSS) |
-| **Up next** | Phase 10 — TBD (Instagram / LinkedIn / OAuth not started) |
-| **Blocked by** | Nothing for documentation; social connectors require explicit scope |
+| **Last completed** | Phase 10 — Brain Summary Layer |
+| **Up next** | Phase 11 — TBD (requires Giuseppe approval) |
+| **Blocked by** | Nothing for documentation |
 
 ---
 
-## Phase 10 — Not yet scoped
+## Phase 11 — Not yet scoped
 
-Phase 9 completed the Medium public RSS connector. The next sources phase has **not** been started.
+Phase 10 completed cross-source Brain summaries. The next phase has **not** been started.
 
 Likely candidates (require Giuseppe approval before implementation):
 
+- **Brain Summary UI** — debug page or chat integration for `/api/brain/summary`
 - **Instagram Personal** — public profile only, no OAuth in first slice
 - **LinkedIn Personal** — public profile only
-- **OAuth infrastructure** — for private API access later
 - **Scheduled sync** — cron/worker hook for connected sources
+- **OAuth infrastructure** — for private API access later
 
 ### Do not start without approval
 
 - Instagram OAuth
 - LinkedIn OAuth
 - Token storage
-- LLM-based knowledge extraction
+- LLM-based summaries or knowledge extraction
 
 ### Reference
 
-- [`docs/reports/phase-09-report.md`](../reports/phase-09-report.md)
-- [`docs/decisions/ADR-009-medium-public-feed-connector.md`](../decisions/ADR-009-medium-public-feed-connector.md)
-- [`src/modules/sources/config/source-config.ts`](../src/modules/sources/config/source-config.ts)
+- [`docs/reports/phase-10-report.md`](../reports/phase-10-report.md)
+- [`docs/decisions/ADR-010-brain-summary-layer.md`](../decisions/ADR-010-brain-summary-layer.md)
 
 ---
 
