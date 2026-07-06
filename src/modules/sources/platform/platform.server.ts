@@ -1,5 +1,6 @@
 import type { SourceAction, SourceProviderId, SourceProviderStatus } from '../providers/source-provider.types';
-import { getSourceAdapter, isOAuth2Source } from './adapter-registry.server';
+import { getSourceAdapter } from './adapter-registry.server';
+import { isOAuthCapableSource } from '../oauth/oauth-registry.server';
 import { runSyncWithEngine } from './sync/sync-engine.server';
 import type { ConnectResult, SyncInput } from './types';
 import { buildSafeProviderStatus, listSafeProviderStatuses } from './engine/source-engine.server';
@@ -21,7 +22,7 @@ export async function connectSource(sourceId: SourceProviderId): Promise<{
 
   const adapter = getSourceAdapter(sourceId);
 
-  if (adapter.authStrategy === 'oauth2') {
+  if (isOAuthCapableSource(sourceId)) {
     throw new Error('OAuth sources must connect through the server authorize route.');
   }
 
@@ -57,24 +58,19 @@ export async function buildOAuthAuthorizeUrlAsync(
   sourceId: SourceProviderId,
   input: { state: string; redirectUri: string }
 ): Promise<string> {
-  if (!isOAuth2Source(sourceId)) {
+  if (!isOAuthCapableSource(sourceId)) {
     throw new Error('Source does not support OAuth2.');
   }
 
-  const adapter = getSourceAdapter(sourceId);
-  const connectResult = await adapter.connect({
-    sourceId,
-    redirectUri: input.redirectUri,
-    oauthState: input.state
-  });
+  const { beginOAuthConnect } = await import('../oauth/oauth-flow.server');
+  const { result } = await beginOAuthConnect(sourceId);
 
-  if (connectResult.outcome !== 'redirect') {
-    throw new Error(
-      connectResult.outcome === 'pending' ? connectResult.message : 'OAuth redirect failed.'
-    );
+  if (!result.ok) {
+    throw new Error(result.error);
   }
 
-  return connectResult.authorizeUrl;
+  void input;
+  return result.authorizeUrl;
 }
 
 export async function disconnectSource(sourceId: SourceProviderId): Promise<{

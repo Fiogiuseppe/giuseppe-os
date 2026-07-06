@@ -4,6 +4,7 @@ import type { AdapterFactory, SourceAdapter } from './adapter.types';
 import { createConnectorAdapter } from './adapters/connector.adapter.server';
 import { createStubAdapter } from './adapters/stub.adapter.server';
 import { getSourceConnector } from '../connectors/registry.server';
+import { isOAuthCapableSource } from '../oauth/oauth-registry.server';
 
 const adapterFactories = new Map<SourceProviderId, AdapterFactory>();
 
@@ -36,6 +37,10 @@ function bootstrapDefaultAdapters(): void {
       continue;
     }
 
+    if (isOAuthCapableSource(provider.id)) {
+      continue;
+    }
+
     registerAdapter(provider.id, () => createStubAdapter(provider.id));
   }
 }
@@ -61,8 +66,8 @@ export function listRegisteredAdapterIds(): SourceProviderId[] {
   return Array.from(adapterFactories.keys());
 }
 
-export function isOAuth2Source(_sourceId: SourceProviderId): boolean {
-  return false;
+export function isOAuth2Source(sourceId: SourceProviderId): boolean {
+  return isOAuthCapableSource(sourceId);
 }
 
 export function resetAdapterRegistryForTests(): void {
