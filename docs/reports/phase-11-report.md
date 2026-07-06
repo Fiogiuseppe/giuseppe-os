@@ -34,9 +34,11 @@ Phase 11 stabilizes Giuseppe OS before OAuth/social work: documentation indexes 
 | Change | File |
 |--------|------|
 | `resetStores()` before failed-sync test | `e2e/sources.spec.ts` |
-| `expect.poll()` (5s) on sync-runs endpoint | `e2e/sources.spec.ts` |
+| Failed-sync test runs **first** in suite (before heavy page loads) | `e2e/sources.spec.ts` |
+| `expect.poll()` on sync-runs (5s) | `e2e/sources.spec.ts` |
 | `DATA_SOURCES_STORE=memory` in Playwright env | `playwright.config.ts` |
 | Data sources honor `SOURCES_ENGINE_STORE=memory` | `lib/data-sources/store/types.ts` |
+| Local `retries: 1`, CI `retries: 2` | `playwright.config.ts` |
 | Reset response lists cleared stores | `app/api/test/reset-stores/route.ts` |
 
 Existing: `workers: 1`, `fullyParallel: false`, CI `retries: 2`.

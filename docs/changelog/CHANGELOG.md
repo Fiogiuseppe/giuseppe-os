@@ -16,8 +16,8 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ### Changed
 
-- `e2e/sources.spec.ts` — reset + poll for failed-sync test (Turbopack flake mitigation)
-- `DATA_SOURCES_STORE=memory` in Playwright; data sources honor `SOURCES_ENGINE_STORE=memory`
+- `e2e/sources.spec.ts` — reset, poll, failed-sync test runs first (Turbopack flake mitigation)
+- `playwright.config.ts` — `DATA_SOURCES_STORE=memory`, local `retries: 1`
 - `reset-stores` API returns manifest of cleared stores
 
 ### Security

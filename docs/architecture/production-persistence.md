@@ -124,10 +124,13 @@ This prevents cross-suite mutable state. Serial workers avoid parallel mutation 
 
 `e2e/sources.spec.ts` failed-sync test previously flaked when the dev server hit intermittent Turbopack write errors under long combined runs. Mitigations:
 
-1. `resetStores()` before the failed-sync test (isolation from prior medium connect/disconnect)
-2. `expect.poll()` on sync-runs (up to 5s) instead of a single immediate fetch
-3. Playwright `workers: 1` and `fullyParallel: false` (unchanged)
-4. CI retries (`retries: 2`) for residual dev-server instability
+| Mitigation | Location |
+|------------|----------|
+| `resetStores()` before the failed-sync test | `e2e/sources.spec.ts` |
+| Failed-sync test runs **first** in `sources.spec.ts` (before heavy page/sync tests) | `e2e/sources.spec.ts` |
+| `expect.poll()` on sync-runs (up to 5s) | `e2e/sources.spec.ts` |
+| Playwright `workers: 1`, `fullyParallel: false` | `playwright.config.ts` |
+| Local `retries: 1`, CI `retries: 2` | `playwright.config.ts` |
 
 ---
 
