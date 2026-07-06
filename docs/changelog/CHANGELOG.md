@@ -6,6 +6,36 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
+## [0.12.0-oauth-foundation] — 2026-07-06
+
+### Added
+
+- Generic OAuth module (`src/modules/sources/oauth/`)
+- `GET /api/sources/[sourceId]/oauth/connect` — begin OAuth with CSRF state cookie
+- `GET /api/sources/oauth/callback` — validate state; safe redirect to `/sources`
+- `OAuthProviderAdapter` interface for future Instagram/LinkedIn providers
+- `e2e/sources-oauth.spec.ts` — connect/callback security tests
+- `docs/architecture/oauth.md` and ADR-012
+
+### Changed
+
+- OAuth-capable sources reject `POST /api/sources` connect (direct to authorize route)
+- `reset-stores` clears OAuth state and provider registry
+- OAuth source health notes updated to “foundation ready”
+
+### Security
+
+- Cryptographic CSRF state, 10-minute TTL, HttpOnly cookie, reuse protection
+- No token tables, no real tokens, no client secrets in API responses
+- No external provider API calls
+
+### Notes
+
+- Report: [`reports/phase-12-report.md`](reports/phase-12-report.md)
+- ADR: [`decisions/ADR-012-oauth-foundation.md`](decisions/ADR-012-oauth-foundation.md)
+
+---
+
 ## [0.11.0-stability-persistence] — 2026-07-06
 
 ### Added

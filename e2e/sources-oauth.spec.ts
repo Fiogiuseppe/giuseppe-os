@@ -10,7 +10,7 @@ async function resetStores(request: import('@playwright/test').APIRequestContext
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Giuseppe OS Sources OAuth — Phase 12', () => {
-  test.beforeAll(async ({ request }) => {
+  test.beforeEach(async ({ request }) => {
     await resetStores(request);
   });
 

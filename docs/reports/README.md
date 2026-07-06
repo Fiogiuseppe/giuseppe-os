@@ -25,6 +25,7 @@ Copy [`REPORT_TEMPLATE.md`](REPORT_TEMPLATE.md) → `phase-NN-report.md`
 | 9 | Medium Connector (public RSS) | [phase-09-report.md](phase-09-report.md) | 2026-07-06 | Complete |
 | 10 | Brain Summary Layer | [phase-10-report.md](phase-10-report.md) | 2026-07-06 | Complete |
 | 11 | Stability & Production Persistence Audit | [phase-11-report.md](phase-11-report.md) | 2026-07-06 | Complete |
+| 12 | OAuth Foundation | [phase-12-report.md](phase-12-report.md) | 2026-07-06 | Complete |
 
 ### Historical note — Phase 7 URL / sourceId corrections
 
@@ -35,6 +36,7 @@ Phase 7 initially used legacy IDs (`urees-website`) and split URL registries. **
 - Roadmap: [`../roadmap/master-roadmap.md`](../roadmap/master-roadmap.md)
 - Next task: [`../roadmap/next-phase.md`](../roadmap/next-phase.md)
 - Persistence: [`../architecture/production-persistence.md`](../architecture/production-persistence.md)
+- OAuth: [`../architecture/oauth.md`](../architecture/oauth.md)
 
 ---
 

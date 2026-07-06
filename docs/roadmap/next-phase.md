@@ -8,34 +8,33 @@
 
 | Field | Value |
 |-------|-------|
-| **Last completed** | Phase 11 — Stability & Production Persistence Audit |
-| **Up next** | Phase 12 — TBD (requires Giuseppe approval) |
-| **Blocked by** | Nothing for stability work |
+| **Last completed** | Phase 12 — OAuth Foundation |
+| **Up next** | Phase 13 — TBD (requires Giuseppe approval) |
+| **Blocked by** | Nothing for OAuth foundation work |
 
 ---
 
-## Phase 12 — Not yet scoped
+## Phase 13 — Not yet scoped
 
-Phase 11 confirmed persistence readiness and test stability. Giuseppe OS is stabilized for production Supabase deploy and future OAuth work.
+Phase 12 delivered generic OAuth routes, state security, and the provider adapter interface. **No provider is registered yet.**
 
 Likely candidates (require Giuseppe approval):
 
-- **OAuth infrastructure** — authorize routes, token vault, migrations (no Instagram/LinkedIn until scoped)
-- **Scheduled sync** — cron/worker for connected sources
-- **Instagram Personal** — public profile first slice
-- **Brain Summary UI** — debug page integration
+- **Token persistence** — Supabase migration + server-side vault (ADR required)
+- **Instagram Personal OAuth** — first real provider registration
+- **LinkedIn Personal OAuth** — after Instagram or in parallel
+- **Sources UI** — redirect OAuth-capable Connect to `/api/sources/{id}/oauth/connect`
 
 ### Do not start without approval
 
-- Token storage tables without ADR
-- Instagram / LinkedIn OAuth
-- LLM-based extraction or summaries
+- Real provider API calls without token storage ADR
+- Storing tokens in browser or API responses
 
 ### Reference
 
-- [`docs/reports/phase-11-report.md`](../reports/phase-11-report.md)
-- [`docs/architecture/production-persistence.md`](../architecture/production-persistence.md)
-- [`docs/decisions/ADR-011-production-persistence-readiness.md`](../decisions/ADR-011-production-persistence-readiness.md)
+- [`docs/reports/phase-12-report.md`](../reports/phase-12-report.md)
+- [`docs/architecture/oauth.md`](../architecture/oauth.md)
+- [`docs/decisions/ADR-012-oauth-foundation.md`](../decisions/ADR-012-oauth-foundation.md)
 
 ---
 

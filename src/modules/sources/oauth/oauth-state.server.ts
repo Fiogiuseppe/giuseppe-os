@@ -52,8 +52,6 @@ export function validateOAuthState(params: {
   cookieHeader: string | null;
   redirectUri: string;
 }): PendingOAuthState {
-  purgeExpiredStates();
-
   const stateFromQuery = params.stateFromQuery?.trim();
   const stateFromCookie = readOAuthStateCookie(params.cookieHeader);
 
