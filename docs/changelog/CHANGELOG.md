@@ -28,6 +28,8 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
+## [0.7.0-urees-website] — 2026-07-06
+
 ### Added
 
 - Configurable website connector architecture (`src/modules/sources/connectors/website/`)
@@ -53,6 +55,8 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
+## [0.6.0-brain-evidence-answer] — 2026-07-06
+
 ### Added
 
 - Brain Evidence Answer Layer (`src/modules/brain/answer/`)
@@ -72,6 +76,8 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
+## [0.5.0-intelligence-read] — 2026-07-06
+
 ### Added
 
 - Intelligence Read Layer (`src/modules/intelligence/read/`)
@@ -89,6 +95,8 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 - ADR: [`decisions/ADR-005-intelligence-read-layer.md`](decisions/ADR-005-intelligence-read-layer.md)
 
 ---
+
+## [0.4.0-knowledge-layer] — 2026-07-06
 
 ### Added
 
