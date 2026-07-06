@@ -22,6 +22,36 @@ test.describe('Giuseppe OS Sources — Phase 3 website connector', () => {
     await resetStores(request);
   });
 
+  test('failed sync creates error state and failed sync log', async ({ request }) => {
+    await resetStores(request);
+
+    await request.post('/api/sources', {
+      data: { sourceId: 'medium_personal', action: 'connect' }
+    });
+
+    const sync = await request.post('/api/sources', {
+      data: { sourceId: 'medium_personal', action: 'sync', simulateFailure: true }
+    });
+    expect(sync.ok()).toBeTruthy();
+    const body = await sync.json();
+    expect(body.source.healthStatus).toBe('unavailable');
+    expect(body.source.lastSyncRun?.status).toBe('failed');
+
+    await expect
+      .poll(
+        async () => {
+          const runs = await request.get('/api/sources/medium_personal/sync-runs');
+          if (!runs.ok()) {
+            return undefined;
+          }
+          const runBody = await runs.json();
+          return runBody.runs[0]?.status as string | undefined;
+        },
+        { timeout: 5_000 }
+      )
+      .toBe('failed');
+  });
+
   test('GET /api/sources returns six safe sources without secrets', async ({ request }) => {
     const response = await request.get('/api/sources');
     expect(response.ok()).toBeTruthy();
@@ -111,35 +141,5 @@ test.describe('Giuseppe OS Sources — Phase 3 website connector', () => {
     expect(disconnect.ok()).toBeTruthy();
     const disconnected = await disconnect.json();
     expect(disconnected.source.connectionStatus).toBe('disconnected');
-  });
-
-  test('failed sync creates error state and failed sync log', async ({ request }) => {
-    await resetStores(request);
-
-    await request.post('/api/sources', {
-      data: { sourceId: 'medium_personal', action: 'connect' }
-    });
-
-    const sync = await request.post('/api/sources', {
-      data: { sourceId: 'medium_personal', action: 'sync', simulateFailure: true }
-    });
-    expect(sync.ok()).toBeTruthy();
-    const body = await sync.json();
-    expect(body.source.healthStatus).toBe('unavailable');
-    expect(body.source.lastSyncRun?.status).toBe('failed');
-
-    await expect
-      .poll(
-        async () => {
-          const runs = await request.get('/api/sources/medium_personal/sync-runs');
-          if (!runs.ok()) {
-            return undefined;
-          }
-          const runBody = await runs.json();
-          return runBody.runs[0]?.status as string | undefined;
-        },
-        { timeout: 5_000 }
-      )
-      .toBe('failed');
   });
 });
