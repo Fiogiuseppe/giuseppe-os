@@ -6,15 +6,6 @@ async function resetStores(request: import('@playwright/test').APIRequestContext
   expect(response.ok()).toBeTruthy();
 }
 
-async function seedWebsiteKnowledge(request: import('@playwright/test').APIRequestContext) {
-  await request.post('/api/sources', {
-    data: { sourceId: 'website', action: 'connect' }
-  });
-  await request.post('/api/sources', {
-    data: { sourceId: 'website', action: 'sync' }
-  });
-}
-
 async function seedUreesWebsiteKnowledge(request: import('@playwright/test').APIRequestContext) {
   await request.post('/api/sources', {
     data: { sourceId: 'urees-website', action: 'connect' }

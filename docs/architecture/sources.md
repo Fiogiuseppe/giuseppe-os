@@ -2,7 +2,7 @@
 
 Technical overview of the Giuseppe OS Sources system.
 
-**Status:** Phase 3 — `website` connector is real; other sources use stubs.
+**Status:** Phase 7 — `website` and `urees-website` connectors are real; other sources use stubs.
 
 ---
 
@@ -13,7 +13,7 @@ UI (/sources)
   → GET/POST /api/sources
   → platform.server.ts
   → adapter-registry
-      ├── connector.adapter (website — real)
+      ├── connector.adapter (website, urees-website — real)
       └── stub.adapter (all other sources)
   → sync-engine
   → source-evidence-persistence
@@ -33,13 +33,21 @@ Six sources in two groups (`personal`, `urees`). Static metadata in `src/modules
 | `instagram` | Instagram | oauth | Stub |
 | `linkedin` | LinkedIn | oauth | Stub |
 | `urees-instagram` | UREES Instagram | oauth | Stub |
-| `urees-website` | UREES Website | feed | Stub |
+| `urees-website` | UREES Website | feed | **Real** (Phase 7) |
 
 ---
 
-## Website connector (Phase 3)
+## Website connectors (Phase 3 + 7)
 
-**Connector ID:** `website_personal`  
+Shared architecture: `src/modules/sources/connectors/website/`
+
+| Source | Connector ID | Config |
+|--------|--------------|--------|
+| `website` | `website_personal` | `GIUSEPPE_PRESENCE` canonical URLs |
+| `urees-website` | `website_urees` | `UREES_WEBSITE_URL` (+ optional feed/sitemap/products overrides) |
+
+### fiogiuseppe.com (`website`)
+
 **Path:** `src/modules/sources/connectors/fiogiuseppe-website.connector.server.ts`
 
 ### Public endpoints
@@ -67,6 +75,24 @@ Before save: `findRawItem` + compare `url` and `contentHash`. Duplicate sync ski
 ### Test mode
 
 When `ALLOW_TEST_ROUTES=1` or `SOURCES_WEBSITE_MOCK_FETCH=1`, fetch returns fixtures (no outbound HTTP).
+
+### UREES website (`urees-website`)
+
+**Path:** `src/modules/sources/connectors/urees-website.connector.server.ts`
+
+**Environment:**
+
+```bash
+UREES_WEBSITE_URL=          # required for real sync
+# UREES_WEBSITE_FEED_URL=   # optional
+# UREES_WEBSITE_SITEMAP_URL=
+# UREES_WEBSITE_PRODUCTS_URL=
+# UREES_WEBSITE_MAX_PAGES=12
+```
+
+When `UREES_WEBSITE_URL` is unset, health is `unavailable` with a configuration note. No hardcoded URL in code.
+
+Public fetch supports profile HTML, RSS (`feed/`), Shopify `products.json`, and optional sitemap pages. Raw items use `account: urees`.
 
 ---
 
