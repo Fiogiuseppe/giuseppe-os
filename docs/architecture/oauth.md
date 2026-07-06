@@ -194,10 +194,13 @@ Test helpers (gated by `ALLOW_TEST_ROUTES=1`):
 - [`ADR-012-oauth-foundation.md`](../decisions/ADR-012-oauth-foundation.md)
 - [`ADR-013-token-vault.md`](../decisions/ADR-013-token-vault.md)
 - [`ADR-014-oauth-token-persistence.md`](../decisions/ADR-014-oauth-token-persistence.md)
+- [`ADR-015-instagram-preparation.md`](../decisions/ADR-015-instagram-preparation.md)
+- [`docs/setup/instagram.md`](../setup/instagram.md)
 - [`production-persistence.md`](production-persistence.md)
 - [`docs/reports/phase-12-report.md`](../reports/phase-12-report.md)
 - [`docs/reports/phase-13-report.md`](../reports/phase-13-report.md)
 - [`docs/reports/phase-14-report.md`](../reports/phase-14-report.md)
+- [`docs/reports/phase-15-report.md`](../reports/phase-15-report.md)
 
 ---
 

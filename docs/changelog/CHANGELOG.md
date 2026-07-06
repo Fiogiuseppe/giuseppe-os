@@ -6,6 +6,23 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
+## [0.15.0-instagram-preparation] — 2026-07-06
+
+### Added
+
+- Instagram setup guide (`docs/setup/instagram.md`) — Meta Developer preparation
+- Implementation readiness checklist and “do not proceed until” gate for Phase 16
+- ADR-015 and Phase 15 report
+
+### Notes
+
+- Documentation only — no Instagram OAuth code, Meta API calls, or tokens
+- Covers `instagram_personal` and `instagram_urees` future setup
+- Report: [`reports/phase-15-report.md`](reports/phase-15-report.md)
+- ADR: [`decisions/ADR-015-instagram-preparation.md`](decisions/ADR-015-instagram-preparation.md)
+
+---
+
 ## [0.14.0-oauth-token-persistence] — 2026-07-06
 
 ### Added
