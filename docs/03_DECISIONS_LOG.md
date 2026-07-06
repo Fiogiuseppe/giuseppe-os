@@ -228,6 +228,26 @@ Each entry includes:
 
 ---
 
+### 2026-07 — Giuseppe Fioretti Public Presence connector (canonical channels only)
+
+**Decision:** Add `lib/presence/` to follow only Giuseppe Fioretti’s canonical public channels (`@fiogiuseppe`, fiogiuseppe.com, LinkedIn `/in/fiogiuseppe`, Medium `@fiogiuseppe`). No generic Google search. Medium + website RSS/feeds are live; LinkedIn/Instagram marked `needs_auth` until official APIs.
+
+**Rationale:** Recommendations must reflect real public activity (“ieri hai scritto su…”) filtered through mission (designer growth + revenue trajectory), not invented context.
+
+**Implications:** `GET /api/presence`, Insights `fetchOnlineSignals` uses live presence when available. Comments ingested from WordPress comments RSS when present. Next: LinkedIn/Instagram OAuth, Memory Graph nodes for posts/comments, Today one-liner.
+
+---
+
+### 2026-07 — UREES project channels in Public Presence
+
+**Decision:** Extend `lib/presence/` with canonical UREES channels: `https://urees.shop/` (Shopify `products.json` — live) and `https://www.instagram.com/urees__/` (`needs_auth` until Meta API). No generic search.
+
+**Rationale:** UREES is a priority brand project; Giuseppe OS must track shop momentum and suggest aligned social actions (e.g. product → @urees__ post) alongside personal channels.
+
+**Implications:** Six monitored channels total. Mission suggestions include UREES-specific paths when latest signal is from urees.shop.
+
+---
+
 ## Template for New Entries
 
 ```markdown

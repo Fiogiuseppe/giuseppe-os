@@ -7,6 +7,8 @@ import { completeJsonWithProviderChain } from './jsonProviderChain';
 import { loadLongTermMemory, loadWorkingMemory } from '../brain/memory/store';
 import { loadStrongestPatterns } from '../self-model/summary';
 import { pickLocale, resolveLocale, type AppLocale } from '../i18n/locale';
+import { buildPresenceSignals } from '../presence/summarize';
+import { runPresenceScan } from '../presence/run';
 import {
   clearCachedMonthlyInsight,
   insightMonthKey,
@@ -52,6 +54,19 @@ export async function fetchOnlineSignals(
   localeInput?: AppLocale
 ): Promise<{ signals: string[]; source: 'mock' | 'web' }> {
   const locale = resolveLocale(localeInput);
+
+  try {
+    const report = await runPresenceScan(locale);
+    const signals = buildPresenceSignals(locale, report.items, report.comments);
+    if (signals.length > 0) {
+      if (report.missionSuggestion) {
+        signals.push(report.missionSuggestion);
+      }
+      return { source: 'web', signals };
+    }
+  } catch {
+    // Fall back to deterministic mock signals below.
+  }
 
   return {
     source: 'mock',
