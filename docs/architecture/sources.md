@@ -28,25 +28,26 @@ Six sources in two groups (`personal`, `urees`). Static metadata in `src/modules
 
 | ID | Label | Auth method | Connector |
 |----|-------|-------------|-----------|
-| `website` | fiogiuseppe.com | feed | **Real** (Phase 3) |
-| `medium` | Medium | feed | Stub |
-| `instagram` | Instagram | oauth | Stub |
-| `linkedin` | LinkedIn | oauth | Stub |
-| `urees-instagram` | UREES Instagram | oauth | Stub |
-| `urees-website` | UREES Website | feed | **Real** (Phase 7) |
+| `website_personal` | fiogiuseppe.com | feed | **Real** |
+| `medium_personal` | Medium | feed | Stub |
+| `instagram_personal` | Instagram | oauth | Stub |
+| `linkedin_personal` | LinkedIn | oauth | Stub |
+| `website_urees` | UREES Website | feed | **Real** |
+| `instagram_urees` | UREES Instagram | oauth | Stub |
 
 ---
 
 ## Website connectors (Phase 3 + 7)
 
-Shared architecture: `src/modules/sources/connectors/website/`
+Shared architecture: `src/modules/sources/connectors/website/`  
+Official URLs: `src/modules/sources/config/source-config.ts`
 
-| Source | Connector ID | Config |
-|--------|--------------|--------|
-| `website` | `website_personal` | `GIUSEPPE_PRESENCE` canonical URLs |
-| `urees-website` | `website_urees` | Official `https://urees.shop/` (+ optional env overrides) |
+| Source | Connector ID | Config key |
+|--------|--------------|------------|
+| `website_personal` | `website_personal` | `website_personal` |
+| `website_urees` | `website_urees` | `website_urees` |
 
-### fiogiuseppe.com (`website`)
+### fiogiuseppe.com (`website_personal`)
 
 **Path:** `src/modules/sources/connectors/fiogiuseppe-website.connector.server.ts`
 
@@ -76,7 +77,7 @@ Before save: `findRawItem` + compare `url` and `contentHash`. Duplicate sync ski
 
 When `ALLOW_TEST_ROUTES=1` or `SOURCES_WEBSITE_MOCK_FETCH=1`, fetch returns fixtures (no outbound HTTP).
 
-### UREES website (`urees-website`)
+### UREES website (`website_urees`)
 
 **Path:** `src/modules/sources/connectors/urees-website.connector.server.ts`
 

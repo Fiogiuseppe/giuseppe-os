@@ -6,7 +6,27 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ---
 
-## [0.7.0-urees-website] — 2026-07-06
+## [0.8.0-source-configuration] — 2026-07-06
+
+### Added
+
+- Central source registry (`src/modules/sources/config/source-config.ts`)
+- Canonical source IDs: `website_personal`, `instagram_personal`, `linkedin_personal`, `medium_personal`, `website_urees`, `instagram_urees`
+- Helper functions: `getSourceConfig`, `requireSourceConfig`, `listSourceConfigs`, `getOfficialSourceUrl`, `normalizeSourceId`
+- ADR-008: official source configuration
+
+### Changed
+
+- LinkedIn official URL corrected to `https://linkedin.com/in/fiogiuseppe/?skipRedirect=true`
+- Provider registry, connectors, and e2e tests migrated to canonical IDs
+- Legacy aliases (`website`, `urees-website`, etc.) normalize at API boundaries
+
+### Notes
+
+- Report: [`reports/phase-08-report.md`](reports/phase-08-report.md)
+- ADR: [`decisions/ADR-008-official-source-configuration.md`](decisions/ADR-008-official-source-configuration.md)
+
+---
 
 ### Added
 
