@@ -1,9 +1,53 @@
 # Instagram Scope Strategy
 
-**Status:** Phase 16 — strategy only (no provider code).  
+**Status:** Phase 16 strategy + Meta setup findings (2026-07-06). **Business asset verification in progress** — no provider code.  
 **Purpose:** Define exactly what Giuseppe OS will sync from Instagram before OAuth implementation.
 
-**Sources covered:** `instagram_personal` (@fiogiuseppe), `instagram_urees` (@urees__)
+**Sources covered:** `instagram_personal` (@fiogiuseppe, **Creator**), `instagram_urees` (@urees__, **Business**)
+
+---
+
+## Current Meta Setup Status — 2026-07-06
+
+Documentation of Giuseppe’s live Meta configuration. **No App ID, App Secret, or tokens in this file.**
+
+| Item | Value |
+|------|-------|
+| Meta App | **GIUSEPPE OS** / **GIUSEPPE OS Sources** |
+| App ID | Stored locally in `.env.local` — not in git or docs |
+| App Secret | Stored locally in `.env.local` — never in docs |
+| `instagram_personal` | @fiogiuseppe — **Creator** |
+| `instagram_urees` | @urees__ — **Business** |
+| Use case selected in Meta | *Administrar mensajes y contenido en Instagram* |
+
+### Permissions visible in Meta (2026-07-06)
+
+| Permission | Giuseppe OS plan |
+|------------|------------------|
+| `instagram_business_basic` | **Level 1** — profile + owned media |
+| `instagram_business_manage_comments` | **Defer (Level 2)** — visible but not implemented |
+| `instagram_business_manage_messages` | **Do not implement (Level 4)** — no DM sync |
+
+**Implementation target remains Level 1 read-only:** profile, media, captions, timestamps, permalinks, media type.
+
+**Hard rules (unchanged):**
+
+- No DM sync
+- No publishing
+- No Graph API Explorer tokens
+- OAuth only through Giuseppe OS → Token Vault (ADR-013, ADR-014)
+
+Setup details and manual checklist: [`docs/setup/instagram.md`](../setup/instagram.md).
+
+---
+
+## Current blocker
+
+Meta returned **“Rol de desarrollador insuficiente”** during Instagram account authorization.
+
+**Interpretation:** The Instagram business asset is likely not assigned to the Meta App / Business Portfolio yet — not a code defect (no OAuth provider exists).
+
+**Required before Phase 17:** In Meta Business Settings → **Accounts** → **Instagram accounts**, confirm @fiogiuseppe and @urees__ are linked to the business assets used by **GIUSEPPE OS Sources**. See setup guide § Current blocker.
 
 ---
 
@@ -62,20 +106,28 @@ Level 4 — Messaging           ← DO NOT IMPLEMENT
 
 ### Level 1 OAuth scopes to verify (names may change)
 
+**Meta dashboard today (2026-07-06)** shows `instagram_business_basic` plus higher-risk permissions (`instagram_business_manage_comments`, `instagram_business_manage_messages`). **Giuseppe OS must not implement comment or message APIs** because they appear in the dashboard — Level 1 only.
+
 Verify against [Meta Instagram API docs](https://developers.facebook.com/docs/instagram-api/) before implementation:
 
 | Scope / permission (verify) | Level 1 need |
 |----------------------------|--------------|
-| `instagram_basic` or successor | Profile + media read |
+| `instagram_business_basic` | Profile + media read — **visible in Meta** |
+| `instagram_basic` or successor | Same intent — verify canonical name at OAuth |
 | `pages_show_list` | Discover linked Facebook Page |
 | `pages_read_engagement` | **Verify** — may be required for media counts; request only if mandatory |
+
+**Visible in Meta but deferred / excluded:**
+
+| Scope | Plan |
+|-------|------|
+| `instagram_business_manage_comments` | Level 2 — defer |
+| `instagram_business_manage_messages` | Level 4 — do not implement |
 
 **Do not request at Level 1:**
 
 - `instagram_content_publish` — publishing out of scope
-- `instagram_manage_comments` — Level 2
 - `instagram_manage_insights` — Level 3
-- `instagram_manage_messages` — Level 4
 - Any ads or marketing API permissions
 
 ---
@@ -310,9 +362,11 @@ UREES Instagram knowledge must not merge into `giuseppe` owner queries unless Br
 
 ## Level 1 implementation plan (Phase 17+)
 
-Documentation only here — execution is **not** Phase 16.
+**Prerequisite (Phase 16.5):** Clear Meta business asset blocker — see **Current blocker** above and [`docs/setup/instagram.md`](../setup/instagram.md).
 
-1. Complete [`docs/setup/instagram.md`](../setup/instagram.md) readiness checklist
+Documentation only here — execution is **not** Phase 16 or 16.5.
+
+1. Complete business asset verification + remaining items in setup readiness checklist
 2. Register `instagram` OAuth provider adapter (replace test provider in production)
 3. Implement connector: Graph API fetch profile + media pages
 4. Normalize to `InstagramProfileNormalized` + `InstagramMediaNormalized`
@@ -342,7 +396,8 @@ Documentation only here — execution is **not** Phase 16.
 - Knowledge: [`knowledge.md`](knowledge.md)
 - ADR-015: [`../decisions/ADR-015-instagram-preparation.md`](../decisions/ADR-015-instagram-preparation.md)
 - Report: [`../reports/phase-16-report.md`](../reports/phase-16-report.md)
+- Meta status: [`../reports/phase-16-5-instagram-meta-status-report.md`](../reports/phase-16-5-instagram-meta-status-report.md)
 
 ---
 
-*Last updated: 2026-07-06 — Phase 16 strategy only; no OAuth or Meta API code.*
+*Last updated: 2026-07-06 — Meta App created; business asset verification blocker; no OAuth or Meta API code.*

@@ -1,7 +1,71 @@
 # Instagram Setup Guide — Giuseppe OS
 
-**Status:** Preparation (Phase 15) + scope strategy (Phase 16). **No Instagram OAuth is implemented yet.**  
+**Status:** Meta App created (2026-07-06). **Business asset verification in progress.** No Instagram OAuth provider code yet.  
 **Purpose:** Prepare Meta/Instagram credentials and account requirements safely before Phase 17 OAuth implementation.
+
+---
+
+## Current Meta Setup Status — 2026-07-06
+
+Findings from Giuseppe’s manual Meta Developer setup session. **No secrets in this document.**
+
+| Item | Status |
+|------|--------|
+| **Meta App exists** | Yes — **GIUSEPPE OS** / **GIUSEPPE OS Sources** |
+| **App ID** | Known; stored locally in `.env.local` as `META_APP_ID` (and aligned OAuth client id vars) — **never commit or paste into docs/chat** |
+| **App Secret** | Stored locally in `.env.local` as `META_APP_SECRET` / `META_CLIENT_SECRET` — **server-side only; never in docs** |
+| **`instagram_personal`** | @fiogiuseppe — account type **Creator** |
+| **`instagram_urees`** | @urees__ — account type **Business** |
+| **Instagram use case selected** | *Administrar mensajes y contenido en Instagram* (Manage messages and content on Instagram) |
+
+### Permissions visible in Meta dashboard (as of 2026-07-06)
+
+| Permission | Visible in app | Giuseppe OS intent |
+|------------|----------------|-------------------|
+| `instagram_business_basic` | Yes | **Level 1** — profile + owned media read |
+| `instagram_business_manage_comments` | Yes | **Level 2 — defer**; do not implement comment sync yet |
+| `instagram_business_manage_messages` | Yes | **Level 4 — do not implement**; no DM sync |
+
+### Level 1 implementation target (unchanged)
+
+When OAuth is implemented, Giuseppe OS still ships **read-only Level 1 only**:
+
+- Profile metadata
+- Owned media list
+- Captions
+- Timestamps
+- Permalinks
+- Media type
+
+**Explicitly not in scope for next implementation:**
+
+- DM sync (`instagram_business_manage_messages`)
+- Publishing
+- Comment ingestion (Level 2)
+- Graph API Explorer tokens — **forbidden**; OAuth must flow through Giuseppe OS → `/api/sources/oauth/callback` → **Token Vault** only
+
+See [`docs/architecture/instagram-scope-strategy.md`](../architecture/instagram-scope-strategy.md) for the full four-level plan.
+
+---
+
+## Current blocker
+
+During Instagram account authorization in Meta, the flow returned:
+
+> **Rol de desarrollador insuficiente**  
+> (Insufficient developer role)
+
+**Likely cause:** The Instagram account / business asset is not yet correctly authorized for the Meta App — not a missing secret in Giuseppe OS code (no provider code exists yet).
+
+**Next manual step (Giuseppe — Meta Business Settings):**
+
+1. Open [Meta Business Settings](https://business.facebook.com/settings) → **Business Portfolio** (or the portfolio that owns the app).
+2. Go to **Accounts** → **Instagram accounts**.
+3. Confirm **@fiogiuseppe** and **@urees__** appear and are assigned to the business assets used by **GIUSEPPE OS Sources**.
+4. In the Meta App dashboard, confirm Giuseppe’s Facebook user has **Admin** or **Developer** on the app **and** access to the linked Instagram assets.
+5. Retry Instagram account connection only after assets are assigned — still **no Graph Explorer tokens**; when OAuth code ships, use Giuseppe OS `/sources` connect flow only.
+
+**Do not start Phase 17 OAuth provider code until this blocker is cleared** and the readiness checklist below reflects verified asset linkage.
 
 ---
 
@@ -73,8 +137,8 @@ Instagram Graph API access typically requires **Professional** accounts (Busines
 
 | Account | Handle | Notes |
 |---------|--------|-------|
-| Personal brand | @fiogiuseppe | Confirm account type is Business or Creator |
-| UREES brand | @urees__ | Confirm account type is Business or Creator |
+| Personal brand | @fiogiuseppe | **Creator** (confirmed 2026-07-06) |
+| UREES brand | @urees__ | **Business** (confirmed 2026-07-06) |
 
 **To verify:** Instagram app → Settings → Account type / Professional dashboard.
 
@@ -205,15 +269,18 @@ Phase 16 locked the implementation order:
 
 ### Level 1 permissions to verify (before implementation)
 
+**Visible in Meta app today (2026-07-06):** `instagram_business_basic`, `instagram_business_manage_comments`, `instagram_business_manage_messages`. Giuseppe OS will **request/use only what Level 1 needs** at implementation time — do not wire comment or message APIs until explicitly scheduled.
+
 | Permission / scope (name may vary) | Intended use | Status |
 |-----------------------------------|--------------|--------|
-| `instagram_basic` / business profile read | Profile and media metadata | **Level 1 — verify** |
+| `instagram_business_basic` | Profile + owned media read | **Level 1 — visible in Meta; verify at OAuth** |
+| `instagram_basic` / legacy names | Same intent as above | **Verify against current Meta docs** |
 | `pages_show_list` | Discover linked Facebook Pages | **Level 1 — verify** |
 | `pages_read_engagement` | Media counts if required by API | **Level 1 — verify only if mandatory** |
-| `instagram_manage_comments` / comment read | Comments on owned media | **Level 2 — defer** |
+| `instagram_business_manage_comments` | Comments on owned media | **Visible — Level 2 defer; do not implement** |
 | `instagram_manage_insights` / insights scopes | Reach, impressions, saves | **Level 3 — defer** |
-| `instagram_content_publish` | Publishing | **Do not request** |
-| `instagram_manage_messages` | DMs | **Do not request** |
+| `instagram_content_publish` | Publishing | **Do not request / do not implement** |
+| `instagram_business_manage_messages` | DMs | **Visible — Level 4; do not implement** |
 
 ### Principles
 
@@ -245,25 +312,26 @@ Copy and fill before requesting Phase 17:
 
 ```
 Instagram preparation — Giuseppe OS
-Date: ___________
+Date: 2026-07-06
 
-[ ] Meta Developer account created and verified
-[ ] Meta App created (name: ________________ )
-[ ] Instagram product added to Meta App
-[ ] instagram_personal — account type confirmed (Business/Creator): _______
-[ ] instagram_urees — account type confirmed (Business/Creator): _______
-[ ] Facebook Page linked to @fiogiuseppe (if required): _______
-[ ] Facebook Page linked to @urees__ (if required): _______
+[x] Meta Developer account created and verified
+[x] Meta App created (name: GIUSEPPE OS / GIUSEPPE OS Sources)
+[x] Instagram product added to Meta App
+[x] instagram_personal — account type confirmed: Creator (@fiogiuseppe)
+[x] instagram_urees — account type confirmed: Business (@urees__)
+[ ] Facebook Page linked to @fiogiuseppe (if required): verify in Business Settings
+[ ] Facebook Page linked to @urees__ (if required): verify in Business Settings
+[ ] Instagram accounts assigned to app / business portfolio (blocker: developer role error)
 [ ] Local redirect URI added in Meta dashboard
 [ ] Production redirect URI added (when domain known): _______
-[ ] META_APP_ID copied to .env.local (not committed)
-[ ] META_APP_SECRET copied to .env.local (not committed)
+[x] META_APP_ID copied to .env.local (not committed)
+[x] META_APP_SECRET copied to .env.local (not committed)
 [ ] META_CLIENT_ID / META_CLIENT_SECRET aligned with dashboard
 [ ] META_REDIRECT_URI set to match callback route
 [ ] SOURCES_TOKEN_ENCRYPTION_KEY set for target environment
-[ ] Scopes list verified against current Meta docs
+[x] Scopes visible in Meta noted (basic, manage_comments, manage_messages — Level 1 only at impl)
 [ ] App Review status noted (if needed): _______
-[ ] Local OAuth callback tested with test provider (Phase 14 e2e baseline)
+[x] Local OAuth callback tested with test provider (Phase 14 e2e baseline)
 ```
 
 ---
@@ -272,13 +340,14 @@ Date: ___________
 
 **Do not implement Phase 17 (real Instagram OAuth + Level 1 sync) until:**
 
-1. All required Meta values are available locally in `.env.local` (or production secrets manager)
-2. Both Instagram accounts (`@fiogiuseppe`, `@urees__`) meet Meta’s account-type requirements
-3. Facebook Page linkage is confirmed **if** Meta’s current flow requires it
-4. Redirect URIs are registered and match `META_REDIRECT_URI` / `NEXT_PUBLIC_APP_URL`
-5. Intended scopes are verified against **current** Meta documentation and App Review status
-6. [`instagram-scope-strategy.md`](../architecture/instagram-scope-strategy.md) Level 1 plan is understood and approved
-7. Giuseppe has explicitly approved moving from preparation to implementation
+1. **Current blocker cleared** — “Rol de desarrollador insuficiente” resolved; @fiogiuseppe and @urees__ assigned in Business Portfolio → Instagram accounts
+2. All required Meta values are available locally in `.env.local` (or production secrets manager) — App ID/Secret done; redirect URI alignment pending
+3. Both Instagram accounts meet Meta’s account-type requirements — **done** (Creator + Business)
+4. Facebook Page linkage is confirmed **if** Meta’s current flow requires it
+5. Redirect URIs are registered and match `META_REDIRECT_URI` / `NEXT_PUBLIC_APP_URL`
+6. Intended scopes are verified against **current** Meta documentation and App Review status — request **Level 1 minimum** even if broader permissions are visible
+7. [`instagram-scope-strategy.md`](../architecture/instagram-scope-strategy.md) Level 1 plan is understood and approved
+8. Giuseppe has explicitly approved moving from **Business Asset Verification** to implementation
 
 Until then, Giuseppe OS continues to use the **test OAuth provider** only when `ALLOW_TEST_ROUTES=1`.
 
@@ -295,4 +364,4 @@ Until then, Giuseppe OS continues to use the **test OAuth provider** only when `
 
 ---
 
-*Last updated: 2026-07-06 — Phase 15 preparation guide only; no provider code.*
+*Last updated: 2026-07-06 — Meta App created; business asset verification blocker documented; no provider code.*
