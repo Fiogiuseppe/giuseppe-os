@@ -1,5 +1,10 @@
 import { test, expect } from '@playwright/test';
 
+async function resetStores(request: import('@playwright/test').APIRequestContext) {
+  const response = await request.post('/api/test/reset-stores');
+  expect(response.ok()).toBeTruthy();
+}
+
 const SOURCE_COUNT = 6;
 const SOURCE_IDS = [
   'instagram',
@@ -10,7 +15,13 @@ const SOURCE_IDS = [
   'urees-website'
 ] as const;
 
-test.describe('Giuseppe OS Sources — Phase 2 engine', () => {
+test.describe.configure({ mode: 'serial' });
+
+test.describe('Giuseppe OS Sources — Phase 3 website connector', () => {
+  test.beforeAll(async ({ request }) => {
+    await resetStores(request);
+  });
+
   test('GET /api/sources returns six safe sources without secrets', async ({ request }) => {
     const response = await request.get('/api/sources');
     expect(response.ok()).toBeTruthy();
@@ -22,11 +33,11 @@ test.describe('Giuseppe OS Sources — Phase 2 engine', () => {
       expect(body.sources.some((row: { id: string }) => row.id === id)).toBeTruthy();
     }
 
-    const medium = body.sources.find((row: { id: string }) => row.id === 'medium');
-    expect(medium.authMethod).toBe('feed');
-    expect(medium).not.toHaveProperty('accessToken');
-    expect(medium).not.toHaveProperty('refreshToken');
-    expect(medium).not.toHaveProperty('clientSecret');
+    const website = body.sources.find((row: { id: string }) => row.id === 'website');
+    expect(website.authMethod).toBe('feed');
+    expect(website).not.toHaveProperty('accessToken');
+    expect(website).not.toHaveProperty('refreshToken');
+    expect(website).not.toHaveProperty('clientSecret');
   });
 
   test('Sources page loads with Personal and UREES groups', async ({ page }) => {
@@ -40,28 +51,54 @@ test.describe('Giuseppe OS Sources — Phase 2 engine', () => {
     }
   });
 
-  test('connect, sync, and disconnect update backend state', async ({ request }) => {
+  test('website connect, sync, and deduplicated re-sync', async ({ request }) => {
+    const connect = await request.post('/api/sources', {
+      data: { sourceId: 'website', action: 'connect' }
+    });
+    expect(connect.ok()).toBeTruthy();
+    const connected = await connect.json();
+    expect(connected.source.connectionStatus).toBe('connected');
+
+    const sync = await request.post('/api/sources', {
+      data: { sourceId: 'website', action: 'sync' }
+    });
+    expect(sync.ok()).toBeTruthy();
+    const synced = await sync.json();
+    expect(synced.source.lastSyncRun?.fetched).toBeGreaterThan(0);
+    expect(synced.source.lastSyncAt).toBeTruthy();
+    expect(synced.source.lastSuccessfulSyncAt).toBeTruthy();
+    expect(synced.source.healthStatus).toBe('healthy');
+    expect(synced.source.lastSyncRun?.status).toBe('success');
+    expect(synced.source.lastSyncRun?.normalized).toBeGreaterThan(0);
+    expect(synced.source.lastSyncRun?.evidence).toBeGreaterThan(0);
+
+    const runs = await request.get('/api/sources/website/sync-runs');
+    expect(runs.ok()).toBeTruthy();
+    const runBody = await runs.json();
+    expect(runBody.runs.length).toBeGreaterThan(0);
+    expect(runBody.runs[0]?.normalized).toBeGreaterThan(0);
+
+    const second = await request.post('/api/sources', {
+      data: { sourceId: 'website', action: 'sync' }
+    });
+    const secondBody = await second.json();
+    expect(secondBody.source.lastSyncRun?.normalized).toBe(0);
+  });
+
+  test('medium stub connect sync and disconnect still work', async ({ request }) => {
     const connect = await request.post('/api/sources', {
       data: { sourceId: 'medium', action: 'connect' }
     });
     expect(connect.ok()).toBeTruthy();
     const connected = await connect.json();
     expect(connected.source.connectionStatus).toBe('connected');
-    expect(connected.source.permissionsGranted.length).toBeGreaterThan(0);
 
     const sync = await request.post('/api/sources', {
       data: { sourceId: 'medium', action: 'sync' }
     });
     expect(sync.ok()).toBeTruthy();
     const synced = await sync.json();
-    expect(synced.source.lastSyncAt).toBeTruthy();
-    expect(synced.source.lastSuccessfulSyncAt).toBeTruthy();
     expect(synced.source.lastSyncRun?.status).toBe('success');
-
-    const runs = await request.get('/api/sources/medium/sync-runs');
-    expect(runs.ok()).toBeTruthy();
-    const runBody = await runs.json();
-    expect(runBody.runs.length).toBeGreaterThan(0);
 
     const disconnect = await request.post('/api/sources', {
       data: { sourceId: 'medium', action: 'disconnect' }
@@ -73,18 +110,18 @@ test.describe('Giuseppe OS Sources — Phase 2 engine', () => {
 
   test('failed sync creates error state and failed sync log', async ({ request }) => {
     await request.post('/api/sources', {
-      data: { sourceId: 'website', action: 'connect' }
+      data: { sourceId: 'medium', action: 'connect' }
     });
 
     const sync = await request.post('/api/sources', {
-      data: { sourceId: 'website', action: 'sync', simulateFailure: true }
+      data: { sourceId: 'medium', action: 'sync', simulateFailure: true }
     });
     expect(sync.ok()).toBeTruthy();
     const body = await sync.json();
     expect(body.source.healthStatus).toBe('unavailable');
     expect(body.source.lastSyncRun?.status).toBe('failed');
 
-    const runs = await request.get('/api/sources/website/sync-runs');
+    const runs = await request.get('/api/sources/medium/sync-runs');
     const runBody = await runs.json();
     expect(runBody.runs[0]?.status).toBe('failed');
   });

@@ -35,7 +35,7 @@ Before writing, editing, or running implementation code, read these documents **
 | Architecture decisions | [`docs/03_DECISIONS_LOG.md`](03_DECISIONS_LOG.md) |
 | Brain pipeline details | [`docs/INTELLIGENCE_FOUNDATION.md`](INTELLIGENCE_FOUNDATION.md) |
 | Release or deploy | [`docs/RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md) |
-| Detailed workflow | [`docs/04_CURSOR_WORKFLOW.md`](04_CURSOR_WORKFLOW.md) |
+| Phased implementation (Sources, etc.) | [`docs/README.md`](README.md), [`docs/reports/REPORT_TEMPLATE.md`](reports/REPORT_TEMPLATE.md) |
 
 ---
 
@@ -53,6 +53,8 @@ Implement
 Run Tests
         ↓
 Fix
+        ↓
+Phase documentation     (phased work — report + roadmap; never wait to be asked)
         ↓
 Generate Design Review PDF  (major UI releases)
         ↓

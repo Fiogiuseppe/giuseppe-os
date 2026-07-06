@@ -1,7 +1,8 @@
 import type { SourceAdapter } from '../adapter.types';
 import { appendSyncLog } from './sync-log.server';
 import { assertRateLimit } from './rate-limiter.server';
-import { persistRawSyncItems } from '../engine/raw-data-persistence.server';
+import { persistSourceEvidenceItems } from '../engine/source-evidence-persistence.server';
+import { extractKnowledgeFromEvidence } from '../../../knowledge/services/knowledge.server';
 import { writeConnectionState } from '../connection-state.server';
 import type { SyncInput, SyncMode, SyncResult } from '../types';
 
@@ -35,19 +36,47 @@ export async function runSyncWithEngine(
       let normalized = syncResult.normalized;
       let evidence = syncResult.evidence;
       let rawSaved = syncResult.rawSaved ?? 0;
+      let knowledgeCreated = 0;
+      let knowledgeUpdated = 0;
 
       if (rawItems.length > 0) {
-        const rawSummary = await persistRawSyncItems(adapter.sourceId, rawItems);
-        rawSaved += rawSummary.saved;
+        const evidenceSummary = await persistSourceEvidenceItems(adapter.sourceId, rawItems);
+        rawSaved += evidenceSummary.saved;
+        normalized = evidenceSummary.normalized;
+        evidence = evidenceSummary.evidence;
+
+        if (evidenceSummary.evidenceItems.length > 0) {
+          const knowledgeSummary = await extractKnowledgeFromEvidence({
+            sourceId: adapter.sourceId,
+            evidence: evidenceSummary.evidenceItems
+          });
+          knowledgeCreated = knowledgeSummary.created;
+          knowledgeUpdated = knowledgeSummary.updated;
+        }
       }
 
       const finishedAt = new Date().toISOString();
-      const status = syncResult.errors.length > 0 ? 'partial' : 'success';
+      const hasErrors = syncResult.errors.length > 0 || syncResult.status === 'failed';
+      const status =
+        syncResult.status === 'failed'
+          ? 'failed'
+          : hasErrors
+            ? 'partial'
+            : syncResult.status === 'skipped'
+              ? 'skipped'
+              : 'success';
+
+      const knowledgeNote =
+        knowledgeCreated + knowledgeUpdated > 0
+          ? `Knowledge: ${knowledgeCreated} created, ${knowledgeUpdated} updated.`
+          : '';
 
       await writeConnectionState(adapter.sourceId, {
         lastSyncAt: syncResult.lastSyncAt,
         lastSuccessfulSyncAt: status === 'success' ? syncResult.lastSyncAt : undefined,
-        healthStatus: status === 'success' ? 'healthy' : 'degraded',
+        healthStatus:
+          status === 'failed' ? 'unavailable' : status === 'success' ? 'healthy' : 'degraded',
+        connectionStatus: status === 'failed' ? 'error' : undefined,
         syncCursor: syncResult.lastSyncAt
       });
 
@@ -60,7 +89,7 @@ export async function runSyncWithEngine(
         fetched: syncResult.fetched,
         normalized,
         evidence,
-        errorMessage: syncResult.errors[0]?.message ?? null
+        errorMessage: syncResult.errors[0]?.message ?? (knowledgeNote || null),
       });
 
       return {

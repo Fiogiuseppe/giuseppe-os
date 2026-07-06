@@ -16,7 +16,8 @@ Copy [`REPORT_TEMPLATE.md`](REPORT_TEMPLATE.md) → `phase-NN-report.md`
 |-------|--------|------|--------|
 | 2 | [phase-02-report.md](phase-02-report.md) | 2026-07-06 | Complete |
 | 1 | *To be backfilled* | — | — |
-| 3+ | *Use template* | — | — |
+| 3 | [phase-03-report.md](phase-03-report.md) | 2026-07-06 | Complete |
+| 4 | [phase-04-report.md](phase-04-report.md) | 2026-07-06 | Complete |
 
 ## Related
 

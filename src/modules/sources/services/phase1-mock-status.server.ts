@@ -35,7 +35,7 @@ const MOCK_STATUS: Partial<
   website: {
     connectionStatus: 'disconnected',
     healthStatus: 'unknown',
-    healthNote: 'Website connector — Phase 3.',
+    healthNote: 'Public feeds at fiogiuseppe.com/feed/ — connect to sync.',
     lastSyncAt: null,
     lastSuccessfulSyncAt: null
   },

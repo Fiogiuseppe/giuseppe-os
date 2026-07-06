@@ -27,6 +27,7 @@ Architecture Decision Records (ADRs) for Giuseppe OS.
 
 | ADR | Title | Status |
 |-----|-------|--------|
+| [ADR-004](ADR-004-knowledge-layer.md) | Knowledge layer — reason from knowledge not raw data | Accepted |
 | [ADR-000](ADR-000-template.md) | Template | Template |
 
 *Add rows as ADRs are accepted.*

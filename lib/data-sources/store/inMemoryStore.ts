@@ -53,6 +53,10 @@ export const inMemoryDataSourceStore: DataSourceStore = {
     return dataSources.get(buildDataSourceId(source, account)) ?? null;
   },
 
+  async findRawItem(source: DataSourceId, account: string, externalId: string): Promise<RawSourceItem | null> {
+    return rawItems.get(buildRawId(source, account, externalId)) ?? null;
+  },
+
   async saveRawItem(input: SaveRawSourceItemInput): Promise<RawSourceItem> {
     const id = input.id ?? buildRawId(input.source, input.account, input.externalId);
     const now = new Date().toISOString();

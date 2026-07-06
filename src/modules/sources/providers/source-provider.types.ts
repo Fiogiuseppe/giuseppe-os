@@ -51,6 +51,8 @@ export type SourceSyncRunSummary = {
   status: SyncRunStatus;
   finishedAt: string;
   fetched: number;
+  normalized: number;
+  evidence: number;
   mode: SyncMode;
 };
 

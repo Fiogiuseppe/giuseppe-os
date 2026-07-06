@@ -14,7 +14,7 @@ const SEEDED_NOTES: Partial<Record<SourceProviderId, string>> = {
   instagram: 'OAuth not configured — Phase 11.',
   linkedin: 'OAuth not configured — Phase 12.',
   medium: 'Feed connector not wired — Phase 5.',
-  website: 'Website connector not wired — Phase 3.',
+  website: 'Public feeds at fiogiuseppe.com/feed/ — connect to sync.',
   'urees-website': 'Website connector not wired — Phase 4.',
   'urees-instagram': 'OAuth not configured — Phase 11.'
 };
@@ -109,6 +109,8 @@ export async function buildSafeProviderStatus(sourceId: SourceProviderId): Promi
           status: lastSyncRun.status,
           finishedAt: lastSyncRun.finishedAt,
           fetched: lastSyncRun.fetched,
+          normalized: lastSyncRun.normalized,
+          evidence: lastSyncRun.evidence,
           mode: lastSyncRun.mode
         }
       : null

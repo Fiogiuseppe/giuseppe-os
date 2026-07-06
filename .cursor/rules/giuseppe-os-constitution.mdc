@@ -40,7 +40,19 @@ Giuseppe OS is the **decision partner Giuseppe trusts the most** — not the sma
 
 ## Quality loop (no shortcuts)
 
-Implement → `npm run quality:check` → `npm run guardian:report` (when product/UI/AI shifted) → fix → commit (never broken code)
+Implement → `npm run quality:check` → `npm run guardian:report` (when product/UI/AI shifted) → fix → **phase documentation** → commit (never broken code)
+
+## Phase completion gate (mandatory)
+
+At the end of **every** completed phase, automatically and without being asked:
+
+1. `docs/reports/phase-XX-report.md` from `docs/reports/REPORT_TEMPLATE.md`
+2. Update `docs/roadmap/master-roadmap.md`
+3. Update `docs/roadmap/next-phase.md`
+4. ADR in `docs/decisions/` only if an architectural decision was made
+5. Changelog update only for significant milestones
+
+**A phase is not complete until all required documentation exists.** See `.cursor/rules/phase-completion.mdc`.
 
 ## Non-negotiables
 

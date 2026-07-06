@@ -33,6 +33,7 @@ export interface DataSourceStore {
   backend: DataSourceStoreBackend;
   upsertDataSource(input: UpsertDataSourceInput): Promise<DataSource>;
   getDataSource(source: DataSourceId, account: string): Promise<DataSource | null>;
+  findRawItem(source: DataSourceId, account: string, externalId: string): Promise<RawSourceItem | null>;
   saveRawItem(input: SaveRawSourceItemInput): Promise<RawSourceItem>;
   saveNormalizedItem(input: SaveNormalizedSourceItemInput): Promise<NormalizedSourceItem>;
   saveEvidenceItem(input: SaveEvidenceItemInput): Promise<EvidenceItem>;

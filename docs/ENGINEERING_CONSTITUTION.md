@@ -148,6 +148,18 @@ If you change architecture, engines, API contracts, or deployment requirements, 
 
 Documentation-only tasks must not touch `app/page.tsx` or application code unless explicitly requested.
 
+### Phase completion documentation (mandatory)
+
+Phased work (e.g. Sources roadmap) is **not done** until documentation is generated — **without waiting to be asked**:
+
+1. `docs/reports/phase-XX-report.md` from `docs/reports/REPORT_TEMPLATE.md`
+2. `docs/roadmap/master-roadmap.md` updated
+3. `docs/roadmap/next-phase.md` updated
+4. `docs/decisions/ADR-NNN-*.md` only if an architectural decision was made
+5. Changelog entry only for significant milestones
+
+See `.cursor/rules/phase-completion.mdc`.
+
 ---
 
 ## Testing Rules

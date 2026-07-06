@@ -10,15 +10,19 @@ At the end of every phase, stop and report: what changed, files created/modified
 
 Goal: Dashboard + provider registry. **6 sources only.** Personal + UREES. Mock status. No OAuth, API, or tokens.
 
-## PHASE 2 — Sources Engine ✅ (current)
+## PHASE 2 — Sources Engine ✅
 
 Persistent connection state, sync logs, lastSyncAt, permissions, dataCollected, safe metadata API. No external APIs.
 
-## PHASE 3 — Website Connector: fiogiuseppe.com
+## PHASE 3 — Website Connector: fiogiuseppe.com ✅
 
 First real connector. Raw + normalized items. Public content only.
 
-## PHASE 4 — Website Connector: UREES Website
+## PHASE 4 (Knowledge) — Knowledge Layer ✅
+
+Deterministic evidence → knowledge extraction. No LLM. See `docs/architecture/knowledge.md`.
+
+## PHASE 4 (Sources) — Website Connector: UREES Website
 
 Reusable generic website connector architecture.
 

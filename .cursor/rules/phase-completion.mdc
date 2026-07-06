@@ -1,0 +1,32 @@
+---
+description: Mandatory documentation at the end of every development phase — never skip, never wait to be asked
+alwaysApply: true
+---
+
+# Phase Completion Gate
+
+A phase is **NOT complete** until code **and** documentation are done.
+
+**Never wait for Giuseppe to ask for docs.** Generate them automatically at the end of every phase.
+
+## Required checklist (in order)
+
+1. **Phase report** — `docs/reports/phase-XX-report.md` from [`docs/reports/REPORT_TEMPLATE.md`](docs/reports/REPORT_TEMPLATE.md)
+2. **Master roadmap** — update [`docs/roadmap/master-roadmap.md`](docs/roadmap/master-roadmap.md) (mark phase complete, set current/next)
+3. **Next phase** — update [`docs/roadmap/next-phase.md`](docs/roadmap/next-phase.md) with the immediate next task
+4. **ADR** — create `docs/decisions/ADR-NNN-short-slug.md` **only if** an architectural decision was made (copy from `ADR-000-template.md`)
+5. **Changelog** — update or append a milestone entry **only if** the phase is a significant milestone (use [`docs/changelog/CHANGELOG_TEMPLATE.md`](docs/changelog/CHANGELOG_TEMPLATE.md))
+
+## Before marking complete
+
+- `npx tsc --noEmit` passes
+- `npm run build` passes
+- Phase-specific tests pass
+- Report lists what is **real** vs **mock**
+
+## Do not
+
+- Stop after code without the report and roadmap updates
+- Ask "should I write the report?" — always write it
+- Skip roadmap updates when phase status changed
+- Create ADRs for routine bug fixes or UI-only changes

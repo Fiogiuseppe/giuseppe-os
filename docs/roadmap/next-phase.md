@@ -1,6 +1,6 @@
 # Next Phase
 
-**Always points to the immediate next development task.** Update this file when a phase completes.
+**Always points to the immediate next development task.**
 
 ---
 
@@ -8,57 +8,50 @@
 
 | Field | Value |
 |-------|-------|
-| **Last completed** | Phase 2 — Sources Engine |
-| **Up next** | Phase 3 — Website Connector: fiogiuseppe.com |
+| **Last completed** | Phase 5 — Intelligence Read Layer |
+| **Up next** | Sources Phase 4 — UREES Website Connector |
 | **Blocked by** | Nothing |
 
 ---
 
-## Phase 3 — Website Connector: fiogiuseppe.com
+## Sources Phase 4 — UREES Website Connector
 
 ### Goal
 
-Create the first **real** connector using a source we control.
+Reuse the Phase 3 website connector architecture for `urees-website` at urees.shop.
 
 ### Implement
 
-- [ ] `website_personal` connector (source ID: `website`)
-- [ ] Fetch public pages from fiogiuseppe.com
-- [ ] Extract page title, description, content, URL, metadata
-- [ ] Store raw items
-- [ ] Store normalized items
-- [ ] Support Sync Now
-- [ ] Update `lastSyncAt`, `lastSuccessfulSyncAt`, and health status
+- [ ] Generic configurable website connector (URL + source ID)
+- [ ] Register `urees-website` connector
+- [ ] Fetch public products/collections/storytelling
+- [ ] Raw + normalized + evidence persistence with dedup
+- [ ] Knowledge extractor hook for UREES (extend registry)
 
 ### Constraints
 
-- No scraping private data
-- Public website content only
-- Respect robots.txt and reasonable request limits
-- Deduplicate by URL/hash
+- Reuse Phase 3 patterns — no duplicated fetch logic
+- Public content only
+- No OAuth, Medium, Instagram, LinkedIn
 
 ### Tests required
 
-- [ ] Sync Now fetches real public pages
-- [ ] Raw items saved
-- [ ] Normalized items saved
-- [ ] Duplicate sync does not duplicate data
-- [ ] Source health becomes healthy
-- [ ] `npx tsc --noEmit` passes
-- [ ] `npm run build` passes
+- [ ] UREES sync works end-to-end
+- [ ] `npx tsc --noEmit` and `npm run build` pass
+- [ ] Existing `e2e/sources.spec.ts`, `e2e/knowledge.spec.ts`, and `e2e/intelligence.spec.ts` pass
 
-### Documentation required on completion
+### Documentation required
 
-- [ ] `docs/reports/phase-03-report.md`
-- [ ] `docs/architecture/sources.md` (initial version)
-- [ ] Update [`master-roadmap.md`](master-roadmap.md)
-- [ ] ADR if connector architecture decision is made
+- [ ] Phase report (per SOURCES_ROADMAP numbering)
+- [ ] Update `docs/architecture/sources.md`
+- [ ] ADR if generic website connector config is decided
 
 ### Reference
 
-- Phase spec: [`docs/SOURCES_ROADMAP.md`](../SOURCES_ROADMAP.md)
-- Prior report: [`docs/reports/phase-02-report.md`](../reports/phase-02-report.md)
-- Archived connector code: `src/modules/sources/_phase2/connectors/`
+- [`docs/SOURCES_ROADMAP.md`](../SOURCES_ROADMAP.md)
+- [`docs/reports/phase-05-report.md`](../reports/phase-05-report.md)
+- [`docs/architecture/knowledge.md`](../architecture/knowledge.md)
+- [`docs/decisions/ADR-005-intelligence-read-layer.md`](../decisions/ADR-005-intelligence-read-layer.md)
 
 ---
 

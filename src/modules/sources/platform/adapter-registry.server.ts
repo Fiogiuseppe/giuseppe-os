@@ -1,7 +1,9 @@
 import { listSourceProviders } from '../providers/source-registry';
 import type { SourceProviderId } from '../providers/source-provider.types';
 import type { AdapterFactory, SourceAdapter } from './adapter.types';
+import { createConnectorAdapter } from './adapters/connector.adapter.server';
 import { createStubAdapter } from './adapters/stub.adapter.server';
+import { getSourceConnector } from '../connectors/registry.server';
 
 const adapterFactories = new Map<SourceProviderId, AdapterFactory>();
 
@@ -9,13 +11,21 @@ function registerAdapter(sourceId: SourceProviderId, factory: AdapterFactory): v
   adapterFactories.set(sourceId, factory);
 }
 
-/** Phase 2: stub adapters only — no external APIs, OAuth, or connectors yet. */
 function bootstrapDefaultAdapters(): void {
   if (adapterFactories.size > 0) {
     return;
   }
 
+  const websiteConnector = getSourceConnector('website');
+  if (websiteConnector) {
+    registerAdapter('website', () => createConnectorAdapter(websiteConnector));
+  }
+
   for (const provider of listSourceProviders()) {
+    if (adapterFactories.has(provider.id)) {
+      continue;
+    }
+
     registerAdapter(provider.id, () => createStubAdapter(provider.id));
   }
 }

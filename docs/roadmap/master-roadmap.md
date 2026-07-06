@@ -26,68 +26,62 @@ Phase discipline: **do not jump ahead**. Each phase ends with a report in [`docs
 |---------|-------|--------|
 | v0.1 | Foundation — constitution, decision engine, UI | ✅ Complete |
 | v1.0 | Intelligence foundation — Executive Brain, memory, learning | ✅ Complete |
-| v1.x | Personal Decision Intelligence — evidence, sources, trajectory | 🔄 In progress |
-| v2.0 | Full evidence loop — real sources, cited AI, scheduled sync | Planned |
-
-Detail: [`docs/ROADMAP.md`](../ROADMAP.md) (legacy product roadmap).
+| v1.x | Personal Decision Intelligence — evidence, sources, knowledge | 🔄 In progress |
+| v2.0 | Full evidence loop — cited AI, scheduled sync | Planned |
 
 ---
 
 ## Sources platform phases
 
-Dedicated track for synchronized personal evidence. Full spec: [`docs/SOURCES_ROADMAP.md`](../SOURCES_ROADMAP.md).
+Full spec: [`docs/SOURCES_ROADMAP.md`](../SOURCES_ROADMAP.md).
 
 | Phase | Title | Status |
 |-------|-------|--------|
 | 1 | Sources Dashboard | ✅ Complete |
 | 2 | Sources Engine | ✅ Complete |
-| 3 | Website Connector — fiogiuseppe.com | **Current** |
-| 4 | Website Connector — UREES | Next |
+| 3 | Website Connector — fiogiuseppe.com | ✅ Complete |
+| 4 | UREES Website Connector | Next |
 | 5 | Medium Connector (RSS) | Planned |
-| 6 | Normalization Layer | Planned |
-| 7 | Intelligence Read Layer | Planned |
-| 8 | First AI Evidence Use | Planned |
-| 9 | OAuth Engine | Planned |
-| 10 | Token Vault | Planned |
-| 11 | Instagram Connectors | Planned |
-| 12 | LinkedIn Connector | Planned |
-| 13 | Scheduled Sync | Planned |
+| 6–13 | Normalization, read layer, AI, OAuth, social, sync | Planned |
 
-Reports: [`phase-02-report.md`](../reports/phase-02-report.md) *(Phase 1 report to be backfilled if needed)*.
+---
+
+## Knowledge & intelligence phases
+
+| Phase | Title | Status |
+|-------|-------|--------|
+| 4 | **Knowledge Layer** | ✅ Complete |
+| 5 | **Intelligence Read Layer** | ✅ Complete |
+| — | First AI Evidence Use (cited) | Planned |
+
+Reports: [`phase-02-report.md`](../reports/phase-02-report.md) · [`phase-03-report.md`](../reports/phase-03-report.md) · [`phase-04-report.md`](../reports/phase-04-report.md) · [`phase-05-report.md`](../reports/phase-05-report.md)
+
+ADR: [`ADR-004-knowledge-layer.md`](../decisions/ADR-004-knowledge-layer.md) · [`ADR-005-intelligence-read-layer.md`](../decisions/ADR-005-intelligence-read-layer.md)
 
 ---
 
 ## Backlog
 
-Items agreed but not assigned to the current phase:
-
 - [ ] Backfill Phase 1 implementation report
-- [ ] Migrate `GIUSEPPE_OS_ARCHITECTURE.md` sections into `docs/architecture/`
-- [ ] ADR for Sources Engine store backend selection (memory / file / supabase)
-- [ ] Guardian scan after Sources Phase 3+
+- [ ] ADR for Sources Engine store backend selection
+- [ ] Medium knowledge extractor (after Medium connector)
+- [ ] Guardian scan after major Sources/Knowledge changes
 
 ---
 
 ## Future ideas
 
-*Not committed. Require constitution check before promotion to backlog.*
+*Not committed.*
 
-- Cross-source evidence graph visualization
-- Decision replay from historical evidence
-- Trajectory scoring from synchronized life outputs
-- Multi-device sync for connection state
+- Knowledge graph visualization
+- Cross-source concept merging
+- Trajectory scoring from knowledge + decisions
 
 ---
 
 ## Update protocol
 
-When a phase completes:
-
-1. Mark phase ✅ in this file
-2. Update **Current** and **Next** rows
-3. Refresh [`next-phase.md`](next-phase.md)
-4. Add changelog entry for major milestones
-5. Link the new report from the phase table
+When a phase completes: report → roadmap → next-phase → changelog (if milestone) → ADR (if architectural).
 
 ---
 

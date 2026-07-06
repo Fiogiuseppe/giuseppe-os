@@ -15,7 +15,7 @@ Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md) for each milestone entry.
 
 ## Main changelog file
 
-Create `CHANGELOG.md` at repo root when the first version tag ships. Until then, milestone entries may live in this folder as `YYYY-MM-DD-milestone.md`.
+[`CHANGELOG.md`](CHANGELOG.md) — milestone entries for phased releases.
 
 ---
 

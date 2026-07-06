@@ -72,13 +72,21 @@ Long-term principles that outlive any sprint. Placeholders today; living documen
 
 ## Development rule
 
-No implementation phase is complete without documentation:
+**A phase is NOT complete until all required documentation is generated. Never wait to be asked.**
 
-1. **Working code** — typecheck and build pass
-2. **Phase report** — `docs/reports/phase-XX-report.md` from the template
-3. **ADR** — if an architectural decision was made
-4. **Roadmap update** — if direction or phase status changed
-5. **Changelog entry** — for major milestones
+At the end of every completed phase, automatically:
+
+| # | Action | Path |
+|---|--------|------|
+| 1 | Phase report (from template) | `docs/reports/phase-XX-report.md` ← [`REPORT_TEMPLATE.md`](reports/REPORT_TEMPLATE.md) |
+| 2 | Update master roadmap | [`roadmap/master-roadmap.md`](roadmap/master-roadmap.md) |
+| 3 | Update next task | [`roadmap/next-phase.md`](roadmap/next-phase.md) |
+| 4 | ADR *(only if architectural decision)* | `docs/decisions/ADR-NNN-*.md` |
+| 5 | Changelog *(only if significant milestone)* | [`changelog/`](changelog/) |
+
+Plus: working code, typecheck pass, build pass, phase tests pass.
+
+Enforced in `.cursor/rules/phase-completion.mdc` and `giuseppe-os-constitution.mdc`.
 
 ---
 

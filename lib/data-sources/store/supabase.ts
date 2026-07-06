@@ -196,6 +196,23 @@ export const supabaseDataSourceStore: DataSourceStore = {
     return data ? parseDataSource(data as DbDataSource) : null;
   },
 
+  async findRawItem(source: DataSourceId, account: string, externalId: string): Promise<RawSourceItem | null> {
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase
+      .from('raw_source_items')
+      .select('*')
+      .eq('source', source)
+      .eq('account', account)
+      .eq('external_id', externalId)
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    return data ? parseRawItem(data as DbRawSourceItem) : null;
+  },
+
   async saveRawItem(input: SaveRawSourceItemInput): Promise<RawSourceItem> {
     const supabase = getSupabaseClient();
     const id = input.id ?? buildRawId(input.source, input.account, input.externalId);

@@ -23,7 +23,7 @@ Architecture docs describe **current truth**. If code and docs diverge, fix the 
 
 | Document | Scope | Status |
 |----------|-------|--------|
-| [`sources.md`](sources.md) | Sources dashboard, provider registry, connection state | Planned |
+| [`knowledge.md`](knowledge.md) | Knowledge layer — evidence → structured knowledge | **Phase 4** |
 | [`oauth.md`](oauth.md) | Generic OAuth engine, callback flow, token handling | Planned |
 | [`sync-engine.md`](sync-engine.md) | Sync orchestration, logs, retries, rate limits | Planned |
 | [`intelligence.md`](intelligence.md) | Evidence read layer, query interface, AI boundaries | Planned |
