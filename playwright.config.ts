@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const testPort = process.env.PLAYWRIGHT_PORT ?? '3010';
+const testBaseUrl = `http://localhost:${testPort}`;
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -8,7 +11,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'list',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: testBaseUrl,
     trace: 'on-first-retry'
   },
   projects: [
@@ -18,8 +21,9 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: 'ALLOW_TEST_ROUTES=1 AI_MODE=mock AI_PROVIDER=groq npm run dev',
-    url: 'http://localhost:3000',
+    command:
+      `PORT=${testPort} ALLOW_TEST_ROUTES=1 AI_MODE=mock AI_PROVIDER=groq SOURCES_ENGINE_STORE=memory SOURCES_OAUTH_MOCK_EXCHANGE=1 GITHUB_CLIENT_ID=test_github_client GITHUB_CLIENT_SECRET=test_github_secret NEXT_PUBLIC_APP_URL=${testBaseUrl} npm run dev`,
+    url: testBaseUrl,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000
   }

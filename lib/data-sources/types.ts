@@ -10,6 +10,7 @@ export const DATA_SOURCE_IDS = [
   'books',
   'spotify',
   'figma',
+  'website',
   'manual_import'
 ] as const;
 

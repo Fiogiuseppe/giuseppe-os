@@ -72,6 +72,13 @@ export const DATA_SOURCE_DEFINITIONS: Record<DataSourceId, DataSourceDefinition>
     requiredEnvVars: ['FIGMA_ACCESS_TOKEN'],
     defaultAccounts: []
   },
+  website: {
+    id: 'website',
+    label: 'fiogiuseppe.com',
+    description: 'Site posts, projects, and WordPress content via public RSS.',
+    requiredEnvVars: [],
+    defaultAccounts: ['fiogiuseppe']
+  },
   manual_import: {
     id: 'manual_import',
     label: 'Manual import',

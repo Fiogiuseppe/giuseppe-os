@@ -68,6 +68,8 @@ function inferKind(source: DataSourceId, raw: Record<string, unknown>): Normaliz
       return 'health_metric';
     case 'manual_import':
       return 'import';
+    case 'website':
+      return 'post';
     default:
       return 'unknown';
   }

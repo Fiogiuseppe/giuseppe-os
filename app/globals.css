@@ -53,6 +53,8 @@ a {
 
 html.about-route,
 html.about-route body,
+html.sources-route,
+html.sources-route body,
 html.chat-route,
 html.chat-route body {
   overflow: hidden;
@@ -95,6 +97,7 @@ html.chat-route body {
 }
 
 .about-app > main,
+.sources-app > main,
 .chat-app > main {
   flex: 1;
   min-height: 0;

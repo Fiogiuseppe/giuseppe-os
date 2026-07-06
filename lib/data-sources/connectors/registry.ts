@@ -38,6 +38,10 @@ const CONNECTOR_BUILDERS: Record<DataSourceId, () => SourceConnector> = {
     createStubConnector('figma', {
       capabilities: { canReadPosts: true, canReadComments: true, canReadMetrics: false }
     }),
+  website: () =>
+    createStubConnector('website', {
+      capabilities: { canReadPosts: true, canReadComments: true, canReadMetrics: false }
+    }),
   manual_import: () => createStubConnector('manual_import')
 };
 

@@ -16,3 +16,4 @@ blob-report/
 playwright/.cache/
 .vercel
 .design-review-tmp/
+.data/
