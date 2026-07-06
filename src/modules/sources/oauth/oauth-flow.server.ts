@@ -191,6 +191,7 @@ export async function handleOAuthCallback(request: Request): Promise<{
       redirectUri
     });
 
+    // Phase 13: OAuth callback can persist tokens via saveTokenBundleFromOAuth() when providers ship.
     void tokenBundle;
     void provider.getGrantedScopes(tokenBundle);
 

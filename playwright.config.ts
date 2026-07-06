@@ -22,7 +22,7 @@ export default defineConfig({
   ],
   webServer: {
     command:
-      `PORT=${testPort} ALLOW_TEST_ROUTES=1 AI_MODE=mock AI_PROVIDER=groq SOURCES_ENGINE_STORE=memory KNOWLEDGE_STORE=memory DATA_SOURCES_STORE=memory SOURCES_OAUTH_MOCK_EXCHANGE=1 GITHUB_CLIENT_ID=test_github_client GITHUB_CLIENT_SECRET=test_github_secret UREES_WEBSITE_URL=https://urees.shop NEXT_PUBLIC_APP_URL=${testBaseUrl} npm run dev`,
+      `PORT=${testPort} ALLOW_TEST_ROUTES=1 AI_MODE=mock AI_PROVIDER=groq SOURCES_ENGINE_STORE=memory KNOWLEDGE_STORE=memory DATA_SOURCES_STORE=memory SOURCES_TOKEN_VAULT_STORE=memory SOURCES_TOKEN_ENCRYPTION_KEY=test-token-vault-key-phase-13 SOURCES_OAUTH_MOCK_EXCHANGE=1 GITHUB_CLIENT_ID=test_github_client GITHUB_CLIENT_SECRET=test_github_secret UREES_WEBSITE_URL=https://urees.shop NEXT_PUBLIC_APP_URL=${testBaseUrl} npm run dev`,
     url: testBaseUrl,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000

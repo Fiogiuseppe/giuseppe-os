@@ -23,12 +23,21 @@ export function isEncryptionKeyConfigured(): boolean {
   return Boolean(process.env.SOURCES_TOKEN_ENCRYPTION_KEY?.trim());
 }
 
+export function productionRequiresEncryptionKey(input?: {
+  nodeEnv?: string;
+  encryptionKey?: string | undefined;
+}): boolean {
+  const nodeEnv = input?.nodeEnv ?? process.env.NODE_ENV;
+  const encryptionKey = input?.encryptionKey ?? process.env.SOURCES_TOKEN_ENCRYPTION_KEY;
+  return nodeEnv === 'production' && !encryptionKey?.trim();
+}
+
 export function assertEncryptionKeyAvailable(): void {
   if (isEncryptionKeyConfigured()) {
     return;
   }
 
-  if (process.env.NODE_ENV === 'production') {
+  if (productionRequiresEncryptionKey()) {
     throw new TokenVaultError(
       'SOURCES_TOKEN_ENCRYPTION_KEY is required in production.',
       'encryption_key_missing'

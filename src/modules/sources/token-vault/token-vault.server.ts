@@ -1,6 +1,6 @@
 import type { OAuthTokenBundle } from '../oauth/oauth.types';
 import type { SourceProviderId } from '../config/source-config';
-import { decryptToken, encryptToken } from './token-encryption.server';
+import { decryptToken, encryptToken, productionRequiresEncryptionKey } from './token-encryption.server';
 import { getTokenVaultStore } from './token-vault-store.server';
 import {
   TokenVaultError,
@@ -139,11 +139,7 @@ export async function getTokenMetadata(
 }
 
 export function assertTokenVaultReadyForProduction(): void {
-  if (process.env.NODE_ENV !== 'production') {
-    return;
-  }
-
-  if (!process.env.SOURCES_TOKEN_ENCRYPTION_KEY?.trim()) {
+  if (productionRequiresEncryptionKey()) {
     throw new TokenVaultError(
       'SOURCES_TOKEN_ENCRYPTION_KEY is required in production.',
       'encryption_key_missing'
