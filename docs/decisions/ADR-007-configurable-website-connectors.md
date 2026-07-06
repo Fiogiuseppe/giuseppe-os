@@ -16,7 +16,7 @@ Giuseppe OS website connectors share one **configurable architecture** under `sr
 - Optional `feedUrl`, `sitemapUrl`, `productsJsonUrl`
 - `maxPages`
 
-Phase 7 adds `urees-website` (`connectorId: website_urees`) using `UREES_WEBSITE_URL` from environment. **No hardcoded UREES URL in code.** When unset, health is `unavailable` with a clear configuration note.
+Phase 7 adds `urees-website` (`connectorId: website_urees`) using the official URL **`https://urees.shop/`** from `lib/presence/official-source-urls.ts`. Optional `UREES_WEBSITE_URL` env override. fiogiuseppe.com is refactored to the same fetch and connector factory — no duplicated logic.
 
 fiogiuseppe.com (`website`) is refactored to use the same fetch and connector factory — no duplicated logic.
 
@@ -62,7 +62,8 @@ Account-scoped raw items (`fiogiuseppe` vs `urees`) keep dedup correct within th
 ### Positive
 
 - fiogiuseppe and UREES share `fetchConfigurableWebsite` and `createWebsiteConnector`
-- UREES URL is operator-controlled via `.env.local`
+- Official UREES URL `https://urees.shop/` in central registry; no invented URLs
+- `UREES_WEBSITE_URL` optional env override
 - Shopify products JSON and RSS feeds supported from one module
 - Knowledge extractor extended to `urees-website` without new LLM logic
 

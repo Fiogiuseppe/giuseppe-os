@@ -96,39 +96,21 @@ test.describe('Giuseppe OS UREES Website Connector — Phase 7', () => {
   });
 });
 
-test.describe('UREES website config safety', () => {
-  test('missing UREES_WEBSITE_URL is reported as unavailable', async () => {
+test.describe('UREES website official URL', () => {
+  test('defaults to https://urees.shop/ from official source registry', async () => {
     const { resolveUreesWebsiteConfig } = await import(
       '../src/modules/sources/connectors/website/website-connector.configs.server'
     );
-    const { fetchConfigurableWebsite } = await import(
-      '../src/modules/sources/connectors/website/configurable-website.fetch.server'
-    );
 
     const previousUrl = process.env.UREES_WEBSITE_URL;
-    const previousAllow = process.env.ALLOW_TEST_ROUTES;
-    const previousMock = process.env.SOURCES_WEBSITE_MOCK_FETCH;
-
     delete process.env.UREES_WEBSITE_URL;
-    delete process.env.ALLOW_TEST_ROUTES;
-    delete process.env.SOURCES_WEBSITE_MOCK_FETCH;
 
     const config = resolveUreesWebsiteConfig();
-    expect(config.baseUrl).toBeNull();
-    expect(config.configError).toMatch(/UREES_WEBSITE_URL/i);
-
-    const fetched = await fetchConfigurableWebsite(config);
-    expect(fetched.items).toEqual([]);
-    expect(fetched.errors[0]?.code).toBe('config_missing');
+    expect(config.baseUrl).toBe('https://urees.shop/');
+    expect(config.productsJsonUrl).toBe('https://urees.shop/products.json');
 
     if (previousUrl !== undefined) {
       process.env.UREES_WEBSITE_URL = previousUrl;
-    }
-    if (previousAllow !== undefined) {
-      process.env.ALLOW_TEST_ROUTES = previousAllow;
-    }
-    if (previousMock !== undefined) {
-      process.env.SOURCES_WEBSITE_MOCK_FETCH = previousMock;
     }
   });
 });

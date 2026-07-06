@@ -1,4 +1,5 @@
 import { GIUSEPPE_PRESENCE, UREES_PRESENCE } from '../../../../../lib/presence/canonical';
+import { OFFICIAL_SOURCE_URLS } from '../../../../../lib/presence/official-source-urls';
 import type { WebsiteConnectorConfig } from './website-connector.config.types';
 import { buildWebsiteContentHash } from './configurable-website.fetch.server';
 
@@ -8,6 +9,8 @@ const UREES = UREES_PRESENCE.channels.website;
 function normalizeBaseUrl(url: string): string {
   return url.endsWith('/') ? url : `${url}/`;
 }
+
+const UREES_OFFICIAL_BASE = normalizeBaseUrl(OFFICIAL_SOURCE_URLS.website_urees);
 
 function readEnv(key: string): string | null {
   const value = process.env[key]?.trim();
@@ -116,8 +119,8 @@ export function resolveFiogiuseppeWebsiteConfig(): WebsiteConnectorConfig {
 }
 
 export function resolveUreesWebsiteConfig(): WebsiteConnectorConfig {
-  const baseUrl = readEnv('UREES_WEBSITE_URL');
-  const normalizedBase = baseUrl ? normalizeBaseUrl(baseUrl) : null;
+  const envBaseUrl = readEnv('UREES_WEBSITE_URL');
+  const normalizedBase = envBaseUrl ? normalizeBaseUrl(envBaseUrl) : UREES_OFFICIAL_BASE;
 
   return {
     sourceId: 'urees-website',
@@ -127,20 +130,14 @@ export function resolveUreesWebsiteConfig(): WebsiteConnectorConfig {
     sourceLabel: 'urees.shop',
     displayName: UREES_PRESENCE.displayName,
     baseUrl: normalizedBase,
-    feedUrl: readEnv('UREES_WEBSITE_FEED_URL') ?? (normalizedBase ? `${normalizedBase}feed/` : null),
+    feedUrl: readEnv('UREES_WEBSITE_FEED_URL') ?? `${normalizedBase}feed/`,
     commentsFeedUrl: null,
-    sitemapUrl:
-      readEnv('UREES_WEBSITE_SITEMAP_URL') ?? (normalizedBase ? `${normalizedBase}sitemap.xml` : null),
-    productsJsonUrl:
-      readEnv('UREES_WEBSITE_PRODUCTS_URL') ??
-      (normalizedBase ? `${normalizedBase}products.json` : null),
+    sitemapUrl: readEnv('UREES_WEBSITE_SITEMAP_URL') ?? `${normalizedBase}sitemap.xml`,
+    productsJsonUrl: readEnv('UREES_WEBSITE_PRODUCTS_URL') ?? UREES.productsUrl,
     maxPages: Number(readEnv('UREES_WEBSITE_MAX_PAGES') ?? '12'),
     handles: [...UREES_PRESENCE.handles],
-    configError:
-      'UREES_WEBSITE_URL is not configured. Set UREES_WEBSITE_URL in .env.local to enable UREES website sync.',
     mockFixtures: () => {
       const collectedAt = new Date().toISOString();
-      const mockBase = normalizedBase ?? 'https://mock.urees.local/';
 
       return [
         buildMockItem(
@@ -148,11 +145,11 @@ export function resolveUreesWebsiteConfig(): WebsiteConnectorConfig {
           'urees-website:profile',
           {
             kind: 'profile',
-            url: mockBase,
+            url: UREES_OFFICIAL_BASE,
             title: 'UREES',
             description: 'UREES brand shop and storytelling.',
             content: 'UREES is a brand focused on products, brand identity, and creative storytelling.',
-            metadata: { handles: UREES_PRESENCE.handles, productsJsonUrl: `${mockBase}products.json` },
+            metadata: { handles: UREES_PRESENCE.handles, productsJsonUrl: UREES.productsUrl },
             collectedAt
           }
         ),
@@ -161,7 +158,7 @@ export function resolveUreesWebsiteConfig(): WebsiteConnectorConfig {
           'urees-website:product:signature',
           {
             kind: 'product',
-            url: `${mockBase}products/urees-signature`,
+            url: `${UREES_OFFICIAL_BASE}products/urees-signature`,
             title: 'UREES Signature Piece',
             description: 'Signature UREES product from the public shop.',
             content: 'UREES signature product — brand storytelling, design, and creative direction.',
@@ -174,7 +171,7 @@ export function resolveUreesWebsiteConfig(): WebsiteConnectorConfig {
           'urees-website:story:about',
           {
             kind: 'page',
-            url: `${mockBase}pages/about`,
+            url: `${UREES_OFFICIAL_BASE}pages/about`,
             title: 'About UREES',
             description: 'Brand story and creative direction.',
             content: 'UREES explores branding, art, and product storytelling across collections.',

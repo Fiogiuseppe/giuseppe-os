@@ -44,7 +44,7 @@ Shared architecture: `src/modules/sources/connectors/website/`
 | Source | Connector ID | Config |
 |--------|--------------|--------|
 | `website` | `website_personal` | `GIUSEPPE_PRESENCE` canonical URLs |
-| `urees-website` | `website_urees` | `UREES_WEBSITE_URL` (+ optional feed/sitemap/products overrides) |
+| `urees-website` | `website_urees` | Official `https://urees.shop/` (+ optional env overrides) |
 
 ### fiogiuseppe.com (`website`)
 
@@ -80,17 +80,17 @@ When `ALLOW_TEST_ROUTES=1` or `SOURCES_WEBSITE_MOCK_FETCH=1`, fetch returns fixt
 
 **Path:** `src/modules/sources/connectors/urees-website.connector.server.ts`
 
-**Environment:**
+**Environment (optional overrides):**
 
 ```bash
-UREES_WEBSITE_URL=          # required for real sync
-# UREES_WEBSITE_FEED_URL=   # optional
+# UREES_WEBSITE_URL=https://urees.shop/   # defaults to official URL
+# UREES_WEBSITE_FEED_URL=
 # UREES_WEBSITE_SITEMAP_URL=
 # UREES_WEBSITE_PRODUCTS_URL=
 # UREES_WEBSITE_MAX_PAGES=12
 ```
 
-When `UREES_WEBSITE_URL` is unset, health is `unavailable` with a configuration note. No hardcoded URL in code.
+Official URL registry: `lib/presence/official-source-urls.ts`
 
 Public fetch supports profile HTML, RSS (`feed/`), Shopify `products.json`, and optional sitemap pages. Raw items use `account: urees`.
 

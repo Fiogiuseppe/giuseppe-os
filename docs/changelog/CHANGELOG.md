@@ -12,7 +12,8 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 - Configurable website connector architecture (`src/modules/sources/connectors/website/`)
 - UREES website connector (`urees-website`, `website_urees`)
-- `UREES_WEBSITE_URL` environment configuration
+- Official UREES URL `https://urees.shop/` via `lib/presence/official-source-urls.ts`
+- Optional `UREES_WEBSITE_URL` environment override
 - ADR-007: configurable website connectors
 
 ### Changed
@@ -22,7 +23,7 @@ Significant milestones only. Use [`CHANGELOG_TEMPLATE.md`](CHANGELOG_TEMPLATE.md
 
 ### Security
 
-- No hardcoded UREES URL; missing config fails safely with unavailable health status
+- No invented URLs; central official source URL registry added
 - API responses remain secret-free
 
 ### Notes

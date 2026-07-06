@@ -9,7 +9,24 @@
 
 ## Summary
 
-Phase 7 adds the **UREES Website Connector** (`urees-website`, `connectorId: website_urees`) by generalizing the Phase 3 website architecture into a **configurable connector**. fiogiuseppe.com is refactored to use the shared module — no duplicated fetch logic. UREES sync reads `UREES_WEBSITE_URL` from environment; when missing, the source reports unavailable with a clear health note. No LLM, OAuth, or new social connectors.
+Phase 7 adds the **UREES Website Connector** (`urees-website`, `connectorId: website_urees`) using the shared configurable website architecture from Phase 3. The official public URL is **`https://urees.shop/`** — registered in `lib/presence/official-source-urls.ts` and used as the default for sync. fiogiuseppe.com was refactored to the same module with no duplicated fetch logic. No LLM, OAuth, or social connectors.
+
+---
+
+## Official source URLs (central registry)
+
+Future connectors should read from `lib/presence/official-source-urls.ts`:
+
+| Key | Official URL |
+|-----|--------------|
+| `website_personal` | https://fiogiuseppe.com/ |
+| `instagram_personal` | https://instagram.com/fiogiuseppe |
+| `instagram_urees` | https://www.instagram.com/urees__/
+| `linkedin_personal` | https://linkedin.com/in/fiuseppe/?skipRedirect=true |
+| `medium_personal` | https://medium.com/@fiogiuseppe |
+| `website_urees` | **https://urees.shop/** |
+
+Phase 7 wires only `website_urees`. Other keys are documented for future phases — not implemented.
 
 ---
 
@@ -17,8 +34,8 @@ Phase 7 adds the **UREES Website Connector** (`urees-website`, `connectorId: web
 
 | # | Objective | Met? |
 |---|-----------|------|
-| 1 | Sync real public UREES data when `UREES_WEBSITE_URL` is set | Yes |
-| 2 | Fail safely when URL missing | Yes |
+| 1 | Sync real public UREES data from urees.shop | Yes |
+| 2 | No invented or guessed URLs | Yes |
 | 3 | No duplicated website connector logic | Yes |
 | 4 | Raw, normalized, evidence, knowledge created | Yes |
 | 5 | `/api/intelligence/knowledge?q=urees` returns UREES knowledge | Yes |
@@ -26,7 +43,7 @@ Phase 7 adds the **UREES Website Connector** (`urees-website`, `connectorId: web
 | 7 | No tokens or secrets exposed | Yes |
 | 8 | TypeScript passes | Yes |
 | 9 | Build passes | Yes |
-| 10 | Existing sources/knowledge/intelligence/brain tests pass | Yes |
+| 10 | Existing e2e suites pass | Yes |
 
 ---
 
@@ -34,69 +51,34 @@ Phase 7 adds the **UREES Website Connector** (`urees-website`, `connectorId: web
 
 | Path | Purpose |
 |------|---------|
-| `src/modules/sources/connectors/website/website-connector.config.types.ts` | Config types |
-| `src/modules/sources/connectors/website/configurable-website.fetch.server.ts` | Shared public fetch |
-| `src/modules/sources/connectors/website/create-website-connector.server.ts` | Connector factory |
-| `src/modules/sources/connectors/website/website-connector.configs.server.ts` | fiogiuseppe + UREES configs |
+| `lib/presence/official-source-urls.ts` | Central official URL registry |
+| `src/modules/sources/connectors/website/*` | Shared configurable website architecture |
 | `src/modules/sources/connectors/urees-website.connector.server.ts` | UREES connector entry |
 | `e2e/urees-website.spec.ts` | Phase 7 acceptance tests |
 | `docs/decisions/ADR-007-configurable-website-connectors.md` | ADR |
 
 ---
 
-## Files Modified
+## UREES connector configuration
 
-| Path | Change |
-|------|--------|
-| `src/modules/sources/connectors/fiogiuseppe-website.connector.server.ts` | Uses shared factory |
-| `src/modules/sources/connectors/fetch/fiogiuseppe-website.fetch.server.ts` | Thin shim to shared fetch |
-| `src/modules/sources/connectors/registry.server.ts` | Registers `urees-website` |
-| `src/modules/sources/platform/adapter-registry.server.ts` | Wires UREES adapter |
-| `src/modules/sources/platform/engine/source-evidence-persistence.server.ts` | Maps `urees-website` pipeline |
-| `src/modules/knowledge/extractors/website-knowledge.extractor.ts` | Includes `urees-website` |
-| `src/modules/sources/platform/engine/source-engine.server.ts` | UREES seeded health note |
-| `.env.example` | `UREES_WEBSITE_URL=` placeholder |
-| `playwright.config.ts` | Test env URL for e2e |
-| `docs/roadmap/master-roadmap.md` | Phase 7 complete |
-| `docs/roadmap/next-phase.md` | Next task |
-| `docs/changelog/CHANGELOG.md` | v0.7.0 entry |
+| Field | Value |
+|-------|-------|
+| `sourceId` | `urees-website` |
+| `connectorId` | `website_urees` |
+| `baseUrl` | `https://urees.shop/` (default from `OFFICIAL_SOURCE_URLS`) |
+| `productsJsonUrl` | `https://urees.shop/products.json` |
+| `feedUrl` | `https://urees.shop/feed/` (derived) |
+| `sitemapUrl` | `https://urees.shop/sitemap.xml` (derived) |
 
----
-
-## Folder Structure
-
-```
-src/modules/sources/connectors/
-├── website/
-│   ├── website-connector.config.types.ts
-│   ├── configurable-website.fetch.server.ts
-│   ├── create-website-connector.server.ts
-│   └── website-connector.configs.server.ts
-├── fiogiuseppe-website.connector.server.ts
-├── urees-website.connector.server.ts
-└── registry.server.ts
-```
-
----
-
-## Configuration
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `UREES_WEBSITE_URL` | Yes (for real sync) | Public site base URL |
-| `UREES_WEBSITE_FEED_URL` | No | RSS feed override |
-| `UREES_WEBSITE_SITEMAP_URL` | No | Sitemap override |
-| `UREES_WEBSITE_PRODUCTS_URL` | No | Shopify JSON override |
-| `UREES_WEBSITE_MAX_PAGES` | No | Default 12 |
-
-Derived when unset: `{baseUrl}/feed/`, `{baseUrl}/sitemap.xml`, `{baseUrl}/products.json`
+`UREES_WEBSITE_URL` remains an optional env override in `.env.local`.
 
 ---
 
 ## Pipeline
 
 ```
-urees-website connector → raw (account: urees) → normalized → evidence → knowledge (UREES brand)
+urees.shop → website_urees connector → raw (account: urees)
+  → normalized → evidence → knowledge (UREES brand)
 ```
 
 Dedup: URL + content hash (unchanged from Phase 3).
@@ -105,17 +87,17 @@ Dedup: URL + content hash (unchanged from Phase 3).
 
 ## Tests
 
-| Suite | Tests | Status |
-|-------|-------|--------|
-| `e2e/urees-website.spec.ts` | 5 | Pass |
-| `e2e/sources.spec.ts` | 5 | Pass |
-| `e2e/knowledge.spec.ts` | 4 | Pass |
-| `e2e/intelligence.spec.ts` | 7 | Pass |
-| `e2e/brain-answer.spec.ts` | 9 | Pass |
+| Suite | Status |
+|-------|--------|
+| `e2e/urees-website.spec.ts` | Pass |
+| `e2e/sources.spec.ts` | Pass |
+| `e2e/knowledge.spec.ts` | Pass |
+| `e2e/intelligence.spec.ts` | Pass |
+| `e2e/brain-answer.spec.ts` | Pass |
 
 ---
 
-## Verification Commands
+## Verification
 
 ```bash
 npx tsc --noEmit
@@ -125,17 +107,9 @@ npx playwright test e2e/urees-website.spec.ts e2e/sources.spec.ts e2e/knowledge.
 
 ---
 
-## Out of Scope (Phase 7)
+## Out of scope
 
-- Medium, Instagram, LinkedIn, OAuth, tokens
-- LLM / AI APIs
-- Scheduled sync automation
-
----
-
-## Next Phase
-
-See [`docs/roadmap/next-phase.md`](../roadmap/next-phase.md).
+- Medium, Instagram, LinkedIn, OAuth, tokens, LLM
 
 ---
 
