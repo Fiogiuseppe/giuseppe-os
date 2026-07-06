@@ -2,19 +2,11 @@
  * Safe, frontend-visible types only.
  * Never include access tokens, refresh tokens, client secrets, or API keys here.
  *
- * Phase 2: six sources only (Personal + UREES).
+ * Canonical source IDs live in config/source-config.ts.
  */
 
-export const SOURCE_PROVIDER_IDS = [
-  'instagram',
-  'linkedin',
-  'medium',
-  'website',
-  'urees-instagram',
-  'urees-website'
-] as const;
-
-export type SourceProviderId = (typeof SOURCE_PROVIDER_IDS)[number];
+export type { SourceProviderId } from '../config/source-config';
+export { SOURCE_PROVIDER_IDS } from '../config/source-config';
 
 export type ConnectionStatus = 'connected' | 'disconnected' | 'needs_auth' | 'error';
 
@@ -35,7 +27,7 @@ export type SourceAuthMethod = 'oauth' | 'feed' | 'stub';
 
 /** Static provider contract — metadata only, no secrets. */
 export type SourceProvider = {
-  id: SourceProviderId;
+  id: import('../config/source-config').SourceProviderId;
   label: string;
   description: string;
   category: SourceProviderCategory;
@@ -58,7 +50,7 @@ export type SourceSyncRunSummary = {
 
 /** Runtime status returned to the UI — safe metadata only. */
 export type SourceProviderStatus = {
-  id: SourceProviderId;
+  id: import('../config/source-config').SourceProviderId;
   label: string;
   description: string;
   category: SourceProviderCategory;
@@ -81,7 +73,7 @@ export type SourceProviderStatus = {
 export type SourceAction = 'connect' | 'disconnect' | 'sync';
 
 export type SourceActionRequest = {
-  sourceId: SourceProviderId;
+  sourceId: import('../config/source-config').SourceProviderId;
   action: SourceAction;
 };
 

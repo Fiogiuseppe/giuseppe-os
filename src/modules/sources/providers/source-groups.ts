@@ -13,14 +13,14 @@ export const PERSONAL_GROUP: SourceGroup = {
   id: 'personal',
   label: 'Personal',
   description: 'Canonical personal public channels — @fiogiuseppe, Medium, fiogiuseppe.com.',
-  sourceIds: ['instagram', 'linkedin', 'medium', 'website']
+  sourceIds: ['instagram_personal', 'linkedin_personal', 'medium_personal', 'website_personal']
 };
 
 export const UREES_GROUP: SourceGroup = {
   id: 'urees',
   label: 'UREES',
   description: 'Brand project — @urees__ and urees.shop.',
-  sourceIds: ['urees-instagram', 'urees-website']
+  sourceIds: ['instagram_urees', 'website_urees']
 };
 
 /** Phase 1: Personal + UREES only. */

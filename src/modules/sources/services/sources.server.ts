@@ -1,5 +1,5 @@
 import type { SourceActionRequest } from '../providers/source-provider.types';
-import { isSourceProviderId } from '../providers/source-registry';
+import { normalizeSourceId } from '../config/source-config';
 
 function isValidSourceAction(value: unknown): value is SourceActionRequest['action'] {
   return value === 'connect' || value === 'disconnect' || value === 'sync';
@@ -11,12 +11,13 @@ export function parseSourceActionRequest(body: unknown): SourceActionRequest | n
   }
 
   const row = body as Record<string, unknown>;
-  if (!isSourceProviderId(String(row.sourceId)) || !isValidSourceAction(row.action)) {
+  const sourceId = normalizeSourceId(String(row.sourceId ?? ''));
+  if (!sourceId || !isValidSourceAction(row.action)) {
     return null;
   }
 
   return {
-    sourceId: row.sourceId as SourceActionRequest['sourceId'],
+    sourceId,
     action: row.action
   };
 }
