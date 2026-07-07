@@ -3,9 +3,14 @@ import path from 'node:path';
 import giuseppeBrain from '../../memory/giuseppe_brain.json';
 
 const IDENTITY_PATH = path.join(process.cwd(), 'brain', 'GIUSEPPE_OS_IDENTITY.md');
+const WRITING_VOICE_PATH = path.join(process.cwd(), 'brain', 'GIUSEPPE_WRITING_VOICE.md');
 
 export function loadGiuseppeIdentityPrompt(): string {
   return fs.readFileSync(IDENTITY_PATH, 'utf8').trim();
+}
+
+export function loadGiuseppeWritingVoicePrompt(): string {
+  return fs.readFileSync(WRITING_VOICE_PATH, 'utf8').trim();
 }
 
 function activeProjects(): string[] {

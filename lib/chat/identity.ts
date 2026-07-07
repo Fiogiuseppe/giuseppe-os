@@ -1,11 +1,20 @@
-import { buildGiuseppeSystemPrompt, loadGiuseppeIdentityPrompt } from '../ai/app-context';
+import {
+  buildGiuseppeSystemPrompt,
+  loadGiuseppeIdentityPrompt,
+  loadGiuseppeWritingVoicePrompt
+} from '../ai/app-context';
 import { IDENTITY_COMPANION_PROMPT } from './companion-prompt';
 import { buildKnowledgeContextBlock } from './knowledge-context.server';
 
-export { loadGiuseppeIdentityPrompt };
+export { loadGiuseppeIdentityPrompt, loadGiuseppeWritingVoicePrompt };
 
 export async function buildChatSystemPrompt(): Promise<string> {
   const knowledge = await buildKnowledgeContextBlock();
 
-  return [buildGiuseppeSystemPrompt(), IDENTITY_COMPANION_PROMPT, knowledge].join('\n\n');
+  return [
+    buildGiuseppeSystemPrompt(),
+    loadGiuseppeWritingVoicePrompt(),
+    IDENTITY_COMPANION_PROMPT,
+    knowledge
+  ].join('\n\n');
 }
