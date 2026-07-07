@@ -73,12 +73,7 @@ export default function ChatPage() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...messages, userMessage].map(entry => ({
-            role: entry.role,
-            content: entry.content
-          }))
-        })
+        body: JSON.stringify({ message })
       });
 
       const body = (await response.json()) as { reply?: string; error?: string };
@@ -122,16 +117,16 @@ export default function ChatPage() {
       <AppTopbar mode="link" />
       <main className={styles.page}>
         <header className={styles.header}>
-          <h1 className={styles.title}>Chi sono</h1>
+          <h1 className={styles.title}>Chat</h1>
           <p className={styles.subtitle}>
-            Conversazione identità — ancorata a Knowledge e costituzione. {subtitle}
+            Legacy route — use Memory in the main app for identity conversation. {subtitle}
           </p>
         </header>
 
         <div ref={transcriptRef} className={styles.transcript} aria-live="polite">
           {messages.length === 0 ? (
             <p className={styles.empty}>
-              Parla con Giuseppe OS per restare coerente con chi sei — carriera, posizionamento, energia.
+              Debug-only chat for provider testing. Product AI runs in the background on Today, Decisions, and Insights.
             </p>
           ) : (
             messages.map(entry => (
