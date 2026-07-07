@@ -9,25 +9,57 @@ type ChatMessage = {
   content: string;
 };
 
+type CompanionStatus = {
+  configured: boolean;
+  knowledgeCount: number;
+};
+
 export function MemoryCompanionChat() {
   const { t } = useLanguage();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
-  const [expanded, setExpanded] = useState(false);
+  const [status, setStatus] = useState<CompanionStatus | null>(null);
   const transcriptRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!expanded) {
-      return;
+    let cancelled = false;
+
+    async function loadStatus() {
+      const [chatResponse, knowledgeResponse] = await Promise.all([
+        fetch('/api/chat'),
+        fetch('/api/knowledge')
+      ]);
+
+      if (cancelled) {
+        return;
+      }
+
+      const chatBody = chatResponse.ok ? ((await chatResponse.json()) as { configured?: boolean }) : {};
+      const knowledgeBody = knowledgeResponse.ok
+        ? ((await knowledgeResponse.json()) as { items?: unknown[] })
+        : {};
+
+      setStatus({
+        configured: chatBody.configured === true,
+        knowledgeCount: Array.isArray(knowledgeBody.items) ? knowledgeBody.items.length : 0
+      });
     }
 
+    void loadStatus();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     const node = transcriptRef.current;
     if (node) {
       node.scrollTop = node.scrollHeight;
     }
-  }, [messages, isSending, expanded]);
+  }, [messages, isSending]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -48,7 +80,6 @@ export function MemoryCompanionChat() {
     setInput('');
     setError(null);
     setIsSending(true);
-    setExpanded(true);
 
     try {
       const response = await fetch('/api/chat', {
@@ -88,14 +119,31 @@ export function MemoryCompanionChat() {
     }
   }
 
+  const statusLabel = status
+    ? status.configured
+      ? t('memory.companion.ready')
+      : t('memory.companion.offline')
+    : t('memory.companion.checking');
+
   return (
     <section
-      className={`memory-companion${expanded ? ' memory-companion--open' : ''}`}
+      className="memory-companion"
       data-testid="memory-companion"
       aria-label={t('memory.companion.label')}
     >
-      {expanded ? (
-        <div ref={transcriptRef} className="memory-companion-transcript" aria-live="polite">
+      <p className="memory-companion-lead">{t('memory.companion.lead')}</p>
+
+      <p className="memory-companion-status" data-testid="memory-companion-status">
+        {statusLabel}
+        {status && status.knowledgeCount > 0
+          ? ` · ${status.knowledgeCount} ${t('memory.companion.evidenceItems')}`
+          : status
+            ? ` · ${t('memory.companion.noEvidence')}`
+            : ''}
+      </p>
+
+      {messages.length > 0 ? (
+        <div ref={transcriptRef} className="memory-companion-transcript">
           {messages.map(entry => (
             <article
               key={entry.id}
@@ -113,9 +161,7 @@ export function MemoryCompanionChat() {
           ))}
           {isSending ? <p className="memory-companion-pending">{t('memory.companion.thinking')}</p> : null}
         </div>
-      ) : (
-        <p className="memory-companion-lead">{t('memory.companion.lead')}</p>
-      )}
+      ) : null}
 
       {error ? (
         <p className="memory-companion-error" role="alert">
@@ -130,29 +176,19 @@ export function MemoryCompanionChat() {
           value={input}
           onChange={event => setInput(event.target.value)}
           placeholder={t('memory.companion.placeholder')}
-          disabled={isSending}
+          disabled={isSending || status?.configured === false}
           aria-label={t('memory.companion.placeholder')}
         />
         <button
           type="submit"
           className="memory-companion-submit"
           data-testid="memory-companion-send"
-          disabled={isSending || !input.trim()}
+          disabled={isSending || !input.trim() || status?.configured === false}
           aria-label={isSending ? t('memory.companion.thinking') : t('memory.companion.send')}
         >
           <span aria-hidden="true">→</span>
         </button>
       </form>
-
-      {messages.length > 0 ? (
-        <button
-          type="button"
-          className="memory-companion-toggle"
-          onClick={() => setExpanded(current => !current)}
-        >
-          {expanded ? t('memory.companion.collapse') : t('memory.companion.expand')}
-        </button>
-      ) : null}
     </section>
   );
 }

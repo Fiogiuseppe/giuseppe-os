@@ -1,0 +1,1145 @@
+{
+  "items": [
+    {
+      "id": "knowledge_giuseppe_topic_art",
+      "owner": "giuseppe",
+      "sourceId": "website_personal",
+      "sourceType": "website",
+      "knowledgeType": "topic",
+      "label": "Art",
+      "summary": "Mentioned in Medium evidence: What Milan Design Week 2026 taught me about how brands actually connect with people. I walked a lot this week. Milan during Fuorisalone is a city that reorganizes itself around att",
+      "confidence": 0.75,
+      "evidenceIds": [
+        "evidence_website_fiogiuseppe_website_personal:profile",
+        "evidence_website_fiogiuseppe_website_personal:post:https://fiogiuseppe.com/?p=2228",
+        "evidence_manual_import_fiogiuseppe_medium_personal:article:https://medium.com/p/dbce71c531db"
+      ],
+      "evidenceUrls": [
+        "https://fiogiuseppe.com/",
+        "https://fiogiuseppe.com/giuseppe-fioretti-artist-designer/",
+        "https://medium.com/design-bootcamp/art-that-makes-you-stop-dbce71c531db?source=rss-1011676f79e4------2"
+      ],
+      "metadata": {
+        "extractor": "medium-knowledge",
+        "matchedPattern": "\\bart\\b"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:45:11.607Z",
+      "updatedAt": "2026-07-07T10:45:12.325Z"
+    },
+    {
+      "id": "knowledge_giuseppe_brand_urees",
+      "owner": "giuseppe",
+      "sourceId": "website_personal",
+      "sourceType": "website",
+      "knowledgeType": "brand",
+      "label": "UREES",
+      "summary": "Mentioned in website evidence: FIT : Straight Fit (similar to Levi's 501 or 505) SIZE: 33 US / 84 cm (the model is 170 cm tall) ADJUSTABLE WAIST : Each pair comes with 4 buttons at the waist, allowing you to adj",
+      "confidence": 0.95,
+      "evidenceIds": [
+        "evidence_website_fiogiuseppe_website_personal:post:https://fiogiuseppe.com/?p=2228",
+        "evidence_website_urees_website_urees:product:frida-pants-black-white",
+        "evidence_website_urees_website_urees:product:gala-pants-copy",
+        "evidence_website_urees_website_urees:product:marie-pants-2",
+        "evidence_website_urees_website_urees:product:frida-pants",
+        "evidence_website_urees_website_urees:product:malala-pants",
+        "evidence_website_urees_website_urees:product:repaired-hand-painted-pants-copy-1",
+        "evidence_website_urees_website_urees:product:repaired-hand-painted-pants-1",
+        "evidence_website_urees_website_urees:product:repaired-hand-painted-pants",
+        "evidence_website_urees_website_urees:product:repaired-hand-painted-pants-copy",
+        "evidence_website_urees_website_urees:product:repair-hand-painted-pants-2",
+        "evidence_website_urees_website_urees:product:repair-hand-painted-pants-1",
+        "evidence_website_urees_website_urees:product:repair-hand-painted-pants"
+      ],
+      "evidenceUrls": [
+        "https://fiogiuseppe.com/giuseppe-fioretti-artist-designer/",
+        "https://urees.shop/products/frida-pants-black-white",
+        "https://urees.shop/products/gala-pants-copy",
+        "https://urees.shop/products/marie-pants-2",
+        "https://urees.shop/products/frida-pants",
+        "https://urees.shop/products/malala-pants",
+        "https://urees.shop/products/repaired-hand-painted-pants-copy-1",
+        "https://urees.shop/products/repaired-hand-painted-pants-1",
+        "https://urees.shop/products/repaired-hand-painted-pants",
+        "https://urees.shop/products/repaired-hand-painted-pants-copy",
+        "https://urees.shop/products/repair-hand-painted-pants-2",
+        "https://urees.shop/products/repair-hand-painted-pants-1",
+        "https://urees.shop/products/repair-hand-painted-pants"
+      ],
+      "metadata": {
+        "extractor": "website-knowledge",
+        "matchedPattern": "\\burees\\b"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:45:11.609Z",
+      "updatedAt": "2026-07-07T10:45:13.397Z"
+    },
+    {
+      "id": "knowledge_giuseppe_project_visceral_poems",
+      "owner": "giuseppe",
+      "sourceId": "medium_personal",
+      "sourceType": "feed",
+      "knowledgeType": "project",
+      "label": "Visceral Poems",
+      "summary": "Mentioned in Medium evidence: Why my most personal creative practice is not a side project it’s a ritual. Visceral Poems — Pain is inevitable, suffering is optional. There is a specific kind of stillness that o",
+      "confidence": 0.9,
+      "evidenceIds": [
+        "evidence_manual_import_fiogiuseppe_medium_personal:article:https://medium.com/p/2a32a649151e"
+      ],
+      "evidenceUrls": [
+        "https://medium.com/@fiogiuseppe/i-design-habits-visceral-poems-is-one-of-them-2a32a649151e?source=rss-1011676f79e4------2"
+      ],
+      "metadata": {
+        "extractor": "medium-knowledge",
+        "matchedPattern": "visceral poems"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:45:12.322Z",
+      "updatedAt": "2026-07-07T10:45:12.322Z"
+    },
+    {
+      "id": "knowledge_giuseppe_topic_poems",
+      "owner": "giuseppe",
+      "sourceId": "medium_personal",
+      "sourceType": "feed",
+      "knowledgeType": "topic",
+      "label": "Poems",
+      "summary": "Mentioned in Medium evidence: Why my most personal creative practice is not a side project it’s a ritual. Visceral Poems — Pain is inevitable, suffering is optional. There is a specific kind of stillness that o",
+      "confidence": 0.75,
+      "evidenceIds": [
+        "evidence_manual_import_fiogiuseppe_medium_personal:article:https://medium.com/p/2a32a649151e"
+      ],
+      "evidenceUrls": [
+        "https://medium.com/@fiogiuseppe/i-design-habits-visceral-poems-is-one-of-them-2a32a649151e?source=rss-1011676f79e4------2"
+      ],
+      "metadata": {
+        "extractor": "medium-knowledge",
+        "matchedPattern": "\\bpoems\\b"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:45:12.323Z",
+      "updatedAt": "2026-07-07T10:45:12.323Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_yesterday_i_visited_the_ny_carlsberg_glyptotek_and_saw_this_ancient_oil_lamp_more_than_3000_years_old_and_somehow_th",
+      "owner": "giuseppe",
+      "sourceId": "linkedin_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "Yesterday I visited the Ny Carlsberg Glyptotek and saw this ancient oil lamp.\n\nMore than 3000 years old… and somehow, th",
+      "summary": "Yesterday I visited the Ny Carlsberg Glyptotek and saw this ancient oil lamp.\n\nMore than 3000 years old… and somehow, the design still feels contemporary.\nFunctional. Essential. Timeless.\n\nIt’s impressive to realize that some objects were designed so well that humanity still uses the same logic thousands of years later.\nYou can find surprisingly similar designs today, even on Amazon. 😨 \n\nIt made me think about design in a different way:\nnot creating for trends, but creating with the ambition to",
+      "confidence": 0.82,
+      "evidenceIds": [
+        "evidence_linkedin_manual_7462426958543384576_XNbO"
+      ],
+      "evidenceUrls": [
+        "https://www.linkedin.com/posts/fiogiuseppe_yesterday-i-visited-the-ny-carlsberg-glyptotek-activity-7462426958543384576-XNbO"
+      ],
+      "metadata": {
+        "extractor": "linkedin-manual-og",
+        "activityId": "7462426958543384576-XNbO",
+        "importMode": "manual_og",
+        "fullTitle": "Yesterday I visited the Ny Carlsberg Glyptotek and saw this ancient oil lamp.\n\nMore than 3000 years old… and somehow, the design still feels contemporary.\nFunctional. Essential. Timeless.\n\nIt’s…"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:52:24.465Z",
+      "updatedAt": "2026-07-07T10:52:24.466Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_the_story_continues_after_the_success_of_the_first_post_here_comes_part_two_with_exclusive_content_nobody_asked_for_",
+      "owner": "giuseppe",
+      "sourceId": "linkedin_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "The story continues…\n\nAfter the success of the first post, here comes part two with exclusive content nobody asked for.\n",
+      "summary": "The story continues…\n\nAfter the success of the first post, here comes part two with exclusive content nobody asked for.\n\n“Us trying to not be ugly and pointless.” 😭\n\nHonestly… thank you all for the comments, the laughs, the memes and the unexpected amount of passion around LEGO Crocs.\n\nI think these shoes started more conversations in 48 hours than I did in the last 3 months ahaha\n\nlove is love…  ❤️🫶🏻🔥 have fun | 21 comments on LinkedIn",
+      "confidence": 0.82,
+      "evidenceIds": [
+        "evidence_linkedin_manual_7460744992387506176_G0kq"
+      ],
+      "evidenceUrls": [
+        "https://www.linkedin.com/posts/fiogiuseppe_the-story-continues-after-the-success-of-activity-7460744992387506176-G0kq"
+      ],
+      "metadata": {
+        "extractor": "linkedin-manual-og",
+        "activityId": "7460744992387506176-G0kq",
+        "importMode": "manual_og",
+        "fullTitle": "The story continues…\n\nAfter the success of the first post, here comes part two with exclusive content nobody asked for.\n\n“Us trying to not be ugly and pointless.” 😭\n\nHonestly… thank you all for the…"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:52:25.166Z",
+      "updatedAt": "2026-07-07T10:52:25.169Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_we_actually_did_it_amp_lt_3",
+      "owner": "giuseppe",
+      "sourceId": "linkedin_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "We actually did it. &amp;lt;3",
+      "summary": "We actually did it. <3",
+      "confidence": 0.82,
+      "evidenceIds": [
+        "evidence_linkedin_manual_7458440024586379285_Br_s"
+      ],
+      "evidenceUrls": [
+        "https://www.linkedin.com/posts/fiogiuseppe_happy-100th-birthday-sir-david-attenborough-activity-7458440024586379285-Br_s"
+      ],
+      "metadata": {
+        "extractor": "linkedin-manual-og",
+        "activityId": "7458440024586379285-Br_s",
+        "importMode": "manual_og",
+        "fullTitle": "We actually did it. &amp;lt;3"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:52:25.656Z",
+      "updatedAt": "2026-07-07T10:52:25.656Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_this_cover_has_been_on_my_mind_no_logo_no_band_name_no_title_nothing_just_a_cow_standing_there_looking_at_you_a",
+      "owner": "giuseppe",
+      "sourceId": "linkedin_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "This cover has been on my mind.\nNo logo.\nNo band name.\nNo title.\nNothing.\nJust a cow, standing there, looking at you.\n\nA",
+      "summary": "This cover has been on my mind.\nNo logo.\nNo band name.\nNo title.\nNothing.\nJust a cow, standing there, looking at you.\n\nAnd the question is: what kind of confidence do you need, as a band, to do something like this?\n\nNot just removing all branding but choosing an image that feels almost… meaningless.\n\nWhy a cow? Exactly.\nBecause it doesn’t need to make sense.\nThis is where design stops, and art begins.\nDesign explains. Art doesn’t have to.\n\nAnd yet, it’s often art the irrational, the unclear, the",
+      "confidence": 0.82,
+      "evidenceIds": [
+        "evidence_linkedin_manual_7457365123461099520_V79r"
+      ],
+      "evidenceUrls": [
+        "https://www.linkedin.com/posts/fiogiuseppe_this-cover-has-been-on-my-mind-no-logo-activity-7457365123461099520-V79r"
+      ],
+      "metadata": {
+        "extractor": "linkedin-manual-og",
+        "activityId": "7457365123461099520-V79r",
+        "importMode": "manual_og",
+        "fullTitle": "This cover has been on my mind.\nNo logo.\nNo band name.\nNo title.\nNothing.\nJust a cow, standing there, looking at you.\n\nAnd the question is: what kind of confidence do you need, as a band, to do…"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:52:26.138Z",
+      "updatedAt": "2026-07-07T10:52:26.138Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_lego_smart_play_x_lego_star_wars_official_trailer",
+      "owner": "giuseppe",
+      "sourceId": "linkedin_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "LEGO Smart Play x LEGO Star Wars - Official Trailer",
+      "summary": "Yesterday I met Blinkink, the studio behind this the LEGO Group Smart Play X LEGO Star Wars film and it genuinely inspired me.\n\nIn a moment where #AI is reshaping everything, seeing this level of craft, storytelling, and production hits differently.\n\nA simple unboxing becomes a portal.\nA kid’s room turns into a cinematic world.\nReality and imagination blur and for a moment, you don’t just imagine… you live it.\n\nThat’s the real product: not the toy, but the ability to bring your imagination to li",
+      "confidence": 0.82,
+      "evidenceIds": [
+        "evidence_linkedin_manual_7440658149461647360_9UWk"
+      ],
+      "evidenceUrls": [
+        "https://www.linkedin.com/posts/fiogiuseppe_lego-smart-play-x-lego-star-wars-official-activity-7440658149461647360-9UWk"
+      ],
+      "metadata": {
+        "extractor": "linkedin-manual-og",
+        "activityId": "7440658149461647360-9UWk",
+        "importMode": "manual_og",
+        "fullTitle": "LEGO Smart Play x LEGO Star Wars - Official Trailer"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:52:26.603Z",
+      "updatedAt": "2026-07-07T10:52:26.604Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_beauty_is_not_enough",
+      "owner": "giuseppe",
+      "sourceId": "linkedin_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "Beauty Is Not Enough",
+      "summary": "This happened in 2022.\nI was traveling alone through Colombia for two months.\nNo strict plan. Just movement.\n\nWhen I arrived in Santa Marta, I decided to hike to the Lost City.\nFour days.\n60 kilometers.\n1,300 meters of elevation gain.\n\nI thought it would be just another beautiful experience.\nIt wasn’t.\n\nSomewhere in the jungle, walking side by side with the guide’s translator, he told me something I’ll never forget.\n\nHe didn’t own his first pair of shoes until he was fourteen.\nHe also told me he",
+      "confidence": 0.82,
+      "evidenceIds": [
+        "evidence_linkedin_manual_7431960397831778304_m_bT"
+      ],
+      "evidenceUrls": [
+        "https://www.linkedin.com/posts/fiogiuseppe_beauty-is-not-enough-activity-7431960397831778304-m_bT"
+      ],
+      "metadata": {
+        "extractor": "linkedin-manual-og",
+        "activityId": "7431960397831778304-m_bT",
+        "importMode": "manual_og",
+        "fullTitle": "Beauty Is Not Enough"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:52:27.139Z",
+      "updatedAt": "2026-07-07T10:52:27.140Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_in_january_last_year_i_started_my_journey_at_lego_group_as_a_brand_designer_smart_play_was_the_very_first_project_i_g",
+      "owner": "giuseppe",
+      "sourceId": "linkedin_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "In January last year, I started my journey at LEGO Group as a Brand Designer.\n\nSmart Play was the very first project I g",
+      "summary": "In January last year, I started my journey at LEGO Group as a Brand Designer.\n\nSmart Play was the very first project I got involved in.\n\nThe project was already in progress when I joined, so I stepped in somewhere in the middle of the process, trying to contribute where I could and learn as much as possible along the way.\n\nIt was incredibly exciting and at the same time completely confidential. I couldn’t talk about it with anyone.\n\nI had the chance to listen, collaborate, and share small inputs",
+      "confidence": 0.82,
+      "evidenceIds": [
+        "evidence_linkedin_manual_7414710264975097856_Cwfo"
+      ],
+      "evidenceUrls": [
+        "https://www.linkedin.com/posts/fiogiuseppe_in-january-last-year-i-started-my-journey-activity-7414710264975097856-Cwfo"
+      ],
+      "metadata": {
+        "extractor": "linkedin-manual-og",
+        "activityId": "7414710264975097856-Cwfo",
+        "importMode": "manual_og",
+        "fullTitle": "In January last year, I started my journey at LEGO Group as a Brand Designer.\n\nSmart Play was the very first project I got involved in.\n\nThe project was already in progress when I joined, so I…"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:52:27.664Z",
+      "updatedAt": "2026-07-07T10:52:27.665Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_i_amp_39_ve_been_wearing_armor_for_a_long_time_good_armor_beautiful_armor_the_kind_that_looks_like_confidence_on_ju",
+      "owner": "giuseppe",
+      "sourceId": "linkedin_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "I&amp;#39;ve been wearing armor for a long time.\nGood armor. Beautiful armor.\nThe kind that looks like confidence.\nOn Ju",
+      "summary": "I",
+      "confidence": 0.82,
+      "evidenceIds": [
+        "evidence_linkedin_manual_7475171191419301888_A_3l"
+      ],
+      "evidenceUrls": [
+        "https://www.linkedin.com/posts/fiogiuseppe_ive-been-wearing-armor-for-a-long-time-activity-7475171191419301888-A-3l"
+      ],
+      "metadata": {
+        "extractor": "linkedin-manual-og",
+        "activityId": "7475171191419301888-A-3l",
+        "importMode": "manual_og",
+        "fullTitle": "I&amp;#39;ve been wearing armor for a long time.\nGood armor. Beautiful armor.\nThe kind that looks like confidence.\nOn June 19, I took it off.\nI invited the people I love to my rooftop.\n \nTold them: white…"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:52:28.193Z",
+      "updatedAt": "2026-07-07T10:52:28.194Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_visceralpoems_escribujos_creativity_art_design_visualpoetry_mindfulness",
+      "owner": "giuseppe",
+      "sourceId": "linkedin_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "#visceralpoems #escribujos #creativity #art #design #visualpoetry #mindfulness",
+      "summary": "A few years ago, during a five-month journey across Latin America, I started collecting words.\n\nNot objects. Not souvenirs. Words.\n\nWords from songs, books, conversations, and moments of silence. Words that helped me grow, heal, and remember who I wanted to become.\n\nWhen I returned home, I wanted to keep those ideas close. But I didn’t want to fill my walls with quotes that would eventually disappear into the background.\n\nSo I started merging writing and drawing.\n\nThe words became hidden inside ",
+      "confidence": 0.82,
+      "evidenceIds": [
+        "evidence_linkedin_manual_7472743976769572864_dzjl"
+      ],
+      "evidenceUrls": [
+        "https://www.linkedin.com/posts/fiogiuseppe_visceralpoems-escribujos-creativity-activity-7472743976769572864-dzjl"
+      ],
+      "metadata": {
+        "extractor": "linkedin-manual-og",
+        "activityId": "7472743976769572864-dzjl",
+        "importMode": "manual_og",
+        "fullTitle": "#visceralpoems #escribujos #creativity #art #design #visualpoetry #mindfulness"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:52:28.738Z",
+      "updatedAt": "2026-07-07T10:52:28.738Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_worldplayday_lego_creativity_playmatters_neverstopplaying",
+      "owner": "giuseppe",
+      "sourceId": "linkedin_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "#worldplayday #lego #creativity #playmatters #neverstopplaying",
+      "summary": "Working on this campaign for the LEGO Group made me think about how I used to play as a child.\n\nI don",
+      "confidence": 0.82,
+      "evidenceIds": [
+        "evidence_linkedin_manual_7469342413468090368_O_Qe"
+      ],
+      "evidenceUrls": [
+        "https://www.linkedin.com/posts/fiogiuseppe_worldplayday-lego-creativity-activity-7469342413468090368-O_Qe"
+      ],
+      "metadata": {
+        "extractor": "linkedin-manual-og",
+        "activityId": "7469342413468090368-O_Qe",
+        "importMode": "manual_og",
+        "fullTitle": "#worldplayday #lego #creativity #playmatters #neverstopplaying"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:52:29.326Z",
+      "updatedAt": "2026-07-07T10:52:29.327Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_working_at_the_lego_group_also_means_this_today_i_received_a_package_lego_x_crocs_and_honestly_these_are_my_first_c",
+      "owner": "giuseppe",
+      "sourceId": "linkedin_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "Working at the LEGO Group also means this:\n\nToday I received a package LEGO x Crocs.\n\nAnd honestly… these are my first C",
+      "summary": "Working at the LEGO Group also means this:\n\nToday I received a package LEGO x Crocs.\n\nAnd honestly… these are my first Crocs ever.\n\nI would have never imagined myself buying a pair o Crocs.\nBut these? These, yes. Of course. Straight into my house.\n\nThat’s the strange power of the LEGO Group .\n\nIt makes you smile before you even open the box.\nIt changes your face for a second.\nYou look at it like a kid would.\n\nAnd maybe that’s one of the most beautiful things about this brand: it reminds adults t",
+      "confidence": 0.82,
+      "evidenceIds": [
+        "evidence_linkedin_manual_7460225099628183552_Gh4J"
+      ],
+      "evidenceUrls": [
+        "https://www.linkedin.com/posts/fiogiuseppe_working-at-the-lego-group-also-means-this-activity-7460225099628183552-Gh4J"
+      ],
+      "metadata": {
+        "extractor": "linkedin-manual-og",
+        "activityId": "7460225099628183552-Gh4J",
+        "importMode": "manual_og",
+        "fullTitle": "Working at the LEGO Group also means this:\n\nToday I received a package LEGO x Crocs.\n\nAnd honestly… these are my first Crocs ever.\n\nI would have never imagined myself buying a pair o Crocs.\nBut…"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T10:52:30.195Z",
+      "updatedAt": "2026-07-07T10:52:30.195Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_i_ve_been_wearing_armor_for_a_long_time_good_armor_beautiful_armor_the_kind_that_looks_like_confidence_on_june_1",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "I’ve been wearing armor for a long time.\n\nGood armor.\n\nBeautiful armor.\n\nThe kind that looks like confidence.\n\nOn June 1",
+      "summary": "fiogiuseppe on June 23, 2026: \"I’ve been wearing armor for a long time.\n\nGood armor.\n\nBeautiful armor.\n\nThe kind that looks like confidence.\n\nOn June 19, I took it off.\n\nI invited the people I love to my rooftop.\n\nWhite clothes.\n\nYour favorite drink.\n\nNo agenda.\n\nLive music.\n\nA sunset over Copenhagen.\n\nBut none of that was the point.\n\nWhat I really wanted was something much simpler:\n\nTo let the people closest to me meet the man living inside the armor.\n\nThat’s the only birthday gift I wished for",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DZ7gu2lDYYN"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DZ7gu2lDYYN"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DZ7gu2lDYYN",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "I’ve been wearing armor for a long time.\n\nGood armor.\n\nBeautiful armor.\n\nThe kind that looks like confidence.\n\nOn June 19, I took it off.\n\nI invited the people I love to my rooftop.\n\nWhite clothes.\n\nY"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:19.903Z",
+      "updatedAt": "2026-07-07T11:16:19.905Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_first_drop_first_campaign_first_love_for_the_brand_i_ve_dreamed_of_for_a_long_time_urees_finally_you_can_enjoy",
+      "owner": "giuseppe",
+      "sourceId": "instagram_urees",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "First drop, first campaign, first love for the brand I've dreamed of for a long time! \n\n@urees__ Finally, you can enjoy ",
+      "summary": "fiogiuseppe on June 29, 2023: \"First drop, first campaign, first love for the brand I've dreamed of for a long time! \n\n@urees__ Finally, you can enjoy and purchase the clothes online and in Barcelona at @carlosseguravintage. @diffusion____  @pakavintage \n\nThe campaign is named 'JOURNEY OF LAYERS: FROM SOURCE TO STYLE,' and we're aiming to give second-hand clothes a second chance. We want to provide them with another space in this world and carry the energy and stories that these clothes hold, we",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_CuEWybHtbip"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/CuEWybHtbip"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "CuEWybHtbip",
+        "handle": "urees__",
+        "importMode": "manual_og",
+        "fullTitle": "First drop, first campaign, first love for the brand I've dreamed of for a long time! \n\n@urees__ Finally, you can enjoy and purchase the clothes online and in Barcelona at @carlosseguravintage. @diffu"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:20.894Z",
+      "updatedAt": "2026-07-07T11:16:20.894Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_at_some_point_in_my_life_i_felt_a_deep_calling_to_create_something_transcendent_that_s_how_urees_was_born_a_brand_f",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "At some point in my life, I felt a deep calling to create something transcendent. ✨ That's how Urees was born, a brand f",
+      "summary": "fiogiuseppe on June 8, 2023: \"At some point in my life, I felt a deep calling to create something transcendent. ✨ That's how Urees was born, a brand filled with history, energy, and passion. 🌟 Since 2019, I've dreamt of this brand that allows me to share my creativity with the world through unique garments. Each piece is more than just clothing; it's a work of art you carry with you, a form of personal expression. 🎨 Urees represents the transformative power of change, an invitation to explore ",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_CtOaVAYNWa9"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/CtOaVAYNWa9"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "CtOaVAYNWa9",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "At some point in my life, I felt a deep calling to create something transcendent. ✨ That's how Urees was born, a brand filled with history, energy, and passion. 🌟 Since 2019, I've dreamt of this bran"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:21.909Z",
+      "updatedAt": "2026-07-07T11:16:21.910Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_ya_pas_un_a_o_del_lanzamiento_del_nuevo_logo_de_desigual_estoy_s_per_agradecido_por_todo_lo_que_me_llev_este_proy",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "Ya pasó un año del lanzamiento del nuevo logo de @desigual , estoy súper agradecido por todo lo que me llevó. \nEste proy",
+      "summary": "fiogiuseppe on February 13, 2021: \"Ya pasó un año del lanzamiento del nuevo logo de @desigual , estoy súper agradecido por todo lo que me llevó. \nEste proyecto fue uno de los más bonitos que hice en mi vida. Con este he tenido la oportunidad de poder conocer personas increíbles, tener experiencias increíbles y también este proyecto ha sido reconocido por los expertos del diseño, ganando un premio Laus . \nConseguí unir el diseño y el arte que son mis dos pasiones en un solo proyecto. Me siento mu",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_CLPtQgolMko"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/CLPtQgolMko"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "CLPtQgolMko",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "Ya pasó un año del lanzamiento del nuevo logo de @desigual , estoy súper agradecido por todo lo que me llevó. \nEste proyecto fue uno de los más bonitos que hice en mi vida. Con este he tenido la oport"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:22.711Z",
+      "updatedAt": "2026-07-07T11:16:22.711Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_it_s_finally_out_one_of_the_first_projects_i_had_the_chance_to_work_on_after_joining_lego_behind_these_minutes_of_f",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "It’s finally out.\n\nOne of the first projects I had the chance to work on after joining @lego \n\nBehind these minutes of f",
+      "summary": "fiogiuseppe on June 3, 2026: \"It’s finally out.\n\nOne of the first projects I had the chance to work on after joining @lego \n\nBehind these minutes of film there are months of conversations, sketches, experiments, challenges, improvements, and the work of an incredible number of talented people.\n\nSeeing something become real after living with it for so long is always a beautiful feeling.\n\nOn June 11th we celebrate World Play Day.\n\nAs adults, we often talk about productivity, performance and succes",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DZIi9zNjkE5"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DZIi9zNjkE5"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DZIi9zNjkE5",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "It’s finally out.\n\nOne of the first projects I had the chance to work on after joining @lego \n\nBehind these minutes of film there are months of conversations, sketches, experiments, challenges, improv"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:23.791Z",
+      "updatedAt": "2026-07-07T11:16:23.797Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_i_ve_been_drawing_for_years_and_for_a_long_time_i_thought_the_goal_was_to_improve_my_technique_but_recently_i_realiz",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "I’ve been drawing for years.\nAnd for a long time, I thought the goal was to improve my technique.\n\nBut recently I realiz",
+      "summary": "fiogiuseppe on May 26, 2026: \"I’ve been drawing for years.\nAnd for a long time, I thought the goal was to improve my technique.\n\nBut recently I realized something.\n\nThe most important thing is not improving the drawing.\nIt’s improving myself.\n\nYour art is like your body.\nWhat comes out depends on what you consume.\n\nLike shit.\nWhat you shit is what you eat.\n\nSo instead of obsessing over technique, I want to start paying attention to what feeds my mind, my eyes, my soul, my habits, my silence, my ",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DY0Oo4KjoSf"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DY0Oo4KjoSf"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DY0Oo4KjoSf",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "I’ve been drawing for years.\nAnd for a long time, I thought the goal was to improve my technique.\n\nBut recently I realized something.\n\nThe most important thing is not improving the drawing.\nIt’s impro"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:24.807Z",
+      "updatedAt": "2026-07-07T11:16:24.808Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_a_journey_inward_chaotic_organic_uncomfortable_but_alive_",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "A journey inward chaotic, organic, uncomfortable, but alive.",
+      "summary": "fiogiuseppe on April 8, 2026: \"A journey inward chaotic, organic, uncomfortable, but alive.\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DW4ZwM_jsTB"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DW4ZwM_jsTB"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DW4ZwM_jsTB",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "A journey inward chaotic, organic, uncomfortable, but alive."
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:25.759Z",
+      "updatedAt": "2026-07-07T11:16:25.761Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_kissing_is_an_art_a_kiss_is_one_of_the_most_sensual_things_that_exists_not_everyone_knows_how_to_kiss_not_everyon",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "Kissing is an art. \n\nA kiss is one of the most sensual things that exists. \nNot everyone knows how to kiss. \nNot everyon",
+      "summary": "fiogiuseppe on May 11, 2026: \"Kissing is an art. \n\nA kiss is one of the most sensual things that exists. \nNot everyone knows how to kiss. \nNot everyone knows how to truly enjoy a kiss. \n\nBut when you find someone who does… \nand you both feel it at the same time… \nthat moment of “wait… you feel this too?” \n\nThat’s something extraordinary.\n#kiss #kissing #kissingisanart\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DYMtBVODYBM"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DYMtBVODYBM"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DYMtBVODYBM",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "Kissing is an art. \n\nA kiss is one of the most sensual things that exists. \nNot everyone knows how to kiss. \nNot everyone knows how to truly enjoy a kiss. \n\nBut when you find someone who does… \nand yo"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:26.951Z",
+      "updatedAt": "2026-07-07T11:16:26.953Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_when_i_started_urees_i_didn_t_just_want_to_make_clothes_i_wanted_to_rescue_stories_every_pair_i_find_has_lived_a_l",
+      "owner": "giuseppe",
+      "sourceId": "instagram_urees",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "When I started @urees__ I didn’t just want to make clothes.\nI wanted to rescue stories.\n\nEvery pair I find has lived a l",
+      "summary": "fiogiuseppe on November 28, 2025: \"When I started @urees__ I didn’t just want to make clothes.\nI wanted to rescue stories.\n\nEvery pair I find has lived a life before mine:\nwalked through cities I’ve never seen,\ndanced through nights I can’t remember,\nbeen loved, torn, repaired…\nand started again.\n\nI take all those pieces the scars, the chapters\nand fuse them into something new.\n\nNot perfect. Not uniform.\nBut alive.\n\nBecause beauty isn’t about looking new,\nit’s about carrying history with dignity",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DRm1WnFiENM"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DRm1WnFiENM"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DRm1WnFiENM",
+        "handle": "urees__",
+        "importMode": "manual_og",
+        "fullTitle": "When I started @urees__ I didn’t just want to make clothes.\nI wanted to rescue stories.\n\nEvery pair I find has lived a life before mine:\nwalked through cities I’ve never seen,\ndanced through nights I "
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:27.955Z",
+      "updatedAt": "2026-07-07T11:16:27.956Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_apparently_this_lego_x_crocs_story_escaped_linkedin_and_made_it_all_the_way_here_these_are_my_first_crocs_ever_n",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "Apparently this @lego  x @crocs story escaped LinkedIn… and made it all the way here.\n\nThese are my first Crocs ever.\n\nN",
+      "summary": "fiogiuseppe on May 16, 2026: \"Apparently this @lego  x @crocs story escaped LinkedIn… and made it all the way here.\n\nThese are my first Crocs ever.\n\nNever thought I would wear a pair.\n\nBut LEGO has this strange power:\nit makes adults smile like kids again.\n\nLinkedIn got the emotional version.\n\nInstagram gets the director’s cut.\n\nAlso yes… I emotionally bonded with the Crocs.\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DYZQuFLjcb6"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DYZQuFLjcb6"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DYZQuFLjcb6",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "Apparently this @lego  x @crocs story escaped LinkedIn… and made it all the way here.\n\nThese are my first Crocs ever.\n\nNever thought I would wear a pair.\n\nBut LEGO has this strange power:\nit makes adu"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:29.002Z",
+      "updatedAt": "2026-07-07T11:16:29.002Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_v_ision_",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "V-ision ❤️\".",
+      "summary": "fiogiuseppe on October 5, 2025: \"V-ision ❤️\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DPcN_u0Da4l"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DPcN_u0Da4l"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DPcN_u0Da4l",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "V-ision ❤️\"."
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:29.857Z",
+      "updatedAt": "2026-07-07T11:16:29.867Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_2019_art_basel_miami_a_project_i_was_part_of_with_desigual_bold_uncomfortable_collective_led_by_carlota_guerrer",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "2019 — Art Basel Miami.\n\nA project I was part of with Desigual.\nBold, uncomfortable, collective.\n\nLed by Carlota Guerrer",
+      "summary": "fiogiuseppe on April 28, 2026: \"2019 — Art Basel Miami.\n\nA project I was part of with Desigual.\nBold, uncomfortable, collective.\n\nLed by Carlota Guerrero, built by many hands.\n\nNot mine alone but one I’m proud to have contributed to.\n\nSome works don’t leave you.\nIt wasn’t a “comfortable” project.\nAnd maybe that’s exactly why it mattered.\n\nI still remember the headlines.\nSomething like “Madonna’s daughter in a public ‘orgy’ at Art Basel.”\n\nAnd I remember thinking… how quickly complexity gets redu",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DXr_7_6Ducv"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DXr_7-6Ducv"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DXr_7-6Ducv",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "2019 — Art Basel Miami.\n\nA project I was part of with Desigual.\nBold, uncomfortable, collective.\n\nLed by Carlota Guerrero, built by many hands.\n\nNot mine alone but one I’m proud to have contributed to"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:30.633Z",
+      "updatedAt": "2026-07-07T11:16:30.634Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_do_you_know_how_many_times_in_the_past_i_didn_t_know_how_to_act_or_which_part_of_myself_to_show_depending_on_the_person",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "Do you know how many times in the past\nI didn’t know how to act,\nor which part of myself to show\ndepending on the person",
+      "summary": "fiogiuseppe on March 7, 2026: \"Do you know how many times in the past\nI didn’t know how to act,\nor which part of myself to show\ndepending on the person or situation in front of me?\n\nIt’s human to empathize,\nto listen,\nto adapt.\n\nBut real freedom arrives\nwhen you stop trying to control it all\nand simply embrace all that you are.\n\nIf you find yourself on this path in life, these flowers are for you.\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DVmFwDcDeIW"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DVmFwDcDeIW"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DVmFwDcDeIW",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "Do you know how many times in the past\nI didn’t know how to act,\nor which part of myself to show\ndepending on the person or situation in front of me?\n\nIt’s human to empathize,\nto listen,\nto adapt.\n\nBu"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:31.628Z",
+      "updatedAt": "2026-07-07T11:16:31.632Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_2025_this_year_didn_t_shout_it_whispered_i_changed_places_but_more_than_that_i_changed_skin_after_30_years_of_fi",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "2025\n\nThis year didn’t shout.\nIt whispered.\n\nI changed places,\nbut more than that,\nI changed skin.\n\nAfter 30 years of fi",
+      "summary": "fiogiuseppe on December 23, 2025: \"2025\n\nThis year didn’t shout.\nIt whispered.\n\nI changed places,\nbut more than that,\nI changed skin.\n\nAfter 30 years of fighting my own body,\nit finally softened.\nThe psoriasis is gone.\nAnd with it, a silent war\nI thought I had to carry forever.\n\nI learned that healing doesn’t arrive with fireworks.\nIt arrives quietly,\nwhen you stop resisting\nand start listening.\n\nI met incredible people.\nSouls that crossed my path\nexactly when I needed them.\nSome stayed for a mo",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DS7B044DRC7"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DS7B044DRC7"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DS7B044DRC7",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "2025\n\nThis year didn’t shout.\nIt whispered.\n\nI changed places,\nbut more than that,\nI changed skin.\n\nAfter 30 years of fighting my own body,\nit finally softened.\nThe psoriasis is gone.\nAnd with it, a s"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:32.380Z",
+      "updatedAt": "2026-07-07T11:16:32.381Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_we_don_t_matter_so_take_the_pressure_off_haha_but_that_doesn_t_mean_it_s_not_precious_i_had_an_amazing_conversation_a",
+      "owner": "giuseppe",
+      "sourceId": "instagram_urees",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "We don’t matter so take the pressure off haha. But that doesn’t mean it’s not precious.\n\nI had an amazing conversation a",
+      "summary": "136 likes, 17 comments - stayweird.tv on March 3, 2025: \"We don’t matter so take the pressure off haha. But that doesn’t mean it’s not precious.\n\nI had an amazing conversation about life and all things creative with @lego designer and founder of @urees__ @fiogiuseppe Video will be up on YouTube soon! ❤️\n\nSTAY WEIRD! \n\n@jacksworldrules \n\n#stayweird #create #expressyourself #findyourself #desinger #italian\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DGvgRVVNHtB"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/stayweird.tv/reel/DGvgRVVNHtB"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DGvgRVVNHtB",
+        "handle": "urees__",
+        "importMode": "manual_og",
+        "fullTitle": "We don’t matter so take the pressure off haha. But that doesn’t mean it’s not precious.\n\nI had an amazing conversation about life and all things creative with @lego designer and founder of @urees__ @f"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:33.518Z",
+      "updatedAt": "2026-07-07T11:16:33.519Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_an_eye_that_doesn_t_blink_sometimes_we_don_t_realize_how_many_good_things_we_already_have_things_we_should_be_gratefu",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "An eye that doesn’t blink.\n\nSometimes we don’t realize how many good things we already have \nthings we should be gratefu",
+      "summary": "fiogiuseppe on February 25, 2026: \"An eye that doesn’t blink.\n\nSometimes we don’t realize how many good things we already have \nthings we should be grateful for.\n\nWe don’t need to ask to be blessed.\nWe already are.\n\nBlessed by the life we have.\nBlessed by the chance to see, to feel, to experience.\n\nStay awake.\nDon’t blink.\n\nBe curious.\nEnjoy it.\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DVL7tlWCIML"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DVL7tlWCIML"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DVL7tlWCIML",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "An eye that doesn’t blink.\n\nSometimes we don’t realize how many good things we already have \nthings we should be grateful for.\n\nWe don’t need to ask to be blessed.\nWe already are.\n\nBlessed by the life"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:34.550Z",
+      "updatedAt": "2026-07-07T11:16:34.551Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_sometimes_i_forget_about_myself_i_forget_that_energy_isn_t_only_what_moves_my_body_it_s_also_what_feeds_my_spirit_i",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "Sometimes I forget about myself.\n\nI forget that energy isn’t only what moves my body it’s also what feeds my spirit.\n\nI ",
+      "summary": "fiogiuseppe on October 30, 2025: \"Sometimes I forget about myself.\n\nI forget that energy isn’t only what moves my body it’s also what feeds my spirit.\n\nI rush through life, letting the world enter unfiltered into my thoughts, my space, my heart.\n\nThis drawing is a reminder.\nA way to tell myself to protect my energy physical, spiritual.\n\nBecause it’s not selfishness, it’s respect.\n\nIt’s saying no to what drains me, and yes to what makes me vibrate.\n\nKeep your energy safe.\nAlways.\n\n #visceralpoems",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DQblEP9DfgU"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DQblEP9DfgU"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DQblEP9DfgU",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "Sometimes I forget about myself.\n\nI forget that energy isn’t only what moves my body it’s also what feeds my spirit.\n\nI rush through life, letting the world enter unfiltered into my thoughts, my space"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:35.573Z",
+      "updatedAt": "2026-07-07T11:16:35.576Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_i_ll_never_forget_that_meeting_with_the_japan_team_back_when_i_was_at_desigual_we_had_created_this_giant_vagina_instal",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "I’ll never forget that meeting with the Japan team back when I was at Desigual.\n\nWe had created this giant vagina instal",
+      "summary": "fiogiuseppe on May 18, 2026: \"I’ll never forget that meeting with the Japan team back when I was at Desigual.\n\nWe had created this giant vagina installation for Miami Art Basel to present the  Miranda Makaroff x @desigual collection, and during the meeting I casually proposed:\n\n“Ah yes, we could put the vagina inside the mall pop-up in Japan.”\n\nEveryone in the meeting:\n“Yeah yeah, sounds good 🙂”\n\nSilence. Nods. Agreement.\n\nThen, a few minutes later, I receive a private call from the brand manag",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DYiCFvaDWrq"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DYiCFvaDWrq"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DYiCFvaDWrq",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "I’ll never forget that meeting with the Japan team back when I was at Desigual.\n\nWe had created this giant vagina installation for Miami Art Basel to present the  Miranda Makaroff x @desigual collecti"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:36.576Z",
+      "updatedAt": "2026-07-07T11:16:36.577Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_my_poster_for_postersxgaza_organized_by_adgfad_on_sale_at_dissenymarketbcn_dec_12_14_all_proceeds_go_to_medico",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "My poster for #PostersxGaza, organized by @adgfad \nOn sale at @dissenymarketbcn (Dec 12–14).\n\nAll proceeds go to @medico",
+      "summary": "fiogiuseppe on October 9, 2025: \"My poster for #PostersxGaza, organized by @adgfad \nOn sale at @dissenymarketbcn (Dec 12–14).\n\nAll proceeds go to @medicossinfronteras.espana \n💥 Support, share, donate #freegaza #lovefirst #paz\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DPlcNpNCGd9"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DPlcNpNCGd9"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DPlcNpNCGd9",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "My poster for #PostersxGaza, organized by @adgfad \nOn sale at @dissenymarketbcn (Dec 12–14).\n\nAll proceeds go to @medicossinfronteras.espana \n💥 Support, share, donate #freegaza #lovefirst #paz"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:37.553Z",
+      "updatedAt": "2026-07-07T11:16:37.569Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_i_saw_myself_and_it_wasn_t_me_just_a_trace_a_signal_a_blur_between_presence_and_perception_ai",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "I saw myself, and it wasn’t me.\nJust a trace. A signal. A blur between presence and perception. \n#ai",
+      "summary": "fiogiuseppe on July 5, 2025: \"I saw myself, and it wasn’t me.\nJust a trace. A signal. A blur between presence and perception. \n#ai\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DLupbjRNlhM"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DLupbjRNlhM"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DLupbjRNlhM",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "I saw myself, and it wasn’t me.\nJust a trace. A signal. A blur between presence and perception. \n#ai"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:38.316Z",
+      "updatedAt": "2026-07-07T11:16:38.317Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_when_i_first_read_lego_s_story_i_imagined_that_very_first_model_consumed_by_flames_probably_for_the_third_time_in_just",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "When I first read LEGO’s story, I imagined that very first model consumed by flames, probably for the third time in just",
+      "summary": "fiogiuseppe on August 9, 2025: \"When I first read LEGO’s story, I imagined that very first model consumed by flames, probably for the third time in just a few years.\nIt must have been heartbreaking… watching everything turn to ashes. LEGO’s factory burned down three times in its early days. \n\nBut from that third fire, the brand was forged forever into one of the most revolutionary in the world.\n\nNever give up even when it feels like it’s truly the end. ❤️\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DNIf01ftHes"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/reel/DNIf01ftHes"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DNIf01ftHes",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "When I first read LEGO’s story, I imagined that very first model consumed by flames, probably for the third time in just a few years.\nIt must have been heartbreaking… watching everything turn to ashes"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:39.207Z",
+      "updatedAt": "2026-07-07T11:16:39.208Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_sometimes_the_only_way_i_can_breathe_is_by_writing_and_drawing_at_the_same_time_three_years_ago_during_a_long_journe",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "Sometimes, the only way I can breathe is by writing and drawing at the same time.\n\nThree years ago, during a long journe",
+      "summary": "fiogiuseppe on September 10, 2025: \"Sometimes, the only way I can breathe is by writing and drawing at the same time.\n\nThree years ago, during a long journey through Latin America, I started carrying a small notebook with me. In it, I poured out words that weren’t just words they twisted, danced, and transformed into shapes. They became escribujos: poems that look like drawings, drawings that feel like poems.\n\nThat notebook saved me. It gave me a place to let my emotions bleed, to turn pain into",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DObWuAxiMRC"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DObWuAxiMRC"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DObWuAxiMRC",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "Sometimes, the only way I can breathe is by writing and drawing at the same time.\n\nThree years ago, during a long journey through Latin America, I started carrying a small notebook with me. In it, I p"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:40.015Z",
+      "updatedAt": "2026-07-07T11:16:40.016Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_feel_first_then_think_the_mind_lies_the_body_doesn_t_if_you_don_t_feel_first_you_re_just_telling_yourself_stories_",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "Feel first. Then think.\nThe mind lies, the body doesn’t.\nIf you don’t feel first, you’re just telling yourself stories.",
+      "summary": "fiogiuseppe on August 21, 2025: \"Feel first. Then think.\nThe mind lies, the body doesn’t.\nIf you don’t feel first, you’re just telling yourself stories.\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DNnhjVHNjTP"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DNnhjVHNjTP"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DNnhjVHNjTP",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "Feel first. Then think.\nThe mind lies, the body doesn’t.\nIf you don’t feel first, you’re just telling yourself stories."
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:40.844Z",
+      "updatedAt": "2026-07-07T11:16:40.855Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_i_m_not_sure_whether_to_be_pants_or_a_sculpture_wear_me_however_you_like_urees_",
+      "owner": "giuseppe",
+      "sourceId": "instagram_urees",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "“I’m not sure whether to be pants or a sculpture. Wear me however you like.” @urees__",
+      "summary": "fiogiuseppe on September 24, 2024: \"“I’m not sure whether to be pants or a sculpture. Wear me however you like.” @urees__\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DATJb4HtGGr"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DATJb4HtGGr"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DATJb4HtGGr",
+        "handle": "urees__",
+        "importMode": "manual_og",
+        "fullTitle": "“I’m not sure whether to be pants or a sculpture. Wear me however you like.” @urees__"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:41.698Z",
+      "updatedAt": "2026-07-07T11:16:41.698Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_during_my_time_in_mexico_i_did_something_that_changed_me_forever_a_vipassana_meditation_retreat_10_days_in_silence_n",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "During my time in Mexico, I did something that changed me forever.\nA Vipassana meditation retreat: 10 days in silence.\nN",
+      "summary": "fiogiuseppe on July 1, 2025: \"During my time in Mexico, I did something that changed me forever.\nA Vipassana meditation retreat: 10 days in silence.\nNo phone. No talking. No eye contact.\nJust meditation. 12 hours a day.\nWake-up at 4am. Two meals. No distractions.\nNo escape. Just me, with myself.\n\nAt first, it was brutal.\nThen something started to shift.\nI began eating slowly.\nWashing myself with care.\nPutting on lotion like my body was sacred.\nI remembered that I too deserve love.\n\nDuring the br",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DLr8_zVN37q"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DLr8_zVN37q"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DLr8_zVN37q",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "During my time in Mexico, I did something that changed me forever.\nA Vipassana meditation retreat: 10 days in silence.\nNo phone. No talking. No eye contact.\nJust meditation. 12 hours a day.\nWake-up at"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:42.856Z",
+      "updatedAt": "2026-07-07T11:16:42.857Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_small_fragments_of_my_past_ideas_that_once_lived_inside_my_head_if_you_place_all_these_pieces_on_a_table_what_you_se",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "Small fragments of my past.\nIdeas that once lived inside my head.\n\nIf you place all these pieces on a table,\nwhat you se",
+      "summary": "fiogiuseppe on January 19, 2026: \"Small fragments of my past.\nIdeas that once lived inside my head.\n\nIf you place all these pieces on a table,\nwhat you see… is me.\n\nA patchwork of art and design,\nmixed without asking for permission,\nbuilt slowly, over more than 20 years.\n\nNothing came fast.\nNothing came easy.\nTime matters but so does showing up.\n\nCreating means trying.\nTrying means failing.\nAnd failing means learning how to accept yourself\nexactly as you are imperfect, unfinished, alive.\n\nEach p",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DTvlNSdDQ51"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DTvlNSdDQ51"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DTvlNSdDQ51",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "Small fragments of my past.\nIdeas that once lived inside my head.\n\nIf you place all these pieces on a table,\nwhat you see… is me.\n\nA patchwork of art and design,\nmixed without asking for permission,\nb"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:43.804Z",
+      "updatedAt": "2026-07-07T11:16:43.805Z"
+    },
+    {
+      "id": "knowledge_giuseppe_statement_obs_rvate_siempre_visceraldrawing_available",
+      "owner": "giuseppe",
+      "sourceId": "instagram_personal",
+      "sourceType": "social",
+      "knowledgeType": "statement",
+      "label": "Obsérvate siempre #visceraldrawing #available",
+      "summary": "fiogiuseppe on September 8, 2025: \"Obsérvate siempre #visceraldrawing #available\".",
+      "confidence": 0.8,
+      "evidenceIds": [
+        "evidence_instagram_manual_DOVfzGwCJR0"
+      ],
+      "evidenceUrls": [
+        "https://www.instagram.com/fiogiuseppe/p/DOVfzGwCJR0"
+      ],
+      "metadata": {
+        "extractor": "instagram-manual-og",
+        "shortcode": "DOVfzGwCJR0",
+        "handle": "fiogiuseppe",
+        "importMode": "manual_og",
+        "fullTitle": "Obsérvate siempre #visceraldrawing #available"
+      },
+      "status": "active",
+      "createdAt": "2026-07-07T11:16:44.617Z",
+      "updatedAt": "2026-07-07T11:16:44.618Z"
+    }
+  ],
+  "dedupIndex": {
+    "giuseppe:topic:art": "knowledge_giuseppe_topic_art",
+    "giuseppe:brand:urees": "knowledge_giuseppe_brand_urees",
+    "giuseppe:project:visceral poems": "knowledge_giuseppe_project_visceral_poems",
+    "giuseppe:topic:poems": "knowledge_giuseppe_topic_poems",
+    "giuseppe:statement:yesterday i visited the ny carlsberg glyptotek and saw this ancient oil lamp. more than 3000 years old… and somehow, th": "knowledge_giuseppe_statement_yesterday_i_visited_the_ny_carlsberg_glyptotek_and_saw_this_ancient_oil_lamp_more_than_3000_years_old_and_somehow_th",
+    "giuseppe:statement:the story continues… after the success of the first post, here comes part two with exclusive content nobody asked for.": "knowledge_giuseppe_statement_the_story_continues_after_the_success_of_the_first_post_here_comes_part_two_with_exclusive_content_nobody_asked_for_",
+    "giuseppe:statement:we actually did it. &amp;lt;3": "knowledge_giuseppe_statement_we_actually_did_it_amp_lt_3",
+    "giuseppe:statement:this cover has been on my mind. no logo. no band name. no title. nothing. just a cow, standing there, looking at you. a": "knowledge_giuseppe_statement_this_cover_has_been_on_my_mind_no_logo_no_band_name_no_title_nothing_just_a_cow_standing_there_looking_at_you_a",
+    "giuseppe:statement:lego smart play x lego star wars - official trailer": "knowledge_giuseppe_statement_lego_smart_play_x_lego_star_wars_official_trailer",
+    "giuseppe:statement:beauty is not enough": "knowledge_giuseppe_statement_beauty_is_not_enough",
+    "giuseppe:statement:in january last year, i started my journey at lego group as a brand designer. smart play was the very first project i g": "knowledge_giuseppe_statement_in_january_last_year_i_started_my_journey_at_lego_group_as_a_brand_designer_smart_play_was_the_very_first_project_i_g",
+    "giuseppe:statement:i&amp;#39;ve been wearing armor for a long time. good armor. beautiful armor. the kind that looks like confidence. on ju": "knowledge_giuseppe_statement_i_amp_39_ve_been_wearing_armor_for_a_long_time_good_armor_beautiful_armor_the_kind_that_looks_like_confidence_on_ju",
+    "giuseppe:statement:#visceralpoems #escribujos #creativity #art #design #visualpoetry #mindfulness": "knowledge_giuseppe_statement_visceralpoems_escribujos_creativity_art_design_visualpoetry_mindfulness",
+    "giuseppe:statement:#worldplayday #lego #creativity #playmatters #neverstopplaying": "knowledge_giuseppe_statement_worldplayday_lego_creativity_playmatters_neverstopplaying",
+    "giuseppe:statement:working at the lego group also means this: today i received a package lego x crocs. and honestly… these are my first c": "knowledge_giuseppe_statement_working_at_the_lego_group_also_means_this_today_i_received_a_package_lego_x_crocs_and_honestly_these_are_my_first_c",
+    "giuseppe:statement:i’ve been wearing armor for a long time. good armor. beautiful armor. the kind that looks like confidence. on june 1": "knowledge_giuseppe_statement_i_ve_been_wearing_armor_for_a_long_time_good_armor_beautiful_armor_the_kind_that_looks_like_confidence_on_june_1",
+    "giuseppe:statement:first drop, first campaign, first love for the brand i've dreamed of for a long time! @urees__ finally, you can enjoy": "knowledge_giuseppe_statement_first_drop_first_campaign_first_love_for_the_brand_i_ve_dreamed_of_for_a_long_time_urees_finally_you_can_enjoy",
+    "giuseppe:statement:at some point in my life, i felt a deep calling to create something transcendent. ✨ that's how urees was born, a brand f": "knowledge_giuseppe_statement_at_some_point_in_my_life_i_felt_a_deep_calling_to_create_something_transcendent_that_s_how_urees_was_born_a_brand_f",
+    "giuseppe:statement:ya pasó un año del lanzamiento del nuevo logo de @desigual , estoy súper agradecido por todo lo que me llevó. este proy": "knowledge_giuseppe_statement_ya_pas_un_a_o_del_lanzamiento_del_nuevo_logo_de_desigual_estoy_s_per_agradecido_por_todo_lo_que_me_llev_este_proy",
+    "giuseppe:statement:it’s finally out. one of the first projects i had the chance to work on after joining @lego behind these minutes of f": "knowledge_giuseppe_statement_it_s_finally_out_one_of_the_first_projects_i_had_the_chance_to_work_on_after_joining_lego_behind_these_minutes_of_f",
+    "giuseppe:statement:i’ve been drawing for years. and for a long time, i thought the goal was to improve my technique. but recently i realiz": "knowledge_giuseppe_statement_i_ve_been_drawing_for_years_and_for_a_long_time_i_thought_the_goal_was_to_improve_my_technique_but_recently_i_realiz",
+    "giuseppe:statement:a journey inward chaotic, organic, uncomfortable, but alive.": "knowledge_giuseppe_statement_a_journey_inward_chaotic_organic_uncomfortable_but_alive_",
+    "giuseppe:statement:kissing is an art. a kiss is one of the most sensual things that exists. not everyone knows how to kiss. not everyon": "knowledge_giuseppe_statement_kissing_is_an_art_a_kiss_is_one_of_the_most_sensual_things_that_exists_not_everyone_knows_how_to_kiss_not_everyon",
+    "giuseppe:statement:when i started @urees__ i didn’t just want to make clothes. i wanted to rescue stories. every pair i find has lived a l": "knowledge_giuseppe_statement_when_i_started_urees_i_didn_t_just_want_to_make_clothes_i_wanted_to_rescue_stories_every_pair_i_find_has_lived_a_l",
+    "giuseppe:statement:apparently this @lego x @crocs story escaped linkedin… and made it all the way here. these are my first crocs ever. n": "knowledge_giuseppe_statement_apparently_this_lego_x_crocs_story_escaped_linkedin_and_made_it_all_the_way_here_these_are_my_first_crocs_ever_n",
+    "giuseppe:statement:v-ision ❤️\".": "knowledge_giuseppe_statement_v_ision_",
+    "giuseppe:statement:2019 — art basel miami. a project i was part of with desigual. bold, uncomfortable, collective. led by carlota guerrer": "knowledge_giuseppe_statement_2019_art_basel_miami_a_project_i_was_part_of_with_desigual_bold_uncomfortable_collective_led_by_carlota_guerrer",
+    "giuseppe:statement:do you know how many times in the past i didn’t know how to act, or which part of myself to show depending on the person": "knowledge_giuseppe_statement_do_you_know_how_many_times_in_the_past_i_didn_t_know_how_to_act_or_which_part_of_myself_to_show_depending_on_the_person",
+    "giuseppe:statement:2025 this year didn’t shout. it whispered. i changed places, but more than that, i changed skin. after 30 years of fi": "knowledge_giuseppe_statement_2025_this_year_didn_t_shout_it_whispered_i_changed_places_but_more_than_that_i_changed_skin_after_30_years_of_fi",
+    "giuseppe:statement:we don’t matter so take the pressure off haha. but that doesn’t mean it’s not precious. i had an amazing conversation a": "knowledge_giuseppe_statement_we_don_t_matter_so_take_the_pressure_off_haha_but_that_doesn_t_mean_it_s_not_precious_i_had_an_amazing_conversation_a",
+    "giuseppe:statement:an eye that doesn’t blink. sometimes we don’t realize how many good things we already have things we should be gratefu": "knowledge_giuseppe_statement_an_eye_that_doesn_t_blink_sometimes_we_don_t_realize_how_many_good_things_we_already_have_things_we_should_be_gratefu",
+    "giuseppe:statement:sometimes i forget about myself. i forget that energy isn’t only what moves my body it’s also what feeds my spirit. i": "knowledge_giuseppe_statement_sometimes_i_forget_about_myself_i_forget_that_energy_isn_t_only_what_moves_my_body_it_s_also_what_feeds_my_spirit_i",
+    "giuseppe:statement:i’ll never forget that meeting with the japan team back when i was at desigual. we had created this giant vagina instal": "knowledge_giuseppe_statement_i_ll_never_forget_that_meeting_with_the_japan_team_back_when_i_was_at_desigual_we_had_created_this_giant_vagina_instal",
+    "giuseppe:statement:my poster for #postersxgaza, organized by @adgfad on sale at @dissenymarketbcn (dec 12–14). all proceeds go to @medico": "knowledge_giuseppe_statement_my_poster_for_postersxgaza_organized_by_adgfad_on_sale_at_dissenymarketbcn_dec_12_14_all_proceeds_go_to_medico",
+    "giuseppe:statement:i saw myself, and it wasn’t me. just a trace. a signal. a blur between presence and perception. #ai": "knowledge_giuseppe_statement_i_saw_myself_and_it_wasn_t_me_just_a_trace_a_signal_a_blur_between_presence_and_perception_ai",
+    "giuseppe:statement:when i first read lego’s story, i imagined that very first model consumed by flames, probably for the third time in just": "knowledge_giuseppe_statement_when_i_first_read_lego_s_story_i_imagined_that_very_first_model_consumed_by_flames_probably_for_the_third_time_in_just",
+    "giuseppe:statement:sometimes, the only way i can breathe is by writing and drawing at the same time. three years ago, during a long journe": "knowledge_giuseppe_statement_sometimes_the_only_way_i_can_breathe_is_by_writing_and_drawing_at_the_same_time_three_years_ago_during_a_long_journe",
+    "giuseppe:statement:feel first. then think. the mind lies, the body doesn’t. if you don’t feel first, you’re just telling yourself stories.": "knowledge_giuseppe_statement_feel_first_then_think_the_mind_lies_the_body_doesn_t_if_you_don_t_feel_first_you_re_just_telling_yourself_stories_",
+    "giuseppe:statement:“i’m not sure whether to be pants or a sculpture. wear me however you like.” @urees__": "knowledge_giuseppe_statement_i_m_not_sure_whether_to_be_pants_or_a_sculpture_wear_me_however_you_like_urees_",
+    "giuseppe:statement:during my time in mexico, i did something that changed me forever. a vipassana meditation retreat: 10 days in silence. n": "knowledge_giuseppe_statement_during_my_time_in_mexico_i_did_something_that_changed_me_forever_a_vipassana_meditation_retreat_10_days_in_silence_n",
+    "giuseppe:statement:small fragments of my past. ideas that once lived inside my head. if you place all these pieces on a table, what you se": "knowledge_giuseppe_statement_small_fragments_of_my_past_ideas_that_once_lived_inside_my_head_if_you_place_all_these_pieces_on_a_table_what_you_se",
+    "giuseppe:statement:obsérvate siempre #visceraldrawing #available": "knowledge_giuseppe_statement_obs_rvate_siempre_visceraldrawing_available"
+  }
+}

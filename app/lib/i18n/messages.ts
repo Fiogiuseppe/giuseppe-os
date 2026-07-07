@@ -144,8 +144,11 @@ export const messages = {
         os: 'Giuseppe OS',
         error: 'Non sono riuscito a rispondere.',
         empty: 'Risposta vuota.',
-        expand: 'Mostra conversazione',
-        collapse: 'Riduci conversazione'
+        checking: 'Verifico connessione…',
+        ready: 'Chat attiva',
+        offline: 'Chat non disponibile — manca la chiave AI sul server',
+        evidenceItems: 'evidenze caricate',
+        noEvidence: 'solo costituzione (nessuna evidenza sincronizzata)'
       }
     },
     content: {
@@ -461,8 +464,11 @@ export const messages = {
         os: 'Giuseppe OS',
         error: 'Could not get a reply.',
         empty: 'Empty reply.',
-        expand: 'Show conversation',
-        collapse: 'Collapse conversation'
+        checking: 'Checking connection…',
+        ready: 'Chat active',
+        offline: 'Chat unavailable — AI key missing on server',
+        evidenceItems: 'evidence items loaded',
+        noEvidence: 'constitution only (no synced evidence)'
       }
     },
     content: {

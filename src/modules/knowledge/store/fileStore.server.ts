@@ -11,17 +11,35 @@ type FileSnapshot = {
 
 const DATA_DIR = path.join(process.cwd(), '.data', 'knowledge');
 const STATE_FILE = path.join(DATA_DIR, 'state.json');
+const BOOTSTRAP_FILE = path.join(process.cwd(), 'memory', 'knowledge_snapshot.json');
+
+function normalizeSnapshot(parsed: Partial<FileSnapshot> | null | undefined): FileSnapshot {
+  return {
+    items: Array.isArray(parsed?.items) ? parsed.items : [],
+    dedupIndex: parsed?.dedupIndex ?? {}
+  };
+}
+
+async function readBootstrapSnapshot(): Promise<FileSnapshot> {
+  try {
+    const raw = await readFile(BOOTSTRAP_FILE, 'utf8');
+    return normalizeSnapshot(JSON.parse(raw) as FileSnapshot);
+  } catch {
+    return { items: [], dedupIndex: {} };
+  }
+}
 
 async function readSnapshot(): Promise<FileSnapshot> {
   try {
     const raw = await readFile(STATE_FILE, 'utf8');
-    const parsed = JSON.parse(raw) as FileSnapshot;
-    return {
-      items: Array.isArray(parsed.items) ? parsed.items : [],
-      dedupIndex: parsed.dedupIndex ?? {}
-    };
+    const snapshot = normalizeSnapshot(JSON.parse(raw) as FileSnapshot);
+    if (snapshot.items.length > 0) {
+      return snapshot;
+    }
+
+    return readBootstrapSnapshot();
   } catch {
-    return { items: [], dedupIndex: {} };
+    return readBootstrapSnapshot();
   }
 }
 

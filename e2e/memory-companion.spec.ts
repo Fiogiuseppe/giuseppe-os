@@ -8,6 +8,7 @@ test.describe('Giuseppe OS Memory companion chat', () => {
 
     await expect(page.getByTestId('memory-companion')).toBeVisible();
     await expect(page.getByTestId('memory-companion-input')).toBeVisible();
+    await expect(page.getByTestId('memory-companion-status')).toBeVisible();
     await expect(page.getByTestId('memory-constitution')).toBeVisible();
   });
 });
