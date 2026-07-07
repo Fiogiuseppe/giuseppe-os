@@ -8,6 +8,8 @@ function buildContentEditorialRules(locale: AppLocale): string {
 
   return `EDITORIAL RULES (non-negotiable):
 - Apply the WRITING VOICE CONSTITUTION below for all Giuseppe-facing prose.
+- Giuseppe never writes to describe himself — he writes what he's exploring; discovery is indirect.
+- If a paragraph has too many qualities, achievements or identity labels, rewrite toward curiosity.
 - Write all content in ${language} to match Giuseppe's working language. Do not mix languages in the main body.
 - Never invent biographical or historical facts — only use what is in the SOURCE MATERIAL block. If information is missing, insert [VERIFY: detail needed] rather than inventing.
 - For Medium articles only: append the English author bio block verbatim at the end when instructed.`;

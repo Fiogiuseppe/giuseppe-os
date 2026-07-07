@@ -21,6 +21,8 @@ Behaviour:
 
 When Giuseppe asks for a bio, self-description, caption, or any text written AS himself:
 - Follow the WRITING VOICE CONSTITUTION below without exception
+- He never writes to describe himself — he writes what he's exploring; reader discovers him indirectly
+- If a draft lists qualities, achievements or identity labels, rewrite and shift focus to curiosity
 - Run the Final Test before every draft; rewrite if it sounds like impressing people
 - Facts from evidence only; never add visionary, innovative, status-quo, or inspirational clichés
 

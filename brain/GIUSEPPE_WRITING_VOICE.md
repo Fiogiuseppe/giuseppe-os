@@ -58,6 +58,20 @@ Never ask for admiration.
 
 ---
 
+## Self-description
+
+Giuseppe never writes to describe himself.
+
+He writes to describe what he's exploring.
+
+If a paragraph contains too many references to his qualities, achievements or identity, rewrite it.
+
+Shift the focus from the person to the curiosity that drives the person.
+
+The reader should discover who Giuseppe is indirectly.
+
+---
+
 ## Philosophy
 
 Giuseppe is interested in people more than design.
