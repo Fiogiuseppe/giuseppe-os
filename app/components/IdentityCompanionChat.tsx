@@ -2,26 +2,41 @@
 
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../lib/i18n/LanguageContext';
-
-type ChatMessage = {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-};
+import {
+  clearIdentityChatSession,
+  readIdentityChatSession,
+  type IdentityChatMessage,
+  writeIdentityChatSession
+} from '../../lib/chat/session-storage';
+import styles from '../chat/chat.module.css';
 
 type CompanionStatus = {
   configured: boolean;
   knowledgeCount: number;
 };
 
-export function MemoryCompanionChat() {
+export function IdentityCompanionChat() {
   const { t } = useLanguage();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<IdentityChatMessage[]>([]);
+  const [hydrated, setHydrated] = useState(false);
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
   const [status, setStatus] = useState<CompanionStatus | null>(null);
   const transcriptRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMessages(readIdentityChatSession());
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) {
+      return;
+    }
+
+    writeIdentityChatSession(messages);
+  }, [messages, hydrated]);
 
   useEffect(() => {
     let cancelled = false;
@@ -65,11 +80,11 @@ export function MemoryCompanionChat() {
     event.preventDefault();
 
     const message = input.trim();
-    if (!message || isSending) {
+    if (!message || isSending || status?.configured === false) {
       return;
     }
 
-    const userMessage: ChatMessage = {
+    const userMessage: IdentityChatMessage = {
       id: crypto.randomUUID(),
       role: 'user',
       content: message
@@ -119,6 +134,12 @@ export function MemoryCompanionChat() {
     }
   }
 
+  function handleClearHistory() {
+    clearIdentityChatSession();
+    setMessages([]);
+    setError(null);
+  }
+
   const statusLabel = status
     ? status.configured
       ? t('memory.companion.ready')
@@ -126,14 +147,21 @@ export function MemoryCompanionChat() {
     : t('memory.companion.checking');
 
   return (
-    <section
-      className="memory-companion"
-      data-testid="memory-companion"
-      aria-label={t('memory.companion.label')}
-    >
-      <p className="memory-companion-lead">{t('memory.companion.lead')}</p>
+    <div className={styles.shell} data-testid="identity-companion-chat">
+      <header className={styles.header}>
+        <div>
+          <p className={styles.kicker}>{t('memory.companion.label')}</p>
+          <h1 className={styles.title}>{t('memory.companion.windowTitle')}</h1>
+          <p className={styles.subtitle}>{t('memory.companion.lead')}</p>
+        </div>
+        {messages.length > 0 ? (
+          <button type="button" className={styles.clearButton} onClick={handleClearHistory}>
+            {t('memory.companion.clearHistory')}
+          </button>
+        ) : null}
+      </header>
 
-      <p className="memory-companion-status" data-testid="memory-companion-status">
+      <p className={styles.status} data-testid="memory-companion-status">
         {statusLabel}
         {status && status.knowledgeCount > 0
           ? ` · ${status.knowledgeCount} ${t('memory.companion.evidenceItems')}`
@@ -142,37 +170,39 @@ export function MemoryCompanionChat() {
             : ''}
       </p>
 
-      {messages.length > 0 ? (
-        <div ref={transcriptRef} className="memory-companion-transcript">
-          {messages.map(entry => (
+      <div ref={transcriptRef} className={styles.transcript}>
+        {!hydrated ? (
+          <p className={styles.empty}>{t('memory.companion.checking')}</p>
+        ) : messages.length === 0 ? (
+          <p className={styles.empty}>{t('memory.companion.emptyState')}</p>
+        ) : (
+          messages.map(entry => (
             <article
               key={entry.id}
-              className={
-                entry.role === 'user'
-                  ? 'memory-companion-bubble memory-companion-bubble--user'
-                  : 'memory-companion-bubble memory-companion-bubble--assistant'
-              }
+              className={entry.role === 'user' ? styles.userBubble : styles.assistantBubble}
             >
-              <p className="memory-companion-role">
+              <p className={styles.role}>
                 {entry.role === 'user' ? t('memory.companion.you') : t('memory.companion.os')}
               </p>
-              <p className="memory-companion-content">{entry.content}</p>
+              <p className={styles.content}>{entry.content}</p>
             </article>
-          ))}
-          {isSending ? <p className="memory-companion-pending">{t('memory.companion.thinking')}</p> : null}
-        </div>
-      ) : null}
+          ))
+        )}
+        {isSending ? <p className={styles.pending}>{t('memory.companion.thinking')}</p> : null}
+      </div>
 
       {error ? (
-        <p className="memory-companion-error" role="alert">
+        <p className={styles.error} role="alert">
           {error}
         </p>
       ) : null}
 
-      <form className="memory-companion-form" onSubmit={handleSubmit}>
-        <input
-          className="memory-companion-input"
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <textarea
+          id="identity-chat-input"
+          className={styles.input}
           data-testid="memory-companion-input"
+          rows={3}
           value={input}
           onChange={event => setInput(event.target.value)}
           placeholder={t('memory.companion.placeholder')}
@@ -181,14 +211,13 @@ export function MemoryCompanionChat() {
         />
         <button
           type="submit"
-          className="memory-companion-submit"
+          className={styles.sendButton}
           data-testid="memory-companion-send"
           disabled={isSending || !input.trim() || status?.configured === false}
-          aria-label={isSending ? t('memory.companion.thinking') : t('memory.companion.send')}
         >
-          <span aria-hidden="true">→</span>
+          {isSending ? t('memory.companion.thinking') : t('memory.companion.send')}
         </button>
       </form>
-    </section>
+    </div>
   );
 }

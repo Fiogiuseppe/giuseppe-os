@@ -148,7 +148,12 @@ export const messages = {
         ready: 'Chat attiva',
         offline: 'Chat non disponibile — manca la chiave AI sul server',
         evidenceItems: 'evidenze caricate',
-        noEvidence: 'solo costituzione (nessuna evidenza sincronizzata)'
+        noEvidence: 'solo costituzione (nessuna evidenza sincronizzata)',
+        openChat: 'Apri conversazione identità',
+        launchHint: 'Una finestra dedicata — storico salvato sul dispositivo.',
+        windowTitle: 'Chi voglio continuare a essere',
+        emptyState: 'Inizia una conversazione. Le risposte restano ancorate alla tua costituzione e alle evidenze.',
+        clearHistory: 'Cancella storico'
       }
     },
     content: {
@@ -468,7 +473,12 @@ export const messages = {
         ready: 'Chat active',
         offline: 'Chat unavailable — AI key missing on server',
         evidenceItems: 'evidence items loaded',
-        noEvidence: 'constitution only (no synced evidence)'
+        noEvidence: 'constitution only (no synced evidence)',
+        openChat: 'Open identity conversation',
+        launchHint: 'A dedicated window — history saved on this device.',
+        windowTitle: 'Who I want to continue being',
+        emptyState: 'Start a conversation. Replies stay anchored to your constitution and evidence.',
+        clearHistory: 'Clear history'
       }
     },
     content: {
