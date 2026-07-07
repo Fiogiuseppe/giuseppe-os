@@ -8,9 +8,18 @@
 
 | Field | Value |
 |-------|-------|
-| **Last completed** | Phase 16 — Instagram Scope Strategy |
-| **Up next** | Phase 16.5 — Instagram Business Asset Verification |
-| **Blocked by** | Meta “Rol de desarrollador insuficiente” during IG authorization; Instagram accounts not yet confirmed on app / business portfolio |
+| **Last completed** | Phase 17 — Weekly Letter |
+| **Up next** | Phase 16.5 — Instagram Business Asset Verification (manual Meta steps) |
+| **Blocked by** | Meta “Rol de desarrollador insuficiente” during IG authorization |
+
+---
+
+## Immediate ops for Weekly Letter
+
+1. Apply `supabase/migrations/20260707_weekly_letters.sql` on production Supabase.
+2. Set Vercel env: `RESEND_API_KEY`, `WEEKLY_LETTER_TO`, `WEEKLY_LETTER_FROM`, `CRON_SECRET`.
+3. Verify Resend sender domain.
+4. Manual test: `curl "https://giuseppe-os.vercel.app/api/weekly-letter?secret=YOUR_SECRET"`
 
 ---
 
@@ -38,39 +47,6 @@ Confirm that **@fiogiuseppe** (Creator) and **@urees__** (Business) are correctl
 - Permissions visible: `instagram_business_basic`, `instagram_business_manage_comments`, `instagram_business_manage_messages`
 - **Level 1 implementation target unchanged:** read-only profile + media (no DMs, no publishing, no Graph Explorer tokens)
 
-### Exit criteria (then Phase 17 can be scheduled)
-
-- [ ] “Rol de desarrollador insuficiente” resolved for @fiogiuseppe authorization attempt
-- [ ] @urees__ asset assignment verified
-- [ ] Redirect URIs registered and env-aligned
-- [ ] Giuseppe explicitly approves Phase 17 after checklist complete
-
-### Reference
-
-- [`docs/setup/instagram.md`](../setup/instagram.md) — § Current Meta Setup Status, § Current blocker
-- [`docs/architecture/instagram-scope-strategy.md`](../architecture/instagram-scope-strategy.md)
-- [`docs/reports/phase-16-5-instagram-meta-status-report.md`](../reports/phase-16-5-instagram-meta-status-report.md)
-
 ---
 
-## Phase 17 — Not started (after 16.5)
-
-**Implement Level 1 only** (read-only profile + media). Do not implement DMs, publishing, or Level 2/3 until explicitly scheduled.
-
-Likely scope (require Giuseppe approval after 16.5):
-
-- Register real Instagram OAuth provider adapter
-- Level 1 connector: profile + owned media sync
-- Normalized fields → evidence → knowledge extractor
-- Mocked Graph API e2e — no live Meta calls in CI
-
-### Do not start without approval
-
-- Phase 17 until Phase 16.5 exit criteria are met
-- Meta API integration without Level 1 scope sign-off
-- Level 2 comments, Level 3 insights, or Level 4 messaging
-- Graph API Explorer tokens — OAuth via Giuseppe OS + Token Vault only
-
----
-
-*Last updated: 2026-07-06 — Phase 16.5 business asset verification is the immediate next task.*
+*Last updated: 2026-07-07*
