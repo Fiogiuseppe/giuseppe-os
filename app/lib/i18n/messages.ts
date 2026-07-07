@@ -134,6 +134,8 @@ export const messages = {
       suggestionsLabel: 'Libri e podcast suggeriti',
       suggestionBook: 'Libro',
       suggestionPodcast: 'Podcast',
+      tunnelLeft: 'THINK',
+      tunnelRight: 'POSSIBLE',
       companion: {
         label: 'Conversazione identità',
         lead: 'Parla con Giuseppe OS — resta coerente con chi sei, nella carriera e nella vita.',
@@ -451,6 +453,8 @@ export const messages = {
       suggestionsLabel: 'Suggested books and podcasts',
       suggestionBook: 'Book',
       suggestionPodcast: 'Podcast',
+      tunnelLeft: 'THINK',
+      tunnelRight: 'POSSIBLE',
       companion: {
         label: 'Identity conversation',
         lead: 'Talk with Giuseppe OS — stay coherent with who you are, in career and life.',

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useLanguage } from '../lib/i18n/LanguageContext';
 
 const SPEED_LINE_COUNT = 48;
 
@@ -18,6 +19,7 @@ function buildSpeedLines(): string[] {
 const SPEED_LINES = buildSpeedLines();
 
 export function MemoryTunnelBackground() {
+  const { t } = useLanguage();
   const rootRef = useRef<HTMLDivElement>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -59,6 +61,29 @@ export function MemoryTunnelBackground() {
       aria-hidden="true"
       data-testid="memory-tunnel"
     >
+      <div className="memory-tunnel-perspective">
+        <svg
+          className="memory-tunnel-wall-svg memory-tunnel-wall-svg--left"
+          viewBox="0 0 320 96"
+          preserveAspectRatio="xMaxYMid meet"
+          aria-hidden="true"
+        >
+          <text x="312" y="62" className="memory-tunnel-word">
+            {t('memory.tunnelLeft')}
+          </text>
+        </svg>
+        <svg
+          className="memory-tunnel-wall-svg memory-tunnel-wall-svg--right"
+          viewBox="0 0 420 96"
+          preserveAspectRatio="xMinYMid meet"
+          aria-hidden="true"
+        >
+          <text x="8" y="62" className="memory-tunnel-word">
+            {t('memory.tunnelRight')}
+          </text>
+        </svg>
+      </div>
+
       <svg className="memory-tunnel-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
         {SPEED_LINES.map((path, index) => (
           <path
