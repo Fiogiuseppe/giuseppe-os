@@ -117,9 +117,9 @@ export default function ChatPage() {
       <AppTopbar mode="link" />
       <main className={styles.page}>
         <header className={styles.header}>
-          <h1 className={styles.title}>Chat (debug)</h1>
+          <h1 className={styles.title}>Chat</h1>
           <p className={styles.subtitle}>
-            Private test page — not part of the product experience. {subtitle}
+            Legacy route — use Memory in the main app for identity conversation. {subtitle}
           </p>
         </header>
 

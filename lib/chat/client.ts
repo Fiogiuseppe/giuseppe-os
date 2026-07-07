@@ -32,7 +32,7 @@ function toOrchestratorProviderName(name: string): ChatProviderName {
 }
 
 export async function chatWithGiuseppe(messages: ChatMessage[]): Promise<ChatResult> {
-  const system = buildChatSystemPrompt();
+  const system = await buildChatSystemPrompt();
 
   try {
     const response = await invokeChatWithDevFallback({

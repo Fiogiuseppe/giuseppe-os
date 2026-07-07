@@ -133,7 +133,20 @@ export const messages = {
       how4: 'Scegli sempre verità e bellezza.',
       suggestionsLabel: 'Libri e podcast suggeriti',
       suggestionBook: 'Libro',
-      suggestionPodcast: 'Podcast'
+      suggestionPodcast: 'Podcast',
+      companion: {
+        label: 'Conversazione identità',
+        lead: 'Parla con Giuseppe OS — resta coerente con chi sei, nella carriera e nella vita.',
+        placeholder: 'Chi sono? Come mi presento? Cosa sto dimenticando di me?',
+        send: 'Invia',
+        thinking: 'Sto riflettendo…',
+        you: 'Tu',
+        os: 'Giuseppe OS',
+        error: 'Non sono riuscito a rispondere.',
+        empty: 'Risposta vuota.',
+        expand: 'Mostra conversazione',
+        collapse: 'Riduci conversazione'
+      }
     },
     content: {
       open: 'Genera contenuti',
@@ -437,7 +450,20 @@ export const messages = {
       how4: 'Always choose truth and beauty.',
       suggestionsLabel: 'Suggested books and podcasts',
       suggestionBook: 'Book',
-      suggestionPodcast: 'Podcast'
+      suggestionPodcast: 'Podcast',
+      companion: {
+        label: 'Identity conversation',
+        lead: 'Talk with Giuseppe OS — stay coherent with who you are, in career and life.',
+        placeholder: 'Who am I? How do I present myself? What am I forgetting about me?',
+        send: 'Send',
+        thinking: 'Thinking…',
+        you: 'You',
+        os: 'Giuseppe OS',
+        error: 'Could not get a reply.',
+        empty: 'Empty reply.',
+        expand: 'Show conversation',
+        collapse: 'Collapse conversation'
+      }
     },
     content: {
       open: 'Generate content',

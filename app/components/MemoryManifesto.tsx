@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 import { MemoryTunnelBackground } from './MemoryTunnelBackground';
 import { MemorySuggestionClouds } from './MemorySuggestionClouds';
+import { MemoryCompanionChat } from './MemoryCompanionChat';
 
 const HOW_SLOTS = [
   { key: 'memory.how1', slot: '1' },
@@ -73,6 +74,7 @@ export function MemoryManifesto() {
         </ol>
       </section>
     </article>
+    <MemoryCompanionChat />
     </>
   );
 }
